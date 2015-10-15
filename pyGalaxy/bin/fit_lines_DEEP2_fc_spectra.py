@@ -1,0 +1,105 @@
+"""
+This script computes the fits the line strength on the spectra from of the DEEP2 survey
+"""
+
+# defines the survey object
+import GalaxySurveyDEEP2 as gs
+survey = gs.GalaxySurveyDEEP2(redshift_catalog="zcat.deep2.dr4.v2.fits",calibration = False)
+
+# global parameters to add to the survey class
+survey.zmin = 0.01 # minimum redshift considered
+survey.zmax = 1.5 # maximum redshift considered
+survey.WLmin = 6500. # lambda min
+survey.WLmax = 9100. # lambda max of the spectrum
+survey.resolution = 6000. # resolution of the Keck deimos setting used
+survey.path_to_output_catalog  =  survey.deep2_catalog_dir+"zcat.deep2.dr4.v2.linesFitted.fits"
+survey.Ngalaxies=len(survey.catalog)
+
+# line list to be fitted
+from lineListAir import *
+lineList = n.array([[Ne3,Ne3_3869,"Ne3_3869","left"],[O3,O3_4363,"O3_4363","right"],[O3,O3_4960,"O3_4960","left"],[O3,O3_5007,"O3_5007","right"],[N2,N2_6549,"N2_6549","left"],[N2,N2_6585,"N2_6585","right"],[S2,S2_6718,"S2_6718","left"],[S2,S2_6732,"S2_6732","right"],[Ar3,Ar3_7137,"Ar3_7137","left"]])
+recLineList = n.array([[H1,H1_1216,"H1_1216","right"],[H1,H1_3970,"H1_3970","right"],[H1,H1_4102,"H1_4102","right"],[H1,H1_4341,"H1_4341","right"],[H1,H1_4862,"H1_4862","left"],[H1,H1_6564,"H1_6564","left"]])
+doubletList = n.array([[O2_3727,"O2_3727",O2_3729,"O2_3729",O2]])
+
+# import the fitting routines
+import LineFittingLibrary as lineFit
+lfit  =  lineFit.LineFittingLibrary(fitWidth = 40.)
+
+# import the class to handle spectra
+import GalaxySpectrumDEEP2 as gsp
+
+output = n.ones_like(n.empty([survey.Ngalaxies,195]))*lfit.dV
+for jj in range(survey.Ngalaxies):
+	catalog_entry = survey.catalog[jj]
+	spectrum = gsp.GalaxySpectrumDEEP2(catalog_entry,calibration = False,lineFits = True)
+
+	if len(spectrum.path_to_spectrum)==1 and catalog_entry['ZBEST']>survey.zmin and catalog_entry['ZBEST']<survey.zmax and catalog_entry['ZQUALITY']>1 :
+		print catalog_entry
+		spectrum.openCalibratedSpectrum()
+		wlA, flA, flErrA = spectrum.wavelength, spectrum.fluxl, spectrum.fluxlErr
+
+		# add the flux calibration error to the flux error.
+		fluxr = 10**((catalog_entry['MAGR'] + 48.6)/(-2.5)) 
+		fluxrM2 = 10**((catalog_entry['MAGR']+catalog_entry['MAGRERR'] + 48.6)/(-2.5))
+		fluxrM1 = 10**((catalog_entry['MAGR']-catalog_entry['MAGRERR'] + 48.6)/(-2.5))
+		dr=abs(fluxrM2-fluxrM1)
+		drpc=dr/fluxr
+		fluxi = 10**((catalog_entry['MAGI'] + 48.6)/(-2.5))
+		fluxiM2 = 10**((catalog_entry['MAGI']+catalog_entry['MAGIERR'] + 48.6)/(-2.5))
+		fluxiM1 = 10**((catalog_entry['MAGI']-catalog_entry['MAGIERR'] + 48.6)/(-2.5)) 
+		di=abs(fluxiM2-fluxiM1)
+		dipc=di/fluxi
+		ok=(n.isnan(flA)==False)&(n.isnan(flErrA)==False)
+		wl,fl,flErr=wlA[ok],flA[ok],flErrA[ok]
+		flErr=flErr*(n.min([drpc,dipc])+1.)
+
+		if len(wl)>200 : 
+			d_out,m,h=[],[],[]
+			datI,mI,hI=lfit.fit_Line_OIIdoublet(wl,fl,flErr,a0=n.array([O2_3727,O2_3729])*(1+catalog_entry['ZBEST']),lineName="O2_3728",p0_sigma=0.1,model="gaussian")
+			"""
+			if datI[1]>0 and datI[2]>0 and datI[1]>3*datI[2]:
+				plotLineFit(wl,fl,flErr,mI,n.mean(n.array([O2_3727,O2_3729])*(1+catalog_entry['ZBEST'])),"../DEEP2/specPdf/spec_"+str(ID)+"_O2_3728.pdf")
+			"""
+			d_out.append(datI)
+			#print len(datI)
+			m.append(mI)
+			h.append(hI)
+
+			# now fits the emission lines
+			for li in lineList:
+				datI,mI,hI=lfit.fit_Line(wl,fl,flErr,li[1]*(1+catalog_entry['ZBEST']),lineName=li[2],continuumSide=li[3],model="gaussian",p0_sigma=1)
+				"""
+				if datI[1]>0 and datI[2]>0 and datI[1]>3*datI[2]:
+								plotLineFit(wl,fl,flErr,mI,li[1]*(1+catalog_entry['ZBEST']),"../DEEP2/specPdf/spec_"+str(ID)+"_"+li[2]+".pdf")
+				"""
+				#print li,li[1],li[2],li[3], li[3]=="left", len(datI)
+				#print datI,mI,hI
+				d_out.append(datI)
+				m.append(mI)
+				h.append(hI)
+
+			# now fits the recombination lines 
+			for li in recLineList:
+				datI,mI,hI=lfit.fit_Line(wl,fl,flErr,li[1]*(1+catalog_entry['ZBEST']),lineName=li[2],continuumSide=li[3],model="gaussian")
+				#print len(datI)
+				d_out.append(datI)
+				m.append(mI)
+				h.append(hI)
+
+			# now outputs the result table
+			heading="".join(h)
+			out=n.hstack((d_out))
+			out[n.isnan(out)]=n.ones_like(out[n.isnan(out)])*lfit.dV
+			output[jj]=out
+			print out
+
+# now writes the output
+colNames = heading.split()
+hdu2 = gs.fits.BinTableHDU.from_columns(survey.catalog.columns)
+new_columns = hdu2.data.columns 
+
+for ii in range(len(colNames)):
+	new_columns += gs.fits.Column(name=colNames[ii],format='D', array=output.T[ii] )
+
+hdu = gs.fits.BinTableHDU.from_columns(new_columns)
+hdu.writeto(survey.path_to_output_catalog)
