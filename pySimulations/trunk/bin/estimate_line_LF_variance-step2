@@ -14,6 +14,7 @@ plotDir="/home/comparat/database/Simulations/galform-lightcone/products/emission
 dir="/home/comparat/database/Simulations/galform-lightcone/products/emissionLineLuminosityFunctions/*/"
 lf_measurement_files_means = n.array(glob.glob(dir+"*NEXT-z*.txt"))
 lf_measurement_files_realizations = n.array(glob.glob(dir+"*NEXT-R*.txt"))
+print len(lf_measurement_files_means), len(lf_measurement_files_realizations)
 
 elements,surveys,redshifts=[],[],[]
 for el in lf_measurement_files_means :
