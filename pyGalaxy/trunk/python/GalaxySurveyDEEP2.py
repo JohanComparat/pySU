@@ -35,16 +35,16 @@ class GalaxySurveyDEEP2:
 		hd.close()
 
 		if calibration==True :
-			self.deep2_calib_dir = self.pyELG_dir+"Deep2_calib_files/"
-			self.paramsEndr = fits.open(self.deep2_calib_dir+"paramsendr.fits")[0].data
-			self.params = fits.open(self.deep2_calib_dir+"params.fits")[0].data
-			v0,v1 = n.loadtxt(self.deep2_calib_dir+ "thr_go1200_80_og550.asc", unpack = True) 
+			self.deep2_calib_dir = join(os.environ['PYSU_DIR'],trunk,data,"Deep2_calib_files")
+			self.paramsEndr = fits.open(join(self.deep2_calib_dir,"paramsendr.fits"))[0].data
+			self.params = fits.open(join(self.deep2_calib_dir,"params.fits"))[0].data
+			v0,v1 = n.loadtxt(join(self.deep2_calib_dir, "thr_go1200_80_og550.asc"), unpack = True) 
 			self.throughput = interp1d( v0,v1 )
-			v0,v1 = n.loadtxt(self.deep2_calib_dir +"Bresponse.txt", unpack = True, usecols = (0,6))
+			v0,v1 = n.loadtxt(join(self.deep2_calib_dir ,"Bresponse.txt"), unpack = True, usecols = (0,6))
 			self.Bresponse = interp1d(v0,v1 )
-			v0,v1 = n.loadtxt(self.deep2_calib_dir+"Rresponse.txt", unpack = True, usecols = (0,6))
+			v0,v1 = n.loadtxt(join(self.deep2_calib_dir,"Rresponse.txt"), unpack = True, usecols = (0,6))
 			self.Rresponse = interp1d(v0,v1 )	
-			v0,v1 = n.loadtxt(self.deep2_calib_dir+"Iresponse.txt", unpack = True, usecols = (0,6))
+			v0,v1 = n.loadtxt(join(self.deep2_calib_dir,"Iresponse.txt"), unpack = True, usecols = (0,6))
 			self.Iresponse = interp1d(v0,v1 )
 			self.fun = lambda x,a,b : a*x+b
 		
