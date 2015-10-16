@@ -24,7 +24,7 @@ class GalaxySpectrumVVDS:
 	"""
 	def __init__(self,catalog_entry,lineFits=False):
 		self.catalog_entry=catalog_entry
-		self.database_dir = os.environ[‘DATA_DIR’]
+		self.database_dir = os.environ['DATA_DIR']
 		self.vvds_dir = join(self.database_dir,"VVDS")
 		self.vvds_catalog_dir = join(self.vvds_dir,"catalogs")
 		self.vvds_spectra_dir = join(self.vvds_dir,"spectra")

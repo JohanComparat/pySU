@@ -32,7 +32,7 @@ class ModelLuminosityFunction:
 		self.lineWavelength = lineWavelength
 		self.lineName = lineName
 		self.cosmology = cosmology
-		self.database_dir = os.environ[‘DATA_DIR’]
+		self.database_dir = os.environ['DATA_DIR']
 		self.biblioPts_dir = join(self.database_dir , "Products_Galaxies/emissionLineLuminosityFunctions/bibliographyPoints")
 		self.fixedSigma = fixedSigma
 		self.fixedAlpha = fixedAlpha
@@ -135,7 +135,7 @@ class LineLuminosityFunction:
 		self.cosmology = cosmology
 		self.surveyName = surveyName
 		self.redshift_catalog = redshift_catalog
-		self.database_dir = os.environ[‘DATA_DIR’]
+		self.database_dir = os.environ['DATA_DIR']
 		self.survey_dir = join( self.database_dir, self.surveyName)
 		self.catalog_dir = join(self.survey_dir,"catalogs")
 		self.output_dir = join(self.survey_dir,"products",outputFolder+lineName)

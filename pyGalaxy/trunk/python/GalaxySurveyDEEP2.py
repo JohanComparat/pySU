@@ -26,7 +26,7 @@ class GalaxySurveyDEEP2:
 	"""
 	def __init__(self,redshift_catalog="zcat.deep2.dr4.v2.fits", calibration=True):
 		self.redshift_catalog = redshift_catalog
-		self.database_dir = os.environ[‘DATA_DIR’]
+		self.database_dir = os.environ['DATA_DIR']
 		self.deep2_dir = join(self.database_dir,"DEEP2")
 		self.deep2_catalog_dir = join(self.deep2_dir,"catalogs")
 		self.deep2_spectra_dir = join(self.deep2_dir,"spectra")

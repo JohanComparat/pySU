@@ -23,7 +23,7 @@ class GalaxySurveyVIPERS:
 	"""
 	def __init__(self,redshift_catalog="VIPERS_W14_summary_v1.fits"):
 		self.redshift_catalog = redshift_catalog
-		self.database_dir = os.environ[‘DATA_DIR’]
+		self.database_dir = os.environ['DATA_DIR']
 		self.vipers_dir = join(self.database_dir,"VIPERS")
 		self.vipers_catalog_dir = join(self.vipers_dir,"catalogs")
 		self.vipers_spectra_dir = join(self.vipers_dir,"spectra")

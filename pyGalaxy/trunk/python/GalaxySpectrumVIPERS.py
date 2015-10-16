@@ -24,7 +24,7 @@ class GalaxySpectrumVIPERS:
 	"""
 	def __init__(self,catalog_entry,calibration=True,lineFits=False):
 		self.catalog_entry=catalog_entry
-		self.database_dir = os.environ[‘DATA_DIR’]
+		self.database_dir = os.environ['DATA_DIR']
 		self.vipers_dir = join(self.database_dir,"VIPERS")
 		self.vipers_catalog_dir = join(self.vipers_dir,"catalogs")
 		self.vipers_spectra_dir = join(self.vipers_dir,"spectra")

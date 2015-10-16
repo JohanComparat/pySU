@@ -23,7 +23,7 @@ class GalaxySurveyVVDS:
 	"""
 	def __init__(self,redshift_catalog="VVDS_WIDE_summary.fits"):
 		self.redshift_catalog = redshift_catalog
-		self.database_dir = os.environ[‘DATA_DIR’]
+		self.database_dir = os.environ['DATA_DIR']
 		self.vvds_dir = join(self.database_dir,"VVDS")
 		self.vvds_catalog_dir = join(self.vvds_dir,"catalogs")
 		self.vvds_spectra_dir = join(self.vvds_dir,"spectra")

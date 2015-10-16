@@ -29,7 +29,7 @@ class GalaxySpectrumDEEP2:
 		self.slit=self.catalog_entry['SLIT']
 		self.objno=str(self.catalog_entry['OBJNO'])
 
-		self.database_dir = os.environ[‘DATA_DIR’]
+		self.database_dir = os.environ['DATA_DIR']
 		self.deep2_dir = join(self.database_dir,"DEEP2")
 		self.deep2_catalog_dir = join(self.deep2_dir,"catalogs")
 		self.deep2_spectra_dir = join(self.deep2_dir,"spectra")
