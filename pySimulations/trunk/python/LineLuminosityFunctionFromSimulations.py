@@ -36,7 +36,7 @@ class LineLuminosityFunctionFromSimulations:
 		self.database_dir = os.environ['DATA_DIR']
 		self.survey_dir = join(self.database_dir , surveyDir)
 		self.catalog_dir = join(self.survey_dir,"catalogs")
-		self.output_dir = join(self.survey_dir,"products",outputFolder+lineName)
+		self.output_dir = join(self.survey_dir,"products",outputFolder,lineName)
 		os.system('mkdir '+self.output_dir)
 
 		hd = fits.open(join(self.catalog_dir,self.redshift_catalog))
