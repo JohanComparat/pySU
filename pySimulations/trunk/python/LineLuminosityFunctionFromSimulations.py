@@ -5,7 +5,8 @@
 
 The class LineLuminosityFunctionFromSimulations is dedicated to measuring the line luminosity functions obtained from simulations.
 """
-import os 
+from os.path import join
+import os
 import astropy.cosmology as co
 cosmo=co.FlatLambdaCDM(H0=70,Om0=0.3)
 import astropy.io.fits as fits
@@ -26,19 +27,19 @@ class LineLuminosityFunctionFromSimulations:
 	:param zmin: minimum redshift included
 	:param zmax: maximum redshift included
 	"""
-	def __init__(self, lineWavelength=3727.4228417998916, lineName="OII3727", cosmology = cosmo, surveyName ="GALFORM", surveyDir =  "Simulations/galform-lightcone/", redshift_catalog = "galform.ELG.fits", luminosityBins = n.logspace(38,45,50), outputFolder="emissionLineLuminosityFunctions/" , zmin=0.6, zmax=0.8):
+	def __init__(self, lineWavelength=3727.4228417998916, lineName="OII3727", cosmology = cosmo, surveyName ="GALFORM", surveyDir =  join("Simulations","galform-lightcone"), redshift_catalog = "galform.ELG.fits", luminosityBins = n.logspace(38,45,50), outputFolder="emissionLineLuminosityFunctions" , zmin=0.6, zmax=0.8):
 		self.lineWavelength = lineWavelength
 		self.lineName = lineName
 		self.cosmology = cosmology
 		self.surveyName = surveyName
 		self.redshift_catalog = redshift_catalog
-		self.database_dir = "/home/comparat/database/"
-		self.survey_dir = self.database_dir + surveyDir
-		self.catalog_dir = self.survey_dir+"catalogs/"
-		self.output_dir = self.survey_dir+"products/"+outputFolder+lineName+"/"
+		self.database_dir = os.environ['DATA_DIR']
+		self.survey_dir = join(self.database_dir , surveyDir)
+		self.catalog_dir = join(self.survey_dir,"catalogs")
+		self.output_dir = join(self.survey_dir,"products",outputFolder+lineName)
 		os.system('mkdir '+self.output_dir)
 
-		hd = fits.open(self.catalog_dir+self.redshift_catalog)
+		hd = fits.open(join(self.catalog_dir,self.redshift_catalog))
 		self.catalog = hd[1].data
 		hd.close()
 
@@ -153,11 +154,11 @@ class LineLuminosityFunctionFromSimulations:
 		hdu2 = fits.BinTableHDU.from_columns(new_columns)
 		hdu2.data = hdu2.data[selection]
 		hdu2.header.add_comment(str(self.completness_limit_luminosity))
-		os.system('rm -rf '+self.output_dir + filename + ".fits")
-		hdu2.writeto(self.output_dir + filename + ".fits")                        
+		os.system('rm -rf '+ join(self.output_dir , filename + ".fits"))
+		hdu2.writeto(join(self.output_dir , filename + ".fits"))                        
                         
 		head= " Lmin Lmax Lmean phi phiErr_jk phiErr_poisson Ngalaxy"
-		f=open(self.output_dir + filename + ".txt",'w')
+		f=open(join(self.output_dir , filename + ".txt"),'w')
 		n.savetxt(f, n.transpose([self.luminosityBins[:-1], self.luminosityBins[1:], self.xL, self.LF/self.dLogL, self.LFerr_poisson/self.dLogL, self.LFerr_jackknife /self.dLogL, self.ngals]) ,header= head)
 		f.close()
 

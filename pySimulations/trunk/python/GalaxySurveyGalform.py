@@ -6,6 +6,8 @@
 The class GalaxySurveyGalform is dedicated to handling Galform fake galaxy mock catalog.
 
 """
+from os.path import join
+import os
 import numpy as n
 import astropy.io.fits as fits
 from MiscellanousFunctionsLibrary import *
@@ -20,10 +22,10 @@ class GalaxySurveyGalform:
 	"""
 	def __init__(self,redshift_catalog="galform.elg.fits"):
 		self.redshift_catalog = redshift_catalog
-		self.database_dir = "/home/comparat/database/"
-		self.galform_dir = self.database_dir+"Simulations/galform-lightcone/"
-		self.galform_catalog_dir = self.galform_dir+"catalogs/"
-		hd = fits.open(self.galform_catalog_dir+self.redshift_catalog)
+		self.database_dir = os.environ['DATA_DIR']
+		self.galform_dir = join(self.database_dir, "Simulations","galform-lightcone")
+		self.galform_catalog_dir = join(self.galform_dir,"catalogs")
+		hd = fits.open(join(self.galform_catalog_dir,self.redshift_catalog))
 		self.catalog = hd[1].data
 		hd.close()
 

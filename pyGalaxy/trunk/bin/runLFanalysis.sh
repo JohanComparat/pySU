@@ -6,8 +6,6 @@ cd $PYSU_DIR/pyGalaxies/trunk/bin
 
 ./fit_lines_DEEP2_fc_spectra
 ./fit_lines_VIPERS_spectra
-
-# from here :
 ./fit_lines_VVDSDEEP_spectra
 ./fit_lines_VVDSUDEEP_spectra
 ./fit_lines_VVDSWIDE_spectra
@@ -18,6 +16,7 @@ cd $PYSU_DIR/pyGalaxies/trunk/bin
 ./plotSurveys
 
 ./estimate_line_LF
+# here : 
 ./fit_model_LF
 ./plotLFs
 
