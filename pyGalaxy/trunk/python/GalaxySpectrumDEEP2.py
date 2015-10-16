@@ -44,6 +44,7 @@ class GalaxySpectrumDEEP2:
 		"""Loads the observed spectrum in counts.
 		"""
 		hdS=fits.open(self.path_to_spectrum[0])
+        self.airmass = hdS[1].header['AIRMASS']
 		# blue spectrum
 		self.dB=hdS[1].data
 		# red pectrum
@@ -109,6 +110,10 @@ class GalaxySpectrumDEEP2:
 		self.specErrTMP=self.specErrTMP/throughput.y[self.pixSampled]
 		self.ivarTMP=self.ivarTMP*throughput.y[self.pixSampled]**2
 
+	def correct_telluric_abs(self):
+		""" Future function to correct the observed spectra from tellurica absorption bands. Not yet implemented. """
+		return 0.
+
 	def fluxCal(self):
 		"""Performs the flux calibration of the spectrum by converting counts to flux units with an interpolation between the B and the I band borad band photometry."""
 		countr = n.sum(self.specTMP*Rresponse(self.lambd))/ n.sum(Rresponse( self.lambd))
@@ -141,9 +146,6 @@ class GalaxySpectrumDEEP2:
 		self.fluxlErr=self.fluxnErr *299792458.0 / (self.lambd**2 * 10**(-10))
 		return fluxn_corr
 
-	def correct_telluric_abs(self):
-		""" Future function to correct the observed spectra from tellurica absorption bands. Not yet implemented. """
-		return 0.
 
 	def writeFCspec(self):
 		"""Writes the flux-calibrated spectrum"""

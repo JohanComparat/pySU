@@ -40,6 +40,10 @@ class GalaxySurveyDEEP2:
 			self.params = fits.open(join(self.deep2_calib_dir,"params.fits"))[0].data
 			v0,v1 = n.loadtxt(join(self.deep2_calib_dir, "thr_go1200_80_og550.asc"), unpack = True) 
 			self.throughput = interp1d( v0,v1 )
+
+			self.telluric_A_band = fits.open(join(self.deep2_calib_dir,"aband.fits"))
+			self.telluric_B_band = fits.open(join(self.deep2_calib_dir,"bband.fits"))
+
 			v0,v1 = n.loadtxt(join(self.deep2_calib_dir ,"Bresponse.txt"), unpack = True, usecols = (0,6))
 			self.Bresponse = interp1d(v0,v1 )
 			v0,v1 = n.loadtxt(join(self.deep2_calib_dir,"Rresponse.txt"), unpack = True, usecols = (0,6))
@@ -47,6 +51,7 @@ class GalaxySurveyDEEP2:
 			v0,v1 = n.loadtxt(join(self.deep2_calib_dir,"Iresponse.txt"), unpack = True, usecols = (0,6))
 			self.Iresponse = interp1d(v0,v1 )
 			self.fun = lambda x,a,b : a*x+b
+            
 		
 	def computeLineLuminosity(self,line,distanceCorrection):
 		""" computes the line luminosities for the line list given.
