@@ -1,3 +1,5 @@
+#! /usr/bin/env python
+
 """
 This script computes the line luminosities from of the Galform survey
 """
@@ -11,8 +13,8 @@ cosmo=co.FlatLambdaCDM(H0=70,Om0=0.3)
 from GalaxySurveyGalform import *
 
 # Galform catalog
-survey = GalaxySurveyGalform(redshift_catalog = "galform.elg.next.fits")
-survey.path_to_output_catalog  =  survey.galform_catalog_dir+ "galform.next.LFcatalog.fits"
+survey = GalaxySurveyGalform()
+survey.path_to_output_catalog  =  survey.galform_catalog_dir+ "galform.LFcatalog.fits"
 survey.Ngalaxies=len(survey.catalog)
 new_columns = survey.catalog.columns
 
