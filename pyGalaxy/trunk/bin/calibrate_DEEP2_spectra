@@ -7,7 +7,7 @@ This script performs the flux calibration of the DEEP2 spectra
 from GalaxySpectrumDEEP2 import *
 
 # defines the galaxy survey class : loads catalogs and calibration files
-gs=GalaxySurveyDEEP2(redshift_catalog="zcat.deep2.dr4.fits", calibration=True)
+gs=GalaxySurveyDEEP2(redshift_catalog="zcat.deep2.dr4.v2.fits", calibration=True)
 
 # loops over elements of the catalog looking for the spectra and flux calibrates them
 
