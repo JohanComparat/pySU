@@ -41,7 +41,7 @@ class GalaxySpectrumVVDS:
 			spectraHDU=fits.open(specFileName)
 			wl=spectraHDU[0].header['CRVAL1'] + spectraHDU[0].header['CDELT1'] * n.arange(2,spectraHDU[0].header['NAXIS1']+2)
 			fl=spectraHDU[0].data[0]
-			noiseFileName=glob.glob(join(self.vvds_spectra_dir+$,"sc_*"+str(self.catalog_entry['NUM'])+"*noise.fits"))[0]
+			noiseFileName=glob.glob(join(self.vvds_spectra_dir,"sc_*"+str(self.catalog_entry['NUM'])+"*noise.fits"))[0]
 			noiseHDU=fits.open(noiseFileName)
 			flErr=noiseHDU[0].data[0]
 			self.wavelength,self.fluxl,self.fluxlErr=wl,fl,flErr
