@@ -14,7 +14,7 @@ gs=GalaxySurveyDEEP2(redshift_catalog="zcat.deep2.dr4.v2.fits", calibration=True
 
 for ii in range(len(gs.catalog)):
 	catalog_entry = gs.catalog[ii]
-	spec1d = GalaxySpectrumDEEP2(catalog_entry,gs,calibration=True,lineFits=False, plots = False)
+	spec1d = GalaxySpectrumDEEP2(catalog_entry,gs,calibration=True,lineFits=False)
 	if len(spec1d.path_to_spectrum)==1 and spec1d.catalog_entry['ZBEST']>=0 and spec1d.catalog_entry ['ZQUALITY']>=1 :
 		print spec1d.path_to_spectrum
 		spec1d.openObservedSpectrum()
