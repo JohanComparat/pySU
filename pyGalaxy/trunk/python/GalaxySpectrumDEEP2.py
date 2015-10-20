@@ -152,7 +152,7 @@ class GalaxySpectrumDEEP2:
 
     def writeFCspec(self):
         """Writes the flux-calibrated spectrum"""
-        ff=open(self.name[:-5]+"_fc_tc.dat",'w')
+        ff=open(self.path_to_spectrum[0][:-5]+"_fc_tc.dat",'w')
         n.savetxt(ff,n.transpose([self.lambd,self.fluxl,self.fluxlErr]))
         ff.close()
 
