@@ -57,7 +57,7 @@ class GalaxySurveyDEEP2:
             a_coeff = n.polynomial.polynomial.polyfit( a_lambda, a_fluxn, deg = 1, w=1/errors)
             print a_coeff
             a_band_fit = n.polynomial.polynomial.polyval(a_lambda, a_coeff)
-            print aband_fit
+            print a_band_fit
             a_flux = a_fluxn / a_band_fit
             print a_flux
             self.telluric_A_band_fct = interp1d(a_lambda,a_flux)
