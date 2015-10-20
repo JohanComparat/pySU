@@ -10,9 +10,9 @@ stack_files.sort()
 
 for file in stack_files:
 	print( file )
-	if len(glob.glob(file[:-7]+"*modeled*"))>0:
-		print( file, "out" )
-		continue
+	#if len(glob.glob(file[:-7]+"*modeled*"))>0:
+	#	print( file, "out" )
+	#	continue
 
 	mm=ModelSpectraStacks(file)
 	#mm.plot_fit()
