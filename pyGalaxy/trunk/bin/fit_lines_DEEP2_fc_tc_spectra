@@ -31,7 +31,7 @@ lfit  =  lineFit.LineFittingLibrary(fitWidth = 40.)
 import GalaxySpectrumDEEP2 as gsp
 
 output = n.ones_like(n.empty([survey.Ngalaxies,195]))*lfit.dV
-for jj in range():#survey.Ngalaxies):
+for jj in range(10):#survey.Ngalaxies):
 	catalog_entry = survey.catalog[jj]
 	spectrum = gsp.GalaxySpectrumDEEP2(catalog_entry,gs,calibration = False,lineFits = True)
 
