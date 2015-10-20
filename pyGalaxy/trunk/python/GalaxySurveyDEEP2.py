@@ -61,7 +61,7 @@ class GalaxySurveyDEEP2:
             print a_band_fit
             a_flux = a_fluxn / a_band_fit
             print a_flux
-            self.telluric_A_band_fct = interp1d(a_lambda,a_flux)
+            self.telluric_A_band_fct = interp1d( n.hstack(([3000],a_lambda[minab:maxab],[10000])), n.hstack(([1.],a_flux[minab:maxab],[1.])) )
             if plots :
                 p.figure(1,(5,5))
                 p.plot(a_lambda,self.telluric_A_band[0].data,label='raw a Band data')
@@ -82,6 +82,7 @@ class GalaxySurveyDEEP2:
 
                 p.figure(1,(5,5))
                 p.plot(a_lambda,a_flux,label='final a Band')
+                p.plot(self.telluric_A_band_fct.x,self.telluric_A_band_fct.y,label='interpolation')
                 p.xlabel('wavelength')
                 p.ylabel('telluric band')
                 p.legend(loc=3)
@@ -108,7 +109,7 @@ class GalaxySurveyDEEP2:
             print b_band_fit
             b_flux = b_fluxn / b_band_fit
             print b_flux
-            self.telluric_B_band_fct = interp1d(b_lambda,b_flux)
+            self.telluric_B_band_fct = interp1d( n.hstack(([3000],b_lambda[bband_coverage],[10000])), n.hstack(([1.],b_flux[bband_coverage],[1.])) )
             if plots :
 
                 p.figure(1,(5,5))
@@ -130,6 +131,7 @@ class GalaxySurveyDEEP2:
 
                 p.figure(1,(5,5))
                 p.plot(b_lambda,b_flux,label='final b Band')
+                p.plot(self.telluric_B_band_fct.x,self.telluric_B_band_fct.y,label='interpolation')
                 p.xlabel('wavelength')
                 p.ylabel('telluric band')
                 p.legend(loc=3)

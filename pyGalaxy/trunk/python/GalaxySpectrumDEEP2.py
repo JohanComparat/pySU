@@ -112,8 +112,10 @@ class GalaxySpectrumDEEP2:
 
     def correct_telluric_abs(self):
         """ Future function to correct the observed spectra from tellurica absorption bands. Not yet implemented. """
-        
-        return 0.
+        correction = self.survey.telluric_A_band_fct(self.lambd)**(self.airmass**0.55) * self.survey.telluric_B_band_fct(self.lambd)**(self.airmass**0.55)
+        self.specTMP=self.specTMP/correction
+        self.specErrTMP=self.specErrTMP/correction
+        self.ivarTMP=self.ivarTMP*correction**2
 
     def fluxCal(self):
         """Performs the flux calibration of the spectrum by converting counts to flux units with an interpolation between the B and the I band borad band photometry."""
