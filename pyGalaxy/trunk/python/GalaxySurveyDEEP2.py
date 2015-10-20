@@ -52,7 +52,7 @@ class GalaxySurveyDEEP2:
             # fit a degree 3 polynomial to the band 
             a_coeff = n.polynomial.polynomial.polyfit( a_lambda, a_fluxn, deg = 2, w=1/errors)
             print a_coeff
-            aband_fit = n.polyval(a_lambda, a_coeff)
+            aband_fit = n.polynomial.polynomial.polyval(a_lambda, a_coeff)
             print aband_fit
             a_flux = a_fluxn / aband_fit
             print a_flux
