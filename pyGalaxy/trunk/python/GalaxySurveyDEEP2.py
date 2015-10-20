@@ -51,7 +51,7 @@ class GalaxySurveyDEEP2:
 			v0,v1 = n.loadtxt(join(self.deep2_calib_dir,"Iresponse.txt"), unpack = True, usecols = (0,6))
 			self.Iresponse = interp1d(v0,v1 )
 			self.fun = lambda x,a,b : a*x+b
-            
+
 		
 	def computeLineLuminosity(self,line,distanceCorrection):
 		""" computes the line luminosities for the line list given.
