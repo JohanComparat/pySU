@@ -72,7 +72,7 @@ class GalaxySurveyDEEP2:
 
             p.figure(1,(5,5))
             p.plot(a_lambda,a_fluxn,label='raw a Band data normed')
-            p.plot(a_lambda,a_band_fits,label='polynomial fit')
+            p.plot(a_lambda,a_band_fit,label='polynomial fit')
             p.xlabel('wavelength')
             p.ylabel('telluric band')
             p.legend()
