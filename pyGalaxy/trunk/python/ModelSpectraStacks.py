@@ -80,12 +80,12 @@ klHb=kl(Hb)
 
 H1=pn.RecAtom('H',1) # Hydrogen Balmer series
 
-bdc0_ref=H1.getEmissivity(1e4, 1e2, lev_i = 3, lev_j = 2)/H1.getEmissivity(1e4, 1e2, lev_i = 4, lev_j = 2)
-bdc1_ref=H1.getEmissivity(1e4, 1e2, lev_i = 5, lev_j = 2)/H1.getEmissivity(1e4, 1e2, lev_i = 4, lev_j = 2)
-bdc2_ref=H1.getEmissivity(1e4, 1e2, lev_i = 6, lev_j = 2)/H1.getEmissivity(1e4, 1e2, lev_i = 4, lev_j = 2)
-bdc3_ref=H1.getEmissivity(1e4, 1e2, lev_i = 7, lev_j = 2)/H1.getEmissivity(1e4, 1e2, lev_i = 4, lev_j = 2)
-bdc4_ref=H1.getEmissivity(1e4, 1e2, lev_i = 8, lev_j = 2)/H1.getEmissivity(1e4, 1e2, lev_i = 4, lev_j = 2)
-bdc5_ref=H1.getEmissivity(1e4, 1e2, lev_i = 9, lev_j = 2)/H1.getEmissivity(1e4, 1e2, lev_i = 4, lev_j = 2)
+bdc0_ref=H1.getEmissivity(1e4, 1e2, lev_i = 4, lev_j = 2) / H1.getEmissivity(1e4, 1e2, lev_i = 3, lev_j = 2)
+bdc1_ref=H1.getEmissivity(1e4, 1e2, lev_i = 4, lev_j = 2) / H1.getEmissivity(1e4, 1e2, lev_i = 5, lev_j = 2)
+bdc2_ref=H1.getEmissivity(1e4, 1e2, lev_i = 4, lev_j = 2) / H1.getEmissivity(1e4, 1e2, lev_i = 6, lev_j = 2)
+bdc3_ref=H1.getEmissivity(1e4, 1e2, lev_i = 4, lev_j = 2) / H1.getEmissivity(1e4, 1e2, lev_i = 7, lev_j = 2)
+bdc4_ref=H1.getEmissivity(1e4, 1e2, lev_i = 4, lev_j = 2) / H1.getEmissivity(1e4, 1e2, lev_i = 8, lev_j = 2)
+bdc5_ref=H1.getEmissivity(1e4, 1e2, lev_i = 4, lev_j = 2) / H1.getEmissivity(1e4, 1e2, lev_i = 9, lev_j = 2)
 
 bdc23_ref=H1.getEmissivity(1e4, 1e2, lev_i = 6, lev_j = 2)/H1.getEmissivity(1e4, 1e2, lev_i = 5, lev_j = 2)
 
@@ -287,11 +287,11 @@ class ModelSpectraStacks:
 		if self.hdR['H1_4341_flux_nc']>0 and self.hdR['H1_4862_flux_nc']>0 and self.hdR['H1_4341_fluxErr_nc']>0 and self.hdR['H1_4862_fluxErr_nc']>0 :
 			self.BDarray[0]=1
 			# Balmer decrement : 4862 / 4341
-			self.hdR["BD_4862_4341"]=self.hdR['H1_4341_flux_nc']/ self.hdR['H1_4862_flux_nc']
+			self.hdR['BD_4862_4341']=self.hdR['H1_4341_flux_nc']/ self.hdR['H1_4862_flux_nc']
 			bdc1ErrFrac = ( (self.hdR['H1_4862_fluxErr_nc']/ self.hdR['H1_4862_flux_nc'])**2 + (self.hdR['H1_4341_fluxErr_nc']/ self.hdR['H1_4341_flux_nc'])**2. ) **0.5
-			self.hdR["BD_4862_4341_err"]= self.hdR["BD_4862_4341"] * bdc1ErrFrac
+			self.hdR['BD_4862_4341_err']= self.hdR['BD_4862_4341'] * bdc1ErrFrac
 			# E(B-V) CORRection using 4862 / 4341
-			self.hdR['EBV_4862_4341'] = -5*n.log10(self.hdR["BD_4862_4341"] /bdc1_ref) / (2* (5.12 -4.6))
+			self.hdR['EBV_4862_4341'] = -5*n.log10(self.hdR['BD_4862_4341'] /bdc1_ref) / (2* (5.12 -4.6))
 			self.hdR['EBV_4862_4341_err']= -5 * bdc1ErrFrac/(2*(5.12-4.6))
 			# applied to emission lines using Calzetti's law
 			self.hdR['EBV_4862_4341_CORRO2']=10**(0.4 * self.hdR['EBV_4862_4341'] *klO2)
