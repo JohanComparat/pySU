@@ -22,7 +22,7 @@ class GalaxySpectrumDEEP2:
     :param catalog_entry: an entry of the deep2 catalog
     :param calibration: if the class is loaded with intention of flux calibrating the DEEP2 data.
     :param lineFits: if the class is loaded with intention of fitting line fluxes on the DEEP2 spectra."""
-    def __init__(self,catalog_entry,calibration=False,lineFits=True):
+    def __init__(self,catalog_entry,calibration=False,lineFits=True, survey = surveyClass):
         self.catalog_entry=catalog_entry
         self.mask=str(self.catalog_entry['MASK'])
         self.slit=self.catalog_entry['SLIT']
@@ -32,6 +32,7 @@ class GalaxySpectrumDEEP2:
         self.deep2_dir = join(self.database_dir,"DEEP2")
         self.deep2_catalog_dir = join(self.deep2_dir,"catalogs")
         self.deep2_spectra_dir = join(self.deep2_dir,"spectra")
+        self.survey = survey
 
         if calibration :
             self.path_to_spectrum = glob.glob(join(self.deep2_spectra_dir , self.mask +'/*/*' + self.objno+'*.fits'))
@@ -70,7 +71,7 @@ class GalaxySpectrumDEEP2:
 
         xravg = 8900
         yravg = 150
-        correctionavg = paramsEndr[0] + paramsEndr[1] * self.lambd
+        correctionavg = self.survey.paramsEndr[0] + self.survey.paramsEndr[1] * self.lambd
         self.xavg = (self.lambd - xravg)/yravg 
         ok1 =  (self.xavg > 0) & ( self.xavg < 1)
         self.cor2avg = correctionavg*self.xavg + 1*(1-self.xavg)
@@ -86,8 +87,8 @@ class GalaxySpectrumDEEP2:
 
         #corr_b = params[num,0] + params[num,1]*self.lambd[self.left] + params[num,2]*self.lambd[self.left]**2
         #corr_r = params[num+4,0] + params[num+4,1]*self.lambd[self.right] + params[num+4,2]*self.lambd[self.right]**2
-        corr_b = 1./( params.T[self.chipNO][0] + params.T[self.chipNO][1] * self.lambd[self.left] + params.T[self.chipNO][2]*self.lambd[self.left]**2 )
-        corr_r = 1./( params.T[self.chipNO+4][0] + params.T[self.chipNO+4][1]* self.lambd[self.right] + params.T[self.chipNO+4][2] *self.lambd[self.right]**2 )
+        corr_b = 1./( self.survey.params.T[self.chipNO][0] + self.survey.params.T[self.chipNO][1] * self.lambd[self.left] + self.survey.params.T[self.chipNO][2]*self.lambd[self.left]**2 )
+        corr_r = 1./( self.survey.params.T[self.chipNO+4][0] + self.survey.params.T[self.chipNO+4][1]* self.lambd[self.right] + self.survey.params.T[self.chipNO+4][2] *self.lambd[self.right]**2 )
         # print corr_b, corr_r, self.cor2avg
         # print "spectrum",self.spec
 
@@ -104,9 +105,9 @@ class GalaxySpectrumDEEP2:
         self.ivarTMP[self.left]=self.ivar[self.left]/(corr_b*corr_b)
         self.ivarTMP[self.right]=self.ivar[self.right]/(corr_r*corr_r* self.cor2avg[self.right]*self.cor2avg[self.right] )
 
-        self.specTMP=self.specTMP/throughput.y[self.pixSampled]
-        self.specErrTMP=self.specErrTMP/throughput.y[self.pixSampled]
-        self.ivarTMP=self.ivarTMP*throughput.y[self.pixSampled]**2
+        self.specTMP=self.specTMP/self.survey.throughput.y[self.pixSampled]
+        self.specErrTMP=self.specErrTMP/self.survey.throughput.y[self.pixSampled]
+        self.ivarTMP=self.ivarTMP*self.survey.throughput.y[self.pixSampled]**2
 
     def correct_telluric_abs(self):
         """ Future function to correct the observed spectra from tellurica absorption bands. Not yet implemented. """
@@ -115,8 +116,8 @@ class GalaxySpectrumDEEP2:
 
     def fluxCal(self):
         """Performs the flux calibration of the spectrum by converting counts to flux units with an interpolation between the B and the I band borad band photometry."""
-        countr = n.sum(self.specTMP*Rresponse(self.lambd))/ n.sum(Rresponse( self.lambd))
-        counti = n.sum(self.specTMP*Iresponse(self.lambd))/n.sum( Iresponse( self.lambd))
+        countr = n.sum(self.specTMP*self.survey.Rresponse(self.lambd))/ n.sum(self.survey.Rresponse( self.lambd))
+        counti = n.sum(self.specTMP*self.survey.Iresponse(self.lambd))/n.sum( self.survey.Iresponse( self.lambd))
         # (in erg/s/cm^2/Hz)
         fluxr = 10**((self.catalog_entry['MAGR'] + 48.6)/(-2.5)) 
         fluxi = 10**((self.catalog_entry['MAGI'] + 48.6)/(-2.5))
