@@ -20,9 +20,10 @@ class GalaxySpectrumDEEP2:
     Two modes of operation : flux calibration or line fitting
             
     :param catalog_entry: an entry of the deep2 catalog
+    :param survey: survey python class
     :param calibration: if the class is loaded with intention of flux calibrating the DEEP2 data.
     :param lineFits: if the class is loaded with intention of fitting line fluxes on the DEEP2 spectra."""
-    def __init__(self,catalog_entry,calibration=False,lineFits=True, survey = surveyClass):
+    def __init__(self,catalog_entry, survey ,calibration=False,lineFits=True, ):
         self.catalog_entry=catalog_entry
         self.mask=str(self.catalog_entry['MASK'])
         self.slit=self.catalog_entry['SLIT']

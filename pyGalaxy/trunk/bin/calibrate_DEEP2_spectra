@@ -12,9 +12,13 @@ gs=GalaxySurveyDEEP2(redshift_catalog="zcat.deep2.dr4.v2.fits", calibration=True
 
 # loops over elements of the catalog looking for the spectra and flux calibrates them
 
+ii=240
+catalog_entry = gs.catalog[ii]
+spec1d = GalaxySpectrumDEEP2(catalog_entry, gs, calibration=True,lineFits=False)
+
 for ii in range(len(gs.catalog)):
 	catalog_entry = gs.catalog[ii]
-	spec1d = GalaxySpectrumDEEP2(catalog_entry,calibration=True,lineFits=False)
+	spec1d = GalaxySpectrumDEEP2(catalog_entry,calibration=True,lineFits=False, survey = gs)
 	if len(spec1d.path_to_spectrum)==1 and spec1d.catalog_entry['ZBEST']>=0 and spec1d.catalog_entry ['ZQUALITY']>=1 :
 		print spec1d.path_to_spectrum
 		spec1d.openObservedSpectrum()
@@ -24,7 +28,7 @@ for ii in range(len(gs.catalog)):
 				print "already FC:",spec1d.path_to_spectrum[0]
 				continue
 
-			print spec1d.slit, spec1d.mask, spec1d.ID,time.time()
+			print spec1d.slit, spec1d.mask, spec1d.objno,time.time()
 			spec1d.correctQE()
 			fc=spec1d.fluxCal()
 			if fc=="bad":
