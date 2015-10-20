@@ -4,10 +4,10 @@
 This script computes the line luminosities from of the DEEP2 survey
 """
 from GalaxySurveyDEEP2 import *
-survey = GalaxySurveyDEEP2(redshift_catalog="zcat.deep2.dr4.v2.linesFitted.fits", calibration = False)
+survey = GalaxySurveyDEEP2(redshift_catalog="zcat.deep2.dr4.v2.linesFittedTC.fits", calibration = False)
 
 # global parameters to add to the survey class
-survey.path_to_output_catalog  =  survey.deep2_catalog_dir+ "zcat.deep2.dr4.v2.LFcatalog.fits"
+survey.path_to_output_catalog  =  survey.deep2_catalog_dir+ "zcat.deep2.dr4.v2.LFcatalogTC.fits"
 survey.Ngalaxies=len(survey.catalog)
 
 new_columns = survey.catalog.columns

@@ -105,7 +105,7 @@ for ii in range(len(zsDEEP2min)):
 	for line in lineSet :
 		print "---------------------------------------------------"
 		print line, zmin, zmax
-		lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "DEEP2", redshift_catalog = "zcat.deep2.dr4.v2.LFcatalog.fits", luminosityBins = n.logspace(38,45,25), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions/" , zmin = zmin, zmax = zmax)
+		lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "DEEP2", redshift_catalog = "zcat.deep2.dr4.v2.LFcatalogTC.fits", luminosityBins = n.logspace(38,45,25), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions/" , zmin = zmin, zmax = zmax)
 		lf.setRedshiftArray( redshiftColumn='ZBEST' )
 		lf.setRedshiftSelection( redshiftQualityColumn='ZQUALITY', lowerBound=0.9, upperBound=7.)
 		if zmin < 0.7:
