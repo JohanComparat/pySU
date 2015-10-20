@@ -39,7 +39,7 @@ class GalaxySpectrumDEEP2:
             self.path_to_spectrum = glob.glob(join(self.deep2_spectra_dir , self.mask +'/*/*' + self.objno+'*.fits'))
 
         if lineFits :
-            self.path_to_spectrum = glob.glob(join(self.deep2_spectra_dir , self.mask +'/*/*' + self.objno+'*_fc.dat'))
+            self.path_to_spectrum = glob.glob(join(self.deep2_spectra_dir , self.mask +'/*/*' + self.objno+'*_fc_tc.dat'))
 
     def openObservedSpectrum(self):
         """Loads the observed spectrum in counts."""
