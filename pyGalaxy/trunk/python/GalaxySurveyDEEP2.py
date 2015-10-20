@@ -48,19 +48,14 @@ class GalaxySurveyDEEP2:
             self.telluric_A_band = fits.open(join(self.deep2_calib_dir,"aband.fits"))
             a_lambda = self.telluric_A_band[0].header['CRVAL1']+n.arange(self.telluric_A_band[0].header['NAXIS1'])*self.telluric_A_band[0].header['CDELT1']
             a_fluxn = self.telluric_A_band[0].data / ( ( n.sum(self.telluric_A_band[0].data[1400:1499])+n.sum(self.telluric_A_band[0].data[2500:2599]) )/200.)
-            print a_lambda, a_fluxn
             minab=1510
             maxab=2110
             errors=n.ones_like(a_lambda)
             errors[minab:maxab]=n.ones_like(a_lambda[minab:maxab])*1e20
-            print errors
             # fit a degree 3 polynomial to the band 
             a_coeff = n.polynomial.polynomial.polyfit( a_lambda, a_fluxn, deg = 1, w=1/errors)
-            print a_coeff
             a_band_fit = n.polynomial.polynomial.polyval(a_lambda, a_coeff)
-            print a_band_fit
             a_flux = a_fluxn / a_band_fit
-            print a_flux
             self.telluric_A_band_fct = interp1d( n.hstack(([3000],a_lambda[minab:maxab],[10000])), n.hstack(([1.],a_flux[minab:maxab],[1.])) )
             if plots :
                 p.figure(1,(5,5))
@@ -94,21 +89,15 @@ class GalaxySurveyDEEP2:
             band1=(b_lambda<=6840)&(b_lambda>6840-25)
             band2=(b_lambda<=6960+25)&(b_lambda>6960)
             b_fluxn = self.telluric_B_band[0].data / ( ( n.sum(self.telluric_B_band[0].data[band1])+n.sum(self.telluric_B_band[0].data[band2]) )/200.)
-            print b_lambda, b_fluxn
-            
             minab= (b_lambda>6650) # avoid the false feature (absorption spike) at 6556 A.
             bband_coverage = (b_lambda<=6960) & (b_lambda>6840) # the B band coverage
             lambda_for_fit = (minab) & (bband_coverage == False)
             errors=n.ones_like(b_lambda)
             errors[(lambda_for_fit == False)]=n.ones_like(b_lambda[(lambda_for_fit == False)])*1e20
-            print errors
             # fit a degree 3 polynomial to the band 
             b_coeff = n.polynomial.polynomial.polyfit( b_lambda, b_fluxn, deg = 1, w=1/errors)
-            print b_coeff
             b_band_fit = n.polynomial.polynomial.polyval(b_lambda, b_coeff)
-            print b_band_fit
             b_flux = b_fluxn / b_band_fit
-            print b_flux
             self.telluric_B_band_fct = interp1d( n.hstack(([3000],b_lambda[bband_coverage],[10000])), n.hstack(([1.],b_flux[bband_coverage],[1.])) )
             if plots :
 

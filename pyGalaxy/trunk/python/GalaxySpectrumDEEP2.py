@@ -126,7 +126,6 @@ class GalaxySpectrumDEEP2:
         fluxi = 10**((self.catalog_entry['MAGI'] + 48.6)/(-2.5))
         fpcr = fluxr / countr
         fpci = fluxi / counti
-        print fpcr, fpci
         effr = 6599.0889
         effi = 8135.4026
         x = [effr, effi]
@@ -153,7 +152,7 @@ class GalaxySpectrumDEEP2:
 
     def writeFCspec(self):
         """Writes the flux-calibrated spectrum"""
-        ff=open(self.name[:-5]+"_fc.dat",'w')
+        ff=open(self.name[:-5]+"_fc_tc.dat",'w')
         n.savetxt(ff,n.transpose([self.lambd,self.fluxl,self.fluxlErr]))
         ff.close()
 
