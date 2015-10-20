@@ -14,7 +14,7 @@ survey.zmax = 1.5 # maximum redshift considered
 survey.WLmin = 6500. # lambda min
 survey.WLmax = 9100. # lambda max of the spectrum
 survey.resolution = 6000. # resolution of the Keck deimos setting used
-survey.path_to_output_catalog  =  survey.deep2_catalog_dir+"zcat.deep2.dr4.v2.linesFittedTC.fits"
+survey.path_to_output_catalog  =  survey.deep2_catalog_dir+"/zcat.deep2.dr4.v2.linesFittedTC.fits"
 survey.Ngalaxies=len(survey.catalog)
 
 # line list to be fitted
