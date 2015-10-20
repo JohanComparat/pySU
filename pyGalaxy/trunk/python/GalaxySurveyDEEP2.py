@@ -27,7 +27,7 @@ class GalaxySurveyDEEP2:
 
     :param redshift_catalog: name of the DEEP2 redshift catalog (path to the fits file)
     :param calibration: if the class is loaded with intention of flux calibrating the DEEP2 data (boolean)"""
-    def __init__(self,redshift_catalog="zcat.deep2.dr4.v2.fits", calibration=True):
+    def __init__(self,redshift_catalog="zcat.deep2.dr4.v2.fits", calibration=True, plots=True):
         self.redshift_catalog = redshift_catalog
         self.database_dir = os.environ['DATA_DIR']
         self.deep2_dir = join(self.database_dir,"DEEP2")
@@ -36,6 +36,7 @@ class GalaxySurveyDEEP2:
         hd = fits.open(join(self.deep2_catalog_dir,self.redshift_catalog))
         self.catalog = hd[1].data
         hd.close()
+        self.plots = plots
 
         if calibration==True :
             self.deep2_calib_dir = join(os.environ['PYSU_DIR'],"pyGalaxy","trunk","data","Deep2_calib_files")
@@ -51,7 +52,7 @@ class GalaxySurveyDEEP2:
             minab=1510
             maxab=2110
             errors=n.ones_like(a_lambda)
-            errors[minab:maxab]=n.ones_like(a_lambda[minab:maxab])*1e10
+            errors[minab:maxab]=n.ones_like(a_lambda[minab:maxab])*1e20
             print errors
             # fit a degree 3 polynomial to the band 
             a_coeff = n.polynomial.polynomial.polyfit( a_lambda, a_fluxn, deg = 1, w=1/errors)
@@ -61,31 +62,31 @@ class GalaxySurveyDEEP2:
             a_flux = a_fluxn / a_band_fit
             print a_flux
             self.telluric_A_band_fct = interp1d(a_lambda,a_flux)
+            if plots :
+                p.figure(1,(5,5))
+                p.plot(a_lambda,self.telluric_A_band[0].data,label='raw a Band data')
+                p.xlabel('wavelength')
+                p.ylabel('telluric band')
+                p.legend(loc=3)
+                p.savefig(join(self.deep2_spectra_dir,"plots","a_band.pdf"))
+                p.clf()
 
-            p.figure(1,(5,5))
-            p.plot(a_lambda,self.telluric_A_band[0].data,label='raw a Band data')
-            p.xlabel('wavelength')
-            p.ylabel('telluric band')
-            p.legend(loc=3)
-            p.savefig(join(self.deep2_spectra_dir,"plots","a_band.pdf"))
-            p.clf()
+                p.figure(1,(5,5))
+                p.plot(a_lambda,a_fluxn,label='raw a Band data normed')
+                p.plot(a_lambda,a_band_fit,label='polynomial fit')
+                p.xlabel('wavelength')
+                p.ylabel('telluric band')
+                p.legend(loc=3)
+                p.savefig(join(self.deep2_spectra_dir,"plots","a_band_normed.pdf"))
+                p.clf()
 
-            p.figure(1,(5,5))
-            p.plot(a_lambda,a_fluxn,label='raw a Band data normed')
-            p.plot(a_lambda,a_band_fit,label='polynomial fit')
-            p.xlabel('wavelength')
-            p.ylabel('telluric band')
-            p.legend(loc=3)
-            p.savefig(join(self.deep2_spectra_dir,"plots","a_band_normed.pdf"))
-            p.clf()
-
-            p.figure(1,(5,5))
-            p.plot(a_lambda,a_flux,label='final a Band')
-            p.xlabel('wavelength')
-            p.ylabel('telluric band')
-            p.legend(loc=3)
-            p.savefig(join(self.deep2_spectra_dir,"plots","a_band_final.pdf"))
-            p.clf()
+                p.figure(1,(5,5))
+                p.plot(a_lambda,a_flux,label='final a Band')
+                p.xlabel('wavelength')
+                p.ylabel('telluric band')
+                p.legend(loc=3)
+                p.savefig(join(self.deep2_spectra_dir,"plots","a_band_final.pdf"))
+                p.clf()
 
             self.telluric_B_band = fits.open(join(self.deep2_calib_dir,"bband.fits"))
             b_lambda = self.telluric_B_band[0].header['CRVAL1']+n.arange(self.telluric_B_band[0].header['NAXIS1'])*self.telluric_B_band[0].header['CDELT1']
@@ -94,10 +95,11 @@ class GalaxySurveyDEEP2:
             b_fluxn = self.telluric_B_band[0].data / ( ( n.sum(self.telluric_B_band[0].data[band1])+n.sum(self.telluric_B_band[0].data[band2]) )/200.)
             print b_lambda, b_fluxn
             
-            minab=1510
-            maxab=2110
+            minab= (b_lambda>6650) # avoid the false feature (absorption spike) at 6556 A.
+            bband_coverage = (b_lambda<=6960) & (b_lambda>6840) # the B band coverage
+            lambda_for_fit = (minab) & (bband_coverage == False)
             errors=n.ones_like(b_lambda)
-            errors[minab:maxab]=n.ones_like(b_lambda[minab:maxab])*1e10
+            errors[(lambda_for_fit == False)]=n.ones_like(b_lambda[(lambda_for_fit == False)])*1e20
             print errors
             # fit a degree 3 polynomial to the band 
             b_coeff = n.polynomial.polynomial.polyfit( b_lambda, b_fluxn, deg = 1, w=1/errors)
@@ -107,31 +109,32 @@ class GalaxySurveyDEEP2:
             b_flux = b_fluxn / b_band_fit
             print b_flux
             self.telluric_B_band_fct = interp1d(b_lambda,b_flux)
+            if plots :
 
-            p.figure(1,(5,5))
-            p.plot(b_lambda,self.telluric_B_band[0].data,label='raw a Band data')
-            p.xlabel('wavelength')
-            p.ylabel('telluric band')
-            p.legend(loc=3)
-            p.savefig(join(self.deep2_spectra_dir,"plots","b_band.pdf"))
-            p.clf()
+                p.figure(1,(5,5))
+                p.plot(b_lambda,self.telluric_B_band[0].data,label='raw b Band data')
+                p.xlabel('wavelength')
+                p.ylabel('telluric band')
+                p.legend(loc=3)
+                p.savefig(join(self.deep2_spectra_dir,"plots","b_band.pdf"))
+                p.clf()
 
-            p.figure(1,(5,5))
-            p.plot(b_lambda,b_fluxn,label='raw a Band data normed')
-            p.plot(b_lambda,b_band_fit,label='polynomial fit')
-            p.xlabel('wavelength')
-            p.ylabel('telluric band')
-            p.legend(loc=3)
-            p.savefig(join(self.deep2_spectra_dir,"plots","b_band_normed.pdf"))
-            p.clf()
+                p.figure(1,(5,5))
+                p.plot(b_lambda,b_fluxn,label='raw b Band data normed')
+                p.plot(b_lambda,b_band_fit,label='polynomial fit')
+                p.xlabel('wavelength')
+                p.ylabel('telluric band')
+                p.legend(loc=3)
+                p.savefig(join(self.deep2_spectra_dir,"plots","b_band_normed.pdf"))
+                p.clf()
 
-            p.figure(1,(5,5))
-            p.plot(b_lambda,b_flux,label='final a Band')
-            p.xlabel('wavelength')
-            p.ylabel('telluric band')
-            p.legend(loc=3)
-            p.savefig(join(self.deep2_spectra_dir,"plots","b_band_final.pdf"))
-            p.clf()
+                p.figure(1,(5,5))
+                p.plot(b_lambda,b_flux,label='final b Band')
+                p.xlabel('wavelength')
+                p.ylabel('telluric band')
+                p.legend(loc=3)
+                p.savefig(join(self.deep2_spectra_dir,"plots","b_band_final.pdf"))
+                p.clf()
 
 
             v0,v1 = n.loadtxt(join(self.deep2_calib_dir ,"Bresponse.txt"), unpack = True, usecols = (0,6))
