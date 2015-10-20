@@ -133,7 +133,7 @@ class GalaxySpectrumDEEP2:
         y = [fpcr, fpci]
         # print x, y
         if y[0]>0 and y[1]>0:
-            pfits = curve_fit(fun,n.log(x),n.log(y),p0=(-0.01,-68))
+            pfits = curve_fit(self.survey.fun,n.log(x),n.log(y),p0=(-0.01,-68))
             fluxn_corr = n.e**( pfits[0][1] + n.log(self.lambd)*pfits[0][0] )
         elif y[0]>0 and y[1]<0:
             fluxn_corr=fpcr
