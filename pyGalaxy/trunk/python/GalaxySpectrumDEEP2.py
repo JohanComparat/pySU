@@ -130,7 +130,7 @@ class GalaxySpectrumDEEP2:
         effr = 6599.0889
         effi = 8135.4026
         x = [effr, effi]
-        y = [fpcr[0], fpci[0]]
+        y = [fpcr, fpci]
         # print x, y
         if y[0]>0 and y[1]>0:
             pfits = curve_fit(fun,n.log(x),n.log(y),p0=(-0.01,-68))
