@@ -3,7 +3,7 @@
 """
 This script performs the flux calibration of the DEEP2 spectra
 """
-
+import time
 from GalaxySpectrumDEEP2 import *
 from GalaxySurveyDEEP2 import *
 
