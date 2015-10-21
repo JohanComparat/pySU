@@ -24,7 +24,7 @@ class GalaxySpectrumDEEP2:
     :param survey: survey python class
     :param calibration: if the class is loaded with intention of flux calibrating the DEEP2 data.
     :param lineFits: if the class is loaded with intention of fitting line fluxes on the DEEP2 spectra."""
-    def __init__(self,catalog_entry, survey=GalaxySurveyDEEP2(redshift_catalog="zcat.deep2.dr4.v2.fits",calibration = False) ,calibration=False,lineFits=True, ):
+    def __init__(self,catalog_entry, survey=GalaxySurveyDEEP2(redshift_catalog="zcat.deep2.dr4.v2.fits",calibration = False) ,calibration=False,lineFits=True ):
         self.catalog_entry=catalog_entry
         self.mask=str(self.catalog_entry['MASK'])
         self.slit=self.catalog_entry['SLIT']
@@ -42,6 +42,9 @@ class GalaxySpectrumDEEP2:
         if lineFits :
             self.path_to_spectrum = glob.glob(join(self.deep2_spectra_dir , self.mask +'/*/*' + self.objno+'*_fc_tc.dat'))
 
+        print "path to spectrum", self.path_to_spectrum
+
+        
     def openObservedSpectrum(self):
         """Loads the observed spectrum in counts."""
         hdS=fits.open(self.path_to_spectrum[0])
