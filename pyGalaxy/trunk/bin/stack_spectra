@@ -12,9 +12,14 @@ tobestacked = glob.glob( "/home/comparat/database/DEEP2/products/emissionLineLum
 for el in tobestacked:
 	print "--------------------------------------"
 	print el, glob.glob(el[:-5]+"*stack*"),len(n.array(glob.glob(el[:-5]+"*stack*")))
-	print el, "stacks !"
-	st=SpectraStacking(el, Nspec = 400)
-	st.stackSpectra()
+	if el.find('stack') > 0 :
+		continue
+	elif len(n.array(glob.glob(el[:-5]+"*stack*"))) > 0:
+		continue
+	else :
+		print el, "stacks !"
+		st=SpectraStacking(el, Nspec = 400)
+		st.stackSpectra()
 
 
 tobestacked = glob.glob( "/home/comparat/database/VVDS/products/emissionLineLuminosityFunctions/*/*.fits")
