@@ -33,7 +33,7 @@ import GalaxySpectrumDEEP2 as gsp
 output = n.ones_like(n.empty([survey.Ngalaxies,195]))*lfit.dV
 for jj in range(10):#survey.Ngalaxies):
 	catalog_entry = survey.catalog[jj]
-	spectrum = gsp.GalaxySpectrumDEEP2(catalog_entry,gs,calibration = False,lineFits = True)
+	spectrum = gsp.GalaxySpectrumDEEP2(catalog_entry,survey,calibration = False,lineFits = True)
 
 	if len(spectrum.path_to_spectrum)==1 and catalog_entry['ZBEST']>survey.zmin and catalog_entry['ZBEST']<survey.zmax and catalog_entry['ZQUALITY']>1 :
 		print catalog_entry
