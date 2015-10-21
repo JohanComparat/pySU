@@ -29,7 +29,6 @@ sys.exit()
 tobestacked = glob.glob( "/home/comparat/database/VIPERS/products/emissionLineLuminosityFunctions/*/*.fits")
 
 for el in tobestacked:
-	else :
 		st=SpectraStacking(el)
 		st.stackSpectra()
 
