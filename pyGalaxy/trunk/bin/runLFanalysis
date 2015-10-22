@@ -21,7 +21,8 @@ cd $PYSU_DIR/pyGalaxies/trunk/bin
 ./plotLFs
 
 ./stack_spectra
-./fit_lines_stacks
+# fit firefly continuum models
+# ./fit_lines_stacks # with continuum sutracted
 ./model_stacked_spectra
 ./model_stacked_spectra_VVDS
 #./model_stacked_spectra_plotOnly

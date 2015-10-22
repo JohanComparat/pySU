@@ -1,8 +1,10 @@
 #! /usr/bin/env python
+import os
+from os.path import join
 
 from ModelSpectraStacks import *
 import glob
-stack_files=n.hstack(( n.array(glob.glob( "/home/comparat/database/LFstacks/*DEEP2*linesFittedfireflyFitsMarastonUVext.fits")), n.array(glob.glob( "/home/comparat/database/LFstacks/*DEEP2*linesFittedfireflyFitsMilesUVextended.fits")) ))
+stack_files=n.array(glob.glob( join( os.environ['DATA_DIR'], "*/products/emissionLineLuminosityFunctions/??_????/*-SPM-*.fits" ) ) )
 
 stack_files.sort()
 

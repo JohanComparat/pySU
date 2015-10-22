@@ -95,6 +95,11 @@ class ModelSpectraStacks:
 	This class fits the emission lines on the continuum-subtracted stack.
 
 	:param stack_file: fits file generated with a LF in a luminosity bin.
+	:param cosmo: cosmology class from astropy
+	:param firefly_min_wavelength: minimum wavelength considered by firefly (default : 1000) 
+	:param firefly_max_wavelength: minimum wavelength considered by firefly (default : 7500)
+	:param dV: default value that hold the place (default : -9999.99) 
+	:param N_spectra_limitFraction: If the stack was made with N spectra. N_spectra_limitFraction selects the points that have were computed using more thant N_spectra_limitFraction * N spectra. (default : 0.8)
 	"""
 	def __init__(self, stack_file, cosmo=cosmo, firefly_min_wavelength= 1000., firefly_max_wavelength=7500., dV=-9999.99, N_spectra_limitFraction=0.8):
 		self.stack_file = stack_file
@@ -130,7 +135,7 @@ class ModelSpectraStacks:
 
 	def interpolate_stack(self):
 		"""
-		Loads the stack and divides it in three parts to be compared to the model.
+		Divides the measured stack in overlapping and non-overlapping parts with the model.
 		"""
 		self.stack=interp1d(self.wl,self.fl)
 		self.stackErr=interp1d(self.wl,self.flErr)
@@ -158,7 +163,7 @@ class ModelSpectraStacks:
 
 	def interpolate_model(self):
 		"""
-		interpolates the model to an array with the same coverage as the stack.
+		Interpolates the model to an array with the same coverage as the stack.
 		"""
 		# overlap region with stack
 		self.mdOK =(self.wlModel>n.min(self.wl))&(self.wlModel<n.max(self.wl)) 
@@ -169,7 +174,7 @@ class ModelSpectraStacks:
 
 		# CORRection model => stack
 		CORRection=n.sum((self.wl[self.stOpt][1:]-self.wl[self.stOpt][:-1])* self.fl[self.stOpt][1:]) / n.sum((self.wlModel[ self.mdOK ][1:]-self.wlModel[ self.mdOK ][:-1])*   self.flModel [ self.mdOK ][1:])
-		print "CORRection", CORRection
+		print "Correction", CORRection
 
 		if self.side=='red':
 			self.model=interp1d(n.hstack((self.wlModel[ self.mdOK ],n.arange(self.wlModel[ self.mdOK ].max()+0.5, stack.x.max(), 0.5))), n.hstack((  self.flModel [ self.mdOK ]*CORRection, n.ones_like(n.arange( self.wlModel[ self.mdOK ].max() + 0.5, stack.x.max(), 0.5))*contRed )) )
@@ -188,7 +193,7 @@ class ModelSpectraStacks:
 
 	def subtract_continuum_model(self):
 		"""
-		creates the continuum substracted spectrum
+		Creates the continuum substracted spectrum: the 'line' spectrum.
 		"""
 		self.interpolate_stack()
 		self.interpolate_model()
@@ -200,7 +205,7 @@ class ModelSpectraStacks:
 
 	def fit_lines_to_lineSpectrum(self):
 		"""
-		Fits the emission lines in the line spectrum.
+		Fits the emission lines on the line spectrum.
 		"""
 		# interpolates the mean spectra.
 		if self.stack_file.find('VVDS')>0 or self.stack_file.find('VIPERS')>0 :
@@ -266,7 +271,7 @@ class ModelSpectraStacks:
 
 	def compute_derived_quantities(self):
 		"""
-		Computes the different line ratios and converts to extinction.
+		Computes the different line ratios and converts to extinction :
 		 * Balmer decrement and E(B-V) CORRection using 4862 / 4341
 		 * Balmer decrement and E(B-V) CORRection using 4862 / 4102
 		 * Balmer decrement and E(B-V) CORRection using 4341 / 4102
@@ -472,7 +477,7 @@ class ModelSpectraStacks:
 
 	def save_spectrum(self):
 		"""
-		Saves the stack spectrum and the model plus derived quantities.
+		Saves the stack spectrum, the model and derived quantities in a single fits file with different hdus.
 		"""
 		wavelength = fits.Column(name="wavelength",format="D", unit="Angstorm", array= 			self.wlLineSpectrum)
 		flux = fits.Column(name="flux",format="D", unit="Angstorm", array= 			self.flLineSpectrum)
@@ -489,7 +494,7 @@ class ModelSpectraStacks:
 
 	def plot_fit(self):
 		"""
-		plots the fit"""
+		Plots the fit."""
 
 		age ='age = ' +  str(n.round( 10**self.hdu2.header['light_age'] ,3))+ '+('+ str(n.round( 10**self.hdu2.header['light_age_up']-10**self.hdu2.header['light_age'] ,3)) +')-('+str(n.round( 10**self.hdu2.header['light_age']-10**self.hdu2.header['light_age_low'] ,3))+') Gyr'
 
