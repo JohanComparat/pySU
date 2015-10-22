@@ -15,7 +15,7 @@ from scipy.interpolate import interp1d
 import glob
 
 
-stL=n.array(glob.glob( join( os.environ['DATA_DIR'], "*/products/emissionLineLuminosityFunctions/O2_????/*-modeled.fits" ) ) )
+stL=n.array(glob.glob( join( os.environ['DATA_DIR'], "*/products/emissionLineLuminosityFunctions/??_????/*-modeled.fits" ) ) )
 
 print stL
 
