@@ -101,8 +101,13 @@ class ModelSpectraStacks:
 	:param dV: default value that hold the place (default : -9999.99) 
 	:param N_spectra_limitFraction: If the stack was made with N spectra. N_spectra_limitFraction selects the points that have were computed using more thant N_spectra_limitFraction * N spectra. (default : 0.8)
 	"""
-	def __init__(self, stack_file, cosmo=cosmo, firefly_min_wavelength= 1000., firefly_max_wavelength=7500., dV=-9999.99, N_spectra_limitFraction=0.8):
+	def __init__(self, stack_file, mod="MILES" cosmo=cosmo, firefly_min_wavelength= 1000., firefly_max_wavelength=7500., dV=-9999.99, N_spectra_limitFraction=0.8):
 		self.stack_file = stack_file
+		if mode=="MILES":
+			self.stack_model_file = self.stack_file[:-5]+"-SPM-MILES.fits"
+		if mode=="STELIB":
+			self.stack_model_file = self.stack_file[:-5]+"-SPM-STELIB.fits"
+
 		self.cosmo = cosmo
 		self.firefly_max_wavelength	= firefly_max_wavelength
 		self.firefly_min_wavelength	= firefly_min_wavelength
@@ -116,7 +121,6 @@ class ModelSpectraStacks:
 		hdus = fits.open(self.stack_file)
 		self.hdR = hdus[0].header
 		self.hdu1 = hdus[1] # .data
-		self.hdu2 = hdus[2] # .data
 		# loads the data :
 		wlA,flA,flErrA = self.hdu1.data['wavelength'], self.hdu1.data['meanWeightedStack'], self.hdu1.data['jackknifStackErrors']
 		self.selection = (flA>0) & (self.hdu1.data['NspectraPerPixel']  > float( self.stack_file.split('_')[-5]) * self.N_spectra_limitFraction )
@@ -124,6 +128,8 @@ class ModelSpectraStacks:
 		self.stack=interp1d(self.wl,self.fl)
 		self.stackErr=interp1d(self.wl,self.flErr)
 		# loads model :
+		hdus = fits.open(self.stack_model_file)
+		self.hdu2 = hdus[1] # .data
 		self.wlModel,self.flModel = self.hdu2.data['wavelength'], self.hdu2.data['firefly_model']*10**(-17)
 		self.model=interp1d(n.hstack((self.wlModel,[n.max(self.wlModel)+10,11000])), n.hstack(( self.flModel, [n.median(self.flModel[:-20]),n.median(self.flModel[:-20])] )) )
 		# wavelength range common to the stack and the model :

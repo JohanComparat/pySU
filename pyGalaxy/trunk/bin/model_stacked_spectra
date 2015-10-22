@@ -4,7 +4,7 @@ from os.path import join
 
 from ModelSpectraStacks import *
 import glob
-stack_files=n.array(glob.glob( join( os.environ['DATA_DIR'], "*/products/emissionLineLuminosityFunctions/??_????/*-SPM-*.fits" ) ) )
+stack_files=n.array(glob.glob( join( os.environ['DATA_DIR'], "*/products/emissionLineLuminosityFunctions/??_????/*stack*e+??.fits" ) ) )
 
 stack_files.sort()
 
@@ -16,7 +16,7 @@ for file in stack_files:
 	#	print( file, "out" )
 	#	continue
     #
-	mm=ModelSpectraStacks(file)
+	mm=ModelSpectraStacks(file,mod="MILES")
 	#mm.plot_fit()
 	mm.fit_lines_to_lineSpectrum()
 	mm.compute_derived_quantities()
