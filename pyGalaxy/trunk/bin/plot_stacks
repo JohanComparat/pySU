@@ -15,8 +15,9 @@ from scipy.interpolate import interp1d
 import glob
 
 
-stL=n.array(glob.glob( join( os.environ['DATA_DIR'], "*/products/emissionLineLuminosityFunctions/??_????/*-modeled.fits" ) ) )
+stL=n.array(glob.glob( join( os.environ['DATA_DIR'], "*/products/emissionLineLuminosityFunctions/O2_????/*-modeled.fits" ) ) )
 
+print stL
 
 def plotStack( modeledStackFile ):
     hdus = fits.open(modeledStackFile )
@@ -37,7 +38,7 @@ def plotStack( modeledStackFile ):
     age = n.round( n.log10( 10**( hdus[2].header['MASS_AGE'] )*10**9 ), 3)
     hdus[2].header['stellar_mass']
     p.figure(1,(12,4))
-    p.axes([0.1,0.2,0.9,0.75])
+    p.axes([0.1,0.2,0.85,0.75])
     p.errorbar(wl,flObs,yerr = flObsErr,label= str(Lmin) +"< log(L"+line+")<"+ str(Lmax),linewidth=1)
     p.plot(wl_fir, fl_fir,label = 'log(age)='+ str(age)+ ', log(M*)='+ str(Ms))
     p.xlabel('wavelength [A]')
@@ -47,7 +48,7 @@ def plotStack( modeledStackFile ):
     p.savefig(modeledStackFile[:-5] + "-all.pdf")
     p.clf()
     p.figure(2,(12,4))
-    p.axes([0.1,0.2,0.9,0.75])
+    p.axes([0.1,0.2,0.85,0.75])
     p.errorbar(wl,flObs,yerr = flObsErr,label= str(Lmin) +"< log(L"+line+")<"+ str(Lmax),linewidth=1)
     p.plot(wl_fir, fl_fir,label = 'log(age)='+ str(age)+ ', log(M*)='+ str(Ms))
     p.xlabel('wavelength [A]')
@@ -58,7 +59,7 @@ def plotStack( modeledStackFile ):
     p.savefig(modeledStackFile[:-5] + "-cont.pdf")
     p.clf()
     p.figure(2,(12,4))
-    p.axes([0.1,0.2,0.9,0.75])
+    p.axes([0.1,0.2,0.85,0.75])
     p.errorbar(wl,flObs,yerr = flObsErr,label= str(Lmin) +"< log(L"+line+")<"+ str(Lmax),linewidth=1)
     p.plot(wl_fir, fl_fir,label = 'log(age)='+ str(age)+ ', log(M*)='+ str(Ms))
     p.axvline(4861,color='k', ls='dashed')
