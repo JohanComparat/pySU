@@ -304,7 +304,7 @@ class ModelSpectraStacks:
 			self.hdR['BD_4862_4341_err']= self.hdR['BD_4862_4341'] * bdc1ErrFrac
 			# E(B-V) Correction using 4862 / 4341
 			self.hdR['EBV_4862_4341'] = -5*n.log10(self.hdR['BD_4862_4341'] * bdc1_ref) / (2* (5.12 - 4.6))
-			self.hdR['EBV_4862_4341_err']= -5 * bdc1ErrFrac * bdc1_ref/(2*(5.12-4.6)*n.log10)
+			self.hdR['EBV_4862_4341_err']= -5 * bdc1ErrFrac * bdc1_ref/(2*(5.12-4.6)*n.log(10))
 			# applied to emission lines using Calzetti's law
 			self.hdR['EBV_4862_4341_CORRO2']=10**(0.4 * self.hdR['EBV_4862_4341'] *klO2)
 			self.hdR['EBV_4862_4341_CORRO2_err']= self.hdR['EBV_4862_4341_err'] * n.log(10) * 0.4 * klO2 * self.hdR['EBV_4862_4341_CORRO2']
@@ -332,7 +332,7 @@ class ModelSpectraStacks:
 			self.hdR['BD_4862_4102_err'] = self.hdR['BD_4862_4102']* bdc2ErrFrac
 			# E(B-V) Correction using 4862 / 4341
 			self.hdR['EBV_4862_4102'] = -5*n.log10( self.hdR['BD_4862_4102'] * bdc2_ref )/( 2*(5.39-4.6))
-			self.hdR['EBV_4862_4102_err'] = -5 * bdc2ErrFrac * bdc2_ref /(2*( 5.39 - 4.6)*n.log10)
+			self.hdR['EBV_4862_4102_err'] = -5 * bdc2ErrFrac * bdc2_ref /(2*( 5.39 - 4.6)*n.log(10))
 			# applied to emission lines using Calzetti's law
 			self.hdR['EBV_4862_4102_CORRO2']=10**(0.4 *self.hdR['EBV_4862_4102'] *klO2)
 			self.hdR['EBV_4862_4102_CORRO2_err']= self.hdR['EBV_4862_4102_err'] * n.log(10) * 0.4 * klO2 * self.hdR['EBV_4862_4102_CORRO2']
@@ -360,7 +360,7 @@ class ModelSpectraStacks:
 			self.hdR['BD_4102_4341_err']=self.hdR['BD_4102_4341'] * bdc23ErrFrac
 			# E(B-V) Correction using 4341 / 4102
 			self.hdR['EBV_4102_4341'] = -5*n.log10( self.hdR['BD_4102_4341'] * bdc23_ref )/( 2*(5.39 - 5.12))
-			self.hdR['EBV_4102_4341_err'] = -5 * bdc23ErrFrac * bdc23_ref /( 2*(5.39 - 5.12)*n.log10)
+			self.hdR['EBV_4102_4341_err'] = -5 * bdc23ErrFrac * bdc23_ref /( 2*(5.39 - 5.12)*n.log(10))
 			# applied to lines using Calzetti's law
 			self.hdR['EBV_4102_4341_CORRO2']=10**(0.4 *self.hdR['EBV_4102_4341'] *klO2)
 			self.hdR['EBV_4102_4341_CORRO2_err']= self.hdR['EBV_4102_4341_err'] * n.log(10) * 0.4 * klO2 * self.hdR['EBV_4102_4341_CORRO2']
