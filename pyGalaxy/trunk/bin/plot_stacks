@@ -5,12 +5,18 @@ from os.path import join
 import sys
 import numpy as n
 import sys
+import matplotlib
+matplotlib.use('pdf')
 import matplotlib.pyplot as p
 import astropy.io.fits as fits 
 
 from scipy.stats import scoreatpercentile as sap
 from scipy.interpolate import interp1d
 import glob
+
+
+stack_files=n.array(glob.glob( join( os.environ['DATA_DIR'], "*/products/emissionLineLuminosityFunctions/??_????/*stack*e+??.fits" ) ) )
+
 
 stackDir="/Volumes/data/LFstacks/"
 
@@ -48,7 +54,7 @@ def plotStack( modeledStackFile ):
     p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
     p.yscale('log')
     p.legend(fontsize=12) 
-    p.savefig(join(pDir , modeledStackFile.split('/')[-1][:-5] + "-all.pdf"))
+    p.savefig(modeledStackFile.split[:-5] + "-all.pdf"))
     p.clf()
     p.figure(2,(12,4))
     p.axes([0.1,0.2,0.9,0.75])
@@ -59,7 +65,7 @@ def plotStack( modeledStackFile ):
     p.yscale('log')
     p.ylim(( n.min(fl_fir)*0.8, n.max(fl_fir)*1.2 ))
     p.legend(fontsize=12, loc=4) 
-    p.savefig(join(pDir , modeledStackFile.split('/')[-1][:-5] + "-cont.pdf"))
+    p.savefig(modeledStackFile.split[:-5] + "-cont.pdf"))
     p.clf()
     p.figure(2,(12,4))
     p.axes([0.1,0.2,0.9,0.75])
@@ -79,7 +85,7 @@ def plotStack( modeledStackFile ):
     p.yscale('log')
     p.xlim(( 4331, 4871 ))
     p.legend(fontsize=12, loc=4) 
-    p.savefig(join(pDir , modeledStackFile.split('/')[-1][:-5] + "-H1lineDecr.pdf"))
+    p.savefig( modeledStackFile.split[:-5] + "-H1lineDecr.pdf"))
     p.clf()
 
 
