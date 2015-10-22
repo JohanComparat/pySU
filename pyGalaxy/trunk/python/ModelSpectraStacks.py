@@ -495,7 +495,7 @@ class ModelSpectraStacks:
 		# previous file
 		prihdu = fits.PrimaryHDU(header=self.hdR)
 		thdulist = fits.HDUList([prihdu, self.hdu1, self.hdu2, tbhdu])
-		outPutFileName = self.stack_file[:-5] + "-modeled.fits"
+		outPutFileName = self.stack_model_file[:-5] + "-modeled.fits"
 		os.system('rm '+outPutFileName)
 		thdulist.writeto(outPutFileName)
 
