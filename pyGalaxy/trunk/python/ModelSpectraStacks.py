@@ -101,11 +101,12 @@ class ModelSpectraStacks:
 	:param dV: default value that hold the place (default : -9999.99) 
 	:param N_spectra_limitFraction: If the stack was made with N spectra. N_spectra_limitFraction selects the points that have were computed using more thant N_spectra_limitFraction * N spectra. (default : 0.8)
 	"""
-	def __init__(self, stack_file, mod="MILES", cosmo=cosmo, firefly_min_wavelength= 1000., firefly_max_wavelength=7500., dV=-9999.99, N_spectra_limitFraction=0.8):
+	def __init__(self, stack_file, mode="MILES", cosmo=cosmo, firefly_min_wavelength= 1000., firefly_max_wavelength=7500., dV=-9999.99, N_spectra_limitFraction=0.8):
 		self.stack_file = stack_file
-		if mode=="MILES":
+		self.mode = mode
+		if self.mode=="MILES":
 			self.stack_model_file = self.stack_file[:-5]+"-SPM-MILES.fits"
-		if mode=="STELIB":
+		if self.mode=="STELIB":
 			self.stack_model_file = self.stack_file[:-5]+"-SPM-STELIB.fits"
 
 		self.cosmo = cosmo
