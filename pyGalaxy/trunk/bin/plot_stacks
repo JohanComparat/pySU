@@ -15,18 +15,8 @@ from scipy.interpolate import interp1d
 import glob
 
 
-stack_files=n.array(glob.glob( join( os.environ['DATA_DIR'], "*/products/emissionLineLuminosityFunctions/??_????/*stack*e+??.fits" ) ) )
+stL=n.array(glob.glob( join( os.environ['DATA_DIR'], "*/products/emissionLineLuminosityFunctions/??_????/*-modeled.fits" ) ) )
 
-
-stackDir="/Volumes/data/LFstacks/"
-
-pDir=join( stackDir, "plots" )
-
-stL=glob.glob( join( stackDir , "*-modeled.fits" ) )
-
-
-modeledStackFile = stL[4]
-#hdus = fits.open(modeledStackFile )
 
 def plotStack( modeledStackFile ):
     hdus = fits.open(modeledStackFile )
@@ -91,10 +81,4 @@ def plotStack( modeledStackFile ):
 
 for el in stL :
     plotStack(el)
-
-import sys
-
-sys.exit()
-
-
 
