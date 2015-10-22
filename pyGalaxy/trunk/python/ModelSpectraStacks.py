@@ -179,7 +179,7 @@ class ModelSpectraStacks:
 		mdRed=(self.wlModel>=n.max(self.wl)) # redder part than data
 		okRed=(self.wlModel>4650)&(self.wlModel<self.firefly_max_wavelength)
 
-		# CORRection model => stack
+		# Correction model => stack
 		CORRection=n.sum((self.wl[self.stOpt][1:]-self.wl[self.stOpt][:-1])* self.fl[self.stOpt][1:]) / n.sum((self.wlModel[ self.mdOK ][1:]-self.wlModel[ self.mdOK ][:-1])*   self.flModel [ self.mdOK ][1:])
 		print "Correction", CORRection
 
@@ -279,9 +279,9 @@ class ModelSpectraStacks:
 	def compute_derived_quantities(self):
 		"""
 		Computes the different line ratios and converts to extinction :
-		 * Balmer decrement and E(B-V) CORRection using 4862 / 4341
-		 * Balmer decrement and E(B-V) CORRection using 4862 / 4102
-		 * Balmer decrement and E(B-V) CORRection using 4341 / 4102
+		 * Balmer decrement and E(B-V) Correction using 4862 / 4341
+		 * Balmer decrement and E(B-V) Correction using 4862 / 4102
+		 * Balmer decrement and E(B-V) Correction using 4341 / 4102
 		 * O32 : O3/O2
 		 * intrinsic fluxes O3 4960 and 5007
 		 * intrinsic fluxes O2
@@ -302,9 +302,9 @@ class ModelSpectraStacks:
 			self.hdR['BD_4862_4341']=self.hdR['H1_4341_flux_nc']/ self.hdR['H1_4862_flux_nc']
 			bdc1ErrFrac = ( (self.hdR['H1_4862_fluxErr_nc']/ self.hdR['H1_4862_flux_nc'])**2 + (self.hdR['H1_4341_fluxErr_nc']/ self.hdR['H1_4341_flux_nc'])**2. ) **0.5
 			self.hdR['BD_4862_4341_err']= self.hdR['BD_4862_4341'] * bdc1ErrFrac
-			# E(B-V) CORRection using 4862 / 4341
+			# E(B-V) Correction using 4862 / 4341
 			self.hdR['EBV_4862_4341'] = -5*n.log10(self.hdR['BD_4862_4341'] * bdc1_ref) / (2* (5.12 - 4.6))
-			self.hdR['EBV_4862_4341_err']= -5 * bdc1ErrFrac/(2*(5.12-4.6))
+			self.hdR['EBV_4862_4341_err']= -5 * bdc1ErrFrac * bdc1_ref/(2*(5.12-4.6)*n.log10)
 			# applied to emission lines using Calzetti's law
 			self.hdR['EBV_4862_4341_CORRO2']=10**(0.4 * self.hdR['EBV_4862_4341'] *klO2)
 			self.hdR['EBV_4862_4341_CORRO2_err']= self.hdR['EBV_4862_4341_err'] * n.log(10) * 0.4 * klO2 * self.hdR['EBV_4862_4341_CORRO2']
@@ -330,9 +330,9 @@ class ModelSpectraStacks:
 			self.hdR['BD_4862_4102'] = self.hdR['H1_4102_flux_nc']/ self.hdR['H1_4862_flux_nc']
 			bdc2ErrFrac = ( (self.hdR['H1_4862_fluxErr_nc']/ self.hdR['H1_4862_flux_nc'] )**2 + (self.hdR['H1_4102_fluxErr_nc']/self.hdR['H1_4102_flux_nc'])**2. ) **0.5
 			self.hdR['BD_4862_4102_err'] = self.hdR['BD_4862_4102']* bdc2ErrFrac
-			# E(B-V) CORRection using 4862 / 4341
+			# E(B-V) Correction using 4862 / 4341
 			self.hdR['EBV_4862_4102'] = -5*n.log10( self.hdR['BD_4862_4102'] * bdc2_ref )/( 2*(5.39-4.6))
-			self.hdR['EBV_4862_4102_err'] = -5 * self.hdR['BD_4862_4102_err']/(2*( 5.39 - 4.6))
+			self.hdR['EBV_4862_4102_err'] = -5 * bdc2ErrFrac * bdc2_ref /(2*( 5.39 - 4.6)*n.log10)
 			# applied to emission lines using Calzetti's law
 			self.hdR['EBV_4862_4102_CORRO2']=10**(0.4 *self.hdR['EBV_4862_4102'] *klO2)
 			self.hdR['EBV_4862_4102_CORRO2_err']= self.hdR['EBV_4862_4102_err'] * n.log(10) * 0.4 * klO2 * self.hdR['EBV_4862_4102_CORRO2']
@@ -356,10 +356,11 @@ class ModelSpectraStacks:
 			self.BDarray[2]=1
 			# Balmer decrement : 4341 / 4102
 			self.hdR['BD_4102_4341']= self.hdR['H1_4102_flux_nc']/ self.hdR['H1_4341_flux_nc']
-			self.hdR['BD_4102_4341_err']=self.hdR['BD_4102_4341']*( ( self.hdR['H1_4341_fluxErr_nc'] /self.hdR['H1_4341_flux_nc'] )**2 + (self.hdR['H1_4102_fluxErr_nc'] /self.hdR['H1_4102_flux_nc'])**2. ) **0.5
-			# E(B-V) CORRection using 4341 / 4102
+			bdc23ErrFrac = ( (self.hdR['H1_4102_fluxErr_nc']/ self.hdR['H1_4102_flux_nc'] )**2 + (self.hdR['H1_4341_fluxErr_nc']/self.hdR['H1_4341_flux_nc'])**2. ) **0.5
+			self.hdR['BD_4102_4341_err']=self.hdR['BD_4102_4341'] * bdc23ErrFrac
+			# E(B-V) Correction using 4341 / 4102
 			self.hdR['EBV_4102_4341'] = -5*n.log10( self.hdR['BD_4102_4341'] * bdc23_ref )/( 2*(5.39 - 5.12))
-			self.hdR['EBV_4102_4341_err'] = -5 * self.hdR['BD_4102_4341_err']/( 2*(5.39 - 5.12))
+			self.hdR['EBV_4102_4341_err'] = -5 * bdc23ErrFrac * bdc23_ref /( 2*(5.39 - 5.12)*n.log10)
 			# applied to lines using Calzetti's law
 			self.hdR['EBV_4102_4341_CORRO2']=10**(0.4 *self.hdR['EBV_4102_4341'] *klO2)
 			self.hdR['EBV_4102_4341_CORRO2_err']= self.hdR['EBV_4102_4341_err'] * n.log(10) * 0.4 * klO2 * self.hdR['EBV_4102_4341_CORRO2']

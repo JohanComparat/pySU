@@ -23,4 +23,3 @@ for file in stack_files:
 	mm.save_spectrum()
 	#mm.plot_spectrum()
 
-
