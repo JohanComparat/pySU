@@ -110,7 +110,7 @@ class ModelSpectraStacks:
 		self.side = ''
 		self.N_spectra_limitFraction = N_spectra_limitFraction
 		# define self.sphereCM, find redshift ...
-		self.redshift = float(self.stack_file.split('-')[2].split('-')[0][1:])
+		self.redshift = float(self.stack_file.split('-')[2].split('_')[0][1:])
 		sphere=4*n.pi*( self.cosmo.luminosity_distance(self.redshift) )**2.
 		self.sphereCM=sphere.to(u.cm**2)
 		hdus = fits.open(self.stack_file)
