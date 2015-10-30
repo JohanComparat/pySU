@@ -13,7 +13,7 @@ import astropy.cosmology as co
 c2 = co.Planck13
 from scipy.interpolate import interp1d
 from os.path import join
-
+import os
 import astropy.units as uu
 import numpy as n
 import glob
