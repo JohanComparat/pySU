@@ -1,13 +1,13 @@
 # list of exports to make
 
-export PYTHONPATH=$PYTHONPATH:/Volumes/data/pySU/pyGalaxy/trunk/python/
-export PYTHONPATH=$PYTHONPATH:/Volumes/data/pySU/pySimulations/trunk/python/
-export PYTHONPATH=$PYTHONPATH:/Volumes/data/pySU/pyMultidark/trunk/python/
-export PYTHONPATH=$PYTHONPATH:/Volumes/data/pySU/pyTargetSelection/trunk/python/
+export PYTHONPATH=$PYTHONPATH:/home2/jcomparat/pySU/pyClusteringEstimation/trunk/python/
+export PYTHONPATH=$PYTHONPATH:/home2/jcomparat/pySU/pyGalaxy/trunk/python/
+export PYTHONPATH=$PYTHONPATH:/home2/jcomparat/pySU/pySimulations/trunk/python/
+export PYTHONPATH=$PYTHONPATH:/home2/jcomparat/pySU/pyMultidark/trunk/python/
+export PYTHONPATH=$PYTHONPATH:/home2/jcomparat/pySU/pySimulations/trunk/python/
+export PYTHONPATH=$PYTHONPATH:/home2/jcomparat/pySU/pySPM/trunk/python/
+export PYTHONPATH=$PYTHONPATH:/home2/jcomparat/pySU/pyTargetSelection/trunk/python/
 
-export DATA_DIR='/Volumes/data/'
-export PYSU_DIR='/Volumes/data/pySU/'
+export DATA_DIR='/home2/jcomparat/eBOSS-LC/’
+export PYSU_DIR='/home2/jcomparat/pySU/'
 
-export PYTHONPATH=$PYTHONPATH:/Volumes/data/svn_SDSS/stellarpopmodels/trunk/python/
-export PYTHONPATH=$PYTHONPATH:/Volumes/data/svn_SDSS/stellarpop/trunk/python/
-export PYTHONPATH=$PYTHONPATH:/Volumes/data/svn_SDSS/firefly/trunk/python/

@@ -1,3 +1,13 @@
+
+"""
+.. class:: LightconeSquare
+
+.. moduleauthor:: Johan Comparat <johan.comparat__at__gmail.com>
+
+The class LightconeSquare creates lightcones from N body simulations.
+
+"""
+
 import fileinput
 import astropy.cosmology as co
 c2=co.Planck13
@@ -191,16 +201,16 @@ class LightconeSquare :
 			# self.tg_theta_max
 			count=0
 			for line in fl:
-				if line[0]=="#" :
+				if line[0] == "#" :
 					count+=1
 					continue
 
 				yn=self.selectline(line.split(),dmin,dmax)
-				if yn==0. :
+				if yn == 0. :
 					count+=1					
 					continue
 
-				if yn==1.:
+				if yn == 1.:
 					trL=self.transformLine(line.split())
 					toWrite = " ".join(trL)+" \n"
 					# print "got line"
@@ -221,26 +231,25 @@ class LightconeSquare :
 		dmax=self.D_transition[ii+1]
 		# print "opens file ",self.get_snl()[ii],"and gets halo in ",dmin,dmax
 		# self.tg_theta_max
-		fo.write(" # 1 4 5 6 10 11 12 13 16 26 37 38 44 45 57 58 59 60 61 63 64 67")
 		count=0
 		for line in fl:
-			if line[0]=="#" :
+			if line[0] == "#" :
 				count+=1
 				continue
 
 			yn=self.selectline(line.split(),dmin,dmax)
-			if yn==0. :
+			if yn == 0. :
 				count+=1					
 				continue
 
-			if yn==1.:
+			if yn == 1.:
 				trL=self.transformLine(line.split())
 				toWrite = " ".join(trL)+" \n"
 				# print "got line"
 				# print toWrite
 				# print count
 				fo.write(toWrite)
-				count+=1
+				count+ = 1
 
 		
 		fl.close()
