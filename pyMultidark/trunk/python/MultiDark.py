@@ -84,6 +84,83 @@ class MultiDark :
 		"""
 		massB=n.arange(8,16,0.01)
 		vcirB=n.arange(0,4.5,0.01)
+		concB=n.arange(1,3,0.1)
+
+		NperBatch = 10000000
+		mvcCentralMatrix = n.empty((NperBatch,3))  # 1M matrixes
+		mvcSatMatrix = n.empty((NperBatch,3))  # 1 M matrixes
+
+		fl=fileinput.input(self.get_snl()[ii])
+		name = self.get_snl()[ii].split('/')[-1][:-5]
+		countCen,countSat,countFileCen,countFileSat=0,0,0,0
+		for line in fl:
+			if line[0]=="#" :
+				continue
+
+			line = line.split()
+			sat_or_cen = float(line[5])
+			if sat_or_cen !=-1 :
+				countSat+=1					
+				mvcSatMatrix[countSat] = float(line[10]), float(line[16]), float(line[11]) 
+                
+			if sat_or_cen ==-1 :
+				countCen+=1					
+				mvcCentralMatrix[countCen] = float(line[10]), float(line[16]), float(line[11])
+                
+			if countCen==NperBatch-1 :
+				nnM,bb=n.histogram(n.log10(mvcCentralMatrix.T[0]),bins=massB)
+				nnV,bb=n.histogram(n.log10(mvcCentralMatrix.T[1]),bins= vcirB)
+				nnC,bb=n.histogram(n.log10(mvcCentralMatrix.T[2]),bins= concB)
+				dataMC=n.histogram2d(n.log10(mvcCentralMatrix.T[0]), mvcCentralMatrix.T[2] ,bins=[massB,concB])
+				dataVC=n.histogram2d(n.log10(mvcCentralMatrix.T[1]), mvcCentralMatrix.T[2] , bins=[vcirB,concB])
+				print "countCen",countCen
+				f=open(join(self.get_wdir(),self.get_boxDir(),"properties", name+"_MVRmatrixCentral_" +str(countFileCen)+ ".pkl"),'w')
+				cPickle.dump([nnM,nnV,nnC,dataMC,dataVC],f)
+				f.close()
+				countFileCen+=1
+				countCen=0
+
+			if countSat==NperBatch-1 :
+				nnM,bb=n.histogram(n.log10(mvcSatMatrix.T[0]),bins=massB)
+				nnV,bb=n.histogram(n.log10(mvcSatMatrix.T[1]),bins= vcirB)
+				nnC,bb=n.histogram(n.log10(mvcSatMatrix.T[2]),bins= concB)
+				dataMC=n.histogram2d(n.log10(mvcSatMatrix.T[0]), mvcSatMatrix.T[2] ,bins=[massB,concB])
+				dataVC=n.histogram2d(n.log10(mvcSatMatrix.T[1]), mvcSatMatrix.T[2] , bins=[vcirB,concB])
+				print "countSat", countSat
+				f=open(join(self.get_wdir(),self.get_boxDir() ,"properties" , 
+name+"_MVRmatrixSatellite_" +str(countFileSat)+ ".pkl"),'w')
+				cPickle.dump([nnM,nnV,nnC,dataMC,dataVC],f)
+				f.close()
+				countFileSat+=1
+				countSat=0
+
+		# and for the last batch :
+		nnM,bb=n.histogram(n.log10(mvcCentralMatrix.T[0]),bins=massB)
+		nnV,bb=n.histogram(n.log10(mvcCentralMatrix.T[1]),bins= vcirB)
+		nnC,bb=n.histogram(n.log10(mvcCentralMatrix.T[2]),bins= concB)
+		dataMC=n.histogram2d(n.log10(mvcCentralMatrix.T[0]), mvcCentralMatrix.T[2] ,bins=[massB,concB])
+		dataVC=n.histogram2d(n.log10(mvcCentralMatrix.T[1]), mvcCentralMatrix.T[2] , bins=[vcirB,concB])
+		f=open(join(self.get_wdir(),self.get_boxDir(),"properties",name+ "_MVRmatrixCentral_" +str(countFileCen)+ ".pkl"),'w')
+		cPickle.dump([nnM,nnV,nnC,dataMC,dataVC],f)
+		f.close()
+
+		nnM,bb=n.histogram(n.log10(mvcSatMatrix.T[0]),bins=massB)
+		nnV,bb=n.histogram(n.log10(mvcSatMatrix.T[1]),bins= vcirB)
+		nnC,bb=n.histogram(n.log10(mvcSatMatrix.T[2]),bins= concB)
+		dataMC=n.histogram2d(n.log10(mvcSatMatrix.T[0]), mvcSatMatrix.T[2] ,bins=[massB,concB])
+		dataVC=n.histogram2d(n.log10(mvcSatMatrix.T[1]), mvcSatMatrix.T[2] , bins=[vcirB,concB])
+		f=open(join(self.get_wdir(),self.get_boxDir(),"properties",name+ "_MVRmatrixSatellite_" +str(countFileSat)+ ".pkl"),'w')
+		cPickle.dump([nnM,nnV,nnC,dataMC,dataVC],f)
+		f.close()
+
+
+	def computeMassVelocityPeakAccRateFunctions(self,ii) :
+		"""
+		computes the mass, velocity and concentration histograms for a rockstar snapshot.
+		:param ii: index of the snapshot in the list self.get_snl()
+		"""
+		massB=n.arange(8,16,0.01)
+		vcirB=n.arange(0,4.5,0.01)
 		concB=n.arange(-5e4,5e4+1,1e3)
 
 		NperBatch = 10000000
@@ -114,7 +191,7 @@ class MultiDark :
 			if countCen==NperBatch-1 :
 				nnM,bb=n.histogram(n.log10(mvcCentralMatrix.T[0]),bins=massB)
 				nnV,bb=n.histogram(n.log10(mvcCentralMatrix.T[1]),bins= vcirB)
-				nnC,bb=n.histogram(n.log10(mvcCentralMatrix.T[2]),bins= vcirB)
+				nnC,bb=n.histogram(n.log10(mvcCentralMatrix.T[2]),bins= concB)
 				dataMC=n.histogram2d(n.log10(mvcCentralMatrix.T[0]), mvcCentralMatrix.T[2] ,bins=[massB,concB])
 				dataVC=n.histogram2d(n.log10(mvcCentralMatrix.T[1]), mvcCentralMatrix.T[2] , bins=[vcirB,concB])
 				print "countCen",countCen
@@ -127,7 +204,7 @@ class MultiDark :
 			if countSat==NperBatch-1 :
 				nnM,bb=n.histogram(n.log10(mvcSatMatrix.T[0]),bins=massB)
 				nnV,bb=n.histogram(n.log10(mvcSatMatrix.T[1]),bins= vcirB)
-				nnC,bb=n.histogram(n.log10(mvcSatMatrix.T[2]),bins= vcirB)
+				nnC,bb=n.histogram(n.log10(mvcSatMatrix.T[2]),bins= concB)
 				dataMC=n.histogram2d(n.log10(mvcSatMatrix.T[0]), mvcSatMatrix.T[2] ,bins=[massB,concB])
 				dataVC=n.histogram2d(n.log10(mvcSatMatrix.T[1]), mvcSatMatrix.T[2] , bins=[vcirB,concB])
 				print "countSat", countSat
@@ -141,7 +218,7 @@ name+"_MVAmatrixSatellite_" +str(countFileSat)+ ".pkl"),'w')
 		# and for the last batch :
 		nnM,bb=n.histogram(n.log10(mvcCentralMatrix.T[0]),bins=massB)
 		nnV,bb=n.histogram(n.log10(mvcCentralMatrix.T[1]),bins= vcirB)
-		nnC,bb=n.histogram(n.log10(mvcCentralMatrix.T[2]),bins= vcirB)
+		nnC,bb=n.histogram(n.log10(mvcCentralMatrix.T[2]),bins= concB)
 		dataMC=n.histogram2d(n.log10(mvcCentralMatrix.T[0]), mvcCentralMatrix.T[2] ,bins=[massB,concB])
 		dataVC=n.histogram2d(n.log10(mvcCentralMatrix.T[1]), mvcCentralMatrix.T[2] , bins=[vcirB,concB])
 		f=open(join(self.get_wdir(),self.get_boxDir(),"properties",name+ "_MVAmatrixCentral_" +str(countFileCen)+ ".pkl"),'w')
@@ -150,7 +227,7 @@ name+"_MVAmatrixSatellite_" +str(countFileSat)+ ".pkl"),'w')
 
 		nnM,bb=n.histogram(n.log10(mvcSatMatrix.T[0]),bins=massB)
 		nnV,bb=n.histogram(n.log10(mvcSatMatrix.T[1]),bins= vcirB)
-		nnC,bb=n.histogram(n.log10(mvcSatMatrix.T[2]),bins= vcirB)
+		nnC,bb=n.histogram(n.log10(mvcSatMatrix.T[2]),bins= concB)
 		dataMC=n.histogram2d(n.log10(mvcSatMatrix.T[0]), mvcSatMatrix.T[2] ,bins=[massB,concB])
 		dataVC=n.histogram2d(n.log10(mvcSatMatrix.T[1]), mvcSatMatrix.T[2] , bins=[vcirB,concB])
 		f=open(join(self.get_wdir(),self.get_boxDir(),"properties",name+ "_MVAmatrixSatellite_" +str(countFileSat)+ ".pkl"),'w')
