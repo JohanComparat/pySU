@@ -1,3 +1,6 @@
+"""
+Class lightcone to produce lightcones from the ROCKSTAR outputs of Multidark.
+"""
 import fileinput
 import astropy.cosmology as co
 c2=co.Planck13
