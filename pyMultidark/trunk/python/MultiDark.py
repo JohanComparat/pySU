@@ -135,11 +135,11 @@ class MultiDarkSimulation :
 
             line = line.split()
             sat_or_cen = float(line[5])
-            if sat_or_cen ! = -1 :
+            if sat_or_cen != -1 :
                 countSat+ = 1					
                 qtySat[countSat] = float(line[index])
                 
-            if sat_or_cen = = -1 :
+            if sat_or_cen == -1 :
                 countCen+ = 1					
                 qtyCentral[countCen] = float(line[index])
                 
@@ -202,11 +202,11 @@ class MultiDarkSimulation :
 
             line = line.split()
             sat_or_cen = float(line[5])
-            if sat_or_cen ! = -1 :
+            if sat_or_cen != -1 :
                 countSat+ = 1					
                 mvcSatMatrix[countSat] = float(line[10]), float(line[16]), float(line[11]) 
                 
-            if sat_or_cen = = -1 :
+            if sat_or_cen == -1 :
                 countCen+ = 1					
                 mvcCentralMatrix[countCen] = float(line[10]), float(line[16]), float(line[11])
                 
@@ -279,13 +279,13 @@ class MultiDarkSimulation :
 
             line = line.split()
             sat_or_cen = float(line[5])
-            if sat_or_cen ! = -1 :
+            if sat_or_cen != -1 :
                 countSat+ = 1					
                 #print mvcSatMatrix[countSat]
                 #print line[59], line[61], line[67]
                 mvcSatMatrix[countSat] = float(line[59]), float(line[61]), float(line[67]) # check the right indices ... MASS velocity concentration
 
-            if sat_or_cen = = -1 :
+            if sat_or_cen == -1 :
                 countCen+ = 1					
                 #print mvcCentralMatrix[countCen]
                 #print line[59], line[61], line[67]
