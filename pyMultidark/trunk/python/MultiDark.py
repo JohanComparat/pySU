@@ -20,7 +20,7 @@ import glob
 
 class MultiDarkSimulation :
     """
-    Loads the environement proper to the Multidark simulations. All these parameters can only be changed with the setters and obtained with the getters as we do not wnat them to be changed easily. This is the fixed framework of the simulation.
+    Loads the environement proper to the Multidark simulations. This is the fixed framework of the simulation.
             
     :param Lbox: length of the box in Mpc/h 
     :param wdir: Path to the multidark lightcone directory
@@ -55,7 +55,7 @@ class MultiDarkSimulation :
         :param index: of the quantity of interest in the snapshots.
         :param bins: binning scheme to compute the historgram.
         """		
-        index = self.columnDict(name)
+        index = self.columnDict[name]
         output_dir = join(self.wdir,self.boxDir,"properties",name)
         os.system('mkdir '+ output_dir)
         NperBatch = 10000000
