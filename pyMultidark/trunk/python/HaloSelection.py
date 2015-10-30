@@ -28,7 +28,7 @@ NZfile = join(nz_dir, "nz-fisherGRIW1.dat")
 # loads the NZ, needs to be per deg2
 zminIN, zmaxIN, nGal_Deg2IN = n.loadtxt( NZfile, unpack = True, usecols = (0,1,2) )
 ok = (nGal_Deg2IN>0) & (zmaxIN<1.25)
-zmin, zmax, nGal_Deg2  =  zminIN[ok],z maxIN[ok], nGal_Deg2IN[ok]
+zmin, zmax, nGal_Deg2  =  zminIN[ok], zmaxIN[ok], nGal_Deg2IN[ok]
 
 # where the outputs will be stored :
 mockOutpuName = "mocks_fischerGRIW1"
