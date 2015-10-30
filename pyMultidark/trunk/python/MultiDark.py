@@ -136,11 +136,11 @@ class MultiDarkSimulation :
             line = line.split()
             sat_or_cen = float(line[5])
             if sat_or_cen != -1 :
-                countSat+ = 1					
+                countSat+= 1					
                 qtySat[countSat] = float(line[index])
                 
             if sat_or_cen == -1 :
-                countCen+ = 1					
+                countCen+= 1					
                 qtyCentral[countCen] = float(line[index])
                 
             if countCen == NperBatch-1 :
@@ -149,7 +149,7 @@ class MultiDarkSimulation :
                 f = open(join(output_dir, nameSnapshot + "_" + name + "_Central_" + str(countFileCen)+ ".pkl"),'w')
                 cPickle.dump(nnM,f)
                 f.close()
-                countFileCen+ = 1
+                countFileCen+= 1
                 countCen = 0
 
             if countSat == NperBatch-1 :
@@ -158,7 +158,7 @@ class MultiDarkSimulation :
                 f = open(join(output_dir, nameSnapshot + "_" + name+ "_Satellite_" + str(countFileSat)+ ".pkl"),'w')
                 cPickle.dump(nnM,f)
                 f.close()
-                countFileSat+ = 1
+                countFileSat+= 1
                 countSat = 0
 
         # and for the last batch :
@@ -203,11 +203,11 @@ class MultiDarkSimulation :
             line = line.split()
             sat_or_cen = float(line[5])
             if sat_or_cen != -1 :
-                countSat+ = 1					
+                countSat+= 1					
                 mvcSatMatrix[countSat] = float(line[10]), float(line[16]), float(line[11]) 
                 
             if sat_or_cen == -1 :
-                countCen+ = 1					
+                countCen+= 1					
                 mvcCentralMatrix[countCen] = float(line[10]), float(line[16]), float(line[11])
                 
             if countCen == NperBatch-1 :
@@ -220,7 +220,7 @@ class MultiDarkSimulation :
                 f = open(join(self.get_wdir(),self.get_boxDir(),"properties", name+"_MVRmatrixCentral_" +str(countFileCen)+ ".pkl"),'w')
                 cPickle.dump([nnM,nnV,nnC,dataMC,dataVC],f)
                 f.close()
-                countFileCen+ = 1
+                countFileCen+= 1
                 countCen = 0
 
             if countSat == NperBatch-1 :
@@ -234,7 +234,7 @@ class MultiDarkSimulation :
     name+"_MVRmatrixSatellite_" +str(countFileSat)+ ".pkl"),'w')
                 cPickle.dump([nnM,nnV,nnC,dataMC,dataVC],f)
                 f.close()
-                countFileSat+ = 1
+                countFileSat+= 1
                 countSat = 0
 
         # and for the last batch :
@@ -280,13 +280,13 @@ class MultiDarkSimulation :
             line = line.split()
             sat_or_cen = float(line[5])
             if sat_or_cen != -1 :
-                countSat+ = 1					
+                countSat+= 1					
                 #print mvcSatMatrix[countSat]
                 #print line[59], line[61], line[67]
                 mvcSatMatrix[countSat] = float(line[59]), float(line[61]), float(line[67]) # check the right indices ... MASS velocity concentration
 
             if sat_or_cen == -1 :
-                countCen+ = 1					
+                countCen+= 1					
                 #print mvcCentralMatrix[countCen]
                 #print line[59], line[61], line[67]
                 mvcCentralMatrix[countCen] = float(line[59]), float(line[61]), float(line[67]) # check the right indices ... MASS velocity concentration
@@ -301,7 +301,7 @@ class MultiDarkSimulation :
                 f = open(join(self.get_wdir(),self.get_boxDir(),"properties", name+"_MVAmatrixCentral_" +str(countFileCen)+ ".pkl"),'w')
                 cPickle.dump([nnM,nnV,nnC,dataMC,dataVC],f)
                 f.close()
-                countFileCen+ = 1
+                countFileCen+= 1
                 countCen = 0
 
             if countSat == NperBatch-1 :
@@ -315,7 +315,7 @@ class MultiDarkSimulation :
     name+"_MVAmatrixSatellite_" +str(countFileSat)+ ".pkl"),'w')
                 cPickle.dump([nnM,nnV,nnC,dataMC,dataVC],f)
                 f.close()
-                countFileSat+ = 1
+                countFileSat+= 1
                 countSat = 0
 
         # and for the last batch :
