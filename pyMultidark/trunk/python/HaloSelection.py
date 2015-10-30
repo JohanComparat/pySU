@@ -58,7 +58,7 @@ cen = (hdu[1].data['pid'] ==  -1)
 sat = (cen ==  False)
 
 #function to slide in redshift
-slice_Z = lambda hdu,minz,maxz : (hdu[1].data['z_redshift_space']> = minz)&(hdu[1].data['z_redshift_space']<maxz)
+slice_Z = lambda hdu,minz,maxz : (hdu[1].data['z_redshift_space']>= minz)&(hdu[1].data['z_redshift_space']<maxz)
 
 
 def writerCats(name,idSel):
@@ -112,7 +112,7 @@ def sham(nGal,IDhz, QTY, nn,bb):
 	mfc = interp1d(nn,(bb[1:]+bb[:-1])/2.)
 	QTYmax = mfc(len(QTY))
 	QTYmin = mfc(len(QTY)-nGal)
-	qsel = (QTY>QTYmin)&(QTY< = QTYmax)
+	qsel = (QTY>QTYmin)&(QTY<= QTYmax)
 	IDhzq = IDhz[qsel]
 	print zmin,zmax,nGal,len(IDhzq)
 	return IDhzq
@@ -124,7 +124,7 @@ def shamIncomplete(incompFactor, nGal,IDhz, QTY, nn,bb):
 	Nmax = mfcInv(QTYmaxAll)
 	QTYmax = mfc(Nmax)
 	QTYmin = mfc(Nmax-nGal)
-	qsel = (QTY>QTYmin)&(QTY< = QTYmax)
+	qsel = (QTY>QTYmin)&(QTY<= QTYmax)
 	IDhzq = IDhz[qsel]
 	return IDhzq
 
@@ -134,7 +134,7 @@ def sham_QTY_max(QTY_max, nGal,IDhz, QTY, nn,bb):
 	Nmax = mfcInv(QTY_max)
 	QTYmax = mfc(Nmax)
 	QTYmin = mfc(Nmax-nGal)
-	qsel = (QTY>QTYmin)&(QTY< = QTYmax)
+	qsel = (QTY>QTYmin)&(QTY<= QTYmax)
 	IDhzq = IDhz[qsel]
 	return IDhzq
 
@@ -153,7 +153,7 @@ def selectGaussian(position,scatter, nGal,IDhz, QTY, nn,bb):
 	N2select = Up-Low
 	print N2select,Up,Low
 	# select in mass in the box
-	qsels = n.array([ (QTY>boundaries[ii])&(QTY< = boundaries[ii+1]) for ii in range(len(boundaries)-1) ])
+	qsels = n.array([ (QTY>boundaries[ii])&(QTY<= boundaries[ii+1]) for ii in range(len(boundaries)-1) ])
 	IDhzqAll = n.array([ IDhz[qs] for qs in qsels ])
 	# random downsample to the N2select in each bin
 	i = 0
@@ -183,7 +183,7 @@ def selectGaussian_fsat(position,scatter,fsat, nGal,IDhz_c, QTY_c,IDhz_s, QTY_s 
 	Low_s  =  n.hstack(( 0., expected_cdf_s(boundaries[1:])[:-1] ))
 	N2select_s  =  Up_s-Low_s
 	# select in mass in the box
-	qsels_s = n.array([ (QTY_s>boundaries[ii])&(QTY_s< = boundaries[ii+1]) for ii in range(len(boundaries)-1) ])
+	qsels_s = n.array([ (QTY_s>boundaries[ii])&(QTY_s<= boundaries[ii+1]) for ii in range(len(boundaries)-1) ])
 	IDhzqAll_s = n.array([ IDhz_s[qs] for qs in qsels_s ])
 
 	# random downsample to the N2select in each bin
@@ -208,7 +208,7 @@ def selectGaussian_fsat(position,scatter,fsat, nGal,IDhz_c, QTY_c,IDhz_s, QTY_s 
 	Low_c  =  n.hstack(( 0., expected_cdf_c(boundaries[1:])[:-1] ))
 	N2select_c  =  Up_c-Low_c
 	# select in mass in the box
-	qsels_c = n.array([ (QTY_c>boundaries[ii])&(QTY_c< = boundaries[ii+1]) for ii in range(len(boundaries)-1) ])
+	qsels_c = n.array([ (QTY_c>boundaries[ii])&(QTY_c<= boundaries[ii+1]) for ii in range(len(boundaries)-1) ])
 	IDhzqAll_c = n.array([ IDhz_c[qs] for qs in qsels_c ])
 
 	# random downsample to the N2select in each bin
@@ -245,7 +245,7 @@ def selectLogNorm(position,scatter, nGal,IDhz, QTY, nn,bb):
 	N2select = Up-Low
 	print N2select,Up,Low
 	# select in mass in the box
-	qsels = n.array([ (QTY>boundaries[ii])&(QTY< = boundaries[ii+1]) for ii in range(len(boundaries)-1) ])
+	qsels = n.array([ (QTY>boundaries[ii])&(QTY<= boundaries[ii+1]) for ii in range(len(boundaries)-1) ])
 	IDhzqAll = n.array([ IDhz[qs] for qs in qsels ])
 	# random downsample to the N2select in each bin
 	i = 0
