@@ -161,7 +161,7 @@ def selectGaussian(position,scatter, nGal,IDhz, QTY, nn,bb):
     for arr in IDhzqAll:
         random.shuffle(arr)
         ids_selected.append(arr[:N2select[i]])
-        i+ = 1
+        i+= 1
 
     ids_selected = n.hstack(( n.array(ids_selected) ))
     return ids_selected
@@ -193,7 +193,7 @@ def selectGaussian_fsat(position,scatter,fsat, nGal,IDhz_c, QTY_c,IDhz_s, QTY_s 
         random.shuffle(arr2)
         print len(arr2),int(N2select_s[i])
         ids_selected_s.append(arr2[:int(N2select_s[i])])
-        i+ = 1
+        i+= 1
 
     id_s = n.hstack((n.array(ids_selected_s)))
 
@@ -218,7 +218,7 @@ def selectGaussian_fsat(position,scatter,fsat, nGal,IDhz_c, QTY_c,IDhz_s, QTY_s 
         random.shuffle(arr)
         print len(arr),int(N2select_c[i])
         ids_selected_c.append(arr[:int(N2select_c[i])])
-        i+ = 1
+        i+= 1
 
     id_c = n.hstack((n.array(ids_selected_c)))
 
@@ -253,7 +253,7 @@ def selectLogNorm(position,scatter, nGal,IDhz, QTY, nn,bb):
     for arr in IDhzqAll:
         random.shuffle(arr)
         ids_selected.append(arr[:N2select[i]])
-        i+ = 1
+        i+= 1
 
     ids_selected = n.hstack(( n.array(ids_selected) ))
     return ids_selected
