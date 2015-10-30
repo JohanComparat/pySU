@@ -5,13 +5,6 @@ Library of function to create halo catalogs matched to a density.
 .. moduleauthor:: Johan Comparat <johan.comparat__at__gmail.com>
 
 """
-
-from LightconCreation import *
-
-# initialize lightcone entity
-
-# initialize data NZ
-
 import random
 import matplotlib
 matplotlib.use('pdf')
@@ -23,44 +16,71 @@ import scipy.stats as st
 import os
 from os.path import join
 
-mockDir = "/data2/DATA/eBOSS/all-tracer-mocks/"
-NZfile1 = "NZ/nz-ELG-190-240.txt"
-NZfile2 = "NZ/nz_LRG_QSO_eBOSS.txt"
+# initialize data side
 
-print "outputs stored : ",mockDir
-print "N(z) from ", NZfile1,NZfile2
+# what tracer we are dealing with :
+tracer_dir = join(os.environ['DATA_DIR'],"ELG")
 
-lcDir = "/data2/DATA/eBOSS/Multidark-lightcones/MD_2.5Gpc/lightcones/"
+# where is the NZ :
+nz_dir = join(tracer_dir, "observations/NZ")
+NZfile = join(nz_dir, "nz-fisherGRIW1.dat")
+
+# loads the NZ, needs to be per deg2
+zminIN, zmaxIN, nGal_Deg2IN = n.loadtxt( NZfile, unpack = True, usecols = (0,1,2) )
+ok = (nGal_Deg2IN>0) & (zmaxIN<1.25)
+zmin, zmax, nGal_Deg2  =  zminIN[ok],z maxIN[ok], nGal_Deg2IN[ok]
+
+# where the outputs will be stored :
+mockOutpuName = "mocks_fischerGRIW1"
+mockOutput_dir = join(tracer_dir,mockOutpuName)
+os.system('mkdir ' + mockOutput_dir)
+
+print "outputs stored : ",mockOutput_dir
+print "N(z) from ", NZfile
+
+
+# initialize the lightcone to extract the mock from
+lcDir = "/data2/DATA/eBOSS/Multidark-lightcones/MD_2.5Gpc/lightcones/lc_square_0.1z1.4/"
 lcFile = join(lcDir,"lightcone_MD_2.5Gpc_0.4z1.4.fits")
 
 # loads the LC
 hdu = fits.open(lcFile)
+hdR = hdu[0].header
 print lcFile, " loaded, columns:"
 print hdu[1].data.dtype
+# [('ra', '>f8'), ('dec', '>f8'), ('z_real_space', '>f8'), ('z_redshift_space', '>f8'), ('v_parallel', '>f8'), ('id', '>i8'), ('num_prog', '>i2'), ('pid', '>i8'), ('upid', '>i8'), ('mvir', '>f4'), ('rvir', '>f8'), ('rs', '>f8'), ('vrms', '>f8'), ('vmax', '>f8'), ('Spin', '>f4'), ('M200b', '>f8'), ('M200c', '>f8'), ('b_to_a', '>f8'), ('c_to_a', '>f8'), ('Halfmass_Radius', '>f4'), ('Macc', '>f4'), ('Mpeak', '>f4'), ('Vacc', '>f8'), ('Vpeak', '>f8'), ('Acc_Rate_Inst', '>f4'), ('Acc_Rate_100Myr', '>f4'), ('Acc_Rate_Mpeak', '>f4')]
+
+# properties of the lightcone
 area = (2*30.)**2.
 
-cen = (hdu[1].data['ppid'] ==  -1)
+# boolean arrays that discriminate central and sat halos
+cen = (hdu[1].data['pid'] ==  -1)
 sat = (cen ==  False)
 
-sZ = lambda hdu,minz,maxz : (hdu[1].data['z_observed']> = minz)&(hdu[1].data['z_observed']<maxz)
+#function to slide in redshift
+slice_Z = lambda hdu,minz,maxz : (hdu[1].data['z_redshift_space']> = minz)&(hdu[1].data['z_redshift_space']<maxz)
 
-
-zminIN,zmaxIN,nGal_Deg2IN,nGal_Mpc3IN = n.loadtxt(NZfile1,unpack = True,usecols = (0,1,4,5))
-ok = (nGal_Deg2IN>0)
-zmin,zmax,nGal_Deg2,nGal_Mpc3  =  zminIN[ok],zmaxIN[ok],nGal_Deg2IN[ok],nGal_Mpc3IN[ok]
 
 def writerCats(name,idSel):
-        print "writes ", name
-        n.savetxt(mockDir+name+"_radecz.cat",n.transpose([hdu[1].data['ra'][idSel], hdu[1].data['dec'][idSel], hdu[1].data['z_observed'][idSel]]),fmt = '%.8f %.8f %.5f')
+    """ writes the obtained mock catalog for clustering estimation. """
+    print "writes ", name
+    n.savetxt(mockOutput_dir+name+"_radecz.cat",n.transpose([hdu[1].data['ra'][idSel], hdu[1].data['dec'][idSel], hdu[1].data['z_redshift_space'][idSel]]),fmt = '%.8f %.8f %.5f')
 
 def writerCatsAll(name,idSel):
-        print "writes ", name
-        n.savetxt(mockDir+name+"_radecz.cat",n.transpose([hdu[1].data['ra'][idSel], hdu[1].data['dec'][idSel], hdu[1].data['z_observed'][idSel]]))
-        n.savetxt(mockDir+name+"_allCols.cat.gz" ,n.transpose([hdu[1].data['ra'][idSel], hdu[1].data['dec'][idSel], hdu[1].data['z_observed'][idSel], hdu[1].data['mvir'][idSel], hdu[1].data['ppid'][idSel]]))
+    """ writes the obtained mock catalog and a catalog with all the columns"""
+    print "writes ", name
+    n.savetxt(mockOutput_dir+name+"_radecz.cat",n.transpose([hdu[1].data['ra'][idSel], hdu[1].data['dec'][idSel], hdu[1].data['z_redshift_space'][idSel]]))
+    tbhdu = fits.BinTableHDU.from_columns(hdu[1].colmuns)
+    tbhdu.data = tbhdu[idSel]
+    prihdu = fits.PrimaryHDU(header=hdR)
+    thdulist = fits.HDUList([prihdu, tbhdu])
+    outPutFileName = mockOutput_dir+name+"_allCols.fits"
+    os.system('rm '+outPutFileName)
+    thdulist.writeto(outPutFileName)
 
 def get_distrib_QTY(hdu, colN, zmin, zmax):
 	IDh = n.arange(len(hdu[1].data[colN]))
-	zsel = sZ(hdu,zmin,zmax)
+	zsel = slice_Z(hdu,zmin,zmax)
 	IDhz = IDh[zsel] # all ids in this redshift bin
 	QTY = hdu[1].data[colN][zsel] # all QTY in this redshift bin
 	nn,bb,pp = p.hist(QTY,cumulative = True,bins = len(QTY)/100)
@@ -70,7 +90,7 @@ def get_distrib_QTY(hdu, colN, zmin, zmax):
 
 def get_distrib_QTY_cen(hdu, colN, zmin, zmax):
 	IDh = n.arange(len(hdu[1].data[colN]))
-	zsel = sZ(hdu,zmin,zmax)&(cen)
+	zsel = slice_Z(hdu,zmin,zmax)&(cen)
 	IDhz = IDh[zsel] # all ids in this redshift bin
 	QTY = hdu[1].data[colN][zsel] # all QTY in this redshift bin
 	nn,bb,pp = p.hist(QTY,cumulative = True,bins = len(QTY)/100)
@@ -80,7 +100,7 @@ def get_distrib_QTY_cen(hdu, colN, zmin, zmax):
 
 def get_distrib_QTY_sat(hdu, colN, zmin, zmax):
 	IDh = n.arange(len(hdu[1].data[colN]))
-	zsel = sZ(hdu,zmin,zmax)&(sat)
+	zsel = slice_Z(hdu,zmin,zmax)&(sat)
 	IDhz = IDh[zsel] # all ids in this redshift bin
 	QTY = hdu[1].data[colN][zsel] # all QTY in this redshift bin
 	nn,bb,pp = p.hist(QTY,cumulative = True,bins = len(QTY)/100)
