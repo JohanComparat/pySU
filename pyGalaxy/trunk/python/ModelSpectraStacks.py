@@ -119,7 +119,10 @@ class ModelSpectraStacks:
 		self.redshift = float(self.stack_file.split('-')[2].split('_')[0][1:])
 		sphere=4*n.pi*( self.cosmo.luminosity_distance(self.redshift) )**2.
 		self.sphereCM=sphere.to(u.cm**2)
-		# loads the data :
+		hdus = fits.open(self.stack_file)
+		self.hdR = hdus[0].header
+		self.hdu1 = hdus[1] # .data
+		# loads the data :
 		wlA,flA,flErrA = self.hdu1.data['wavelength'], self.hdu1.data['meanWeightedStack'], self.hdu1.data['jackknifStackErrors']
 		self.selection = (flA>0) & (self.hdu1.data['NspectraPerPixel']  > float( self.stack_file.split('_')[-5]) * self.N_spectra_limitFraction )
 		self.wl,self.fl,self.flErr = wlA[self.selection], flA[self.selection], flErrA[self.selection] 
