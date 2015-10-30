@@ -46,10 +46,7 @@ class MultiDarkSimulation :
 
     def computeSingleDistributionFunction(self, ii, name, bins ) :
         """
-        Computes the mass, velocity and concentration histograms for a rockstar snapshot.
-        
-        I oopens a snapshot and reads line by line extractin the quantity of interest.
-        
+        Extracts the distribution of quantity 'name' out of all snapshots of the Multidark simulation.        
         :param ii: index of the snapshot in the list self.snl
         :param name: name of the quantity of interest, mass, velocity.
         :param index: of the quantity of interest in the snapshots.
