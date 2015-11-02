@@ -5,7 +5,9 @@ import os
 from os.path import join
 from HaloSelection import *
 
-zmin, zmax, nGal_Deg2  = n.loadtxt("/data2/DATA/eBOSS/ELG/observations/NZ/nz-fisherGRIW1.dat",unpack=True)
+zmin_IN, zmax_IN, nGal_Deg2_IN  = n.loadtxt("/data2/DATA/eBOSS/ELG/observations/NZ/nz-fisherGRIW1.dat",unpack=True)
+ok = (zmin_IN >= 0.4) & (zmax_IN <= 1.2) 
+zmin, zmax, nGal_Deg2 = zmin_IN[ok], zmax_IN[ok], nGal_Deg2_IN[ok] 
 
 mockOutput_dir = "/data2/DATA/eBOSS/ELG-fischer-mocks/"
 #"/Volumes/data/MD-lightcones/mocks-v1/"
@@ -28,9 +30,6 @@ mm.mockName = "tryMocks-sham"
 mm.make_sham_catalog(colN='mvir')
 mm.write_full_catalog_fits()
 mm.write_catalog_ascii()
-mm.get_distrib_QTY('mvir',0.5,0.6)
-mm.get_distrib_QTY('mvir',0.5,0.6)
-mm.get_distrib_QTY('mvir',0.5,0.6)
 
 t1 = time.time()
 mm.get_distrib_QTY('mvir',0.5,0.6)

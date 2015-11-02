@@ -108,7 +108,7 @@ class MultiDarkMock:
         for ii in range(len(self.zmin)): 
             print "gets all halos for ", self.zmin[ii], "<z<", self.zmax[ii], "with col5 to mock ", self.nGal[ii], " galaxies." 
             IDhz, QTY, nn, bb = self.get_distrib_QTY( colN, self.zmin[ii], self.zmax[ii])
-            ids[ii].append( self.select_sham(self.nGal[ii],IDhz, QTY, nn,bb)) 
+            ids.append( self.select_sham(self.nGal[ii],IDhz, QTY, nn,bb)) 
 
         self.idSel = n.hstack(( ids ))
 
@@ -143,7 +143,7 @@ class MultiDarkMock:
         for ii in range(len(self.zmin)):
             print "gets all halos for ", self.zmin[ii], "<z<", self.zmax[ii], "with col5 to mock ", self.nGal[ii], " galaxies." 
             IDhz, QTY, nn, bb = get_distrib_QTY( hdu, colN, self.zmin[ii], self.zmax[ii] )
-            ids[ii].append( self.select_shamIncomplete( incompletenessFactor[ii], self.nGal[ii], IDhz, QTY, nn, bb ) ) 
+            ids.append( self.select_shamIncomplete( incompletenessFactor[ii], self.nGal[ii], IDhz, QTY, nn, bb ) ) 
 
         self.idSel = n.hstack(( ids ))
 
@@ -177,7 +177,7 @@ class MultiDarkMock:
         for ii in range(len(self.zmin)):
             print "gets all halos for ", self.zmin[ii], "<z<", self.zmax[ii], "with col5 to mock ", self.nGal[ii], " galaxies." 
             IDhz, QTY, nn, bb = get_distrib_QTY( hdu, colN, self.zmin[ii], self.zmax[ii] )
-            ids[ii].append( self.select_shamMAX( maxQTY[ii], self.nGal[ii], IDhz, QTY, nn, bb ) ) 
+            ids.append( self.select_shamMAX( maxQTY[ii], self.nGal[ii], IDhz, QTY, nn, bb ) ) 
 
         self.idSel = n.hstack(( ids ))
 
@@ -231,7 +231,7 @@ class MultiDarkMock:
         for ii in range(len(self.zmin)):
             print "gets all halos for ", self.zmin[ii], "<z<", self.zmax[ii], "with col5 to mock ", self.nGal[ii], " galaxies." 
             IDhz, QTY, nn, bb = get_distrib_QTY( hdu, colN, self.zmin[ii], self.zmax[ii] )
-            ids[ii].append( self.select_Gaussian( means[ii], scatters[ii], self.nGal[ii], IDhz, QTY ) ) 
+            ids.append( self.select_Gaussian( means[ii], scatters[ii], self.nGal[ii], IDhz, QTY ) ) 
 
         self.idSel = n.hstack(( ids ))
         
@@ -346,7 +346,7 @@ class MultiDarkMock:
             print "gets all halos for ",zmin[ii],"<z<",zmax[ii], "with col5 to mock ", self.nGal[ii], " galaxies." 
             IDhz_c,QTY_c,nn_c,bb_c=get_distrib_QTY_cen( colN, zmin=self.zmin[ii], zmax=self.zmax[ii])
             IDhz_s,QTY_s,nn_s,bb_s=get_distrib_QTY_sat( colN, zmin=self.zmin[ii], zmax=self.zmax[ii])
-            ids[ii].append( self.select_GaussianFsat( means[ii], scatters[ii], fsats[ii], self.nGal[ii], IDhz_c, QTY_c, IDhz_s, QTY_s  ) ) 
+            ids.append( self.select_GaussianFsat( means[ii], scatters[ii], fsats[ii], self.nGal[ii], IDhz_c, QTY_c, IDhz_s, QTY_s  ) ) 
 
         self.idSel = n.hstack(( ids ))
 
@@ -400,6 +400,6 @@ class MultiDarkMock:
         for ii in range(len(self.zmin)):
             print "gets all halos for ", self.zmin[ii], "<z<", self.zmax[ii], "with col5 to mock ", self.nGal[ii], " galaxies." 
             IDhz, QTY, nn, bb = get_distrib_QTY( hdu, colN, self.zmin[ii], self.zmax[ii] )
-            ids[ii].append( self.select_LogNorm( means[ii], scatters[ii], self.nGal[ii], IDhz, QTY ) ) 
+            ids.append( self.select_LogNorm( means[ii], scatters[ii], self.nGal[ii], IDhz, QTY ) ) 
 
         self.idSel = n.hstack(( ids ))
