@@ -351,8 +351,8 @@ class MultiDarkMock:
         ids = []
         for ii in range(len(self.zmin)):
             print "gets all halos for ",self.zmin[ii],"<z<",self.zmax[ii], "with col5 to mock ", self.nGal[ii], " galaxies." 
-            IDhz_c,QTY_c,nn_c,bb_c = self.get_distrib_QTY_cen( colN, zmin=self.zmin[ii], zmax=self.zmax[ii])
-            IDhz_s,QTY_s,nn_s,bb_s = self.get_distrib_QTY_sat( colN, zmin=self.zmin[ii], zmax=self.zmax[ii])
+            IDhz_c,QTY_c,nn_c,bb_c = self.get_distrib_QTY_cen( colN, z1=self.zmin[ii], z2=self.zmax[ii])
+            IDhz_s,QTY_s,nn_s,bb_s = self.get_distrib_QTY_sat( colN, z1=self.zmin[ii], z2=self.zmax[ii])
             ids.append( self.select_GaussianFsat( means[ii], scatters[ii], fsats[ii], self.nGal[ii], IDhz_c, QTY_c, IDhz_s, QTY_s  ) ) 
 
         self.idSel = n.hstack(( ids ))
