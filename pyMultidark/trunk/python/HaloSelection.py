@@ -16,245 +16,390 @@ import scipy.stats as st
 import os
 from os.path import join
 
-# initialize data side
+class MultiDarkMock:
+    """
+    :param hdu: hdu of the lightcone
+    :param area: area in deg2
+    :param mockOutput_dir: directory where to output mocks
+    :param mockName: name of the file where to save the mock
+    :param zmin: minimum redshift array defining the bins
+    :param zmax: maximum redshift array defining the bins
+    :param nGal_Deg2: number of galaxies per square degrees 
+    """
+    def __init__(self,hdu, area, mockOutput_dir, mockName, zmin, zmax, nGal_Deg2 ):
+        self.hdu = hdu
+        self.area = area
+        self.mockOutput_dir = mockOutput_dir
+        self.mockName = mockName
+        self.zmin = zmin
+        self.zmax = zmax
+        self.nGal_Deg2 = nGal_Deg2
+        
+    def initialize(self):
+        """
+        Initializes the procedure by putting into memroy arrays of central and satellites.
+        """
+        # derived numbers common to all SHAMs.
+        self.cen = (self.hdu[1].data['pid'] ==  -1)
+        self.sat = (self.cen ==  False)
+        self.Nhalos = self.hdu[1].header['NAXIS2']
+        self.IDh = n.arange(self.Nhalos)
+        self.nGal = n.array([ int(el * self.area )+1 for el in self.nGal_Deg2 ])
+        #self.nGal_to_z = interp1d(nGal_Deg2,(self.zmax+self.zmin)/2.)
+        #function to slice by redshift 
+        self.slice_Z = lambda z1, z2 : (self.hdu[1].data['z_redshift_space'] >= z1) & ( self.hdu[1].data['z_redshift_space'] < z2)
 
-# what tracer we are dealing with :
-tracer_dir = join(os.environ['DATA_DIR'],"ELG")
+    def write_catalog_ascii(self):
+        """Writes the obtained mock catalog for clustering estimation: just ra, dec and redshift. """
+        print "writes ascii catalog :", self.mockName
+        outPutFileName = join( self.mockOutput_dir, self.mockName + "_radecz.cat" )
+        n.savetxt(outPutFileName, n.transpose([self.hdu[1].data['ra'][self.idSel], self.hdu[1].data['dec'][self.idSel], self.hdu[1].data['z_redshift_space'][self.idSel]]),fmt = '%.8f %.8f %.5f')
 
-# where is the NZ :
-nz_dir = join(tracer_dir, "observations/NZ")
-NZfile = join(nz_dir, "nz-fisherGRIW1.dat")
+    def write_full_catalog_fits(self):
+        """Writes the obtained with all the columns from the parent lightcone catalog."""
+        print "writes fits catalog :", self.mockName
+        tbhdu = fits.BinTableHDU.from_columns(hdu[1].colmuns)
+        tbhdu.data = tbhdu[self.idSel]
+        prihdu = fits.PrimaryHDU(header=self.hdu[0].header)
+        thdulist = fits.HDUList([prihdu, tbhdu])
+        outPutFileName = join(self.mockOutput_dir,self.mockName+"_allCols.fits")
+        os.system('rm -rf'+ outPutFileName)
+        thdulist.writeto(outPutFileName)
 
-# loads the NZ, needs to be per deg2
-zminIN, zmaxIN, nGal_Deg2IN = n.loadtxt( NZfile, unpack = True, usecols = (0,1,2) )
-ok = (nGal_Deg2IN>0) & (zmaxIN<1.25) & (zminIN > 0.39)
-zmin, zmax, nGal_Deg2  =  zminIN[ok], zmaxIN[ok], nGal_Deg2IN[ok]
+    def get_distrib_QTY(self, colN, z1, z2):
+        """Computes the cumulative histogram of a column for halos in the range z1, z2.
+        :param colN: name of the column you want to take the histogram.
+        :param z1: minimum redshift
+        :param z2: maximum redshift
+        """
+        zsel = self.slice_Z( z1, z2)
+        IDhz = self.IDh[zsel] # all ids in this redshift bin
+        QTY = self.hdu[1].data[colN][zsel] # all QTY in this redshift bin
+        nn,bb,pp = p.hist(QTY,cumulative = True,bins = len(QTY)/100)
+        p.clf()
+        print len(IDhz), "halos with ",z1, "<z<", z2
+        return IDhz,QTY,nn,bb
 
-# where the outputs will be stored :
-mockOutpuName = "mocks_fischerGRIW1"
-mockOutput_dir = join(tracer_dir,mockOutpuName)
-os.system('mkdir ' + mockOutput_dir)
+    def select_sham(self, nGal_perbin, IDhz, QTY, nn, bb):
+        """
+        Returns the ids corresponding to a given density.
+        :param nGal_perbin: number of galaxies to be selected
+        :param IDhz: parent ID distribution
+        :param QTY: quantity to select halos on
+        :param nn: cumulative distribution o QTY
+        :param bb: bins of the cumulative distribution
+        """
+        mfc = interp1d(nn, (bb[:-1]+bb[1:])/2.)
+        QTYmax = mfc(len(QTY))
+        QTYmin = mfc(len(QTY)-nGal_perbin)
+        qsel = (QTY>QTYmin)&(QTY<= QTYmax)
+        IDhzq = IDhz[qsel]
+        print "N to be selected:",nGal_perbin,", Nselected:",len(IDhzq)
+        return IDhzq
 
-print "outputs stored : ",mockOutput_dir
-print "N(z) from ", NZfile
+    def make_sham_catalog(self, colN='mvir'):
+        """
+        Creates lists of ids of halos corresponding to the density given in the n(z). 
+        For every bin of redshift, it gets the distribution o fthe column of interest and matches to the density of galaxies in the NZ given.
+        Then provides a column of ids extracted from teh lightcone.
+        :param colN: name of the column you wish to work on for the sham.
+        """
+        ids = []
+        for ii in range(len(self.zmin)): 
+            print "gets all halos for ", self.zmin[ii], "<z<", self.zmax[ii], "with col5 to mock ", self.nGal[ii], " galaxies." 
+            IDhz, QTY, nn, bb = get_distrib_QTY(hdu, colN, self.zmin[ii], self.zmax[ii])
+            ids[ii].append( self.select_sham(self.nGal[ii],IDhz, QTY, nn,bb)) 
+
+        self.idSel = n.hstack(( ids ))
+
+    def select_shamIncomplete(self, incompFactor, nGal_perbin, IDhz, QTY, nn, bb):
+        """
+        Returns the ids corresponding to a given density and an incompleteness factor.
+        :param nGal_perbin: number of galaxies to be selected
+        :param IDhz: parent ID distribution
+        :param QTY: quantity to select halos on
+        :param nn: cumulative distribution o QTY
+        :param bb: bins of the cumulative distribution
+        :param incompFactor: incompleteness factor compared to the max of QTY : max(QTY)/incompFactor will be set as the max of the extracted distribution.
+        """
+        mfc = interp1d(nn,(bb[1:]+bb[:-1])/2.)
+        mfcInv = interp1d((bb[1:]+bb[:-1])/2.,nn)
+        QTYmaxAll = mfc(len(QTY))/incompFactor
+        Nmax = mfcInv(QTYmaxAll)
+        QTYmax = mfc(Nmax)
+        QTYmin = mfc(Nmax-nGal_perbin)
+        qsel = (QTY>QTYmin)&(QTY<= QTYmax)
+        IDhzq = IDhz[qsel]
+        return IDhzq
+        
+    def make_shamIncomplete_catalog(self, colN, incompletenessFactor ):
+        """
+        Creates lists of ids of halos corresponding to the density given in the n(z). 
+        For every bin of redshift, it gets the distribution o fthe column of interest and matches to the density of galaxies in the NZ given.
+        Then provides a column of ids extracted from teh lightcone.
+        :param colN: name of the column you wish to work on for the sham.
+        """
+        ids = []
+        for ii in range(len(self.zmin)):
+            print "gets all halos for ", self.zmin[ii], "<z<", self.zmax[ii], "with col5 to mock ", self.nGal[ii], " galaxies." 
+            IDhz, QTY, nn, bb = get_distrib_QTY( hdu, colN, self.zmin[ii], self.zmax[ii] )
+            ids[ii].append( self.select_shamIncomplete( incompletenessFactor[ii], self.nGal[ii], IDhz, QTY, nn, bb ) ) 
+
+        self.idSel = n.hstack(( ids ))
+
+    def select_shamMAX(self,QTY_max, nGal_perbin,IDhz, QTY, nn,bb):
+        """
+        Returns the ids corresponding to a given density with a maximum in the QTY.
+        :param nGal_perbin: number of galaxies to be selected
+        :param IDhz: parent ID distribution
+        :param QTY: quantity to select halos on
+        :param nn: cumulative distribution o QTY
+        :param bb: bins of the cumulative distribution
+        :param QTY_max: the max of QTY is set to QTY_max.
+        """
+        mfc = interp1d(nn,(bb[1:]+bb[:-1])/2.)
+        mfcInv = interp1d((bb[1:]+bb[:-1])/2.,nn)
+        Nmax = mfcInv(QTY_max)
+        QTYmax = mfc(Nmax)
+        QTYmin = mfc(Nmax-nGal_perbin)
+        qsel = (QTY>QTYmin)&(QTY<= QTYmax)
+        IDhzq = IDhz[qsel]
+        return IDhzq
+
+    def make_shamMAX_catalog(self, colN, maxQTY ):
+        """
+        Creates lists of ids of centrals and satellite galaxies corresponding to the density given in the n(z). 
+        For every bin of redshift, it gets the distribution o fthe column of interest and matches to the density of galaxies in the NZ given.
+        Then provides a column of ids extracted from teh lightcone.
+        :param colN: name of the column you wish to work on for the sham.
+        """
+        ids = []
+        for ii in range(len(self.zmin)):
+            print "gets all halos for ", self.zmin[ii], "<z<", self.zmax[ii], "with col5 to mock ", self.nGal[ii], " galaxies." 
+            IDhz, QTY, nn, bb = get_distrib_QTY( hdu, colN, self.zmin[ii], self.zmax[ii] )
+            ids[ii].append( self.select_shamMAX( maxQTY[ii], self.nGal[ii], IDhz, QTY, nn, bb ) ) 
+
+        self.idSel = n.hstack(( ids ))
+
+    def select_Gaussian(self, meanQTY, scatterQTY, nGal_perbin, IDhz, QTY):
+        """
+        Creates lists of ids of centrals and satellite galaxies corresponding to the density given in the n(z) and to a gaussian distribution . 
+        For every bin of redshift, it gets the distribution o fthe column of interest and matches to the density of galaxies in the NZ given.
+        Then provides a column of ids extracted from teh lightcone.
+        :param colN: name of the column you wish to work on for the sham.
+        :param meanQTY: mean of the distribution
+        :param scatterQTY: scatter of the distribution
+        :param nGal_perbin: total number of galaxies in this bins to mock
+        :param IDhz: IDs of the halos in this bin
+        :param QTY: array of the column to do the match on, mass, velocity, ...
+        """
+        # constructs the QTY intervals around the distribution
+        expected_cdf = lambda x : st.norm.cdf(x, loc = meanQTY, scale = scatterQTY)
+        interval  =  [ meanQTY - 9 * scatterQTY , meanQTY + 9 * scatterQTY]
+        xs = n.arange(interval[0],interval[1],(interval[1]-interval[0])/1000.)
+        out = expected_cdf(xs)
+        expected_cdf_inv = interp1d(out,xs)
+        boundaries = n.hstack((expected_cdf_inv(0.01),expected_cdf_inv(n.arange(0.1,0.91,0.1)), interval[1]))
+        # gets the number of halos to select
+        expected_cdf_tot = lambda x : nGal_perbin * st.norm.cdf(x, loc = meanQTY, scale = scatterQTY)
+        Up = expected_cdf_tot(boundaries[1:])
+        Low = n.hstack(( 0., expected_cdf_tot(boundaries[1:])[:-1] ))
+        N2select = Up-Low
+        print N2select,Up,Low
+        # select in mass in the box
+        qsels = n.array([ (QTY>boundaries[ii])&(QTY<= boundaries[ii+1]) for ii in range(len(boundaries)-1) ])
+        IDhzqAll = n.array([ IDhz[qs] for qs in qsels ])
+        # random downsample to the N2select in each bin
+        i = 0
+        ids_selected = []
+        for arr in IDhzqAll:
+            random.shuffle(arr)
+            ids_selected.append(arr[:N2select[i]])
+            i+= 1
+
+        ids_selected = n.hstack(( n.array(ids_selected) ))
+        return ids_selected
+
+    def make_Gaussian_catalog(self, colN, means, scatters):
+        """
+        Creates lists of ids of centrals and satellite galaxies corresponding to the density given in the n(z).
+        :param colN: name of the column you construct the catalog with
+        :param means: means of the Gaussians, array the same length of the redshift bin
+        :param scatters: scatters of the Gaussians, array the same length of the redshift bin
+        """
+        ids = []
+        for ii in range(len(self.zmin)):
+            print "gets all halos for ", self.zmin[ii], "<z<", self.zmax[ii], "with col5 to mock ", self.nGal[ii], " galaxies." 
+            IDhz, QTY, nn, bb = get_distrib_QTY( hdu, colN, self.zmin[ii], self.zmax[ii] )
+            ids[ii].append( self.select_Gaussian( means[ii], scatters[ii], self.nGal[ii], IDhz, QTY ) ) 
+
+        self.idSel = n.hstack(( ids ))
+        
+    def get_distrib_QTY_cen(self, colN, z1, z2):
+        """Computes the cumulative histogram of a column for central halos in the range z1, z2.
+        :param colN: name of the column you want to take the histogram.
+        :param z1: minimum redshift
+        :param z2: maximum redshift
+        """
+        zsel = self.slice_Z(z1, z2) & (self.cen)
+        IDhz = self.IDh[zsel] # all ids in this redshift bin
+        QTY = self.hdu[1].data[colN][zsel] # all QTY in this redshift bin
+        nn,bb,pp = p.hist(QTY,cumulative = True,bins = len(QTY)/100)
+        p.clf()
+        return IDhz,QTY,nn,bb
+
+    def get_distrib_QTY_sat(self, colN, z1, z2):
+        """Computes the cumulative histogram of a column for satellite halos in the range z1, z2.
+        :param colN: name of the column you want to take the histogram.
+        :param z1: minimum redshift
+        :param z2: maximum redshift
+        """
+        zsel = self.slice_Z(z1, z2) & (self.sat)
+        IDhz = self.IDh[zsel] # all ids in this redshift bin
+        QTY = self.hdu[1].data[colN][zsel] # all QTY in this redshift bin
+        nn,bb,pp = p.hist(QTY,cumulative = True,bins = len(QTY)/100)
+        p.clf()
+        return IDhz,QTY,nn,bb
+
+    def select_GaussianFsat(self,meanQTY,scatterQTY,fsat, nGal_perbin, IDhz_c, QTY_c, IDhz_s, QTY_s ):
+        """
+        Extracts the ids of halos to create a mock with a Gaussian distribution.
+        :param colN: name of the column you wish to work on for the sham.
+        :param meanQTY: mean of the distribution
+        :param scatterQTY: scatter of the distribution
+        :param fsat: fraction of satellite in this bin
+        :param nGal_perbin: total number of galaxies in this bins to mock
+        :param IDhz_c: IDs of the central halos in this bin
+        :param QTY_c: column to do the match on, mass, velocity, ... for the central halos
+        :param IDhz_s: IDs of the satellite halos in this bin
+        :param QTY_s: column to do the match on, mass, velocity, ... for the satellite halos
+        """
+        nSat = int(nGal_perbin*fsat)
+        print "satellites",nGal_perbin,nSat,fsat,meanQTY,scatterQTY
+        # constructs the QTY intervals around the distribution 
+        expected_cdf = lambda x : st.norm.cdf(x, loc = meanQTY, scale = scatterQTY)
+        interval  =  [ meanQTY - 9 * scatterQTY , meanQTY + 9 * scatterQTY]
+        xs = n.arange(interval[0],interval[1],(interval[1]-interval[0])/1000.)
+        out = expected_cdf(xs)
+        expected_cdf_inv = interp1d(out,xs)
+        boundaries = n.hstack((expected_cdf_inv(0.01),expected_cdf_inv(n.arange(0.1,0.91,0.1)), interval[1]))
+        # gets the number of halos to select the SAT
+        expected_cdf_s  =  lambda x : nSat * st.norm.cdf(x, loc = meanQTY, scale = scatterQTY)
+        Up_s  =  expected_cdf_s(boundaries[1:])
+        Low_s  =  n.hstack(( 0., expected_cdf_s(boundaries[1:])[:-1] ))
+        N2select_s  =  Up_s-Low_s
+        # select in mass in the box
+        qsels_s = n.array([ (QTY_s>boundaries[ii])&(QTY_s<= boundaries[ii+1]) for ii in range(len(boundaries)-1) ])
+        IDhzqAll_s = n.array([ IDhz_s[qs] for qs in qsels_s ])
+
+        # random downsample to the N2select in each bin
+        i = 0
+        ids_selected_s = []
+        for arr2 in IDhzqAll_s:
+            random.shuffle(arr2)
+            #print len(arr2),int(N2select_s[i])
+            ids_selected_s.append(arr2[:int(N2select_s[i])])
+            i+= 1
+
+        id_s = n.hstack((n.array(ids_selected_s)))
+
+        nSatReal = len(id_s)
+        nCen = nGal_perbin-nSatReal
+        print "centrals", nGal_perbin,nSat,nCen,fsat,meanQTY,scatterQTY
+
+        # gets the number of halos to select the CEN, compatible with the sat fraction to get the right density.
+        print "centrals"
+        expected_cdf_c  =  lambda x : nCen * st.norm.cdf(x, loc = meanQTY, scale = scatterQTY)
+        Up_c  =  expected_cdf_c(boundaries[1:])
+        Low_c  =  n.hstack(( 0., expected_cdf_c(boundaries[1:])[:-1] ))
+        N2select_c  =  Up_c-Low_c
+        # select in mass in the box
+        qsels_c = n.array([ (QTY_c>boundaries[ii])&(QTY_c<= boundaries[ii+1]) for ii in range(len(boundaries)-1) ])
+        IDhzqAll_c = n.array([ IDhz_c[qs] for qs in qsels_c ])
+
+        # random downsample to the N2select in each bin
+        i = 0
+        ids_selected_c = []
+        for arr in IDhzqAll_c:
+            random.shuffle(arr)
+            #print len(arr),int(N2select_c[i])
+            ids_selected_c.append(arr[:int(N2select_c[i])])
+            i+= 1
+
+        id_c = n.hstack((n.array(ids_selected_c)))
+
+        ids_selected = n.hstack((id_c,id_s ))
+        print len(id_c),len(id_s),len(ids_selected)
+        return ids_selected
 
 
-# initialize the lightcone to extract the mock from
-lcDir = "/data2/DATA/eBOSS/Multidark-lightcones/MD_2.5Gpc/lightcones/lc_square_0.1z1.4/"
-lcFile = join(lcDir,"lightcone_MD_2.5Gpc_0.4z1.4.fits")
+    def make_GaussianFsat_catalog(self, colN, means, scatters, fsats):
+        """
+        Creates lists of ids of centrals and satellite galaxies corresponding to the density given in the n(z).
+        :param colN: name of the column you construct the catalog with
+        :param means: means of the Gaussians, array the same length of the redshift bin
+        :param scatters: scatters of the Gaussians, array the same length of the redshift bin
+        :param fsats: fractions of satellite, array the same length of the redshift bin
+        """
+        ids = []
+        for ii in range(len(self.zmin)):
+            print "gets all halos for ",zmin[ii],"<z<",zmax[ii], "with col5 to mock ", self.nGal[ii], " galaxies." 
+            IDhz_c,QTY_c,nn_c,bb_c=get_distrib_QTY_cen( colN, zmin=self.zmin[ii], zmax=self.zmax[ii])
+            IDhz_s,QTY_s,nn_s,bb_s=get_distrib_QTY_sat( colN, zmin=self.zmin[ii], zmax=self.zmax[ii])
+            ids[ii].append( self.select_GaussianFsat( means[ii], scatters[ii], fsats[ii], self.nGal[ii], IDhz_c, QTY_c, IDhz_s, QTY_s  ) ) 
 
-# loads the LC
-hdu = fits.open(lcFile)
-hdR = hdu[0].header
-print lcFile, " loaded, columns:"
-print hdu[1].data.dtype
-# [('ra', '>f8'), ('dec', '>f8'), ('z_real_space', '>f8'), ('z_redshift_space', '>f8'), ('v_parallel', '>f8'), ('id', '>i8'), ('num_prog', '>i2'), ('pid', '>i8'), ('upid', '>i8'), ('mvir', '>f4'), ('rvir', '>f8'), ('rs', '>f8'), ('vrms', '>f8'), ('vmax', '>f8'), ('Spin', '>f4'), ('M200b', '>f8'), ('M200c', '>f8'), ('b_to_a', '>f8'), ('c_to_a', '>f8'), ('Halfmass_Radius', '>f4'), ('Macc', '>f4'), ('Mpeak', '>f4'), ('Vacc', '>f8'), ('Vpeak', '>f8'), ('Acc_Rate_Inst', '>f4'), ('Acc_Rate_100Myr', '>f4'), ('Acc_Rate_Mpeak', '>f4')]
+        self.idSel = n.hstack(( ids ))
 
-# properties of the lightcone
-area = (2*30.)**2.
+    def select_LogNorm(self, meanQTY, scatterQTY, nGal_perbin,IDhz, QTY, nn,bb):
+        """
+        Creates lists of ids of centrals and satellite galaxies corresponding to the density given in the n(z) and to a gaussian distribution . 
+        For every bin of redshift, it gets the distribution o fthe column of interest and matches to the density of galaxies in the NZ given.
+        Then provides a column of ids extracted from teh lightcone.
+        :param colN: name of the column you wish to work on for the sham.
+        :param meanQTY: mean of the distribution
+        :param scatterQTY: scatter of the distribution
+        :param nGal_perbin: total number of galaxies in this bins to mock
+        :param IDhz: IDs of the halos in this bin
+        :param QTY: array of the column to do the match on, mass, velocity, ...
+        """
+        # constructs the QTY intervals around the distribution
+        expected_cdf = lambda x : st.lognorm.cdf(x, meanQTY, scatterQTY)
+        interval  =  [ meanQTY - 9 * scatterQTY , meanQTY + 9 * scatterQTY]
+        xs = n.arange(interval[0],interval[1],(interval[1]-interval[0])/1000.)
+        out = expected_cdf(xs)
+        expected_cdf_inv = interp1d(out,xs)
+        boundaries = n.hstack((expected_cdf_inv(0.01),expected_cdf_inv(n.arange(0.1,0.91,0.1)), interval[1]))
+        # gets the number of halos to select
+        expected_cdf_tot = lambda x : nGal_perbin * st.lognorm.cdf(x, meanQTY, scatterQTY)
+        Up = expected_cdf_tot(boundaries[1:])
+        Low = n.hstack(( 0., expected_cdf_tot(boundaries[1:])[:-1] ))
+        N2select = Up-Low
+        #print N2select,Up,Low
+        # select in mass in the box
+        qsels = n.array([ (QTY>boundaries[ii])&(QTY<= boundaries[ii+1]) for ii in range(len(boundaries)-1) ])
+        IDhzqAll = n.array([ IDhz[qs] for qs in qsels ])
+        # random downsample to the N2select in each bin
+        i = 0
+        ids_selected = []
+        for arr in IDhzqAll:
+            random.shuffle(arr)
+            ids_selected.append(arr[:N2select[i]])
+            i+= 1
 
-# boolean arrays that discriminate central and sat halos
-cen = (hdu[1].data['pid'] ==  -1)
-sat = (cen ==  False)
+        ids_selected = n.hstack(( n.array(ids_selected) ))
+        return ids_selected
 
-#function to slide in redshift
-slice_Z = lambda hdu,minz,maxz : (hdu[1].data['z_redshift_space']>= minz)&(hdu[1].data['z_redshift_space']<maxz)
+    def make_LogNorm_catalog(self, colN, means, scatters):
+        """
+        Creates lists of ids of centrals and satellite galaxies corresponding to the density given in the n(z).
+        :param colN: name of the column you construct the catalog with
+        :param means: means of the Gaussians, array the same length of the redshift bin
+        :param scatters: scatters of the Gaussians, array the same length of the redshift bin
+        """
+        ids = []
+        for ii in range(len(self.zmin)):
+            print "gets all halos for ", self.zmin[ii], "<z<", self.zmax[ii], "with col5 to mock ", self.nGal[ii], " galaxies." 
+            IDhz, QTY, nn, bb = get_distrib_QTY( hdu, colN, self.zmin[ii], self.zmax[ii] )
+            ids[ii].append( self.select_LogNorm( means[ii], scatters[ii], self.nGal[ii], IDhz, QTY ) ) 
 
-
-def writerCats(name,idSel):
-    """ writes the obtained mock catalog for clustering estimation. """
-    print "writes ", name
-    n.savetxt(mockOutput_dir+name+"_radecz.cat",n.transpose([hdu[1].data['ra'][idSel], hdu[1].data['dec'][idSel], hdu[1].data['z_redshift_space'][idSel]]),fmt = '%.8f %.8f %.5f')
-
-def writerCatsAll(name,idSel):
-    """ writes the obtained mock catalog and a catalog with all the columns"""
-    print "writes ", name
-    n.savetxt(mockOutput_dir+name+"_radecz.cat",n.transpose([hdu[1].data['ra'][idSel], hdu[1].data['dec'][idSel], hdu[1].data['z_redshift_space'][idSel]]))
-    tbhdu = fits.BinTableHDU.from_columns(hdu[1].colmuns)
-    tbhdu.data = tbhdu[idSel]
-    prihdu = fits.PrimaryHDU(header=hdR)
-    thdulist = fits.HDUList([prihdu, tbhdu])
-    outPutFileName = mockOutput_dir+name+"_allCols.fits"
-    os.system('rm '+outPutFileName)
-    thdulist.writeto(outPutFileName)
-
-def get_distrib_QTY(hdu, colN, zmin, zmax):
-    IDh = n.arange(len(hdu[1].data[colN]))
-    zsel = slice_Z(hdu,zmin,zmax)
-    IDhz = IDh[zsel] # all ids in this redshift bin
-    QTY = hdu[1].data[colN][zsel] # all QTY in this redshift bin
-    nn,bb,pp = p.hist(QTY,cumulative = True,bins = len(QTY)/100)
-    p.clf()
-    print zmin,zmax,len(IDhz)
-    return IDhz,QTY,nn,bb
-
-def get_distrib_QTY_cen(hdu, colN, zmin, zmax):
-    IDh = n.arange(len(hdu[1].data[colN]))
-    zsel = slice_Z(hdu,zmin,zmax)&(cen)
-    IDhz = IDh[zsel] # all ids in this redshift bin
-    QTY = hdu[1].data[colN][zsel] # all QTY in this redshift bin
-    nn,bb,pp = p.hist(QTY,cumulative = True,bins = len(QTY)/100)
-    p.clf()
-    print zmin,zmax,len(IDhz)
-    return IDhz,QTY,nn,bb
-
-def get_distrib_QTY_sat(hdu, colN, zmin, zmax):
-    IDh = n.arange(len(hdu[1].data[colN]))
-    zsel = slice_Z(hdu,zmin,zmax)&(sat)
-    IDhz = IDh[zsel] # all ids in this redshift bin
-    QTY = hdu[1].data[colN][zsel] # all QTY in this redshift bin
-    nn,bb,pp = p.hist(QTY,cumulative = True,bins = len(QTY)/100)
-    p.clf()
-    print zmin,zmax,len(IDhz)
-    return IDhz,QTY,nn,bb
-
-def sham(nGal,IDhz, QTY, nn,bb):
-    mfc = interp1d(nn,(bb[1:]+bb[:-1])/2.)
-    QTYmax = mfc(len(QTY))
-    QTYmin = mfc(len(QTY)-nGal)
-    qsel = (QTY>QTYmin)&(QTY<= QTYmax)
-    IDhzq = IDhz[qsel]
-    print zmin,zmax,nGal,len(IDhzq)
-    return IDhzq
-
-def shamIncomplete(incompFactor, nGal,IDhz, QTY, nn,bb):
-    mfc = interp1d(nn,(bb[1:]+bb[:-1])/2.)
-    mfcInv = interp1d((bb[1:]+bb[:-1])/2.,nn)
-    QTYmaxAll = mfc(len(QTY))/incompFactor
-    Nmax = mfcInv(QTYmaxAll)
-    QTYmax = mfc(Nmax)
-    QTYmin = mfc(Nmax-nGal)
-    qsel = (QTY>QTYmin)&(QTY<= QTYmax)
-    IDhzq = IDhz[qsel]
-    return IDhzq
-
-def sham_QTY_max(QTY_max, nGal,IDhz, QTY, nn,bb):
-    mfc = interp1d(nn,(bb[1:]+bb[:-1])/2.)
-    mfcInv = interp1d((bb[1:]+bb[:-1])/2.,nn)
-    Nmax = mfcInv(QTY_max)
-    QTYmax = mfc(Nmax)
-    QTYmin = mfc(Nmax-nGal)
-    qsel = (QTY>QTYmin)&(QTY<= QTYmax)
-    IDhzq = IDhz[qsel]
-    return IDhzq
-
-def selectGaussian(position,scatter, nGal,IDhz, QTY, nn,bb):
-    # constructs the QTY intervals around the distribution
-    expected_cdf = lambda x : st.norm.cdf(x, loc = position, scale = scatter)
-    interval  =  [ position - 9 * scatter , position + 9 * scatter]
-    xs = n.arange(interval[0],interval[1],(interval[1]-interval[0])/1000.)
-    out = expected_cdf(xs)
-    expected_cdf_inv = interp1d(out,xs)
-    boundaries = n.hstack((expected_cdf_inv(0.01),expected_cdf_inv(n.arange(0.1,0.91,0.1)), interval[1]))
-    # gets the number of halos to select
-    expected_cdf_tot = lambda x : nGal * st.norm.cdf(x, loc = position, scale = scatter)
-    Up = expected_cdf_tot(boundaries[1:])
-    Low = n.hstack(( 0., expected_cdf_tot(boundaries[1:])[:-1] ))
-    N2select = Up-Low
-    print N2select,Up,Low
-    # select in mass in the box
-    qsels = n.array([ (QTY>boundaries[ii])&(QTY<= boundaries[ii+1]) for ii in range(len(boundaries)-1) ])
-    IDhzqAll = n.array([ IDhz[qs] for qs in qsels ])
-    # random downsample to the N2select in each bin
-    i = 0
-    ids_selected = []
-    for arr in IDhzqAll:
-        random.shuffle(arr)
-        ids_selected.append(arr[:N2select[i]])
-        i+= 1
-
-    ids_selected = n.hstack(( n.array(ids_selected) ))
-    return ids_selected
-
-def selectGaussian_fsat(position,scatter,fsat, nGal,IDhz_c, QTY_c,IDhz_s, QTY_s ):
-    nSat = int(nGal*fsat)
-    print nGal,nSat,fsat,position,scatter
-    # constructs the QTY intervals around the distribution 
-    expected_cdf = lambda x : st.norm.cdf(x, loc = position, scale = scatter)
-    interval  =  [ position - 9 * scatter , position + 9 * scatter]
-    xs = n.arange(interval[0],interval[1],(interval[1]-interval[0])/1000.)
-    out = expected_cdf(xs)
-    expected_cdf_inv = interp1d(out,xs)
-    boundaries = n.hstack((expected_cdf_inv(0.01),expected_cdf_inv(n.arange(0.1,0.91,0.1)), interval[1]))
-    # gets the number of halos to select the SAT
-    print "sats"
-    expected_cdf_s  =  lambda x : nSat * st.norm.cdf(x, loc = position, scale = scatter)
-    Up_s  =  expected_cdf_s(boundaries[1:])
-    Low_s  =  n.hstack(( 0., expected_cdf_s(boundaries[1:])[:-1] ))
-    N2select_s  =  Up_s-Low_s
-    # select in mass in the box
-    qsels_s = n.array([ (QTY_s>boundaries[ii])&(QTY_s<= boundaries[ii+1]) for ii in range(len(boundaries)-1) ])
-    IDhzqAll_s = n.array([ IDhz_s[qs] for qs in qsels_s ])
-
-    # random downsample to the N2select in each bin
-    i = 0
-    ids_selected_s = []
-    for arr2 in IDhzqAll_s:
-        random.shuffle(arr2)
-        print len(arr2),int(N2select_s[i])
-        ids_selected_s.append(arr2[:int(N2select_s[i])])
-        i+= 1
-
-    id_s = n.hstack((n.array(ids_selected_s)))
-
-    nSatReal = len(id_s)
-    nCen = nGal-nSatReal
-    print nGal,nSat,nCen,fsat,position,scatter
-
-    # gets the number of halos to select the CEN, compatible with the sat fraction to get the right density.
-    print "centrals"
-    expected_cdf_c  =  lambda x : nCen * st.norm.cdf(x, loc = position, scale = scatter)
-    Up_c  =  expected_cdf_c(boundaries[1:])
-    Low_c  =  n.hstack(( 0., expected_cdf_c(boundaries[1:])[:-1] ))
-    N2select_c  =  Up_c-Low_c
-    # select in mass in the box
-    qsels_c = n.array([ (QTY_c>boundaries[ii])&(QTY_c<= boundaries[ii+1]) for ii in range(len(boundaries)-1) ])
-    IDhzqAll_c = n.array([ IDhz_c[qs] for qs in qsels_c ])
-
-    # random downsample to the N2select in each bin
-    i = 0
-    ids_selected_c = []
-    for arr in IDhzqAll_c:
-        random.shuffle(arr)
-        print len(arr),int(N2select_c[i])
-        ids_selected_c.append(arr[:int(N2select_c[i])])
-        i+= 1
-
-    id_c = n.hstack((n.array(ids_selected_c)))
-
-    print len(id_c),len(id_s)
-    ids_selected = n.hstack((id_c,id_s ))
-    print len(ids_selected)
-    return ids_selected
-
-
-
-
-def selectLogNorm(position,scatter, nGal,IDhz, QTY, nn,bb):
-    # constructs the QTY intervals around the distribution
-    expected_cdf = lambda x : st.lognorm.cdf(x, position, scatter)
-    interval  =  [ position - 9 * scatter , position + 9 * scatter]
-    xs = n.arange(interval[0],interval[1],(interval[1]-interval[0])/1000.)
-    out = expected_cdf(xs)
-    expected_cdf_inv = interp1d(out,xs)
-    boundaries = n.hstack((expected_cdf_inv(0.01),expected_cdf_inv(n.arange(0.1,0.91,0.1)), interval[1]))
-    # gets the number of halos to select
-    expected_cdf_tot = lambda x : nGal * st.lognorm.cdf(x, position, scatter)
-    Up = expected_cdf_tot(boundaries[1:])
-    Low = n.hstack(( 0., expected_cdf_tot(boundaries[1:])[:-1] ))
-    N2select = Up-Low
-    print N2select,Up,Low
-    # select in mass in the box
-    qsels = n.array([ (QTY>boundaries[ii])&(QTY<= boundaries[ii+1]) for ii in range(len(boundaries)-1) ])
-    IDhzqAll = n.array([ IDhz[qs] for qs in qsels ])
-    # random downsample to the N2select in each bin
-    i = 0
-    ids_selected = []
-    for arr in IDhzqAll:
-        random.shuffle(arr)
-        ids_selected.append(arr[:N2select[i]])
-        i+= 1
-
-    ids_selected = n.hstack(( n.array(ids_selected) ))
-    return ids_selected
-
+        self.idSel = n.hstack(( ids ))
