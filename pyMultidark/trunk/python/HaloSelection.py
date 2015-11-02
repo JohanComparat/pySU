@@ -114,7 +114,7 @@ class MultiDarkMock:
             ids.append( self.select_sham(self.nGal[ii],IDhz, QTY, nn,bb)) 
 
         self.idSel = n.hstack(( ids ))
-        self.NhaloMock = len(idSel.nonzero()[0])
+        self.NhaloMock = len((self.idSel).nonzero()[0])
 
     def select_shamIncomplete(self, incompFactor, nGal_perbin, IDhz, QTY, nn, bb):
         """
@@ -150,7 +150,7 @@ class MultiDarkMock:
             ids.append( self.select_shamIncomplete( incompletenessFactor[ii], self.nGal[ii], IDhz, QTY, nn, bb ) ) 
 
         self.idSel = n.hstack(( ids ))
-        self.NhaloMock = len(idSel.nonzero()[0])
+        self.NhaloMock = len((self.idSel).nonzero()[0])
 
     def select_shamMAX(self,QTY_max, nGal_perbin,IDhz, QTY, nn,bb):
         """
@@ -185,7 +185,7 @@ class MultiDarkMock:
             ids.append( self.select_shamMAX( maxQTY[ii], self.nGal[ii], IDhz, QTY, nn, bb ) ) 
 
         self.idSel = n.hstack(( ids ))
-        self.NhaloMock = len(idSel.nonzero()[0])
+        self.NhaloMock = len((self.idSel).nonzero()[0])
 
     def select_Gaussian(self, meanQTY, scatterQTY, nGal_perbin, IDhz, QTY):
         """
@@ -240,7 +240,7 @@ class MultiDarkMock:
             ids.append( self.select_Gaussian( means[ii], scatters[ii], self.nGal[ii], IDhz, QTY ) ) 
 
         self.idSel = n.hstack(( ids ))
-        self.NhaloMock = len(idSel.nonzero()[0])
+        self.NhaloMock = len((self.idSel).nonzero()[0])
         
     def get_distrib_QTY_cen(self, colN, z1, z2):
         """Computes the cumulative histogram of a column for central halos in the range z1, z2.
@@ -356,7 +356,7 @@ class MultiDarkMock:
             ids.append( self.select_GaussianFsat( means[ii], scatters[ii], fsats[ii], self.nGal[ii], IDhz_c, QTY_c, IDhz_s, QTY_s  ) ) 
 
         self.idSel = n.hstack(( ids ))
-        self.NhaloMock = len(idSel.nonzero()[0])
+        self.NhaloMock = len((self.idSel).nonzero()[0])
 
     def select_LogNorm(self, meanQTY, scatterQTY, nGal_perbin,IDhz, QTY, nn,bb):
         """
@@ -411,7 +411,7 @@ class MultiDarkMock:
             ids.append( self.select_LogNorm( means[ii], scatters[ii], self.nGal[ii], IDhz, QTY ) ) 
 
         self.idSel = n.hstack(( ids ))
-        self.NhaloMock = len(idSel.nonzero()[0])
+        self.NhaloMock = len((self.idSel).nonzero()[0])
 
     def create_random_catalog(self, factor = 5., dz=0.025 ):
         """Writes a random catalog"""
