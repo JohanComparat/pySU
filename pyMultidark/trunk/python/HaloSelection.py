@@ -58,9 +58,9 @@ class MultiDarkMock:
     def write_full_catalog_fits(self):
         """Writes the obtained with all the columns from the parent lightcone catalog."""
         print "writes fits catalog :", self.mockName
-        tbhdu = fits.BinTableHDU.from_columns(hdu[1].colmuns)
+        tbhdu = fits.BinTableHDU.from_columns( self.hdu[1].colmuns )
         tbhdu.data = tbhdu[self.idSel]
-        prihdu = fits.PrimaryHDU(header=self.hdu[0].header)
+        prihdu = fits.PrimaryHDU(header = self.hdu[0].header)
         thdulist = fits.HDUList([prihdu, tbhdu])
         outPutFileName = join(self.mockOutput_dir,self.mockName+"_allCols.fits")
         os.system('rm -rf'+ outPutFileName)
@@ -107,7 +107,7 @@ class MultiDarkMock:
         ids = []
         for ii in range(len(self.zmin)): 
             print "gets all halos for ", self.zmin[ii], "<z<", self.zmax[ii], "with col5 to mock ", self.nGal[ii], " galaxies." 
-            IDhz, QTY, nn, bb = get_distrib_QTY(hdu, colN, self.zmin[ii], self.zmax[ii])
+            IDhz, QTY, nn, bb = self.get_distrib_QTY( colN, self.zmin[ii], self.zmax[ii])
             ids[ii].append( self.select_sham(self.nGal[ii],IDhz, QTY, nn,bb)) 
 
         self.idSel = n.hstack(( ids ))

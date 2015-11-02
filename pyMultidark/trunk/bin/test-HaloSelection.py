@@ -29,6 +29,12 @@ mm.make_sham_catalog(colN='mvir')
 mm.write_full_catalog_fits()
 mm.write_catalog_ascii()
 mm.get_distrib_QTY('mvir',0.5,0.6)
+mm.get_distrib_QTY('mvir',0.5,0.6)
+mm.get_distrib_QTY('mvir',0.5,0.6)
 
+t1 = time.time()
+mm.get_distrib_QTY('mvir',0.5,0.6)
 t2 = time.time()
 print "dt=",t2 - t1
+
+# 30 + 180
