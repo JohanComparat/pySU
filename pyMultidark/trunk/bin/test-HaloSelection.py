@@ -30,10 +30,16 @@ mm.mockName = "tryMocks-sham"
 mm.make_sham_catalog(colN='mvir')
 mm.write_full_catalog_fits()
 mm.write_catalog_ascii()
-
-t1 = time.time()
-mm.get_distrib_QTY('mvir',0.5,0.6)
+mm.create_random_catalog()
 t2 = time.time()
 print "dt=",t2 - t1
+mm.writeClusteringParamFile("monopole")
+mm.writeClusteringParamFile("angular","_d1")
+mm.writeClusteringParamFile("angular","_d2")
+mm.writeClusteringParamFile("angular","_d3")
+mm.compute_clustering()
+t3 = time.time()
+print "dt=",t3 - t2
 
-# 30 + 180
+
+# 4 + 190

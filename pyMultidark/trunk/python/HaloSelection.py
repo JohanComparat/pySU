@@ -44,7 +44,7 @@ class MultiDarkMock:
         self.sat = (self.cen ==  False)
         self.Nhalos = self.hdu[1].header['NAXIS2']
         self.IDh = n.arange(self.Nhalos)
-        self.nGal = n.array([ int(el * self.area )+1 for el in self.nGal_Deg2 ])
+        self.nGal = n.array([ int(el * self.area)  for el in self.nGal_Deg2 ])
         #self.nGal_to_z = interp1d(nGal_Deg2,(self.zmax+self.zmin)/2.)
         #function to slice by redshift 
         self.slice_Z = lambda z1, z2 : (self.hdu[1].data['z_redshift_space'] >= z1) & ( self.hdu[1].data['z_redshift_space'] < z2)
@@ -53,12 +53,15 @@ class MultiDarkMock:
         """Writes the obtained mock catalog for clustering estimation: just ra, dec and redshift. """
         print "writes ascii catalog :", self.mockName
         outPutFileName = join( self.mockOutput_dir, self.mockName + "_radecz.cat" )
-        n.savetxt(outPutFileName, n.transpose([self.hdu[1].data['ra'][self.idSel], self.hdu[1].data['dec'][self.idSel], self.hdu[1].data['z_redshift_space'][self.idSel]]),fmt = '%.8f %.8f %.5f')
+        self.raMock = self.hdu[1].data['ra'][self.idSel]
+        self.decMock = self.hdu[1].data['dec'][self.idSel]
+        self.zMock = self.hdu[1].data['z_redshift_space'][self.idSel]
+        n.savetxt(outPutFileName, n.transpose([ self.raMock, self.decMock, self.zMock]),fmt = '%.8f %.8f %.5f')
 
     def write_full_catalog_fits(self):
         """Writes the obtained with all the columns from the parent lightcone catalog."""
         print "writes fits catalog :", self.mockName
-        tbhdu = fits.BinTableHDU.from_columns( self.hdu[1].colmuns )
+        tbhdu = fits.BinTableHDU.from_columns( self.hdu[1].columns )
         tbhdu.data = tbhdu[self.idSel]
         prihdu = fits.PrimaryHDU(header = self.hdu[0].header)
         thdulist = fits.HDUList([prihdu, tbhdu])
@@ -111,6 +114,7 @@ class MultiDarkMock:
             ids.append( self.select_sham(self.nGal[ii],IDhz, QTY, nn,bb)) 
 
         self.idSel = n.hstack(( ids ))
+        self.NhaloMock = len(idSel.nonzero()[0])
 
     def select_shamIncomplete(self, incompFactor, nGal_perbin, IDhz, QTY, nn, bb):
         """
@@ -146,6 +150,7 @@ class MultiDarkMock:
             ids.append( self.select_shamIncomplete( incompletenessFactor[ii], self.nGal[ii], IDhz, QTY, nn, bb ) ) 
 
         self.idSel = n.hstack(( ids ))
+        self.NhaloMock = len(idSel.nonzero()[0])
 
     def select_shamMAX(self,QTY_max, nGal_perbin,IDhz, QTY, nn,bb):
         """
@@ -180,6 +185,7 @@ class MultiDarkMock:
             ids.append( self.select_shamMAX( maxQTY[ii], self.nGal[ii], IDhz, QTY, nn, bb ) ) 
 
         self.idSel = n.hstack(( ids ))
+        self.NhaloMock = len(idSel.nonzero()[0])
 
     def select_Gaussian(self, meanQTY, scatterQTY, nGal_perbin, IDhz, QTY):
         """
@@ -234,6 +240,7 @@ class MultiDarkMock:
             ids.append( self.select_Gaussian( means[ii], scatters[ii], self.nGal[ii], IDhz, QTY ) ) 
 
         self.idSel = n.hstack(( ids ))
+        self.NhaloMock = len(idSel.nonzero()[0])
         
     def get_distrib_QTY_cen(self, colN, z1, z2):
         """Computes the cumulative histogram of a column for central halos in the range z1, z2.
@@ -349,6 +356,7 @@ class MultiDarkMock:
             ids.append( self.select_GaussianFsat( means[ii], scatters[ii], fsats[ii], self.nGal[ii], IDhz_c, QTY_c, IDhz_s, QTY_s  ) ) 
 
         self.idSel = n.hstack(( ids ))
+        self.NhaloMock = len(idSel.nonzero()[0])
 
     def select_LogNorm(self, meanQTY, scatterQTY, nGal_perbin,IDhz, QTY, nn,bb):
         """
@@ -403,3 +411,57 @@ class MultiDarkMock:
             ids.append( self.select_LogNorm( means[ii], scatters[ii], self.nGal[ii], IDhz, QTY ) ) 
 
         self.idSel = n.hstack(( ids ))
+        self.NhaloMock = len(idSel.nonzero()[0])
+
+    def create_random_catalog(self, factor = 5., dz=0.025 ):
+        """Writes a random catalog"""
+        self.nRandom = int(self.NhaloMock * factor )
+        raR = n.random.uniform(n.min(self.raMock), n.max(self.raMock), self.nRandom )
+        decR = n.random.uniform(n.min(self.decMock), n.max(self.decMock), self.nRandom )
+        z1=n.arange(n.min(self.zMock), n.max(self.zMock), dz)
+        nn,bb,pp=p.hist(self.zMock, bins=z1)
+        nz=interp1d((z1[1:]+z1[:-1])/2.,factor*nn)
+        rdsz=[]
+        for i in range(len(zs)-1):
+            inter=n.random.uniform(low=zs[i], high=zs[i+1], size=int(2* nz( zs[i]+dz/2. )))
+            rdsz.append(inter)
+
+        rds=n.hstack((rdsz))
+        n.random.shuffle(rds)
+        selRDS=(n.random.rand(len(raR))<float(self.nRandom)/len(raR))
+        RR=rds[:len(raR[selRDS])]
+        print "N final",len(raR[selRDS])
+        outPutFileName = join( self.mockOutput_dir, self.mockName + "_random.cat" )
+        n.savetxt(outPutFileName,n.transpose([raR[selRDS],decR[selRDS],RR]),fmt='%.8f %.8f %.5f')
+        raR,decR,RR=0,0,0
+        
+    def writeClusteringParamFile(self,type,decade=""):
+        f=open(join( self.mockOutput_dir, self.mockName +".param2PCF_"+type+decade),'a')
+        f.write("data_filename= "+join( self.mockOutput_dir, self.mockName + "_radecz.cat" )+" \n")
+        f.write("random_filename= "+join( self.mockOutput_dir, self.mockName + "_random.cat" )+" \n")
+        f.write("input_format= 2 \n")
+        f.write("mask_filename= 'none' \n")
+        f.write("z_dist_filename= 'none' \n")
+        f.write("output_filename= "+join( self.mockOutput_dir, self.mockName )+"_2PCF_"+type+decade+".dat \n")
+        f.write("num_lines= all \n")
+        f.write("corr_type= "+type+" \n")
+        f.write("corr_estimator= LS \n")
+        f.write("np_rand_fact= 5 \n")
+        f.write("omega_M= 0.307115 \n")
+        f.write("omega_L= 0.692885 \n")
+        f.write("w= -1 \n")
+        f.write("radial_aperture= 1 \n")
+        f.write("use_pm= 0 \n")
+        f.write("n_pix_sph= 2048 \n")
+        f.close()
+
+    def compute_clustering(self):
+        os.system("/home2/jcomparat/code/CUTE-1.1A1/CUTE/CUTE "+join( self.mockOutput_dir, self.mockName +".param2PCF_angular_d1"))
+        os.system("/home2/jcomparat/code/CUTE-1.1A2/CUTE/CUTE "+join( self.mockOutput_dir, self.mockName +".param2PCF_angular_d2"))
+        os.system("/home2/jcomparat/code/CUTE-1.1A3/CUTE/CUTE "+join( self.mockOutput_dir, self.mockName +".param2PCF_angular_d3"))
+        os.system("/home2/jcomparat/code/CUTE-1.1M/CUTE/CUTE "+join( self.mockOutput_dir, self.mockName +".param2PCF_monopole"))
+
+        
+        
+        
+        
