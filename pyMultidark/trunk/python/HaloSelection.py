@@ -66,7 +66,7 @@ class MultiDarkMock:
         prihdu = fits.PrimaryHDU(header = self.hdu[0].header)
         thdulist = fits.HDUList([prihdu, tbhdu])
         outPutFileName = join(self.mockOutput_dir,self.mockName+"_allCols.fits")
-        os.system('rm -rf'+ outPutFileName)
+        os.system('rm -rf '+ outPutFileName)
         thdulist.writeto(outPutFileName)
 
     def get_distrib_QTY(self, colN, z1, z2):
@@ -350,7 +350,7 @@ class MultiDarkMock:
         """
         ids = []
         for ii in range(len(self.zmin)):
-            print "gets all halos for ",zmin[ii],"<z<",zmax[ii], "with col5 to mock ", self.nGal[ii], " galaxies." 
+            print "gets all halos for ",self.zmin[ii],"<z<",self.zmax[ii], "with col5 to mock ", self.nGal[ii], " galaxies." 
             IDhz_c,QTY_c,nn_c,bb_c=get_distrib_QTY_cen( colN, zmin=self.zmin[ii], zmax=self.zmax[ii])
             IDhz_s,QTY_s,nn_s,bb_s=get_distrib_QTY_sat( colN, zmin=self.zmin[ii], zmax=self.zmax[ii])
             ids.append( self.select_GaussianFsat( means[ii], scatters[ii], fsats[ii], self.nGal[ii], IDhz_c, QTY_c, IDhz_s, QTY_s  ) ) 
@@ -418,9 +418,10 @@ class MultiDarkMock:
         self.nRandom = int(self.NhaloMock * factor )
         raR = n.random.uniform(n.min(self.raMock), n.max(self.raMock), self.nRandom )
         decR = n.random.uniform(n.min(self.decMock), n.max(self.decMock), self.nRandom )
-        z1=n.arange(n.min(self.zMock), n.max(self.zMock), dz)
+        z1=n.arange(n.min(self.zMock)-0.1, n.max(self.zMock)+0.1, dz)
         nn,bb,pp=p.hist(self.zMock, bins=z1)
         nz=interp1d((z1[1:]+z1[:-1])/2.,factor*nn)
+        zs=n.arange(n.min(self.zMock), n.max(self.zMock), dz)
         rdsz=[]
         for i in range(len(zs)-1):
             inter=n.random.uniform(low=zs[i], high=zs[i+1], size=int(2* nz( zs[i]+dz/2. )))

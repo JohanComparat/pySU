@@ -26,8 +26,9 @@ mm.initialize()
 t1 = time.time()
 print "dt=",t1 - t0
 
-mm.mockName = "tryMocks-sham"
-mm.make_sham_catalog(colN='mvir')
+mm.mockName = "tryMocks-gauss"
+#mm.make_sham_catalog(colN='mvir')
+mm.make_GaussianFsat_catalog("mvir", n.ones_like(zmin)*1e13,n.ones_like(zmin)*0.6e13, n.ones_like(zmin)*0.2)
 mm.write_full_catalog_fits()
 mm.write_catalog_ascii()
 mm.create_random_catalog()
