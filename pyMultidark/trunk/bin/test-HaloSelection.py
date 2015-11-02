@@ -5,7 +5,7 @@ import os
 from os.path import join
 from HaloSelection import *
 
-zmin, zmax, nGal_Deg2  = n.loadtxt("/data2/DATA/eBOSS/ELG/observations/NZ/nz-fisherGRIW1.dat",unapck=True)
+zmin, zmax, nGal_Deg2  = n.loadtxt("/data2/DATA/eBOSS/ELG/observations/NZ/nz-fisherGRIW1.dat",unpack=True)
 
 mockOutput_dir = "/data2/DATA/eBOSS/ELG-fischer-mocks/"
 #"/Volumes/data/MD-lightcones/mocks-v1/"
