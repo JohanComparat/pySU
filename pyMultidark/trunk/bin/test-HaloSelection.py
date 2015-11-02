@@ -26,21 +26,25 @@ mm.initialize()
 t1 = time.time()
 print "dt=",t1 - t0
 
-mm.mockName = "tryMocks-gauss"
-#mm.make_sham_catalog(colN='mvir')
-mm.make_GaussianFsat_catalog("mvir", n.ones_like(zmin)*1e13,n.ones_like(zmin)*0.6e13, n.ones_like(zmin)*0.2)
-mm.write_full_catalog_fits()
-mm.write_catalog_ascii()
-mm.create_random_catalog()
 t2 = time.time()
 print "dt=",t2 - t1
-mm.writeClusteringParamFile("monopole")
-mm.writeClusteringParamFile("angular","_d1")
-mm.writeClusteringParamFile("angular","_d2")
-mm.writeClusteringParamFile("angular","_d3")
-mm.compute_clustering()
 t3 = time.time()
 print "dt=",t3 - t2
 
-
-# 4 + 190
+sats=n.arange(0.,0.31,0.025)
+mMean=n.arange(12.2,13.6,0.2)
+for ii in range(len(sats)):
+    for jj in range(len(mMean)):
+        p1 = mMean[jj]
+        p2 = mMean[jj]-0.2
+        p3 = sats[ii]
+        mm.mockName = "tryMocks-gaussian_mean_"+str(p1)+"_sig_"+str(p2)+"_fsat_"+str(p3)
+        mm.make_GaussianFsat_catalog("mvir", n.ones_like(zmin)*10**p1,n.ones_like(zmin)*10**p2, n.ones_like(zmin)*p3)
+        #mm.write_full_catalog_fits()
+        mm.write_catalog_ascii()
+        mm.create_random_catalog()
+        mm.writeClusteringParamFile("monopole")
+        #mm.writeClusteringParamFile("angular","_d1")
+        mm.writeClusteringParamFile("angular","_d2")
+        mm.writeClusteringParamFile("angular","_d3")
+        mm.compute_clustering()
