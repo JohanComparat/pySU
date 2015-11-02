@@ -62,7 +62,7 @@ class MultiDarkMock:
         """Writes the obtained with all the columns from the parent lightcone catalog."""
         print "writes fits catalog :", self.mockName
         tbhdu = fits.BinTableHDU.from_columns( self.hdu[1].columns )
-        tbhdu.data = tbhdu[self.idSel]
+        tbhdu.data = tbhdu.data[self.idSel]
         prihdu = fits.PrimaryHDU(header = self.hdu[0].header)
         thdulist = fits.HDUList([prihdu, tbhdu])
         outPutFileName = join(self.mockOutput_dir,self.mockName+"_allCols.fits")
