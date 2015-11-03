@@ -49,14 +49,16 @@ for ii in range(len(sats)):
 """
 
 data_clustering_dir= '/data2/DATA/eBOSS/ELG/observations/clustering-fischer/'
-x_data=n.loadtxt(join(data_clustering_dir,'grizw.xi2'),unpack=True,usecols=(0,1,2))
+aa,bb,cc=n.loadtxt(join(data_clustering_dir,'grizw.xi2'),unpack=True,usecols=(0,1,2))
+
+x_data = [aa,bb,2.*cc]
 
 xx0,yy0,y0E=n.loadtxt(join(data_clustering_dir,'elg-fischer-griw-all-2PCF-angular-d3.dat'),unpack=True,usecols=(0,1,2))
 xx1,yy1,y1E=n.loadtxt(join(data_clustering_dir,'elg-fischer-griw-all-2PCF-angular-d2.dat'),unpack=True,usecols=(0,1,2))
 xx2,yy2,y2E=n.loadtxt(join(data_clustering_dir,'elg-fischer-griw-all-2PCF-angular-d1.dat'),unpack=True,usecols=(0,1,2))
 xx=n.hstack((xx0,xx1[1:],xx2[1:]))
 yy=n.hstack((yy0,yy1[1:],yy2[1:]))
-yE=n.hstack((y0E,y1E[1:],y2E[1:]))
+yE=n.hstack((y0E,y1E[1:],y2E[1:]))*2.
 
 w_data = [xx,yy,yE]
 chi2map=[]
@@ -66,7 +68,7 @@ for ii in range(len(sats)):
         p2 = mMean[jj]-0.2
         p3 = sats[ii]
         mm.mockName = "tryMocks-gaussian_mean_"+str(p1)+"_sig_"+str(p2)+"_fsat_"+str(p3)
-        chi2Wr, chi2Xr = mm.compare_clustering_data_mock(w_data, x_data)
+        chi2Wr, chi2Xr = mm.compare_clustering_data_mock(w_data, x_data, s_max_chi2=19)
         chi2map.append([p1,p2,p3,chi2Wr, chi2Xr])
         
 
@@ -80,6 +82,6 @@ p.xlabel('M mean')
 p.scatter(chi2map[2], chi2map[0],c=(chi2map[3]+chi2map[4])/2.,s=60)
 cb=p.colorbar()
 cb.set_label('chi2 / ndof')
-p.savefig("Fischer-griw-Mmean-fsat.pdf")
+p.savefig(join(data_clustering_dir,"Fischer-griw-Mmean-fsat.pdf"))
 p.clf()
     
