@@ -68,11 +68,9 @@ for ii in range(len(sats)):
         p2 = mMean[jj]-0.2
         p3 = sats[ii]
         mm.mockName = "tryMocks-gaussian_mean_"+str(p1)+"_sig_"+str(p2)+"_fsat_"+str(p3)
-        chi2Wr, chi2Xr = mm.compare_clustering_data_mock(w_data, x_data, s_max_chi2=19)
+        chi2Wr, chi2Xr = mm.compare_clustering_data_mock(w_data, x_data)
         chi2map.append([p1,p2,p3,chi2Wr, chi2Xr])
         
-
-
 chi2map = n.transpose(chi2map)
 
 p.figure(10,(6,5))
