@@ -437,6 +437,9 @@ class MultiDarkMock:
         raR,decR,RR=0,0,0
         
     def writeClusteringParamFile(self,type,decade=""):
+        """ Writes the clustering commands that command the CUTE code.
+        :param type: monopole or angular or ...
+        :param decade: string suffix that is appended if you study different scales (decades) _d1, _d2, _d3 are used for the angular clustering."""
         f=open(join( self.mockOutput_dir, self.mockName +".param2PCF_"+type+decade),'a')
         f.write("data_filename= "+join( self.mockOutput_dir, self.mockName + "_radecz.cat" )+" \n")
         f.write("random_filename= "+join( self.mockOutput_dir, self.mockName + "_random.cat" )+" \n")
@@ -457,12 +460,42 @@ class MultiDarkMock:
         f.close()
 
     def compute_clustering(self):
+        """ Runs the CUTE code to estimate clustering using the LS estimator. """
         os.system("/home2/jcomparat/code/CUTE-1.1A1/CUTE/CUTE "+join( self.mockOutput_dir, self.mockName +".param2PCF_angular_d1"))
         os.system("/home2/jcomparat/code/CUTE-1.1A2/CUTE/CUTE "+join( self.mockOutput_dir, self.mockName +".param2PCF_angular_d2"))
         os.system("/home2/jcomparat/code/CUTE-1.1A3/CUTE/CUTE "+join( self.mockOutput_dir, self.mockName +".param2PCF_angular_d3"))
         os.system("/home2/jcomparat/code/CUTE-1.1M/CUTE/CUTE "+join( self.mockOutput_dir, self.mockName +".param2PCF_monopole"))
 
+    def compare_clustering_data_mock(self, w_data, xi_data, s_min_chi2=2, s_max_chi2=20, theta_min_chi2 = 0.005,  theta_max_chi2= 0.1):
+        """Compares the clustering of the mock catalog and the clustering of the data.
+        :param w_data: angular clustering from the data [x, y, yErr].
+        :param xi_data: monopole clustering from the data [x, y, yErr]. """
+        ths = n.logspace(theta_min_chi2,theta_max_chi2,20)
+        ss = n.logspace(s_min_chi2,s_max_chi2,20)
+        # loads the angular clustering from the mock
+        xx0, yy0, y2E = n.loadtxt( join( self.mockOutput_dir, self.mockName )+"_2PCF_"+"angular"+"_d3"+".dat",unpack=True,usecols = (0,1,2))
+        xx1, yy1, y1E= n.loadtxt( join( self.mockOutput_dir, self.mockName )+"_2PCF_"+"angular"+"_d2"+".dat",unpack=True,usecols = (0,1,2))
+        theta_selection = (n.hstack((xx0,xx1[1:])) > theta_min_chi2 ) & ( n.hstack((xx0,xx1[1:])) < theta_max_chi2 )
+        t_M = n.hstack((xx0,xx1[1:]))[ theta_selection ] #,xx2[1:]))
+        w_M = interp1d( t_M, n.hstack((yy0,yy1[1:]))[ theta_selection ] ) #,yy2[1:]))
+        # loads the monopole from the mock
+        s_M_a, xi_M_a = n.loadtxt( join( self.mockOutput_dir, self.mockName )+"_2PCF_"+"monopole"+".dat",unpack=True,usecols = (0,1))
+        s_selection = ( s_M_a > s_min_chi2 ) & ( s_M_a < s_max_chi2 )
+        s_M,  = s_M_a[s_selection] 
+        xi_M = interp1d( s_M, xi_M_a[s_selection])
+        # loads the monopole from the mock
+
+        s_selection_data=( xi_data[0] > s_min_chi2 ) & ( xi_data[0] < s_max_chi2 ) & (xi_data[1] > 2 * xi_data[2])
+        theta_selection_data = ( w_data[0] > theta_min_chi2 ) & ( w_data[0] < theta_max_chi2 ) & (w_data[1] > 2 * w_data[2])
+
+        xi_D = interp1d( xi_data[0][s_selection_data], xi_data[1][s_selection_data] )
+        xi_D_err = interp1d( xi_data[0][s_selection_data], xi_data[2][s_selection_data] )
+
+        w_D = interp1d( w_data[0][theta_selection_data], w_data[1][theta_selection_data] )
+        w_D_err = interp1d( w_data[0][theta_selection_data], w_data[2][theta_selection_data] )
+
+        chi2Wr = (w_D(ths) - w_M(ths))**2. / w_D_err(ths)**2 /len(ths)
+        chi2Xr = (xi_D(ths) - xi_M(ths))**2. / xi_D_err(ths)**2 /len(ss)
         
-        
-        
+        return chi2Wr, chi2Xr
         
