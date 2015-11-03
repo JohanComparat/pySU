@@ -466,7 +466,7 @@ class MultiDarkMock:
         os.system("/home2/jcomparat/code/CUTE-1.1A3/CUTE/CUTE "+join( self.mockOutput_dir, self.mockName +".param2PCF_angular_d3"))
         os.system("/home2/jcomparat/code/CUTE-1.1M/CUTE/CUTE "+join( self.mockOutput_dir, self.mockName +".param2PCF_monopole"))
 
-    def compare_clustering_data_mock(self, w_data, xi_data, theta_min_chi2 = -3,  theta_max_chi2= -1.5, w_bins=15, s_min_chi2=0.5, s_max_chi2=1.2, s_bins=10):
+    def compare_clustering_data_mock(self, w_data, xi_data, theta_min_chi2 = -2.3,  theta_max_chi2= -1.5, w_bins=15, s_min_chi2=0.5, s_max_chi2=1.2, s_bins=10):
         """Compares the clustering of the mock catalog and the clustering of the data.
         :param w_data: angular clustering from the data [x, y, yErr].
         :param xi_data: monopole clustering from the data [x, y, yErr]. """

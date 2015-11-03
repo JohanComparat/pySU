@@ -73,11 +73,14 @@ for ii in range(len(sats)):
         
 chi2map = n.transpose(chi2map)
 
+index = n.argmin(chi2map[3][(chi2map[4]<2)])
+bestfit = chi2map.T[(chi2map[4]<2)][index]
+
 p.figure(10,(6,5))
 p.axes([0.18,0.15,0.75,0.75])
-p.ylabel('f sat')
-p.xlabel('M mean')
-#p.plot( chi2map[3], chi2map[1][chiC<1.5], 'k*',mec='w',ms=20,alpha=0.2)
+p.xlabel('f sat')
+p.ylabel('M mean')
+p.plot( bestfit[3], bestfit[1], 'k*',mec='w',ms=20,alpha=0.2)
 p.scatter(chi2map[2], chi2map[0],c=(chi2map[3]+chi2map[4])/2.,s=60)
 cb=p.colorbar()
 cb.set_label('chi2 / ndof')
