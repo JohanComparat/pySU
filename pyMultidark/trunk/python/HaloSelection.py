@@ -466,7 +466,7 @@ class MultiDarkMock:
         os.system("/home2/jcomparat/code/CUTE-1.1A3/CUTE/CUTE "+join( self.mockOutput_dir, self.mockName +".param2PCF_angular_d3"))
         os.system("/home2/jcomparat/code/CUTE-1.1M/CUTE/CUTE "+join( self.mockOutput_dir, self.mockName +".param2PCF_monopole"))
 
-    def compare_clustering_data_mock(self, w_data, xi_data, s_min_chi2=4, s_max_chi2=18, s_bins = 14, theta_min_chi2 = 0.005,  theta_max_chi2= 0.1, w_bins=18):
+    def compare_clustering_data_mock(self, w_data, xi_data, s_min_chi2=0.2, s_max_chi2=1.5, s_bins = 10, theta_min_chi2 = -3.,  theta_max_chi2= -1.5, w_bins=18):
         """Compares the clustering of the mock catalog and the clustering of the data.
         :param w_data: angular clustering from the data [x, y, yErr].
         :param xi_data: monopole clustering from the data [x, y, yErr]. """
@@ -493,7 +493,7 @@ class MultiDarkMock:
         w_D_err = interp1d( w_data[0], w_data[2]) #[theta_selection_data], w_data[2][theta_selection_data] )
 
         chi2Wr = (w_D(ths) - w_M(ths))**2. / w_D_err(ths)**2 /len(ths)
-        chi2Xr = (xi_D(ths) - xi_M(ths))**2. / xi_D_err(ths)**2 /len(ss)
+        chi2Xr = (xi_D(ss) - xi_M(ss))**2. / xi_D_err(ss)**2 /len(ss)
         
         return chi2Wr, chi2Xr
         

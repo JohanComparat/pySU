@@ -72,6 +72,7 @@ for ii in range(len(sats)):
         chi2map.append([p1,p2,p3,chi2Wr, chi2Xr])
         
 
+
 chi2map = n.transpose(chi2map)
 
 p.figure(10,(6,5))
