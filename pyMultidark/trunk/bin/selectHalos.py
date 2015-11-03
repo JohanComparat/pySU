@@ -53,8 +53,8 @@ aa,bb,cc=n.loadtxt(join(data_clustering_dir,'grizw.xi2'),unpack=True,usecols=(0,
 
 x_data = [aa,bb,2.*cc]
 
-xx0,yy0,y0E=n.loadtxt(join(data_clustering_dir,'elg-fischer-griw-all-2PCF-angular-d3.dat'),unpack=True,usecols=(0,1,2))
-xx1,yy1,y1E=n.loadtxt(join(data_clustering_dir,'elg-fischer-griw-all-2PCF-angular-d2.dat'),unpack=True,usecols=(0,1,2))
+xx0,yy0,y0E=n.loadtxt(join(data_clustering_dir,'elg-fischer-griw-all-no-w-2PCF-angular-d3.dat'),unpack=True,usecols=(0,1,2))
+xx1,yy1,y1E=n.loadtxt(join(data_clustering_dir,'elg-fischer-griw-all-no-w-2PCF-angular-d2.dat'),unpack=True,usecols=(0,1,2))
 xx2,yy2,y2E=n.loadtxt(join(data_clustering_dir,'elg-fischer-griw-all-2PCF-angular-d1.dat'),unpack=True,usecols=(0,1,2))
 xx=n.hstack((xx0,xx1[1:],xx2[1:]))
 yy=n.hstack((yy0,yy1[1:],yy2[1:]))
