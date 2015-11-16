@@ -1,7 +1,143 @@
 import numpy as n
+import matplotlib
+matplotlib.rcParams['font.size']=12
 import matplotlib.pyplot as p
 import glob
 import sys
+from scipy.optimize import curve_fit
+import cPickle
+
+Pdir = "/Volumes/data/BigMD/2.5Gpc/propertiesAtPeak/plots/"
+dir = "/Volumes/data/BigMD/2.5Gpc/propertiesAtPeak/"
+
+Vbins = n.loadtxt('/Volumes/data/BigMD/2.5Gpc/propertiesAtPeak/Vpeak.bins')
+
+
+vf = lambda v, A, v0, alpha, beta : 10**A * v**beta * n.e**(- (v/10**v0)**alpha )
+vx = n.logspace(2,4,100)
+pl = vf(vx,4,3,2.15,-2.9)
+
+centralList = n.array(glob.glob(dir+"hist-central-Vpeak-?.?????.dat"))
+centralList.sort()
+
+volume = (2500.)**3. 
+
+# evolution plot
+
+ids = [2,3,4,5,7,9,11,20,56]
+p.figure(1,(6,6))
+p.axes([0.2,0.2,0.75,0.75])
+for iii in ids :
+    el = centralList[iii]
+    z=1./float(el.split('-')[-1][:-4])-1.
+    b0,b1,val = n.loadtxt(el,unpack=True)
+    Nc = n.array([ n.sum(val[ii:]) for ii in range(len(val)) ])
+    xData_A = (10**b0+10**b1)/2.
+    yData_A = Nc/(volume ) 
+    yDataErr_A = 1/val**0.5
+    sel = (yDataErr_A!=n.inf)&(yData_A>0) & (xData_A>20)&(yData_A * volume >= 1)
+    xData = xData_A[sel]
+    yData = yData_A[sel]
+    yDataErr = yDataErr_A[sel]*yData_A[sel]
+    p.errorbar(xData,yData,yerr=yDataErr,elinewidth=1, label="z="+str(n.round(z,3)), rasterized=True)
+
+p.axhline(1/(volume),label=r'1/V',color='k',ls='dashed')
+p.xlim((50,4000))
+p.ylim((0.5/(volume), 1e-2))
+p.xlabel(r'$V_{peak}$ [km s$^{-1}$]')
+p.ylabel(r'N($>V_{peak}$)  [ h$^3$ Mpc$^{-3}$ ]')
+p.xscale('log')
+p.yscale('log')
+p.legend(loc=3)
+p.grid()
+p.savefig(Pdir + "VpeakF-cumulative-central-z8-z0-evolution.pdf")
+p.clf()
+
+sys.exit()
+
+# cumulative velocity function
+
+results, errors, redshifts, chi2Rs = [], [], [], []
+
+for iii,el in enumerate(centralList) :
+    z=1./float(el.split('-')[-1][:-4])-1.
+    b0,b1,val = n.loadtxt(el,unpack=True)
+    Nc = n.array([ n.sum(val[ii:]) for ii in range(len(val)) ])
+    xData_A = (10**b0+10**b1)/2.
+    yData_A = Nc/(volume ) 
+    yDataErr_A = 1/val**0.5
+    sel = (yDataErr_A!=n.inf)&(yData_A>0) & (xData_A>200)&(yData_A * volume >= 1)
+    xData = xData_A[sel]
+    yData = yData_A[sel]
+    yDataErr = yDataErr_A[sel]*yData_A[sel]
+    res, cov = curve_fit(vf, xData, yData, sigma = yDataErr, p0 = (4,3,2.15,-3.2) , maxfev = 5000000)
+    chi2red = n.round(n.sum( (vf(xData,res[0], res[1], res[2], res[3])- yData)**2. / (yDataErr**2)) / (len(xData) - (4-1)),2)
+    chi2Rs.append(chi2red)
+    results.append(res)
+    errors.append(cov)
+    redshifts.append(z)
+    p.figure(1,(6,6))
+    p.axes([0.2,0.2,0.75,0.75])
+    p.plot(vx, vf(vx,res[0], res[1], res[2], res[3]), label=r'fit')#$\chi^2$/ndof='+str(chi2red))
+    p.errorbar(xData,yData,yerr=yDataErr,color='k',elinewidth=2, label="z="+str(n.round(z,3)), rasterized=True)
+    p.axhline(1/(volume),label=r'1/V',color='k',ls='dashed')
+    p.xlim((100,4000))
+    p.ylim((0.5/(volume), 1e-1))
+    p.xlabel(r'$V_{peak}$ [km s$^{-1}$]')
+    p.ylabel(r'N($>V_{peak}$)  [ h$^3$ Mpc$^{-3}$ ]')
+    p.xscale('log')    
+    p.yscale('log')    
+    p.title(str(n.round(res[0],2))+" "+ str(n.round(res[1],2))+" "+ str(n.round(res[2],2))+" "+ str(n.round(res[3],2)) )
+    p.legend()
+    p.grid()
+    p.savefig(Pdir + "VpeakF-cumulative-central-z-"+str(n.round(z,4))+".pdf")
+    p.clf()
+
+results = n.transpose(results)
+errors = n.array(errors)
+diag_err = n.array([ [el[0][0]**0.5, el[1][1]**0.5, el[2][2]**0.5, el[3][3]**0.5] for el in errors]).T
+redshifts = n.array(redshifts)
+chi2Rs = n.array(chi2Rs)
+
+f=open(Pdir + "VpeakF-cumulative-central-z-param-fit-results.pkl",'w')
+cPickle.dump([results, errors, diag_err, redshifts, chi2Rs],f)
+f.close()
+
+ok = (redshifts < 1.1)
+
+p.figure(0,(6,6))
+p.axes([0.2,0.2,0.75,0.75])
+p.errorbar(redshifts[ok],results[0][ok], diag_err[0][ok])
+p.ylabel('log Amplitude')
+p.xlabel('z')
+p.grid()
+p.savefig(Pdir + "VpeakF-cumulative-central-z-param-amplitude-evolution.pdf")
+p.clf()
+p.figure(0,(6,6))
+p.axes([0.2,0.2,0.75,0.75])
+p.errorbar(redshifts[ok],results[1][ok], diag_err[1][ok])
+p.ylabel(r'$V_0$')
+p.xlabel('z')
+p.grid()
+p.savefig(Pdir + "VpeakF-cumulative-central-z-param-v0-evolution.pdf")
+p.clf()
+p.figure(0,(6,6))
+p.axes([0.2,0.2,0.75,0.75])
+p.errorbar(redshifts[ok],results[2][ok], diag_err[2][ok])
+p.ylabel(r'$\alpha$')
+p.xlabel('z')
+p.grid()
+p.savefig(Pdir + "VpeakF-cumulative-central-z-param-alpha-evolution.pdf")
+p.clf()
+p.figure(0,(6,6))
+p.axes([0.2,0.2,0.75,0.75])
+p.errorbar(redshifts[ok],results[3][ok], diag_err[3][ok])
+p.ylabel(r'$\beta$')
+p.xlabel('z')
+p.grid()
+p.savefig(Pdir + "VpeakF-cumulative-central-z-param-beta-evolution.pdf")
+p.clf()
+sys.exit()
 
 Pdir = "/Volumes/data/BigMD/2.5Gpc/plots/"
 dir = "/Volumes/data/BigMD/2.5Gpc/"

@@ -109,11 +109,26 @@ class MultiDarkSimulation :
         f.close()
 
 
-    def combinesSingleDistributionFunction(self, name ) :
+    def combinesSingleDistributionFunction(self, ii, name='Vpeak', bins=10**n.arange(0,3.5,0.01), type = "Central" ) :
         """
-        Coombines the outputs of computeSingleDistributionFunction. TO BE WRITTEN.
+        Coombines the outputs of computeSingleDistributionFunction.
+        :param ii: index of the snapshot
+        :param name: name of the quantity studies
+        :param bins: bins the histogram was done with
+        :param type: "Central" or "Satellite"
         """
-        return 0.
+        output_dir = join(self.wdir,self.boxDir,"properties",name)
+        nameSnapshot = self.snl[ii].split('/')[-1][:-5]
+        pklList = n.array(glob.glob(join(output_dir, nameSnapshot + "_" + name +"_"+type+"_*.pkl")))
+
+        nnM = n.empty( [len(pklList),len(bins)-1] ) 
+        for jj in range(len(pklList)):
+            f=open(pklList[jj],'r')
+            nnMinter = cPickle.load(f)
+            nnM[jj] = nnMinter
+            f.close()
+
+        n.savetxt(join(output_dir,"hist-"+type+"-"+name+"-"+nameSnapshot[6:]+".dat"),n.transpose([bins[:-1], bins[1:], nnM.sum(axis=0)]))
 
 
     def computeMassVelocityConcentrationFunction(self,ii) :
