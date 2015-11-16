@@ -5,3 +5,6 @@ for ii in n.arange(len(box.snl))[11::2]:
 	box.computeSingleDistributionFunction(ii,'Vpeak', 10**n.arange(0,3.5,0.01))
 
 
+for ii in n.arange(len(box.snl))[11::2]:
+	box.combinesSingleDistributionFunction(ii,'Vpeak', 10**n.arange(0,3.5,0.01),type = "Central")
+	box.combinesSingleDistributionFunction(ii,'Vpeak', 10**n.arange(0,3.5,0.01),type = "Satellite")

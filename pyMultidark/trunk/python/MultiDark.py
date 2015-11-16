@@ -107,6 +107,9 @@ class MultiDarkSimulation :
         f = open(join(output_dir, nameSnapshot + "_" + name + "_Satellite_" + str(countFileSat)+ ".pkl"),'w')
         cPickle.dump(nnM,f)
         f.close()
+        
+        n.savetxt(join(output_dir,name+".bins"),n.transpose([bins]))
+
 
 
     def combinesSingleDistributionFunction(self, ii, name='Vpeak', bins=10**n.arange(0,3.5,0.01), type = "Central" ) :
