@@ -55,6 +55,32 @@ p.clf()
 
 sys.exit()
 
+
+filename = n.array(glob.glob("0.4Gpc/*/hist*Central-Vpeak-0.22*.dat"))[0]
+def getData(filename,Vcut=0,volume = 400.**3.):
+    zz=1./float(filename.split('-')[-1][:-4])-1.
+    b0,b1,val = n.loadtxt(filename,unpack=True)
+    Nc = n.array([ n.sum(val[ii:]) for ii in range(len(val)) ])
+    xData_A = (10**b0+10**b1)/2.
+    yData_A = Nc/(volume ) 
+    yDataErr_A = 1/val**0.5
+    sel = (yDataErr_A!=n.inf)&(yData_A>0) & (xData_A>Vcut)&(yData_A * volume >= 1)
+    velocity = xData_A[sel]
+    redshift = n.ones_like(velocity)*zz
+    yData = yData_A[sel]
+    yDataErr = yDataErr_A[sel]*yData_A[sel]
+    return redshift, velocity, yData,yDataErr
+
+z,v,y,yerr = getData(hist04)
+
+
+hist10 = n.array(glob.glob("1Gpc/*/hist*Central-Vpeak-0.22*.dat"))[0]
+z10=1./float(hist10.split('-')[-1][:-4])-1.
+hist25 = n.array(glob.glob("2.5Gpc/*/hist*central-Vpeak-0.22*.dat"))[0]
+z25=1./float(hist25.split('-')[-1][:-4])-1.
+
+
+
 # cumulative velocity function
 
 results, errors, redshifts, chi2Rs = [], [], [], []
