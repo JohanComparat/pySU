@@ -27,23 +27,48 @@ def plotVF(b0, b1, val,volume,label="SMD"):
 p.figure(1,(6,6))
 p.axes([0.2,0.2,0.75,0.75])
 
-b0_04, b1_04, val_04 = n.loadtxt("0.4Gpc/Vpeak/hist-Central-Vpeak-0.70030.dat",unpack=True)
-plotVF(b0_04, b1_04, val_04,400.**3.,label="SMD")
-
-b0_10, b1_10, val_10 = n.loadtxt("1Gpc/Vpeak/hist-Central-Vpeak-0.70160.dat",unpack=True)
+b0_10, b1_10, val_10 = n.loadtxt("Multidark-lightcones/MD_1Gpc_new_rockS/properties/vmax/hist-Central-vmax-0.24770.dat",unpack=True)
 plotVF(b0_10, b1_10, val_10,1000.**3.,label="MDPL")
 
-b0_25, b1_25, val_25 = n.loadtxt("2.5Gpc/Vpeak/hist-central-Vpeak-0.70030.dat",unpack=True)
+b0_25, b1_25, val_25 = n.loadtxt("Multidark-lightcones/MD_2.5Gpc/properties/vmax/hist-Central-vmax-0.25700.dat",unpack=True)
 plotVF(b0_25, b1_25, val_25, 2500.**3.,label="BigMD")
+
+b0_25, b1_25, val_25 = n.loadtxt("Multidark-lightcones/MD_4Gpc/properties/vmax/hist-Central-vmax-0.25320.dat",unpack=True)
+plotVF(b0_25, b1_25, val_25, 4000.**3.,label="HMD")
 
 
 p.xlim((50,4000))
-p.ylim((0.5/(2500.**3.), 1e-2))
-p.xlabel(r'$V_{peak}$ [km s$^{-1}$]')
-p.ylabel(r'N($>V_{peak}$)  [ h$^3$ Mpc$^{-3}$ ]')
+p.ylim((0.5/(4000.**3.), 1))
+p.xlabel(r'$V_{max}$ [km s$^{-1}$]')
+p.ylabel(r'N($>V_{max}$)  [ h$^3$ Mpc$^{-3}$ ]')
 p.xscale('log')
 p.yscale('log')
 p.legend(loc=3)
+p.savefig(Pdir + "VmaxF-cumulative-central-z3.pdf")
+
+
+p.figure(2,(6,6))
+p.axes([0.2,0.2,0.75,0.75])
+
+b0_04, b1_04, val_04 = n.loadtxt("Multidark-lightcones/MD_0.4Gpc/properties/vmax/hist-Central-vmax-0.71830.dat",unpack=True)
+plotVF(b0_04, b1_04, val_04,400.**3.,label="SMD")
+
+b0_10, b1_10, val_10 = n.loadtxt("Multidark-lightcones/MD_1Gpc_new_rockS/properties/vmax/hist-Central-vmax-0.70160.dat",unpack=True)
+plotVF(b0_10, b1_10, val_10,1000.**3.,label="MDPL")
+
+b0_25, b1_25, val_25 = n.loadtxt("2.5Gpc/vmax/hist-Central-vmax-0.70030.dat",unpack=True)
+plotVF(b0_25, b1_25, val_25, 2500.**3.,label="BigMD")
+
+
+p.xlim((5,4000))
+p.ylim((0.5/(2500.**3.), 10))
+p.xlabel(r'$V_{max}$ [km s$^{-1}$]')
+p.ylabel(r'N($>V_{max}$)  [ h$^3$ Mpc$^{-3}$ ]')
+p.xscale('log')
+p.yscale('log')
+p.legend(loc=3)
+p.grid()
+p.savefig(Pdir + "VmaxF-cumulative-central-z0.42.pdf")
 p.show()
 
 
