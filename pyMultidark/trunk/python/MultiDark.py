@@ -87,7 +87,6 @@ class MultiDarkSimulation :
         :param bins: binning scheme to compute the historgram.
         """		
         index = self.columnDict[name]
-        COSindex = self.columnDict['pid']
         output_dir = join(self.wdir,self.boxDir,"properties",name)
         os.system('mkdir '+ output_dir)
         NperBatch = 10000000
@@ -105,12 +104,13 @@ class MultiDarkSimulation :
                 continue
 
             line = line.split()
-            sat_or_cen = float(line[COSindex])
-            if sat_or_cen != -1 :
+            sat_or_cen = float(line[self.columnDict['pid']])
+            mv = float(line[self.columnDict['mvir']])
+            if sat_or_cen != -1 and mv > 10 * self.Melement :
                 countSat+= 1					
                 qtySat[countSat] = float(line[index])
                 
-            if sat_or_cen == -1 :
+            if sat_or_cen == -1 and mv > 10 * self.Melement :
                 countCen+= 1					
                 qtyCentral[countCen] = float(line[index])
                 
