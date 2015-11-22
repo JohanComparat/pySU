@@ -272,14 +272,12 @@ class MultiDarkSimulation :
             nnAinter, nnBinter, dataABinter = cPickle.load(f)
             nnA[jj] = nnAinter
             nnB[jj] = nnBinter
-            dataAB[jj] = dataABinter
+            dataAB[jj] = dataABinter[0]
             f.close()
 
         n.savetxt(join(output_dir,"hist-"+type+"-"+nameA+"-"+nameSnapshot[6:]+".dat"),n.transpose([binsA[:-1], binsA[1:], nnA.sum(axis=0)]))
         n.savetxt(join(output_dir,"hist-"+type+"-"+nameB+"-"+nameSnapshot[6:]+".dat"),n.transpose([binsB[:-1], binsB[1:], nnB.sum(axis=0)]))
-        f = open(join(output_dir, "hist2d-"+type+"-"+ nameA+"-"+nameB + "-"+ nameSnapshot[6:] + ".pkl"),'w')
-        cPickle.dump([binsA, binsB, dataAB.sum(axis=0)],f)
-        f.close()
+        n.savetxt(join(output_dir, "hist2d-"+type+"-"+ nameA+"-"+nameB + "-"+ nameSnapshot[6:] + ".dat"), dataAB.sum(axis=0))
 
 
     def computeMassVelocityConcentrationFunction(self,ii) :
