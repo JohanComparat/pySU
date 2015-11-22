@@ -3,6 +3,5 @@ box = MultiDarkSimulation(Lbox=2500.0 * uu.Mpc,wdir="/data2/DATA/eBOSS/Multidark
 
 for ii in n.arange(len(box.snl)):
 	box.computeDoubleDistributionFunction(ii,'vmax', 'mvir', n.arange(0,3.5,0.01), n.arange(8,16,0.01))
-
-	box.combinesSingleDistributionFunction(ii,'vmax', n.arange(0,3.5,0.01),type = "Central")
-	box.combinesSingleDistributionFunction(ii,'vmax', n.arange(0,3.5,0.01),type = "Satellite")
+	box.combinesDoubleDistributionFunction(ii,'vmax', 'mvir', n.arange(0,3.5,0.01), n.arange(8,16,0.01),type = "Central")
+	box.combinesDoubleDistributionFunction(ii,'vmax', 'mvir', n.arange(0,3.5,0.01), n.arange(8,16,0.01),type = "Satellite")
