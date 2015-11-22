@@ -78,13 +78,14 @@ class MultiDarkSimulation :
         if self.boxDir == "MD_4Gpc":
             self.columnDict = {'id': 0, 'desc_id': 1, 'mvir': 2, 'vmax': 3, 'vrms': 4, 'rvir': 5, 'rs': 6, 'x': 8, 'y': 9, 'z': 10, 'vx': 11, 'vy': 12, 'vz': 13, 'Jx': 14, 'Jy': 15, 'Jz': 16, 'Spin': 17, 'Rs_Klypin': 18, 'Mmvir_all': 19, 'M200b': 20, 'M200c': 21, 'M500c': 22, 'M2500c': 23,'Xoff': 24, 'Voff': 25, 'Spin_Bullock': 26, 'b_to_a': 27, 'c_to_a': 28, 'Ax': 29, 'Ay': 30, 'Az': 31, 'b_to_a_500c': 32, 'c_to_a_500c': 33, 'Ax_500c': 34, 'Ay_500c': 35, 'Az_500c': 36, 'TU': 37, 'M_pe_Behroozi': 38, 'M_pe_Diemer': 39, 'pid': 40}
 
-    def computeSingleDistributionFunction(self, ii, name, bins ) :
+    def computeSingleDistributionFunction(self, ii, name, bins, Mfactor=100. ) :
         """
         Extracts the distribution of quantity 'name' out of all snapshots of the Multidark simulation.        
         :param ii: index of the snapshot in the list self.snl
         :param name: name of the quantity of interest, mass, velocity.
         :param index: of the quantity of interest in the snapshots.
         :param bins: binning scheme to compute the historgram.
+        :param Mfactor: only halos with Mvir > Mfact* Melement are used.
         """		
         index = self.columnDict[name]
         output_dir = join(self.wdir,self.boxDir,"properties",name)
@@ -106,11 +107,11 @@ class MultiDarkSimulation :
             line = line.split()
             sat_or_cen = float(line[self.columnDict['pid']])
             mv = float(line[self.columnDict['mvir']])
-            if sat_or_cen != -1 and mv > 10 * self.Melement :
+            if sat_or_cen != -1 and mv > Mfactor * self.Melement :
                 countSat+= 1					
                 qtySat[countSat] = float(line[index])
                 
-            if sat_or_cen == -1 and mv > 10 * self.Melement :
+            if sat_or_cen == -1 and mv > Mfactor * self.Melement :
                 countCen+= 1					
                 qtyCentral[countCen] = float(line[index])
                 
@@ -167,6 +168,118 @@ class MultiDarkSimulation :
             f.close()
 
         n.savetxt(join(output_dir,"hist-"+type+"-"+name+"-"+nameSnapshot[6:]+".dat"),n.transpose([bins[:-1], bins[1:], nnM.sum(axis=0)]))
+
+
+    def computeDoubleDistributionFunction(self, ii, nameA, nameB, binsA, binsB, Mfactor = 100. ) :
+        """
+        Extracts the distributions of two quantity and their correlation 'name' out of all snapshots of the Multidark simulation.
+        :param ii: index of the snapshot in the list self.snl
+        :param name: name of the quantity of interest, mass, velocity.
+        :param index: of the quantity of interest in the snapshots.
+        :param bins: binning scheme to compute the historgram.
+        :param Mfactor: only halos with Mvir > Mfact* Melement are used.
+        """		
+        indexA = self.columnDict[nameA]
+        indexB = self.columnDict[nameB]
+        output_dir = join(self.wdir,self.boxDir,"properties",nameA+"-"+nameB)
+        os.system('mkdir '+ output_dir)
+        NperBatch = 10000000
+        qtyCentral = n.empty((NperBatch,2))  # 10M array
+        qtySat = n.empty((NperBatch,2))  # 10M array
+        print nameA, nameB, indexA, indexB, output_dir
+
+        fl = fileinput.input(self.snl[ii])
+        nameSnapshot = self.snl[ii].split('/')[-1][:-5]
+
+        countCen,countSat,countFileCen,countFileSat = 0,0,0,0
+        
+        for line in fl:
+            if line[0] == "#" :
+                continue
+
+            line = line.split()
+            sat_or_cen = float(line[self.columnDict['pid']])
+            mv = float(line[self.columnDict['mvir']])
+            if sat_or_cen != -1 and mv > Mfactor * self.Melement :
+                countSat+= 1					
+                qtySat[countSat] = float(line[indexA]),float(line[indexB])
+                
+            if sat_or_cen == -1 and mv > Mfactor * self.Melement :
+                countCen+= 1					
+                qtyCentral[countCen] = float(line[indexA]),float(line[indexB])
+                
+            if countCen == NperBatch-1 :
+                nnA,bbA = n.histogram(n.log10(qtyCentral.T[0]),bins = binsA)
+                nnB,bbB = n.histogram(n.log10(qtyCentral.T[1]),bins = binsB)
+                dataAB = n.histogram2d(n.log10(qtyCentral.T[0]), qtyCentral.T[1] ,bins = [binsA,binsB])
+                print "countCen",countCen
+                f = open(join(output_dir, nameSnapshot + "_" + nameA+"-"+nameB + "_Central_" + str(countFileCen)+ ".pkl"),'w')
+                cPickle.dump([nnA,nnB,dataAB],f)
+                f.close()
+                countFileCen+= 1
+                countCen = 0
+
+            if countSat == NperBatch-1 :
+                nnA,bbA = n.histogram(n.log10(qtySat.T[0]),bins = binsA)
+                nnB,bbB = n.histogram(n.log10(qtySat.T[1]),bins = binsB)
+                dataAB = n.histogram2d(n.log10(qtySat.T[0]), qtySat.T[1] ,bins = [binsA,binsB])
+                print "countSat", countSat
+                f = open(join(output_dir, nameSnapshot + "_" + nameA+"-"+nameB+ "_Satellite_" + str(countFileSat)+ ".pkl"),'w')
+                cPickle.dump([nnA,nnB,dataAB],f)
+                f.close()
+                countFileSat+= 1
+                countSat = 0
+
+        # and for the last batch :
+        nnA,bbA = n.histogram(n.log10(qtyCentral.T[0]),bins = binsA)
+        nnB,bbB = n.histogram(n.log10(qtyCentral.T[1]),bins = binsB)
+        dataAB = n.histogram2d(n.log10(qtyCentral.T[0]), qtyCentral.T[1] ,bins = [binsA,binsB])
+        print "countCen",countCen
+        f = open(join(output_dir, nameSnapshot + "_" + nameA+"-"+nameB + "_Central_" + str(countFileCen)+ ".pkl"),'w')
+        cPickle.dump([nnA,nnB,dataAB],f)
+        f.close()
+
+        nnA,bbA = n.histogram(n.log10(qtySat.T[0]),bins = binsA)
+        nnB,bbB = n.histogram(n.log10(qtySat.T[1]),bins = binsB)
+        dataAB = n.histogram2d(n.log10(qtySat.T[0]), qtySat.T[1] ,bins = [binsA,binsB])
+        print "countSat", countSat
+        f = open(join(output_dir, nameSnapshot + "_" + nameA+"-"+nameB+ "_Satellite_" + str(countFileSat)+ ".pkl"),'w')
+        cPickle.dump([nnA,nnB,dataAB],f)
+        f.close()
+        
+        n.savetxt(join(output_dir,nameA+".bins"),n.transpose([binsA]))
+        n.savetxt(join(output_dir,nameB+".bins"),n.transpose([binsB]))
+
+
+
+    def combinesDoubleDistributionFunction(self, ii, nameA, nameB, binsA, binsB, type = "Central" ) :
+        """
+        Coombines the outputs of computeDoubleDistributionFunction.
+        :param ii: index of the snapshot
+        :param name: name of the quantity studies
+        :param bins: bins the histogram was done with
+        :param type: "Central" or "Satellite"
+        """
+        output_dir = join(self.wdir,self.boxDir,"properties",nameA+"-"+nameB)
+        nameSnapshot = self.snl[ii].split('/')[-1][:-5]
+        pklList = n.array(glob.glob(join(output_dir, nameSnapshot + "_" + nameA+"-"+nameB +"_"+type+"_*.pkl")))
+
+        nnA = n.empty( [len(pklList),len(binsA)-1] ) 
+        nnB = n.empty( [len(pklList),len(binsB)-1] ) 
+        dataAB = n.empty( [len(pklList),len(binsA)-1,len(binsB)-1] ) 
+        for jj in range(len(pklList)):
+            f=open(pklList[jj],'r')
+            nnAinter, nnBinter, dataABinter = cPickle.load(f)
+            nnA[jj] = nnAinter
+            nnB[jj] = nnBinter
+            dataAB[jj] = dataABinter
+            f.close()
+
+        n.savetxt(join(output_dir,"hist-"+type+"-"+nameA+"-"+nameSnapshot[6:]+".dat"),n.transpose([binsA[:-1], binsA[1:], nnA.sum(axis=0)]))
+        n.savetxt(join(output_dir,"hist-"+type+"-"+nameB+"-"+nameSnapshot[6:]+".dat"),n.transpose([binsB[:-1], binsB[1:], nnB.sum(axis=0)]))
+        f = open(join(output_dir, "hist2d-"+type+"-"+ nameA+"-"+nameB + "-"+ nameSnapshot[6:] + ".pkl"),'w')
+        cPickle.dump([binsA, binsB, dataAB.sum(axis=0)],f)
+        f.close()
 
 
     def computeMassVelocityConcentrationFunction(self,ii) :
