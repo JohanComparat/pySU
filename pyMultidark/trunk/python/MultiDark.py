@@ -211,7 +211,7 @@ class MultiDarkSimulation :
             if countCen == NperBatch-1 :
                 nnA,bbA = n.histogram(n.log10(qtyCentral.T[0]),bins = binsA)
                 nnB,bbB = n.histogram(n.log10(qtyCentral.T[1]),bins = binsB)
-                dataAB = n.histogram2d(n.log10(qtyCentral.T[0]), qtyCentral.T[1] ,bins = [binsA,binsB])
+                dataAB = n.histogram2d(n.log10(qtyCentral.T[0]), n.log10(qtyCentral.T[1]) ,bins = [binsA,binsB])
                 print "countCen",countCen
                 f = open(join(output_dir, nameSnapshot + "_" + nameA+"-"+nameB + "_Central_" + str(countFileCen)+ ".pkl"),'w')
                 cPickle.dump([nnA,nnB,dataAB],f)
@@ -222,7 +222,7 @@ class MultiDarkSimulation :
             if countSat == NperBatch-1 :
                 nnA,bbA = n.histogram(n.log10(qtySat.T[0]),bins = binsA)
                 nnB,bbB = n.histogram(n.log10(qtySat.T[1]),bins = binsB)
-                dataAB = n.histogram2d(n.log10(qtySat.T[0]), qtySat.T[1] ,bins = [binsA,binsB])
+                dataAB = n.histogram2d(n.log10(qtySat.T[0]), n.log10(qtySat.T[1]) ,bins = [binsA,binsB])
                 print "countSat", countSat
                 f = open(join(output_dir, nameSnapshot + "_" + nameA+"-"+nameB+ "_Satellite_" + str(countFileSat)+ ".pkl"),'w')
                 cPickle.dump([nnA,nnB,dataAB],f)
@@ -233,7 +233,7 @@ class MultiDarkSimulation :
         # and for the last batch :
         nnA,bbA = n.histogram(n.log10(qtyCentral.T[0]),bins = binsA)
         nnB,bbB = n.histogram(n.log10(qtyCentral.T[1]),bins = binsB)
-        dataAB = n.histogram2d(n.log10(qtyCentral.T[0]), qtyCentral.T[1] ,bins = [binsA,binsB])
+        dataAB = n.histogram2d(n.log10(qtyCentral.T[0]), n.log10(qtyCentral.T[1]) ,bins = [binsA,binsB])
         print "countCen",countCen
         f = open(join(output_dir, nameSnapshot + "_" + nameA+"-"+nameB + "_Central_" + str(countFileCen)+ ".pkl"),'w')
         cPickle.dump([nnA,nnB,dataAB],f)
@@ -241,7 +241,7 @@ class MultiDarkSimulation :
 
         nnA,bbA = n.histogram(n.log10(qtySat.T[0]),bins = binsA)
         nnB,bbB = n.histogram(n.log10(qtySat.T[1]),bins = binsB)
-        dataAB = n.histogram2d(n.log10(qtySat.T[0]), qtySat.T[1] ,bins = [binsA,binsB])
+        dataAB = n.histogram2d(n.log10(qtySat.T[0]), n.log10(qtySat.T[1]) ,bins = [binsA,binsB])
         print "countSat", countSat
         f = open(join(output_dir, nameSnapshot + "_" + nameA+"-"+nameB+ "_Satellite_" + str(countFileSat)+ ".pkl"),'w')
         cPickle.dump([nnA,nnB,dataAB],f)

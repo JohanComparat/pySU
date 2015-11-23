@@ -1,3 +1,16 @@
+
+"""
+
+ls Multidark-lightcones/MD_*/properties/vmax/hist-Central*1.0*.dat
+ls Multidark-lightcones/MD_*/properties/vmax/hist-Central*0.9*.dat
+ls Multidark-lightcones/MD_*/properties/vmax/hist-Central*0.8*.dat
+ls Multidark-lightcones/MD_*/properties/vmax/hist-Central*0.7*.dat
+ls Multidark-lightcones/MD_*/properties/vmax/hist-Central*0.6*.dat
+ls Multidark-lightcones/MD_*/properties/vmax/hist-Central*0.5*.dat
+ls Multidark-lightcones/MD_*/properties/vmax/hist-Central*0.4*.dat
+ls Multidark-lightcones/MD_*/properties/vmax/hist-Central*0.3*.dat
+ls Multidark-lightcones/MD_*/properties/vmax/hist-Central*0.2*.dat
+"""
 import numpy as n
 import matplotlib
 matplotlib.rcParams['font.size']=12
@@ -7,8 +20,8 @@ import sys
 from scipy.optimize import curve_fit
 import cPickle
 
-dir = "/Volumes/data/BigMD/vpeakFunction/"
-Pdir = "/Volumes/data/BigMD/vpeakFunction/plots/"
+dir = "/Volumes/data/BigMD/vmaxFunction/"
+Pdir = "/Volumes/data/BigMD/vmaxFunction/plots/"
 
 def getVF(b0, b1, val,volume,label="SMD",completeness = 100, maxV=1500):
     Nc = n.array([ n.sum(val[ii:]) for ii in range(len(val)) ])
@@ -34,55 +47,74 @@ def plotVFv3(b0, b1, val,volume,label="SMD"):
     #print yData
     #p.axhline(1/(volume),label=r'1/V '+label,ls='dashed')
 
+def plot_MVIR_velocity(matrix,xname,yname,label):
+
+
+
 vf = lambda v, A, v0, alpha, beta : 10**A * v**beta * n.e**(- (v/10**v0)**alpha )
 vx = n.logspace(1.7,3.4,100)
 pl = vf(vx,4,3,2.15,-2.9)
 
 
-"""
+######### z = 0.00 a = 1.0  hist2D Mvir Vmax ############
 
-ls Multidark-lightcones/MD_*/properties/vmax/hist-Central*1.0*.dat
-ls Multidark-lightcones/MD_*/properties/vmax/hist-Central*0.9*.dat
-ls Multidark-lightcones/MD_*/properties/vmax/hist-Central*0.8*.dat
-ls Multidark-lightcones/MD_*/properties/vmax/hist-Central*0.7*.dat
-ls Multidark-lightcones/MD_*/properties/vmax/hist-Central*0.6*.dat
-ls Multidark-lightcones/MD_*/properties/vmax/hist-Central*0.5*.dat
-ls Multidark-lightcones/MD_*/properties/vmax/hist-Central*0.4*.dat
-ls Multidark-lightcones/MD_*/properties/vmax/hist-Central*0.3*.dat
-ls Multidark-lightcones/MD_*/properties/vmax/hist-Central*0.2*.dat
-"""
+SMDfile = "/Volumes/data/BigMD/Multidark-lightcones/MD_0.4Gpc/properties/vmax-mvir/hist2d-Central-vmax-mvir-1.00000.dat"
+mvirBinsFile = "/Volumes/data/BigMD/Multidark-lightcones/MD_0.4Gpc/properties/vmax-mvir/mvir.bins"
+vmaxBinsFile = "/Volumes/data/BigMD/Multidark-lightcones/MD_0.4Gpc/properties/vmax-mvir/vmax.bins"
+
+MDPLfile = "/Volumes/data/BigMD/Multidark-lightcones/MD_1Gpc_new_rockS/properties/vmax-mvir/hist2d-Central-vmax-mvir-1.00000.dat"
+BigMDfile = "/Volumes/data/BigMD/Multidark-lightcones/MD_2.5Gpc/properties/vmax-mvir/hist2d-Central-vmax-mvir-1.00000.dat"
+HMDfile = "/Volumes/data/BigMD/Multidark-lightcones/MD_4Gpc/properties/vmax-mvir/hist2d-Central-vmax-mvir-1.00000.dat"
+
+
+H_04 = n.loadtxt(SMDfile)
+mvir_bins_04 = n.loadtxt(mvirBinsFile)
+vmax_bins_04 = n.loadtxt(vmaxBinsFile)
+
+p.contour(H_04)X,Y,Z)
+
+p.figure(1,(6,6))
+p.axes([0.17,0.17,0.75,0.75])
 
 ######### z = 0.00 a = 1.0 ############
 
-SMDfile = "/Volumes/data/BigMD/Multidark-lightcones/MD_0.4Gpc/properties/vmax/hist-Central-vmax-1.00000.dat"
-#MDPLfile = "/Volumes/data/BigMD/Multidark-lightcones/MD_1Gpc_new_rockS/properties/vmax/hist-Central-vmax-1.00000.dat"
-BigMDfile = "/Volumes/data/BigMD/2.5Gpc/vmax/hist-Central-vmax-1.00000.dat"
-HMDfile = "/Volumes/data/BigMD/Multidark-lightcones/MD_4Gpc/properties/vmax/hist-Central-vmax-1.00000.dat"
+SMDfile = "/Volumes/data/BigMD/Multidark-lightcones/MD_0.4Gpc/properties/vmax-mvir/hist-Central-vmax-1.00000.dat"
+MDPLfile = "/Volumes/data/BigMD/Multidark-lightcones/MD_1Gpc_new_rockS/properties/vmax-mvir/hist-Central-vmax-1.00000.dat"
+BigMDfile = "/Volumes/data/BigMD/Multidark-lightcones/MD_2.5Gpc/properties/vmax-mvir/hist-Central-vmax-1.00000.dat"
+HMDfile = "/Volumes/data/BigMD/Multidark-lightcones/MD_4Gpc/properties/vmax-mvir/hist-Central-vmax-1.00000.dat"
 
 
 p.figure(1,(6,6))
 p.axes([0.17,0.17,0.75,0.75])
-b0_40, b1_40, val_40 = n.loadtxt(HMDfile,unpack=True)
-z_40 = 1/float(HMDfile.split('-')[-1][:-4])-1
-#xData_40,yData_40,yDataErr_40,volume_40 = getVF(b0_40, b1_40, val_40,4000.**3.,label="HMD",completeness = 0, maxV = 5000)
-#p.errorbar(xData_40,yData_40,yerr=yDataErr_40,elinewidth=1, ecolor='k',fmt='none', rasterized=True)
-xData_40,yData_40,yDataErr_40,volume_40 = getVF(b0_40, b1_40, val_40,4000.**3.,completeness = 1000, maxV = 2500)
-p.errorbar(xData_40,yData_40,yerr=yDataErr_40,elinewidth=2,fmt='none', label="HMD z="+str(n.round(z_40,3)), rasterized=True)
-p.axhline(1/(volume_40),label=r'1/V(HMD)',ls='dashed')
-
-b0_25, b1_25, val_25 = n.loadtxt(BigMDfile,unpack=True)
-z_25 = 1/float(BigMDfile.split('-')[-1][:-4])-1
-#xData_25,yData_25,yDataErr_25,volume_25 = getVF(b0_25, b1_25, val_25, 2500.**3.,label="BigMD",completeness = 0, maxV = 5000)
-#p.errorbar(xData_25,yData_25,yerr=yDataErr_25,elinewidth=1,ecolor='k',fmt='none', rasterized=True)
-xData_25,yData_25,yDataErr_25,volume_25 = getVF(b0_25, b1_25, val_25, 2500.**3.,completeness = 200, maxV = 1000)
-p.errorbar(xData_25,yData_25,yerr=yDataErr_25,elinewidth=2,fmt='none', label="BigMD z="+str(n.round(z_25,3)), rasterized=True)
 
 b0_04, b1_04, val_04 = n.loadtxt(SMDfile,unpack=True)
 z_04 = 1/float(SMDfile.split('-')[-1][:-4])-1
 #xData_04,yData_04,yDataErr_04,volume_04 = getVF(b0_04, b1_04, val_04,400.**3.,label="SMD",completeness = 0, maxV = 5000)
 #p.errorbar(xData_04,yData_04,yerr=yDataErr_04,elinewidth=1,ecolor='k',fmt='none', rasterized=True)
-xData_04,yData_04,yDataErr_04,volume_04 = getVF(b0_04, b1_04, val_04,400.**3.,completeness = 50, maxV = 200)
+xData_04,yData_04,yDataErr_04,volume_04 = getVF(b0_04, b1_04, val_04,400.**3.,completeness = 50, maxV = 150)
 p.errorbar(xData_04,yData_04,yerr=yDataErr_04,elinewidth=2,fmt='none', label="SMD z="+str(n.round(z_04,3)), rasterized=True)
+
+b0_10, b1_10, val_10 = n.loadtxt(MDPLfile,unpack=True)
+z_10 = 1/float(MDPLfile.split('-')[-1][:-4])-1
+#xData_10,yData_10,yDataErr_10,volume_10 = getVF(b0_10, b1_10, val_10, 1000.**3.,label="MDPL",completeness = 0, maxV = 5000)
+#p.errorbar(xData_10,yData_10,yerr=yDataErr_10,elinewidth=1,ecolor='k',fmt='none', rasterized=True)
+xData_10,yData_10,yDataErr_10,volume_10 = getVF(b0_10, b1_10, val_10, 1000.**3.,completeness = 151, maxV = 300)
+p.errorbar(xData_10,yData_10,yerr=yDataErr_10,elinewidth=2,fmt='none', label="MDPL z="+str(n.round(z_10,3)), rasterized=True)
+
+b0_25, b1_25, val_25 = n.loadtxt(BigMDfile,unpack=True)
+z_25 = 1/float(BigMDfile.split('-')[-1][:-4])-1
+#xData_25,yData_25,yDataErr_25,volume_25 = getVF(b0_25, b1_25, val_25, 2500.**3.,label="BigMD",completeness = 0, maxV = 5000)
+#p.errorbar(xData_25,yData_25,yerr=yDataErr_25,elinewidth=1,ecolor='k',fmt='none', rasterized=True)
+xData_25,yData_25,yDataErr_25,volume_25 = getVF(b0_25, b1_25, val_25, 2500.**3.,completeness = 301, maxV = 500)
+p.errorbar(xData_25,yData_25,yerr=yDataErr_25,elinewidth=2,fmt='none', label="BigMD z="+str(n.round(z_25,3)), rasterized=True)
+
+b0_40, b1_40, val_40 = n.loadtxt(HMDfile,unpack=True)
+z_40 = 1/float(HMDfile.split('-')[-1][:-4])-1
+#xData_40,yData_40,yDataErr_40,volume_40 = getVF(b0_40, b1_40, val_40,4000.**3.,label="HMD",completeness = 0, maxV = 5000)
+#p.errorbar(xData_40,yData_40,yerr=yDataErr_40,elinewidth=1, ecolor='k',fmt='none', rasterized=True)
+xData_40,yData_40,yDataErr_40,volume_40 = getVF(b0_40, b1_40, val_40,4000.**3.,completeness = 501, maxV = 2500)
+p.errorbar(xData_40,yData_40,yerr=yDataErr_40,elinewidth=2,fmt='none', label="HMD z="+str(n.round(z_40,3)), rasterized=True)
+p.axhline(1/(volume_40),label=r'1/V(HMD)',ls='dashed')
 
 xData = n.hstack((xData_04, xData_25, xData_40))
 yData = n.hstack((yData_04, yData_25, yData_40))
