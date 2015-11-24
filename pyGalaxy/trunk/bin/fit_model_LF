@@ -30,7 +30,7 @@ ids = n.array([ 7 ])
 fileName = "H1_4862_z0292"
 listFits = n.array([ el[:-4]+".fits" for el in listTxt[ids]])
 listToFit = n.transpose([listFits, listTxt[ids]])
-modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="H1_4862", cosmology = cosmo, LF_file_list = listToFit, model='Saunders3P', p0=[41.,10**(-1.7), -1.5], outputDirectory= "/home/comparat/database/Products_Galaxies/emissionLineLuminosityFunctions/H1_4862/", fileName= fileName, fixedSigma = 0.57)
+modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="H1_4862", cosmology = cosmo, LF_file_list = listToFit, model='Saunders3P', p0=[41.,10**(-1.7), -1.5], outputDirectory= "/home/comparat/database/Products_Galaxies/emissionLineLuminosityFunctions/H1_4862/", fileName= fileName, fixedSigma = 0.53)
 
 # VVDS WIDE
 Lmin, Lmax, Lmean, phi, phiErr, phiErr_poisson, ngals = n.loadtxt(listTxt[12],unpack=True)
@@ -47,7 +47,7 @@ for ii in range(len(x)):
 	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt=None,elinewidth=1)
 
 p.plot(xF,yM,label='fit' )
-p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=$'+str(n.round(popt[2],2))+r', $\sigma=0.57$',fontsize=12)
+p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=$'+str(n.round(popt[2],2))+r', $\sigma=0.53$',fontsize=12)
 
 p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi$ [Mpc$^{-3}/$dlog L]')
@@ -65,7 +65,7 @@ ids = n.array([ 0 ])
 fileName = "H1_4862_z0397"
 listFits = n.array([ el[:-4]+".fits" for el in listTxt[ids]])
 listToFit = n.transpose([listFits, listTxt[ids]])
-modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="H1_4862", cosmology = cosmo, LF_file_list = listToFit, model='Saunders3P', p0=[41.,10**(-1.7), -1.5], outputDirectory= "/home/comparat/database/Products_Galaxies/emissionLineLuminosityFunctions/H1_4862/", fileName= fileName, fixedSigma = 0.57)
+modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="H1_4862", cosmology = cosmo, LF_file_list = listToFit, model='Saunders3P', p0=[41.,10**(-1.7), -1.5], outputDirectory= "/home/comparat/database/Products_Galaxies/emissionLineLuminosityFunctions/H1_4862/", fileName= fileName, fixedSigma = 0.53)
 
 popt,popc,xF,yF,yeF, x, y, ye, name=modelFit.fitModel()
 
@@ -77,7 +77,7 @@ for ii in range(len(x)):
 	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt=None,elinewidth=1)
 
 p.plot(xF,yM,label='fit' )
-p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=$'+str(n.round(popt[2],2))+r', $\sigma=0.57$',fontsize=12)
+p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=$'+str(n.round(popt[2],2))+r', $\sigma=0.53$',fontsize=12)
 
 p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi$ [Mpc$^{-3}/$dlog L]')
@@ -97,7 +97,7 @@ ids = n.array([ 1 ])
 fileName = "H1_4862_z0496"
 listFits = n.array([ el[:-4]+".fits" for el in listTxt[ids]])
 listToFit = n.transpose([listFits, listTxt[ids]])
-modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="H1_4862", cosmology = cosmo, LF_file_list = listToFit, model='Saunders3P', p0=[41.,10**(-1.7), -1.5], outputDirectory= "/home/comparat/database/Products_Galaxies/emissionLineLuminosityFunctions/H1_4862/", fileName= fileName, fixedSigma = 0.57)
+modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="H1_4862", cosmology = cosmo, LF_file_list = listToFit, model='Saunders3P', p0=[41.,10**(-1.7), -1.5], outputDirectory= "/home/comparat/database/Products_Galaxies/emissionLineLuminosityFunctions/H1_4862/", fileName= fileName, fixedSigma = 0.53)
 
 popt,popc,xF,yF,yeF, x, y, ye, name=modelFit.fitModel()
 
@@ -109,7 +109,7 @@ for ii in range(len(x)):
 	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt=None,elinewidth=1)
 
 p.plot(xF,yM,label='fit' )
-p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=$'+str(n.round(popt[2],2))+r', $\sigma=0.57$',fontsize=12)
+p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=$'+str(n.round(popt[2],2))+r', $\sigma=0.53$',fontsize=12)
 
 p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi$ [Mpc$^{-3}/$dlog L]')
@@ -129,7 +129,7 @@ ids = n.array([ 2 ])
 fileName = "H1_4862_z0652"
 listFits = n.array([ el[:-4]+".fits" for el in listTxt[ids]])
 listToFit = n.transpose([listFits, listTxt[ids]])
-modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="H1_4862", cosmology = cosmo, LF_file_list = listToFit, model='Saunders3P', p0=[41.,10**(-1.7), -1.5], outputDirectory= "/home/comparat/database/Products_Galaxies/emissionLineLuminosityFunctions/H1_4862/", fileName= fileName, fixedSigma = 0.57)
+modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="H1_4862", cosmology = cosmo, LF_file_list = listToFit, model='Saunders3P', p0=[41.,10**(-1.7), -1.5], outputDirectory= "/home/comparat/database/Products_Galaxies/emissionLineLuminosityFunctions/H1_4862/", fileName= fileName, fixedSigma = 0.53)
 
 popt,popc,xF,yF,yeF, x, y, ye, name=modelFit.fitModel()
 
@@ -141,7 +141,7 @@ for ii in range(len(x)):
 	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt=None,elinewidth=1)
 
 p.plot(xF,yM,label='fit' )
-p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=$'+str(n.round(popt[2],2))+r', $\sigma=0.57$',fontsize=12)
+p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=$'+str(n.round(popt[2],2))+r', $\sigma=0.53$',fontsize=12)
 
 p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi$ [Mpc$^{-3}/$dlog L]')
@@ -161,7 +161,7 @@ ids = n.array([ 3 ]) # 9, 13
 fileName = "H1_4862_z0746"
 listFits = n.array([ el[:-4]+".fits" for el in listTxt[ids]])
 listToFit = n.transpose([listFits, listTxt[ids]])
-modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="H1_4862", cosmology = cosmo, LF_file_list = listToFit, model='Saunders3P', p0=[41.,10**(-1.7), -1.5], outputDirectory= "/home/comparat/database/Products_Galaxies/emissionLineLuminosityFunctions/H1_4862/", fileName= fileName, fixedSigma = 0.57)
+modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="H1_4862", cosmology = cosmo, LF_file_list = listToFit, model='Saunders3P', p0=[41.,10**(-1.7), -1.5], outputDirectory= "/home/comparat/database/Products_Galaxies/emissionLineLuminosityFunctions/H1_4862/", fileName= fileName, fixedSigma = 0.53)
 
 popt,popc,xF,yF,yeF, x, y, ye, name=modelFit.fitModel()
 
@@ -173,7 +173,7 @@ for ii in range(len(x)):
 	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt=None,elinewidth=1)
 
 p.plot(xF,yM,label='fit' )
-p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=$'+str(n.round(popt[2],2))+r', $\sigma=0.57$',fontsize=12)
+p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=$'+str(n.round(popt[2],2))+r', $\sigma=0.53$',fontsize=12)
 
 p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi$ [Mpc$^{-3}/$dlog L]')
@@ -192,7 +192,7 @@ ids = n.array([ 4 ])
 fileName = "H1_4862_z0775"
 listFits = n.array([ el[:-4]+".fits" for el in listTxt[ids]])
 listToFit = n.transpose([listFits, listTxt[ids]])
-modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="H1_4862", cosmology = cosmo, LF_file_list = listToFit, model='Saunders3P', p0=[41.,10**(-1.7), -1.5], outputDirectory= "/home/comparat/database/Products_Galaxies/emissionLineLuminosityFunctions/H1_4862/", fileName= fileName, fixedSigma = 0.57)
+modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="H1_4862", cosmology = cosmo, LF_file_list = listToFit, model='Saunders3P', p0=[41.,10**(-1.7), -1.5], outputDirectory= "/home/comparat/database/Products_Galaxies/emissionLineLuminosityFunctions/H1_4862/", fileName= fileName, fixedSigma = 0.53)
 
 popt,popc,xF,yF,yeF, x, y, ye, name=modelFit.fitModel()
 
@@ -204,7 +204,7 @@ for ii in range(len(x)):
 	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt=None,elinewidth=1)
 
 p.plot(xF,yM,label='fit' )
-p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=$'+str(n.round(popt[2],2))+r', $\sigma=0.57$',fontsize=12)
+p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=$'+str(n.round(popt[2],2))+r', $\sigma=0.53$',fontsize=12)
 
 p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi$ [Mpc$^{-3}/$dlog L]')
@@ -232,7 +232,7 @@ ids = n.array([ 0 ])
 fileName = "O3_5007_z0328"
 listFits = n.array([ el[:-4]+".fits" for el in listTxt[ids]])
 listToFit = n.transpose([listFits, listTxt[ids]])
-modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="O3_5007", cosmology = cosmo, LF_file_list = listToFit, model='Saunders3P', p0=[40.1,10**(-1.8), -1.3], outputDirectory= "/home/comparat/database/Products_Galaxies/emissionLineLuminosityFunctions/O3_5007/", fileName= fileName, fixedSigma = 0.57)
+modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="O3_5007", cosmology = cosmo, LF_file_list = listToFit, model='Saunders3P', p0=[40.1,10**(-1.8), -1.3], outputDirectory= "/home/comparat/database/Products_Galaxies/emissionLineLuminosityFunctions/O3_5007/", fileName= fileName, fixedSigma = 0.53)
 
 aa,bb,cc = n.loadtxt(join(modelFit.biblioPts_dir,"ly-OIII-04.dat"),unpack=True)
 bps1=[10**aa,(bb+cc)/2.,(bb-cc)/2.,"L07"]
@@ -253,7 +253,7 @@ for ii in range(len(x)):
 	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt=None,elinewidth=1)
 
 p.plot(xF,yM,label='fit' )
-p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=$'+str(n.round(popt[2],2))+r', $\sigma=0.57$',fontsize=12)
+p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=$'+str(n.round(popt[2],2))+r', $\sigma=0.53$',fontsize=12)
 
 p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi$ [Mpc$^{-3}/$dlog L]')
@@ -272,7 +272,7 @@ ids = n.array([ 2, 8 ])
 fileName = "O3_5007_z546"
 listFits = n.array([ el[:-4]+".fits" for el in listTxt[ids]])
 listToFit = n.transpose([listFits, listTxt[ids]])
-modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="O3_5007", cosmology = cosmo, LF_file_list = listToFit, model='Saunders2P', p0=[40.1,10**(-1.8)], outputDirectory= "/home/comparat/database/Products_Galaxies/emissionLineLuminosityFunctions/O3_5007/", fileName= fileName, fixedSigma = 0.57, fixedAlpha = -1.3)
+modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="O3_5007", cosmology = cosmo, LF_file_list = listToFit, model='Saunders2P', p0=[40.1,10**(-1.8)], outputDirectory= "/home/comparat/database/Products_Galaxies/emissionLineLuminosityFunctions/O3_5007/", fileName= fileName, fixedSigma = 0.53, fixedAlpha = -1.3)
 
 
 popt,popc,xF,yF,yeF, x, y, ye, name=modelFit.fitModel()
@@ -285,7 +285,7 @@ for ii in range(len(x)):
 	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt=None,elinewidth=1)
 
 p.plot(xF,yM,label='fit' )
-p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=-1.3$'+r', $\sigma=0.57$',fontsize=12)
+p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=-1.3$'+r', $\sigma=0.53$',fontsize=12)
 
 p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi$ [Mpc$^{-3}/$dlog L]')
@@ -304,7 +304,7 @@ ids = n.array([ 3 ])
 fileName = "O3_5007_z0651"
 listFits = n.array([ el[:-4]+".fits" for el in listTxt[ids]])
 listToFit = n.transpose([listFits, listTxt[ids]])
-modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="O3_5007", cosmology = cosmo, LF_file_list = listToFit, model='Saunders2P', p0=[40.1,10**(-1.8)], outputDirectory= "/home/comparat/database/Products_Galaxies/emissionLineLuminosityFunctions/O3_5007/", fileName= fileName, fixedSigma = 0.57, fixedAlpha = -1.3)
+modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="O3_5007", cosmology = cosmo, LF_file_list = listToFit, model='Saunders2P', p0=[40.1,10**(-1.8)], outputDirectory= "/home/comparat/database/Products_Galaxies/emissionLineLuminosityFunctions/O3_5007/", fileName= fileName, fixedSigma = 0.53, fixedAlpha = -1.3)
 
 dl=n.loadtxt(join(modelFit.biblioPts_dir,"drake-OIII-063-low.csv"),delimiter=',',unpack=True)
 du=n.loadtxt(join(modelFit.biblioPts_dir,"drake-OIII-063-up.csv"),delimiter=',',unpack=True)
@@ -326,7 +326,7 @@ for ii in range(len(x)):
 	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt=None,elinewidth=1)
 
 p.plot(xF,yM,label='fit' )
-p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=-1.3$'+r', $\sigma=0.57$',fontsize=12)
+p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=-1.3$'+r', $\sigma=0.53$',fontsize=12)
 
 p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi$ [Mpc$^{-3}/$dlog L]')
@@ -345,7 +345,7 @@ ids = n.array([ 4 ])
 fileName = "O3_5007_z0740"
 listFits = n.array([ el[:-4]+".fits" for el in listTxt[ids]])
 listToFit = n.transpose([listFits, listTxt[ids]])
-modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="O3_5007", cosmology = cosmo, LF_file_list = listToFit, model='Saunders2P', p0=[40.1,10**(-1.8)], outputDirectory= "/home/comparat/database/Products_Galaxies/emissionLineLuminosityFunctions/O3_5007/", fileName= fileName, fixedSigma = 0.57, fixedAlpha = -1.3)
+modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="O3_5007", cosmology = cosmo, LF_file_list = listToFit, model='Saunders2P', p0=[40.1,10**(-1.8)], outputDirectory= "/home/comparat/database/Products_Galaxies/emissionLineLuminosityFunctions/O3_5007/", fileName= fileName, fixedSigma = 0.53, fixedAlpha = -1.3)
 
 # VVDS WIDE
 Lmin, Lmax, Lmean, phi, phiErr, phiErr_poisson, ngals = n.loadtxt(listTxt[18],unpack=True)
@@ -377,7 +377,7 @@ for ii in range(len(x)):
 	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt=None,elinewidth=1)
 
 p.plot(xF,yM,label='fit' )
-p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=-1.3$'+r', $\sigma=0.57$',fontsize=12)
+p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=-1.3$'+r', $\sigma=0.53$',fontsize=12)
 
 p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi$ [Mpc$^{-3}/$dlog L]')
@@ -406,7 +406,7 @@ ids = n.array([ 21 ])
 fileName = "O2_3728_z0610"
 listFits = n.array([ el[:-4]+".fits" for el in listTxt[ids]])
 listToFit = n.transpose([listFits, listTxt[ids]])
-modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="O2_3728", cosmology = cosmo, LF_file_list = listToFit, model='Saunders2P', p0=[41.,10**(-1.7)], outputDirectory= "/home/comparat/database/Products_Galaxies/emissionLineLuminosityFunctions/O2_3728/", fileName= fileName, fixedSigma = 0.57, fixedAlpha=-2.4)
+modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="O2_3728", cosmology = cosmo, LF_file_list = listToFit, model='Saunders2P', p0=[41.,10**(-1.7)], outputDirectory= "/home/comparat/database/Products_Galaxies/emissionLineLuminosityFunctions/O2_3728/", fileName= fileName, fixedSigma = 0.53, fixedAlpha=-2.4)
 
 # VVDS WIDE
 Lmin, Lmax, Lmean, phi, phiErr, phiErr_poisson, ngals = n.loadtxt(listTxt[11],unpack=True)
@@ -437,7 +437,7 @@ for ii in range(len(x)):
 	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt=None,elinewidth=1)
 
 p.plot(xF,yM,label='fit' )
-p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=-2.4$ '+r', $\sigma=0.57$',fontsize=12)
+p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=-2.4$ '+r', $\sigma=0.53$',fontsize=12)
 
 p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi$ [Mpc$^{-3}/$dlog L]')
@@ -457,7 +457,7 @@ ids = n.array([ 19 ])
 fileName = "O2_3728_z0745"
 listFits = n.array([ el[:-4]+".fits" for el in listTxt[ids]])
 listToFit = n.transpose([listFits, listTxt[ids]])
-modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="O2_3728", cosmology = cosmo, LF_file_list = listToFit, model='Saunders3P', p0=[41.,10**(-1.7), -1.5], outputDirectory= "/home/comparat/database/Products_Galaxies/emissionLineLuminosityFunctions/O2_3728/", fileName= fileName, fixedSigma = 0.57)
+modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="O2_3728", cosmology = cosmo, LF_file_list = listToFit, model='Saunders3P', p0=[41.,10**(-1.7), -1.5], outputDirectory= "/home/comparat/database/Products_Galaxies/emissionLineLuminosityFunctions/O2_3728/", fileName= fileName, fixedSigma = 0.53)
 
 # VVDS WIDE
 Lmin, Lmax, Lmean, phi, phiErr, phiErr_poisson, ngals = n.loadtxt(listTxt[18],unpack=True)
@@ -479,7 +479,7 @@ for ii in range(len(x)):
 	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt=None,elinewidth=1)
 
 p.plot(xF,yM,label='fit' )
-p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=$'+str(n.round(popt[2],2))+r', $\sigma=0.57$',fontsize=12)
+p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=$'+str(n.round(popt[2],2))+r', $\sigma=0.53$',fontsize=12)
 
 p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi$ [Mpc$^{-3}/$dlog L]')
@@ -572,7 +572,7 @@ ids = n.array([  27 ])
 fileName = "O2_3728_z120"
 listFits = n.array([ el[:-4]+".fits" for el in listTxt[ids]])
 listToFit = n.transpose([listFits, listTxt[ids]])
-modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="O2_3728", cosmology = cosmo, LF_file_list = listToFit, model='Saunders', p0=[41.,10**(-1.7), -1.5,0.57], outputDirectory= "/home/comparat/database/Products_Galaxies/emissionLineLuminosityFunctions/O2_3728/", fileName= fileName)
+modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="O2_3728", cosmology = cosmo, LF_file_list = listToFit, model='Saunders', p0=[41.,10**(-1.7), -1.5,0.53], outputDirectory= "/home/comparat/database/Products_Galaxies/emissionLineLuminosityFunctions/O2_3728/", fileName= fileName)
 
 aa,bb,cc = n.loadtxt(join(modelFit.biblioPts_dir, "comparat2014-LF-1.090-z-1.34.dat"), unpack=True,usecols=(2,3,4))
 sel=(aa>42.)&(aa<43.)
