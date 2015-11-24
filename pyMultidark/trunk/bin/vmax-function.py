@@ -1,4 +1,4 @@
-
+from scipy.interpolate import interp1d
 """
 
 ls Multidark-lightcones/MD_*/properties/vmax/hist-Central*1.0*.dat
@@ -23,22 +23,23 @@ import cPickle
 dir = "/Volumes/data/BigMD/vmaxFunction/"
 Pdir = "/Volumes/data/BigMD/vmaxFunction/plots/"
 
-def getVF(b0, b1, val,volume,label="SMD",completeness = 100, maxV=1500):
+def getVF(b0, b1, val,volume,label="SMD",completeness = 100, maxV=1500,errFactor=1.):
     Nc = n.array([ n.sum(val[ii:]) for ii in range(len(val)) ])
     xData_A = (10**b0+10**b1)/2.
     yData_A = Nc/(volume ) 
-    yDataErr_A = 1/val**0.5
+    yDataErr_A = errFactor/val**0.5
     sel = (yDataErr_A!=n.inf)&(yData_A>0) &(yData_A * volume >= 1) &(xData_A > completeness)&(xData_A < maxV)
     xData = xData_A[sel]
     yData = yData_A[sel]
     yDataErr = yDataErr_A[sel]*yData_A[sel]
     return xData,yData,yDataErr,volume
 
-def plotVFv3(b0, b1, val,volume,label="SMD"):
+
+def plotVFv3(b0, b1, val,volume,label="SMD",errFactor=1.):
     Nc = n.array([ n.sum(val[ii:]) for ii in range(len(val)) ])
     xData_A = (10**b0+10**b1)/2.
     yData_A = Nc/(volume ) 
-    yDataErr_A = 1/val**0.5
+    yDataErr_A = errFactor/val**0.5
     sel = (yDataErr_A!=n.inf)&(yData_A>0) &(yData_A * volume >= 1)
     xData = xData_A[sel]
     yData = yData_A[sel]
@@ -70,11 +71,33 @@ HMDfile = "/Volumes/data/BigMD/Multidark-lightcones/MD_4Gpc/properties/vmax-mvir
 H_04 = n.loadtxt(SMDfile)
 mvir_bins_04 = n.loadtxt(mvirBinsFile)
 vmax_bins_04 = n.loadtxt(vmaxBinsFile)
+X,Y = n.meshgrid(( mvir_bins_04[1:] + mvir_bins_04[:-1])/2., (vmax_bins_04[1:]+vmax_bins_04[:-1])/2.)
 
-p.contour(H_04)X,Y,Z)
+sel = (H_04>0)
+
+n.sum(H_04, axis=0)[n.sum(H_04, axis=0)>0]
+n.sum(H_04, axis=1)[n.sum(H_04, axis=1)>0]
+
+relation = interp1d(( mvir_bins_04[1:] + mvir_bins_04[:-1])/2.,H_04[180])
+H_04[180].sum()
+
+
 
 p.figure(1,(6,6))
 p.axes([0.17,0.17,0.75,0.75])
+H_04 = n.loadtxt(SMDfile)
+p.contour(X,Y,n.log10(H_04))#, colors='r')
+H_10 = n.loadtxt(MDPLfile)
+p.contour(X,Y,n.log10(H_10))#, colors='r')
+#H_25 = n.loadtxt(BigMDfile)
+#p.contour(X,Y,H_25)
+H_40 = n.loadtxt(HMDfile)
+p.contour(X,Y,n.log10(H_40))#, colors='r')
+p.xlabel(r'M_${vir}$')
+p.ylabel(r'V_${max}$')
+p.colorbar()
+p.savefig(Pdir + "mvir-vmax-z0.00.pdf")
+p.show()
 
 ######### z = 0.00 a = 1.0 ############
 
@@ -91,14 +114,14 @@ b0_04, b1_04, val_04 = n.loadtxt(SMDfile,unpack=True)
 z_04 = 1/float(SMDfile.split('-')[-1][:-4])-1
 #xData_04,yData_04,yDataErr_04,volume_04 = getVF(b0_04, b1_04, val_04,400.**3.,label="SMD",completeness = 0, maxV = 5000)
 #p.errorbar(xData_04,yData_04,yerr=yDataErr_04,elinewidth=1,ecolor='k',fmt='none', rasterized=True)
-xData_04,yData_04,yDataErr_04,volume_04 = getVF(b0_04, b1_04, val_04,400.**3.,completeness = 50, maxV = 150)
+xData_04,yData_04,yDataErr_04,volume_04 = getVF(b0_04, b1_04, val_04,400.**3.,completeness = 50, maxV = 150, errFactor=10.)
 p.errorbar(xData_04,yData_04,yerr=yDataErr_04,elinewidth=2,fmt='none', label="SMD z="+str(n.round(z_04,3)), rasterized=True)
 
 b0_10, b1_10, val_10 = n.loadtxt(MDPLfile,unpack=True)
 z_10 = 1/float(MDPLfile.split('-')[-1][:-4])-1
 #xData_10,yData_10,yDataErr_10,volume_10 = getVF(b0_10, b1_10, val_10, 1000.**3.,label="MDPL",completeness = 0, maxV = 5000)
 #p.errorbar(xData_10,yData_10,yerr=yDataErr_10,elinewidth=1,ecolor='k',fmt='none', rasterized=True)
-xData_10,yData_10,yDataErr_10,volume_10 = getVF(b0_10, b1_10, val_10, 1000.**3.,completeness = 151, maxV = 300)
+xData_10,yData_10,yDataErr_10,volume_10 = getVF(b0_10, b1_10, val_10, 1000.**3.,completeness = 151, maxV = 300, errFactor=10.)
 p.errorbar(xData_10,yData_10,yerr=yDataErr_10,elinewidth=2,fmt='none', label="MDPL z="+str(n.round(z_10,3)), rasterized=True)
 
 b0_25, b1_25, val_25 = n.loadtxt(BigMDfile,unpack=True)
@@ -143,7 +166,7 @@ p.plot(xData, yData / vf(xData,res[0], res[1], res[2], res[3]),'k')
 p.xlabel(r'$V_{max}$ [km s$^{-1}$]')
 p.ylabel(r'N($>V_{max}$) / best fit')
 p.xscale('log')
-p.ylim((0.95,1.05))
+p.ylim((0.9,1.1))
 p.xlim((40,3000))
 p.title("A="+str(n.round(res[0],2))+r" v$_0$="+ str(n.round(res[1],2))+r" $\alpha$="+ str(n.round(res[2],2))+r" $\beta$="+ str(n.round(res[3],2)) )
 p.grid()
