@@ -1,27 +1,3 @@
-"""
-b0,b1,val = n.loadtxt("/Volumes/data/BigMD/Multidark-lightcones/MD_4Gpc/properties/vmax-mvir/hist-Central-mvir-1.00000.dat",unpack=True)
-n.sum(10**((b0+b1)/2.)*val)/(9.6 * 10**(10.))/(4096**3)
-
-b0,b1,val = n.loadtxt("/Volumes/data/BigMD/Multidark-lightcones/MD_2.5Gpc/properties/vmax-mvir/hist-Central-mvir-1.00000.dat",unpack=True)
-n.sum(10**((b0+b1)/2.)*val)/(2.4 * 10**10.)/(3840**3)
-
-b0,b1,val = n.loadtxt("/Volumes/data/BigMD/Multidark-lightcones/MD_1Gpc_new_rockS/properties/vmax-mvir/hist-Central-mvir-1.00000.dat",unpack=True)
-n.sum(10**((b0+b1)/2.)*val)/(1.51 * 10**9.)/(3840**3)
-
-b0,b1,val = n.loadtxt("/Volumes/data/BigMD/Multidark-lightcones/MD_0.4Gpc/properties/vmax-mvir/hist-Central-mvir-1.00000.dat",unpack=True)
-n.sum(10**((b0+b1)/2.)*val)/(9.63 * 10**7.)/(3840**3)
-
-
-ls Multidark-lightcones/MD_*/properties/vmax-mvir/hist-Central*1.0*.dat
-ls Multidark-lightcones/MD_*/properties/vmax-mvir/hist-Central*0.9*.dat
-ls Multidark-lightcones/MD_*/properties/vmax-mvir/hist-Central*0.8*.dat
-ls Multidark-lightcones/MD_*/properties/vmax-mvir/hist-Central*0.7*.dat
-ls Multidark-lightcones/MD_*/properties/vmax-mvir/hist-Central*0.6*.dat
-ls Multidark-lightcones/MD_*/properties/vmax-mvir/hist-Central*0.5*.dat
-ls Multidark-lightcones/MD_*/properties/vmax-mvir/hist-Central*0.4*.dat
-ls Multidark-lightcones/MD_*/properties/vmax-mvir/hist-Central*0.3*.dat
-ls Multidark-lightcones/MD_*/properties/vmax-mvir/hist-Central*0.2*.dat
-"""
 import astropy.units as uu
 import astropy.cosmology as co
 aa = co.Planck13
@@ -78,21 +54,12 @@ def getDiffVF(b0, b1, val,volume,label="SMD",completeness = 100, maxV=16,errFact
 
 mf = lambda v, A, v0, alpha, beta : 10**A * (v/10**v0)**beta * n.e**(- (v/10**v0)**alpha )
 
-<<<<<<< HEAD
 limits_04 = [1e7, 1e12]
 limits_10 = [1e11, 1e14]
 limits_25 = [1e12, 1e15]
 limits_40 = [1e13, 1e16]
 zmin = 0.
 zmax = 5.
-=======
-# for z<3
-limits_04 = [5e10, 1e12]
-limits_10 = [5e11, 1e14]
-limits_25 = [5e12, 1e15]
-limits_40 = [2e13, 1e16]
-zmax = 3.
->>>>>>> origin/master
 
 dir_04 = "/data2/DATA/eBOSS/Multidark-lightcones/MD_0.4Gpc/"
 dir_10 = "/data2/DATA/eBOSS/Multidark-lightcones/MD_1Gpc_new_rockS/"
@@ -108,20 +75,12 @@ property_dir = "properties/vmax-mvir"
 type = "hist"
 cos = "Central" # centrak or satellite ?
 qty = "mvir"
-<<<<<<< HEAD
 
 fileName = type + "-"+ cos +"-"+ qty +"-*.dat"
 
 fileList = n.array(glob.glob(join(dir_04, property_dir,fileName)))
 fileList.sort()
-=======
-#aa = "1.00000"
 
-fileName = type + "-"+ cos +"-"+ qty +"-*.dat"
-
-############ 0.4 Gpc ##############
-fileList = glob.glob(join(dir_04, property_dir,fileName))
->>>>>>> origin/master
 xData_04,yData_04,yDataErr_04,z_04 = [], [], [], []
 nSN, aSN = n.loadtxt(zList_files[0], unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
 conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
@@ -281,12 +240,10 @@ n.savetxt(join(dir_40, property_dir, type + "-"+ cos +"-"+ qty  +"ALL_MD_4Gpc"+"
 
 sys.exit()
 
-<<<<<<< HEAD
 xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_04, property_dir, type + "-"+ cos +"-"+ qty  +"ALL_MD_0.4Gpc"+".dat"),unpack=True)
 xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir_10, property_dir, type + "-"+ cos +"-"+ qty  +"ALL_MD_1Gpc"+".dat"),unpack=True)
 xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir_25, property_dir, type + "-"+ cos +"-"+ qty  +"ALL_MD_2.5Gpc"+".dat"),unpack=True)
 xData_40,z_40,yData_40,yDataErr_40 = n.loadtxt(join(dir_40, property_dir, type + "-"+ cos +"-"+ qty  +"ALL_MD_4Gpc"+".dat"),unpack=True)
-=======
 
 xData_40,yData_40,yDataErr_40,z_40 = [], [], [], []
 for ii in range(len(fileList)):
