@@ -353,7 +353,6 @@ xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir,"data", type + "-"+ cos 
 xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir,"data", type + "-"+ cos +"-"+ qty  +"MD_1Gpc"+".dat"),unpack=True)
 xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir,"data", type + "-"+ cos +"-"+ qty  +"MD_2.5Gpc"+".dat"),unpack=True)
 xData_40,z_40,yData_40,yDataErr_40 = n.loadtxt(join(dir,"data", type + "-"+ cos +"-"+ qty  +"MD_4Gpc"+".dat"),unpack=True)
->>>>>>> origin/master
 
 redshift = n.hstack(( z_04, z_10, z_25, z_40))
 mvir = n.hstack(( xData_04, xData_10, xData_25, xData_40))
