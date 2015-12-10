@@ -13,6 +13,7 @@ ls Multidark-lightcones/MD_*/properties/vmax-mvir/hist-Central*0.2*.dat
 from scipy.interpolate import interp1d
 import numpy as n
 import matplotlib
+matplotlib.use('pdf')
 matplotlib.rcParams['font.size']=12
 import matplotlib.pyplot as p
 import glob
@@ -44,34 +45,42 @@ def getVF(b0, b1, val,volume,label="SMD",completeness = 100, maxV=16,errFactor=1
 
 mf = lambda v, A, v0, alpha, beta : 10**A * (v/10**v0)**beta * n.e**(- (v/10**v0)**alpha )
 
-# for z<3
 limits_04 = [1e7, 1e12]
 limits_10 = [1e11, 1e14]
 limits_25 = [1e12, 1e15]
 limits_40 = [1e13, 1e16]
-zmax = 4.
+zmin = 0.
+zmax = 5.
 
-dir_04 = "/Volumes/data/BigMD/Multidark-lightcones/MD_0.4Gpc/"
-dir_10 = "/Volumes/data/BigMD/Multidark-lightcones/MD_1Gpc_new_rockS/"
-dir_25 = "/Volumes/data/BigMD/Multidark-lightcones/MD_2.5Gpc/"
-dir_40 = "/Volumes/data/BigMD/Multidark-lightcones/MD_4Gpc/"
+dir_04 = "/data2/DATA/eBOSS/Multidark-lightcones/MD_0.4Gpc/"
+dir_10 = "/data2/DATA/eBOSS/Multidark-lightcones/MD_1Gpc_new_rockS/"
+dir_25 = "/data2/DATA/eBOSS/Multidark-lightcones/MD_2.5Gpc/"
+dir_40 = "/data2/DATA/eBOSS/Multidark-lightcones/MD_4Gpc/"
+
+#dir_boxes =  n.array([dir_04, dir_10, dir_25, dir_40])
+zList_files = n.array([ join(dir_box, "snapshots","redshift-list.txt") for dir_box in dir_boxes])
+#qty_limits = n.array([limits_04, limits_10, limits_25, limits_40])
+#volume_boxes =  n.array([400.**3., 1000**3., 2500**3., 4000.**3.])
 
 property_dir = "properties/vmax-mvir"
 type = "hist"
-cos = "Central"
+cos = "Central" # centrak or satellite ?
 qty = "mvir"
-aa = "1.00000"
 
 fileName = type + "-"+ cos +"-"+ qty +"-*.dat"
 
-fileList = glob.glob(join(dir_04, property_dir,fileName))
+fileList = n.array(glob.glob(join(dir_04, property_dir,fileName)))
+fileList.sort()
 xData_04,yData_04,yDataErr_04,z_04 = [], [], [], []
+nSN, aSN = n.loadtxt(zList_files[0], unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
+conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
 
 for ii in range(len(fileList)):
     SMDfile = fileList[ii]
+    print SMDfile
     b0_04, b1_04, val_04 = n.loadtxt(SMDfile,unpack=True)
     xData_04_ii,yData_04_ii,yDataErr_04_ii,volume_04_ii = getVF(b0_04, b1_04, val_04,400.**3.,completeness = limits_04[0], maxV = limits_04[1])
-    z_04_ii = (1/float(SMDfile.split('-')[-1][:-4])-1)*n.ones_like(xData_04_ii)
+    z_04_ii = conversion(float(SMDfile.split('-')[-1][:-4]))*n.ones_like(xData_04_ii)
     if z_04_ii[0]<zmax :
         xData_04.append(xData_04_ii)
         yData_04.append(yData_04_ii)
@@ -83,16 +92,19 @@ xData_04 = n.hstack((xData_04))
 yData_04 = n.hstack((yData_04))
 yDataErr_04 = n.hstack((yDataErr_04))
 
-n.savetxt(join(dir,"data", type + "-"+ cos +"-"+ qty  +"MD_0.4Gpc"+".dat"),n.transpose([xData_04,z_04,yData_04,yDataErr_04]))
+n.savetxt(join(dir_04, property_dir, type + "-"+ cos +"-"+ qty  +"ALL_MD_0.4Gpc.dat"),n.transpose([xData_04,z_04,yData_04,yDataErr_04]))
 
 fileList = glob.glob(join(dir_10, property_dir,fileName))
 xData_10,yData_10,yDataErr_10,z_10 = [], [], [], []
+nSN, aSN = n.loadtxt(zList_files[1], unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
+conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
 
 for ii in range(len(fileList)):
     SMDfile = fileList[ii]
+    print SMDfile
     b0_10, b1_10, val_10 = n.loadtxt(SMDfile,unpack=True)
     xData_10_ii,yData_10_ii,yDataErr_10_ii,volume_10_ii = getVF(b0_10, b1_10, val_10,1000.**3.,completeness = limits_10[0], maxV = limits_10[1])
-    z_10_ii = (1/float(SMDfile.split('-')[-1][:-4])-1)*n.ones_like(xData_10_ii)
+    z_10_ii = conversion(float(SMDfile.split('-')[-1][:-4]))*n.ones_like(xData_10_ii)
     if z_10_ii[0]<zmax :
         xData_10.append(xData_10_ii)
         yData_10.append(yData_10_ii)
@@ -104,17 +116,20 @@ xData_10 = n.hstack((xData_10))
 yData_10 = n.hstack((yData_10))
 yDataErr_10 = n.hstack((yDataErr_10))
 
-n.savetxt(join(dir,"data", type + "-"+ cos +"-"+ qty  +"MD_1Gpc"+".dat"),n.transpose([xData_10,z_10,yData_10,yDataErr_10]))
+n.savetxt(join(dir_10, property_dir, type + "-"+ cos +"-"+ qty  +"ALL_MD_1Gpc"+".dat"),n.transpose([xData_10,z_10,yData_10,yDataErr_10]))
 
 
 fileList = glob.glob(join(dir_25, property_dir,fileName))
 xData_25,yData_25,yDataErr_25,z_25 = [], [], [], []
+nSN, aSN = n.loadtxt(zList_files[2], unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
+conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
 
 for ii in range(len(fileList)):
     SMDfile = fileList[ii]
+    print SMDfile
     b0_25, b1_25, val_25 = n.loadtxt(SMDfile,unpack=True)
     xData_25_ii,yData_25_ii,yDataErr_25_ii,volume_25_ii = getVF(b0_25, b1_25, val_25,2500.**3.,completeness = limits_25[0], maxV = limits_25[1])
-    z_25_ii = (1/float(SMDfile.split('-')[-1][:-4])-1)*n.ones_like(xData_25_ii)
+    z_25_ii = conversion(float(SMDfile.split('-')[-1][:-4]))*n.ones_like(xData_25_ii)
     if z_25_ii[0]<zmax :
         xData_25.append(xData_25_ii)
         yData_25.append(yData_25_ii)
@@ -126,17 +141,20 @@ xData_25 = n.hstack((xData_25))
 yData_25 = n.hstack((yData_25))
 yDataErr_25 = n.hstack((yDataErr_25))
 
-n.savetxt(join(dir,"data", type + "-"+ cos +"-"+ qty  +"MD_2.5Gpc"+".dat"),n.transpose([xData_25,z_25,yData_25,yDataErr_25]))
+n.savetxt(join(dir_25, property_dir, type + "-"+ cos +"-"+ qty  +"ALL_MD_2.5Gpc"+".dat"),n.transpose([xData_25,z_25,yData_25,yDataErr_25]))
 
 
 fileList = glob.glob(join(dir_40, property_dir,fileName))
 xData_40,yData_40,yDataErr_40,z_40 = [], [], [], []
+nSN, aSN = n.loadtxt(zList_files[3], unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
+conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
 
 for ii in range(len(fileList)):
     SMDfile = fileList[ii]
+    print SMDfile
     b0_40, b1_40, val_40 = n.loadtxt(SMDfile,unpack=True)
     xData_40_ii,yData_40_ii,yDataErr_40_ii,volume_40_ii = getVF(b0_40, b1_40, val_40,4000.**3.,completeness = limits_40[0], maxV = limits_40[1])
-    z_40_ii = (1/float(SMDfile.split('-')[-1][:-4])-1)*n.ones_like(xData_40_ii)
+    z_40_ii = conversion(float(SMDfile.split('-')[-1][:-4]))*n.ones_like(xData_40_ii)
     if z_40_ii[0]<zmax :
         xData_40.append(xData_40_ii)
         yData_40.append(yData_40_ii)
@@ -148,12 +166,14 @@ xData_40 = n.hstack((xData_40))
 yData_40 = n.hstack((yData_40))
 yDataErr_40 = n.hstack((yDataErr_40))
 
-n.savetxt(join(dir, "data", type + "-"+ cos +"-"+ qty  +"MD_4Gpc"+".dat"),n.transpose([xData_40,z_40,yData_40,yDataErr_40]))
+n.savetxt(join(dir_40, property_dir, type + "-"+ cos +"-"+ qty  +"ALL_MD_4Gpc"+".dat"),n.transpose([xData_40,z_40,yData_40,yDataErr_40]))
 
-xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir,"data", type + "-"+ cos +"-"+ qty  +"MD_0.4Gpc"+".dat"),unpack=True)
-xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir,"data", type + "-"+ cos +"-"+ qty  +"MD_1Gpc"+".dat"),unpack=True)
-xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir,"data", type + "-"+ cos +"-"+ qty  +"MD_2.5Gpc"+".dat"),unpack=True)
-xData_40,z_40,yData_40,yDataErr_40 = n.loadtxt(join(dir,"data", type + "-"+ cos +"-"+ qty  +"MD_4Gpc"+".dat"),unpack=True)
+sys.exit()
+
+xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_04, property_dir, type + "-"+ cos +"-"+ qty  +"ALL_MD_0.4Gpc"+".dat"),unpack=True)
+xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir_10, property_dir, type + "-"+ cos +"-"+ qty  +"ALL_MD_1Gpc"+".dat"),unpack=True)
+xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir_25, property_dir, type + "-"+ cos +"-"+ qty  +"ALL_MD_2.5Gpc"+".dat"),unpack=True)
+xData_40,z_40,yData_40,yDataErr_40 = n.loadtxt(join(dir_40, property_dir, type + "-"+ cos +"-"+ qty  +"ALL_MD_4Gpc"+".dat"),unpack=True)
 
 redshift = n.hstack(( z_04, z_10, z_25, z_40))
 mvir = n.hstack(( xData_04, xData_10, xData_25, xData_40))
