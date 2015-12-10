@@ -76,12 +76,12 @@ type = "hist"
 cos = "Central" # centrak or satellite ?
 qty = "mvir"
 
-print qty, cos
-print zmin,zmax
-print dir_boxes
-print zList_files
-print qty_limits
-print volume_boxes
+print "we consider the ",type,"of",qty,"of", cos
+print "in the redshift range",zmin,zmax
+print "for the boxes",dir_boxes
+#print zList_files
+print "within the following limits for each box",qty_limits
+print "each box has a volume of",volume_boxes, "Mpc3/h3"
 
 fileName = type + "-"+ cos +"-"+ qty +"-*.dat"
 
@@ -97,7 +97,8 @@ for ii in range(len(fileList)):
     print SMDfile
     b0_04, b1_04, val_04 = n.loadtxt(SMDfile,unpack=True)
     xData_04_ii,yData_04_ii,yDataErr_04_ii,volume_04_ii = getVF(b0_04, b1_04, val_04,400.**3.,completeness = limits_04[0], maxV = limits_04[1])
-    z_04_ii = conversion(float(SMDfile.split('-')[-1][:-4]))*n.ones_like(xData_04_ii)
+    print SMDfile.split('-')[-1][:-4]
+    z_04_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_04_ii)
     if z_04_ii[0]<zmax :
         xData_04.append(xData_04_ii)
         yData_04.append(yData_04_ii)
@@ -111,25 +112,6 @@ yDataErr_04 = n.hstack((yDataErr_04))
 
 n.savetxt(join(dir_04, property_dir, type + "-"+ cos +"-"+ qty  +"ALL_MD_0.4Gpc.dat"),n.transpose([xData_04,z_04,yData_04,yDataErr_04]))
 
-xData_04,yData_04,yDataErr_04,z_04 = [], [], [], []
-for ii in range(len(fileList)):
-    SMDfile = fileList[ii]
-    b0_04, b1_04, val_04 = n.loadtxt(SMDfile,unpack=True)
-    xData_04_ii,yData_04_ii,yDataErr_04_ii,volume_04_ii = getDiffVF(b0_04, b1_04, val_04,400.**3.,completeness = limits_04[0], maxV = limits_04[1])
-    z_04_ii = (1/float(SMDfile.split('-')[-1][:-4])-1)*n.ones_like(xData_04_ii)
-    if z_04_ii[0]<zmax :
-        xData_04.append(xData_04_ii)
-        yData_04.append(yData_04_ii)
-        yDataErr_04.append(yDataErr_04_ii)
-        z_04.append(z_04_ii)
-
-z_04 = n.hstack((z_04))
-xData_04 = n.hstack((xData_04))
-yData_04 = n.hstack((yData_04))
-yDataErr_04 = n.hstack((yDataErr_04))
-
-n.savetxt(join(dir,"data", type + "-"+ cos +"-"+ qty  +"MD_0.4Gpc-diff"+".dat"),n.transpose([xData_04,z_04,yData_04,yDataErr_04]))
-
 ############ 1 Gpc ##############
 fileList = glob.glob(join(dir_10, property_dir,fileName))
 xData_10,yData_10,yDataErr_10,z_10 = [], [], [], []
@@ -141,7 +123,7 @@ for ii in range(len(fileList)):
     print SMDfile
     b0_10, b1_10, val_10 = n.loadtxt(SMDfile,unpack=True)
     xData_10_ii,yData_10_ii,yDataErr_10_ii,volume_10_ii = getVF(b0_10, b1_10, val_10,1000.**3.,completeness = limits_10[0], maxV = limits_10[1])
-    z_10_ii = conversion(float(SMDfile.split('-')[-1][:-4]))*n.ones_like(xData_10_ii)
+    z_10_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_10_ii)
     if z_10_ii[0]<zmax :
         xData_10.append(xData_10_ii)
         yData_10.append(yData_10_ii)
@@ -155,25 +137,6 @@ yDataErr_10 = n.hstack((yDataErr_10))
 
 n.savetxt(join(dir_10, property_dir, type + "-"+ cos +"-"+ qty  +"ALL_MD_1Gpc"+".dat"),n.transpose([xData_10,z_10,yData_10,yDataErr_10]))
 
-xData_10,yData_10,yDataErr_10,z_10 = [], [], [], []
-for ii in range(len(fileList)):
-    SMDfile = fileList[ii]
-    b0_10, b1_10, val_10 = n.loadtxt(SMDfile,unpack=True)
-    xData_10_ii,yData_10_ii,yDataErr_10_ii,volume_10_ii = getDiffVF(b0_10, b1_10, val_10,1000.**3.,completeness = limits_10[0], maxV = limits_10[1])
-    z_10_ii = (1/float(SMDfile.split('-')[-1][:-4])-1)*n.ones_like(xData_10_ii)
-    if z_10_ii[0]<zmax :
-        xData_10.append(xData_10_ii)
-        yData_10.append(yData_10_ii)
-        yDataErr_10.append(yDataErr_10_ii)
-        z_10.append(z_10_ii)
-
-z_10 = n.hstack((z_10))
-xData_10 = n.hstack((xData_10))
-yData_10 = n.hstack((yData_10))
-yDataErr_10 = n.hstack((yDataErr_10))
-
-n.savetxt(join(dir,"data", type + "-"+ cos +"-"+ qty  +"MD_1Gpc-diff"+".dat"),n.transpose([xData_10,z_10,yData_10,yDataErr_10]))
-
 ############ 2.5 Gpc ##############
 
 fileList = glob.glob(join(dir_25, property_dir,fileName))
@@ -186,7 +149,7 @@ for ii in range(len(fileList)):
     print SMDfile
     b0_25, b1_25, val_25 = n.loadtxt(SMDfile,unpack=True)
     xData_25_ii,yData_25_ii,yDataErr_25_ii,volume_25_ii = getVF(b0_25, b1_25, val_25,2500.**3.,completeness = limits_25[0], maxV = limits_25[1])
-    z_25_ii = conversion(float(SMDfile.split('-')[-1][:-4]))*n.ones_like(xData_25_ii)
+    z_25_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_25_ii)
     if z_25_ii[0]<zmax :
         xData_25.append(xData_25_ii)
         yData_25.append(yData_25_ii)
@@ -200,25 +163,6 @@ yDataErr_25 = n.hstack((yDataErr_25))
 
 n.savetxt(join(dir_25, property_dir, type + "-"+ cos +"-"+ qty  +"ALL_MD_2.5Gpc"+".dat"),n.transpose([xData_25,z_25,yData_25,yDataErr_25]))
 
-xData_25,yData_25,yDataErr_25,z_25 = [], [], [], []
-for ii in range(len(fileList)):
-    SMDfile = fileList[ii]
-    b0_25, b1_25, val_25 = n.loadtxt(SMDfile,unpack=True)
-    xData_25_ii,yData_25_ii,yDataErr_25_ii,volume_25_ii = getDiffVF(b0_25, b1_25, val_25,2500.**3.,completeness = limits_25[0], maxV = limits_25[1])
-    z_25_ii = (1/float(SMDfile.split('-')[-1][:-4])-1)*n.ones_like(xData_25_ii)
-    if z_25_ii[0]<zmax :
-        xData_25.append(xData_25_ii)
-        yData_25.append(yData_25_ii)
-        yDataErr_25.append(yDataErr_25_ii)
-        z_25.append(z_25_ii)
-
-z_25 = n.hstack((z_25))
-xData_25 = n.hstack((xData_25))
-yData_25 = n.hstack((yData_25))
-yDataErr_25 = n.hstack((yDataErr_25))
-
-n.savetxt(join(dir,"data", type + "-"+ cos +"-"+ qty  +"MD_2.5Gpc-diff"+".dat"),n.transpose([xData_25,z_25,yData_25,yDataErr_25]))
-
 ############ 4 Gpc ##############
 
 fileList = glob.glob(join(dir_40, property_dir,fileName))
@@ -231,7 +175,7 @@ for ii in range(len(fileList)):
     print SMDfile
     b0_40, b1_40, val_40 = n.loadtxt(SMDfile,unpack=True)
     xData_40_ii,yData_40_ii,yDataErr_40_ii,volume_40_ii = getVF(b0_40, b1_40, val_40,4000.**3.,completeness = limits_40[0], maxV = limits_40[1])
-    z_40_ii = conversion(float(SMDfile.split('-')[-1][:-4]))*n.ones_like(xData_40_ii)
+    z_40_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_40_ii)
     if z_40_ii[0]<zmax :
         xData_40.append(xData_40_ii)
         yData_40.append(yData_40_ii)
