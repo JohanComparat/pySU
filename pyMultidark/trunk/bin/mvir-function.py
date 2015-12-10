@@ -66,15 +66,22 @@ dir_10 = "/data2/DATA/eBOSS/Multidark-lightcones/MD_1Gpc_new_rockS/"
 dir_25 = "/data2/DATA/eBOSS/Multidark-lightcones/MD_2.5Gpc/"
 dir_40 = "/data2/DATA/eBOSS/Multidark-lightcones/MD_4Gpc/"
 
-#dir_boxes =  n.array([dir_04, dir_10, dir_25, dir_40])
+dir_boxes =  n.array([dir_04, dir_10, dir_25, dir_40])
 zList_files = n.array([ join(dir_box, "snapshots","redshift-list.txt") for dir_box in dir_boxes])
-#qty_limits = n.array([limits_04, limits_10, limits_25, limits_40])
-#volume_boxes =  n.array([400.**3., 1000**3., 2500**3., 4000.**3.])
+qty_limits = n.array([limits_04, limits_10, limits_25, limits_40])
+volume_boxes =  n.array([400.**3., 1000**3., 2500**3., 4000.**3.])
 
 property_dir = "properties/vmax-mvir"
 type = "hist"
 cos = "Central" # centrak or satellite ?
 qty = "mvir"
+
+print qty, cos
+print zmin,zmax
+print dir_boxes
+print zList_files
+print qty_limits
+print volume_boxes
 
 fileName = type + "-"+ cos +"-"+ qty +"-*.dat"
 
