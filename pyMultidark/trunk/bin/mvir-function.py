@@ -110,7 +110,7 @@ xData_04 = n.hstack((xData_04))
 yData_04 = n.hstack((yData_04))
 yDataErr_04 = n.hstack((yDataErr_04))
 
-n.savetxt(join(dir_04, property_dir, type + "-"+ cos +"-"+ qty  +"ALL_MD_0.4Gpc.dat"),n.transpose([xData_04,z_04,yData_04,yDataErr_04]))
+n.savetxt(join(dir_04, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_0.4Gpc.dat"),n.transpose([xData_04,z_04,yData_04,yDataErr_04]), header = qty+" z N Nerr" )
 
 ############ 1 Gpc ##############
 fileList = glob.glob(join(dir_10, property_dir,fileName))
@@ -135,7 +135,7 @@ xData_10 = n.hstack((xData_10))
 yData_10 = n.hstack((yData_10))
 yDataErr_10 = n.hstack((yDataErr_10))
 
-n.savetxt(join(dir_10, property_dir, type + "-"+ cos +"-"+ qty  +"ALL_MD_1Gpc"+".dat"),n.transpose([xData_10,z_10,yData_10,yDataErr_10]))
+n.savetxt(join(dir_10, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_1Gpc"+".dat"),n.transpose([xData_10,z_10,yData_10,yDataErr_10]), header = qty+" z N Nerr")
 
 ############ 2.5 Gpc ##############
 
@@ -161,7 +161,7 @@ xData_25 = n.hstack((xData_25))
 yData_25 = n.hstack((yData_25))
 yDataErr_25 = n.hstack((yDataErr_25))
 
-n.savetxt(join(dir_25, property_dir, type + "-"+ cos +"-"+ qty  +"ALL_MD_2.5Gpc"+".dat"),n.transpose([xData_25,z_25,yData_25,yDataErr_25]))
+n.savetxt(join(dir_25, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_2.5Gpc"+".dat"),n.transpose([xData_25,z_25,yData_25,yDataErr_25]), header = qty+" z N Nerr")
 
 ############ 4 Gpc ##############
 
@@ -187,7 +187,7 @@ xData_40 = n.hstack((xData_40))
 yData_40 = n.hstack((yData_40))
 yDataErr_40 = n.hstack((yDataErr_40))
 
-n.savetxt(join(dir_40, property_dir, type + "-"+ cos +"-"+ qty  +"ALL_MD_4Gpc"+".dat"),n.transpose([xData_40,z_40,yData_40,yDataErr_40]))
+n.savetxt(join(dir_40, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_4Gpc"+".dat"),n.transpose([xData_40,z_40,yData_40,yDataErr_40]), header = qty+" z N Nerr")
 
 sys.exit()
 
