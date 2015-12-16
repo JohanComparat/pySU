@@ -288,11 +288,15 @@ s_25 = (z_25 == 0)
 s_40 = (z_40 == 0)
 
 redshift = n.hstack(( z_04[s_04], z_10[s_10], z_25[s_25], z_40[s_40]))
+print "all redshifts available:", set(redshift)
 M200c = n.hstack(( xData_04[s_04], xData_10[s_10], xData_25[s_25], xData_40[s_40]))
+print "min and max masses available:", n.min(M200c), n.max(M200c)
 yData = n.hstack(( yData_04[s_04], yData_10[s_10], yData_25[s_25], yData_40[s_40]))
+print "min and max Y available:", n.min(yData_04), n.max(yData_04)
 yDataErr = n.hstack(( yDataErr_04[s_04], yDataErr_10[s_10], yDataErr_25[s_25], yDataErr_40[s_40]))
+print "min and max Y error available:", n.min(yDataErr), n.max(yDataErr)
 
-p0 = n.array([3, 12, 2, -2])
+p0 = n.array([-4, 14, 1, -1])
 
 vf = lambda v, A, v0, alpha, beta : 10**A * (v/10**v0)**beta * n.e**(- (v/10**v0)**alpha )
 vfbis = lambda v, p0 : vf(v, p0[0], p0[1], p0[2], p0[3])
