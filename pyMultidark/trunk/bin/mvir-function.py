@@ -321,7 +321,7 @@ p.xlabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
 p.ylabel(r'log$_{10}[(M^2/\rho_m) \; dn/dM]')
 p.legend(loc=3)
 p.grid()
-p.savefig(Pdir + "mvir-diff-function-z0.pdf")
+p.savefig(join(Pdir , "mvir-diff-function-z0.pdf"))
 p.clf()
 
 fig = p.figure(1,(9,9))
@@ -345,7 +345,7 @@ ax.set_ylabel('redshift')
 ax.set_ylim((0,zmax))
 ax.set_zlabel(r'$log_{10}[(M^2/\rho_m) \; dn/dM]$')
 ax.set_zlim((-4,0))
-p.savefig(Pdir + "mvir-diff-function-allZ.pdf")
+p.savefig(join(Pdir , "mvir-diff-function-allZ.pdf")
 p.clf()
 
 
@@ -437,7 +437,7 @@ ax.set_zlabel(r'log N($>M_{vir}$) [ h$^3$ Mpc$^{-3}$]')
 ax.set_zlim((-10,0))
 #ax.set_yscale('log')
 #ax.set_zscale('log')
-p.savefig(Pdir + "mvir-diff-function-allZ-model.pdf")
+p.savefig(join(Pdir , "mvir-diff-function-allZ-model.pdf")
 p.clf()
 
 fig = p.figure(1,(9,9))
@@ -463,7 +463,7 @@ ax.set_zlabel(r'Data / Model')
 ax.set_zlim((0,5))
 #ax.set_yscale('log')
 #ax.set_zscale('log')
-p.savefig(Pdir + "mvir-diff-function-allZ-modelRatio.pdf")
+p.savefig(join(Pdir , "mvir-diff-function-allZ-modelRatio.pdf"))
 p.clf()
 
 
@@ -505,7 +505,7 @@ p.xlim((80,3000))
 p.yscale('log')
 p.legend(loc=3)
 p.grid()
-p.savefig(Pdir + "vmax-function-z-"+str(zPlot)+".pdf")
+p.savefig(join(Pdir , "vmax-function-z-"+str(zPlot)+".pdf"))
 p.clf()
 
 
@@ -520,7 +520,7 @@ p.ylim((0.9,1.1))
 p.xlim((40,3000))
 p.title("A="+str(n.round(res[0],2))+r" v$_0$="+ str(n.round(res[1],2))+r" $\alpha$="+ str(n.round(res[2],2))+r" $\beta$="+ str(n.round(res[3],2)) )
 p.grid()
-p.savefig(Pdir + "fit-ratio-z0.00.pdf")
+p.savefig(join(Pdir , "fit-ratio-z0.00.pdf"))
 p.clf()
 
 print n.round(z_25,3), " & ", n.round(res,3), "\\\\"
