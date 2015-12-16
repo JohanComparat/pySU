@@ -273,6 +273,69 @@ yDataErr_40 = n.hstack((yDataErr_40))
 
 n.savetxt(join(dir_40, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_differential_MD_4Gpc.dat"),n.transpose([xData_40,z_40,yData_40,yDataErr_40]), header = qty+" z N Nerr")
 
+
+
+################################ Plot cumulative halo mass function  ################################
+
+xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_04, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_0.4Gpc"+".dat"),unpack=True)
+xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir_10, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_1Gpc.dat"),unpack=True)
+xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir_25, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_2.5Gpc.dat"),unpack=True)
+xData_40,z_40,yData_40,yDataErr_40 = n.loadtxt(join(dir_40, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_4Gpc.dat"),unpack=True)
+
+s_04 = (z_04 <= 0.01)
+s_10 = (z_10 == 0)
+s_25 = (z_25 == 0)
+s_40 = (z_40 == 0)
+
+redshift = n.hstack(( z_04[s_04], z_10[s_10], z_25[s_25], z_40[s_40]))
+M200c = n.hstack(( xData_04[s_04], xData_10[s_10], xData_25[s_25], xData_40[s_40]))
+yData = n.hstack(( yData_04[s_04], yData_10[s_10], yData_25[s_25], yData_40[s_40]))
+yDataErr = n.hstack(( yDataErr_04[s_04], yDataErr_10[s_10], yDataErr_25[s_25], yDataErr_40[s_40]))
+
+p0 = n.array([3, 12, 2, -2])
+
+vf = lambda v, A, v0, alpha, beta : 10**A * (v/10**v0)**beta * n.e**(- (v/10**v0)**alpha )
+vfbis = lambda v, p0 : vf(v, p0[0], p0[1], p0[2], p0[3])
+chi2fun = lambda p0 : n.sum( (vfbis(M200c,p0) - yData)**2. / yDataErr**2. )/len(yDataErr)
+
+print "looks for the optimum parameters"
+res = minimize(chi2fun, p0, method='Powell',options={'xtol': 1e-6, 'disp': True, 'maxiter' : 50000000, 'nfev': 1800000})
+
+print "ndof=",len(yDataErr)
+print res
+A0, vcut0, a0, b0 = n.round(res.x,2)
+#A1, vcut1, a1, a2, b1 = n.round(res.x,2)
+#A0 = -3.48
+#vcut0 = 1.48
+#a0 = -2.70
+#b0 =  2.74
+print "redshift 0 model for the M200c cumulqtive function :"
+print "A(z) & = "+str(A0)+' \\'
+print r" M_{200c}^{cut}(z) & = "+str(vcut0)+' \\'
+print r" \alpha(z) & = "+str(a0)+' \\'
+print r" \beta(z) & = "+str(b0)+' \\'
+
+# now outputs the model
+Z = vfbis(M200c,res.x)
+
+p.figure(0,(6,6))
+p.axes([0.17,0.17,0.75,0.75])
+
+p.plot(n.log10(xData_04[s_04]), yData_04[s_04], marker ='o', mfc='None',mec='r',ls='none', label="SMD", rasterized=True)
+p.plot(n.log10(xData_10[s_10]),yData_10[s_10], marker ='v', mfc='None',mec='c',ls='none', label="MDPL", rasterized=True)
+p.plot(n.log10(xData_25[s_25]),yData_25[s_25], marker ='s', mfc='None',mec='m',ls='none', label="BigMD", rasterized=True)
+p.plot(n.log10(xData_40[s_40]),yData_40[s_40], marker ='p', mfc='None',mec='b',ls='none', label="HMD", rasterized=True)
+p.plot(n.log10(M200c),Z,'k--',lw=2,label="model")
+
+p.xlabel(r'log$_{10}[M_{200c}/(h^{-1}M_\odot)]$')
+p.ylabel(r' n(>M)') # log$_{10}[ n(>M)]')
+p.yscale('log')
+p.legend(loc=3)
+p.grid()
+p.savefig(join(Pdir , "M200c-cumulative-function-z0.pdf"))
+p.clf()
+
+sys.exit()
 ################################ Plot differential halo mass function  ################################
 
 
@@ -281,43 +344,41 @@ xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir_10, property_dir, type +
 xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir_25, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_differential_MD_2.5Gpc"+".dat"),unpack=True)
 xData_40,z_40,yData_40,yDataErr_40 = n.loadtxt(join(dir_40, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_differential_MD_4Gpc.dat"),unpack=True)
 
-rhom_04 = n.array([aa.critical_density(zz).to(uu.solMass*uu.Mpc**-3).value/aa.h**2 for zz in z_04])
-rhom_10 = n.array([aa.critical_density(zz).to(uu.solMass*uu.Mpc**-3).value/aa.h**2 for zz in z_10])
-rhom_25 = n.array([aa.critical_density(zz).to(uu.solMass*uu.Mpc**-3).value/aa.h**2 for zz in z_25])
-rhom_40 = n.array([aa.critical_density(zz).to(uu.solMass*uu.Mpc**-3).value/aa.h**2 for zz in z_40])
+#rhom_04 = n.array([aa.critical_density(zz).to(uu.solMass*uu.Mpc**-3).value/aa.h**2 for zz in z_04])
+#rhom_10 = n.array([aa.critical_density(zz).to(uu.solMass*uu.Mpc**-3).value/aa.h**2 for zz in z_10])
+#rhom_25 = n.array([aa.critical_density(zz).to(uu.solMass*uu.Mpc**-3).value/aa.h**2 for zz in z_25])
+#rhom_40 = n.array([aa.critical_density(zz).to(uu.solMass*uu.Mpc**-3).value/aa.h**2 for zz in z_40])
 
 rhom_04 = n.array([aa.critical_density(zz).to(uu.solMass*uu.Mpc**-3).value for zz in z_04])
 rhom_10 = n.array([aa.critical_density(zz).to(uu.solMass*uu.Mpc**-3).value for zz in z_10])
 rhom_25 = n.array([aa.critical_density(zz).to(uu.solMass*uu.Mpc**-3).value for zz in z_25])
 rhom_40 = n.array([aa.critical_density(zz).to(uu.solMass*uu.Mpc**-3).value for zz in z_40])
 
-#dat = n.loadtxt("/Volumes/data/BigMD/mVector_PLANCK_HMD.txt", unpack=True)
-
 p.figure(0,(6,6))
 p.axes([0.17,0.17,0.75,0.75])
 
 #p.plot(n.log10(dat[0]),n.log10(dat[0]*dat[0]*dat[5]),'k--',lw=2)
-s_04 = (z_04 == 0)
+s_04 = (z_04 <= 0.01)
 y_04 = n.log10(yData_04*xData_04**2./rhom_04)
-y_04 = n.log10(yData_04*xData_04*xData_04)
+#y_04 = n.log10(yData_04*xData_04*xData_04)
 p.plot(n.log10(xData_04[s_04]), y_04[s_04], marker ='o', mfc='None',mec='r',ls='none', label="SMD", rasterized=True)
 
 s_10 = (z_10 == 0)
 y_10 = n.log10(yData_10*xData_10**2./rhom_10)
-y_10 = n.log10(yData_10*xData_10*xData_10)
+#y_10 = n.log10(yData_10*xData_10*xData_10)
 p.plot(n.log10(xData_10[s_10]),y_10[s_10], marker ='v', mfc='None',mec='c',ls='none', label="MDPL", rasterized=True)
 
 s_25 = (z_25 == 0)
 y_25 = n.log10(yData_25*xData_25**2./rhom_25)
-y_25 = n.log10(yData_25*xData_25*xData_25)
+#y_25 = n.log10(yData_25*xData_25*xData_25)
 p.plot(n.log10(xData_25[s_25]),y_25[s_25], marker ='s', mfc='None',mec='m',ls='none', label="BigMD", rasterized=True)
 
 s_40 = (z_40 == 0)
 y_40 = n.log10(yData_40*xData_40**2./rhom_40)
-y_40 = n.log10(yData_40*xData_40*xData_40)
+#y_40 = n.log10(yData_40*xData_40*xData_40)
 p.plot(n.log10(xData_40[s_40]),y_40[s_40], marker ='p', mfc='None',mec='b',ls='none', label="HMD", rasterized=True)
 
-p.xlabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
+p.xlabel(r'log$_{10}[M_{200c}/(h^{-1}M_\odot)]$')
 p.ylabel(r'log$_{10}[(M^2/\rho_m) \; dn/dM]')
 p.legend(loc=3)
 p.grid()
@@ -327,20 +388,20 @@ p.clf()
 fig = p.figure(1,(9,9))
 ax = fig.add_subplot(111, projection='3d')
 
-sc1 = ax.scatter(n.log10(xData_04),z_04,n.log10(yData_04*xData_04**2./rhom_04), s=n.ones_like(z_04)*3, c='r', marker='o',label="SMD", rasterized=True)
+sc1 = ax.scatter(n.log10(xData_04),z_04,y_04, s=n.ones_like(z_04)*3, c='r', marker='o',label="SMD", rasterized=True)
 sc1.set_edgecolor('face')
 
-sc1 = ax.scatter(n.log10(xData_10),z_10,n.log10(yData_10*xData_10**2./rhom_10), s=n.ones_like(z_10)*3, c='c', marker='v',label="MDPL", rasterized=True)
+sc1 = ax.scatter(n.log10(xData_10),z_10,y_10, s=n.ones_like(z_10)*3, c='c', marker='v',label="MDPL", rasterized=True)
 sc1.set_edgecolor('face')
 
-sc1 = ax.scatter(n.log10(xData_25),z_25,n.log10(yData_25*xData_25**2./rhom_25), s=n.ones_like(z_25)*3, c='m', marker='s',label="BigMD", rasterized=True)
+sc1 = ax.scatter(n.log10(xData_25),z_25,y_25, s=n.ones_like(z_25)*3, c='m', marker='s',label="BigMD", rasterized=True)
 sc1.set_edgecolor('face')
 
-sc1 = ax.scatter(n.log10(xData_40),z_40,n.log10(yData_40*xData_40**2./rhom_40), s=n.ones_like(z_40)*3, c='b', marker='p',label="HMD", rasterized=True)
+sc1 = ax.scatter(n.log10(xData_40),z_40,y_40, s=n.ones_like(z_40)*3, c='b', marker='p',label="HMD", rasterized=True)
 sc1.set_edgecolor('face')
 
 ax.legend()
-ax.set_xlabel(r'$log_{10}[M_{vir}/(h^{-1}M_\odot)]$')
+ax.set_xlabel(r'$log_{10}[M_{200c}/(h^{-1}M_\odot)]$')
 ax.set_ylabel('redshift')
 ax.set_ylim((0,zmax))
 ax.set_zlabel(r'$log_{10}[(M^2/\rho_m) \; dn/dM]$')
@@ -362,6 +423,8 @@ yData = n.hstack(( yData_04, yData_10, yData_25, yData_40))
 yDataErr = n.hstack(( yDataErr_04, yDataErr_10, yDataErr_25, yDataErr_40))
 
 vf = lambda v, A, v0, alpha, beta : 10**A * (v/10**v0)**beta * n.e**(- (v/10**v0)**alpha )
+vfbis = lambda v, z, p0 : vf(v, p0[0], p0[1], p0[2], p0[3])
+chi2fun = lambda p0 : n.sum( (vfbis(M200c,p0) - yData)**2. / yDataErr**2. )/len(yDataErr)
 
 vfG = lambda v, z, A0, A1, vcut0, vcut1, a0, a1, a2, b0, b1 : 10**(A0 + A1 * z) * (1+ (v/10**(vcut0 + vcut1 * z))**(b0 + b1 * z) )* n.e**(- (v/10**(vcut0 + vcut1 * z))**(a0 + a1 * z + a2 * z**2.) )
 vfGbis = lambda v, z, p0 : vfG(v,z,p0[0],p0[1],p0[2],p0[3],p0[4],p0[5],p0[6],p0[7],p0[8])
@@ -430,10 +493,10 @@ sc1 = ax.scatter(n.log10(xData_40),z_40,n.log10(yData_40), s=n.ones_like(z_40)*3
 sc1.set_edgecolor('face')
 
 ax.legend()
-ax.set_xlabel(r'log $M_{vir}$ [km s$^{-1}$]')
+ax.set_xlabel(r'log $M_{200c}$ [km s$^{-1}$]')
 ax.set_ylabel('redshift')
 ax.set_ylim((0,zmax))
-ax.set_zlabel(r'log N($>M_{vir}$) [ h$^3$ Mpc$^{-3}$]')
+ax.set_zlabel(r'log N($>M_{200c}$) [ h$^3$ Mpc$^{-3}$]')
 ax.set_zlim((-10,0))
 #ax.set_yscale('log')
 #ax.set_zscale('log')
@@ -456,7 +519,7 @@ sc1 = ax.scatter(n.log10(xData_40),z_40,yData_40/vfGbis(xData_40,z_40,res.x), s=
 sc1.set_edgecolor('face')
 
 ax.legend()
-ax.set_xlabel(r'log $M_{vir}$ [km s$^{-1}$]')
+ax.set_xlabel(r'log $M_{200c}$ [km s$^{-1}$]')
 ax.set_ylabel('redshift')
 ax.set_ylim((0,zmax))
 ax.set_zlabel(r'Data / Model')
