@@ -283,9 +283,9 @@ xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir_25, property_dir, type +
 xData_40,z_40,yData_40,yDataErr_40 = n.loadtxt(join(dir_40, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_4Gpc.dat"),unpack=True)
 
 s_04 = (z_04 <= 0.01)
-s_10 = (z_10 == 0)
-s_25 = (z_25 == 0)
-s_40 = (z_40 == 0)
+s_10 = (z_10 <= 0.01)
+s_25 = (z_25 <= 0.01)
+s_40 = (z_40 <= 0.01)
 
 redshift = n.hstack(( z_04[s_04], z_10[s_10], z_25[s_25], z_40[s_40]))
 print "all redshifts available:", set(redshift)
@@ -356,18 +356,18 @@ M200c = n.hstack(( xData_04, xData_10, xData_25, xData_40))
 yData = n.hstack(( yData_04, yData_10, yData_25, yData_40))
 yDataErr = n.hstack(( yDataErr_04, yDataErr_10, yDataErr_25, yDataErr_40))
 
-vfG = lambda v, z, A0, A1, vcut0, vcut1, a0, a1, b0, b1 : 10**(A0 + A1 * z) * (1+ (v/10**(vcut0 + vcut1 * z))**(b0 + b1 * z) )* n.e**(- (v/10**(vcut0 + vcut1 * z))**(a0 + a1 * z ) )
-vfGbis = lambda v, z, p0 : vfG(v,z,p0[0],p0[1],p0[2],p0[3],p0[4],p0[5],p0[6],p0[7])
+vfG = lambda v, z, A0, A1, vcut0, vcut1, b0, b1 : 10**(A0 + A1 * z) * (1+ (v/10**(vcut0 + vcut1 * z))**(b0 + b1 * z) )* n.e**(- (v/10**(vcut0 + vcut1 * z))**(a0 ) )
+vfGbis = lambda v, z, p0 : vfG(v,z,p0[0],p0[1],p0[2],p0[3],p0[4],p0[5])
 chi2fun = lambda p0 : n.sum((vfGbis(M200c,redshift,p0) - yData)**2. / yDataErr**2. )/len(yDataErr)
 
-p1 = n.array([A0, 0., vcut0, 0., a0, 0., b0, 0.])
+p1 = n.array([A0, 0., vcut0, 0., b0, 0.])
 
 print "looks for the optimum parameters"
 res = minimize(chi2fun, p1, method='Powell',options={'xtol': 1e-6, 'disp': True, 'maxiter' : 50000000, 'nfev': 1800000})
 
 print "ndof=",len(yDataErr)
 print res
-A0, A1, vcut0, vcut1, a0, a1, b0, b1 = n.round(res.x,2)
+A0, A1, vcut0, vcut1, b0, b1 = n.round(res.x,2)
 #A1, vcut1, a1, a2, b1 = n.round(res.x,2)
 #A0 = -3.48
 #vcut0 = 1.48
@@ -376,7 +376,7 @@ A0, A1, vcut0, vcut1, a0, a1, b0, b1 = n.round(res.x,2)
 
 print "A(z) & = "+str(A0)+" + "+str(A1)+r'\times z \\'
 print r" M_{cut}(z) & = "+str(vcut0)+" + "+str(vcut1)+r'\times z \\'
-print r" \alpha(z) & = "+str(a0)+" + "+str(a1)+r'\times z \\' #+ '+str(a2)+r'\times z^2 \\'
+print r" \alpha(z) & = "+str(a0)#+" + "+str(a1)+r'\times z \\' #+ '+str(a2)+r'\times z^2 \\'
 print r" \beta(z) & = "+str(b0)+" + "+str(b1)+r'\times z \\'
 
 # now outputs the model
