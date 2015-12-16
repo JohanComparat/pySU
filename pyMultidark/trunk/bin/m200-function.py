@@ -275,7 +275,7 @@ n.savetxt(join(dir_40, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_different
 
 
 
-################################ Plot cumulative halo mass function  ################################
+################################ Plot cumulative halo mass function,model at z=0  ################################
 
 xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_04, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_0.4Gpc"+".dat"),unpack=True)
 xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir_10, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_1Gpc.dat"),unpack=True)
@@ -316,7 +316,6 @@ print r" \alpha(z) & = "+str(a0)+' \\'
 print r" \beta(z) & = "+str(b0)+' \\'
 
 # now outputs the model
-Z = vfbis(M200c,res.x)
 
 p.figure(0,(6,6))
 p.axes([0.17,0.17,0.75,0.75])
@@ -325,7 +324,11 @@ p.plot(n.log10(xData_04[s_04]), yData_04[s_04], marker ='o', mfc='None',mec='r',
 p.plot(n.log10(xData_10[s_10]),yData_10[s_10], marker ='v', mfc='None',mec='c',ls='none', label="MDPL", rasterized=True)
 p.plot(n.log10(xData_25[s_25]),yData_25[s_25], marker ='s', mfc='None',mec='m',ls='none', label="BigMD", rasterized=True)
 p.plot(n.log10(xData_40[s_40]),yData_40[s_40], marker ='p', mfc='None',mec='b',ls='none', label="HMD", rasterized=True)
-p.plot(n.log10(M200c),Z,'k--',lw=2,label="model")
+
+xModel = 10**n.arange(n.min(n.log10(M200c)),n.max(n.log10(M200c)),0.1)
+yModel = vfbis(xModel,res.x)
+
+p.plot(n.log10(xModel), yModel,'k--',label="model")
 
 p.xlabel(r'log$_{10}[M_{200c}/(h^{-1}M_\odot)]$')
 p.ylabel(r' n(>M)') # log$_{10}[ n(>M)]')
@@ -335,79 +338,6 @@ p.grid()
 p.savefig(join(Pdir , "M200c-cumulative-function-z0.pdf"))
 p.clf()
 
-sys.exit()
-################################ Plot differential halo mass function  ################################
-
-
-xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_40, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_differential_MD_4Gpc.dat"),unpack=True)
-xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir_10, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_differential_MD_1Gpc"+".dat"),unpack=True)
-xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir_25, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_differential_MD_2.5Gpc"+".dat"),unpack=True)
-xData_40,z_40,yData_40,yDataErr_40 = n.loadtxt(join(dir_40, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_differential_MD_4Gpc.dat"),unpack=True)
-
-#rhom_04 = n.array([aa.critical_density(zz).to(uu.solMass*uu.Mpc**-3).value/aa.h**2 for zz in z_04])
-#rhom_10 = n.array([aa.critical_density(zz).to(uu.solMass*uu.Mpc**-3).value/aa.h**2 for zz in z_10])
-#rhom_25 = n.array([aa.critical_density(zz).to(uu.solMass*uu.Mpc**-3).value/aa.h**2 for zz in z_25])
-#rhom_40 = n.array([aa.critical_density(zz).to(uu.solMass*uu.Mpc**-3).value/aa.h**2 for zz in z_40])
-
-rhom_04 = n.array([aa.critical_density(zz).to(uu.solMass*uu.Mpc**-3).value for zz in z_04])
-rhom_10 = n.array([aa.critical_density(zz).to(uu.solMass*uu.Mpc**-3).value for zz in z_10])
-rhom_25 = n.array([aa.critical_density(zz).to(uu.solMass*uu.Mpc**-3).value for zz in z_25])
-rhom_40 = n.array([aa.critical_density(zz).to(uu.solMass*uu.Mpc**-3).value for zz in z_40])
-
-p.figure(0,(6,6))
-p.axes([0.17,0.17,0.75,0.75])
-
-#p.plot(n.log10(dat[0]),n.log10(dat[0]*dat[0]*dat[5]),'k--',lw=2)
-s_04 = (z_04 <= 0.01)
-y_04 = n.log10(yData_04*xData_04**2./rhom_04)
-#y_04 = n.log10(yData_04*xData_04*xData_04)
-p.plot(n.log10(xData_04[s_04]), y_04[s_04], marker ='o', mfc='None',mec='r',ls='none', label="SMD", rasterized=True)
-
-s_10 = (z_10 == 0)
-y_10 = n.log10(yData_10*xData_10**2./rhom_10)
-#y_10 = n.log10(yData_10*xData_10*xData_10)
-p.plot(n.log10(xData_10[s_10]),y_10[s_10], marker ='v', mfc='None',mec='c',ls='none', label="MDPL", rasterized=True)
-
-s_25 = (z_25 == 0)
-y_25 = n.log10(yData_25*xData_25**2./rhom_25)
-#y_25 = n.log10(yData_25*xData_25*xData_25)
-p.plot(n.log10(xData_25[s_25]),y_25[s_25], marker ='s', mfc='None',mec='m',ls='none', label="BigMD", rasterized=True)
-
-s_40 = (z_40 == 0)
-y_40 = n.log10(yData_40*xData_40**2./rhom_40)
-#y_40 = n.log10(yData_40*xData_40*xData_40)
-p.plot(n.log10(xData_40[s_40]),y_40[s_40], marker ='p', mfc='None',mec='b',ls='none', label="HMD", rasterized=True)
-
-p.xlabel(r'log$_{10}[M_{200c}/(h^{-1}M_\odot)]$')
-p.ylabel(r'log$_{10}[(M^2/\rho_m) \; dn/dM]')
-p.legend(loc=3)
-p.grid()
-p.savefig(join(Pdir , "M200c-diff-function-z0.pdf"))
-p.clf()
-
-fig = p.figure(1,(9,9))
-ax = fig.add_subplot(111, projection='3d')
-
-sc1 = ax.scatter(n.log10(xData_04),z_04,y_04, s=n.ones_like(z_04)*3, c='r', marker='o',label="SMD", rasterized=True)
-sc1.set_edgecolor('face')
-
-sc1 = ax.scatter(n.log10(xData_10),z_10,y_10, s=n.ones_like(z_10)*3, c='c', marker='v',label="MDPL", rasterized=True)
-sc1.set_edgecolor('face')
-
-sc1 = ax.scatter(n.log10(xData_25),z_25,y_25, s=n.ones_like(z_25)*3, c='m', marker='s',label="BigMD", rasterized=True)
-sc1.set_edgecolor('face')
-
-sc1 = ax.scatter(n.log10(xData_40),z_40,y_40, s=n.ones_like(z_40)*3, c='b', marker='p',label="HMD", rasterized=True)
-sc1.set_edgecolor('face')
-
-ax.legend()
-ax.set_xlabel(r'$log_{10}[M_{200c}/(h^{-1}M_\odot)]$')
-ax.set_ylabel('redshift')
-ax.set_ylim((0,zmax))
-ax.set_zlabel(r'$log_{10}[(M^2/\rho_m) \; dn/dM]$')
-ax.set_zlim((-4,0))
-p.savefig(join(Pdir , "M200c-diff-function-allZ.pdf"))
-p.clf()
 
 
 ################################ Model Fits on the cumulative function ################################
@@ -422,27 +352,11 @@ M200c = n.hstack(( xData_04, xData_10, xData_25, xData_40))
 yData = n.hstack(( yData_04, yData_10, yData_25, yData_40))
 yDataErr = n.hstack(( yDataErr_04, yDataErr_10, yDataErr_25, yDataErr_40))
 
-vf = lambda v, A, v0, alpha, beta : 10**A * (v/10**v0)**beta * n.e**(- (v/10**v0)**alpha )
-vfbis = lambda v, z, p0 : vf(v, p0[0], p0[1], p0[2], p0[3])
-chi2fun = lambda p0 : n.sum( (vfbis(M200c,p0) - yData)**2. / yDataErr**2. )/len(yDataErr)
-
 vfG = lambda v, z, A0, A1, vcut0, vcut1, a0, a1, a2, b0, b1 : 10**(A0 + A1 * z) * (1+ (v/10**(vcut0 + vcut1 * z))**(b0 + b1 * z) )* n.e**(- (v/10**(vcut0 + vcut1 * z))**(a0 + a1 * z + a2 * z**2.) )
 vfGbis = lambda v, z, p0 : vfG(v,z,p0[0],p0[1],p0[2],p0[3],p0[4],p0[5],p0[6],p0[7],p0[8])
 chi2fun = lambda p0 : n.sum((vfGbis(M200c,redshift,p0) - yData)**2. / yDataErr**2. )/len(yDataErr)
 
-"""
-vfG0 = lambda v, z, A1, vcut1, a1, a2, b1 : 10**(-3.48089246 + A1 * z) * (v/10**(2.73872233 + vcut1 * z))**( -2.70150905 + b1 * z) * n.e**(- (v/10**(2.73872233 + vcut1 * z))**(1.47758206 + a1 * z + a2 * z**2.) )
-
-vfGbis0 = lambda v, z, p0 : vfG0(v,z,p0[0],p0[1],p0[2],p0[3],p0[4])
-chi2fun = lambda p0 : n.sum((vfGbis0(M200c,redshift,p0) - yData)**2. / yDataErr**2. )/len(yDataErr)
-
-vfG0 = lambda v, z, A1, vcut1, a1, a2, b1 : 10**(-3.48089246 + A1 * z) * (v/10**(2.73872233 + vcut1 * z))**( -2.70150905 + b1 * z) * n.e**(- (v/10**(2.73872233 + vcut1 * z))**(1.47758206 + a1 * z + a2 * z**2.) )
-
-vfGbis0 = lambda v, z, p0 : vfG0(v,z,p0[0],p0[1],p0[2],p0[3],p0[4])
-chi2fun = lambda p0 : n.sum((vfGbis0(M200c,redshift,p0) - yData)**2. / yDataErr**2. )/len(yDataErr)
-"""
-p1 = n.array([3, 0.73575868, 12, -0.17861551, 2, -0.32736035,  0.221566, -2, 0.16587088])#4, 0.6, 2.85, -0.1, 1.77, -0.03, 0., -2.8, -0.1 ])
-
+p1 = n.array([A0, 0., vcut0, 0., a0, 0.,  0., b0, 0.])
 
 print "looks for the optimum parameters"
 res = minimize(chi2fun, p1, method='Powell',options={'xtol': 1e-6, 'disp': True, 'maxiter' : 50000000, 'nfev': 1800000})
@@ -527,5 +441,81 @@ ax.set_zlim((0,5))
 #ax.set_yscale('log')
 #ax.set_zscale('log')
 p.savefig(join(Pdir , "M200c-diff-function-allZ-modelRatio.pdf"))
+p.clf()
+
+
+
+sys.exit()
+################################ Plot differential halo mass function  ################################
+
+
+xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_40, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_differential_MD_4Gpc.dat"),unpack=True)
+xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir_10, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_differential_MD_1Gpc"+".dat"),unpack=True)
+xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir_25, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_differential_MD_2.5Gpc"+".dat"),unpack=True)
+xData_40,z_40,yData_40,yDataErr_40 = n.loadtxt(join(dir_40, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_differential_MD_4Gpc.dat"),unpack=True)
+
+#rhom_04 = n.array([aa.critical_density(zz).to(uu.solMass*uu.Mpc**-3).value/aa.h**2 for zz in z_04])
+#rhom_10 = n.array([aa.critical_density(zz).to(uu.solMass*uu.Mpc**-3).value/aa.h**2 for zz in z_10])
+#rhom_25 = n.array([aa.critical_density(zz).to(uu.solMass*uu.Mpc**-3).value/aa.h**2 for zz in z_25])
+#rhom_40 = n.array([aa.critical_density(zz).to(uu.solMass*uu.Mpc**-3).value/aa.h**2 for zz in z_40])
+
+rhom_04 = n.array([aa.critical_density(zz).to(uu.solMass*uu.Mpc**-3).value for zz in z_04])
+rhom_10 = n.array([aa.critical_density(zz).to(uu.solMass*uu.Mpc**-3).value for zz in z_10])
+rhom_25 = n.array([aa.critical_density(zz).to(uu.solMass*uu.Mpc**-3).value for zz in z_25])
+rhom_40 = n.array([aa.critical_density(zz).to(uu.solMass*uu.Mpc**-3).value for zz in z_40])
+
+p.figure(0,(6,6))
+p.axes([0.17,0.17,0.75,0.75])
+
+#p.plot(n.log10(dat[0]),n.log10(dat[0]*dat[0]*dat[5]),'k--',lw=2)
+s_04 = (z_04 <= 0.01)
+y_04 = n.log10(yData_04*xData_04**2./rhom_04)
+#y_04 = n.log10(yData_04*xData_04*xData_04)
+p.plot(n.log10(xData_04[s_04]), y_04[s_04], marker ='o', mfc='None',mec='r',ls='none', label="SMD", rasterized=True)
+
+s_10 = (z_10 == 0)
+y_10 = n.log10(yData_10*xData_10**2./rhom_10)
+#y_10 = n.log10(yData_10*xData_10*xData_10)
+p.plot(n.log10(xData_10[s_10]),y_10[s_10], marker ='v', mfc='None',mec='c',ls='none', label="MDPL", rasterized=True)
+
+s_25 = (z_25 == 0)
+y_25 = n.log10(yData_25*xData_25**2./rhom_25)
+#y_25 = n.log10(yData_25*xData_25*xData_25)
+p.plot(n.log10(xData_25[s_25]),y_25[s_25], marker ='s', mfc='None',mec='m',ls='none', label="BigMD", rasterized=True)
+
+s_40 = (z_40 == 0)
+y_40 = n.log10(yData_40*xData_40**2./rhom_40)
+#y_40 = n.log10(yData_40*xData_40*xData_40)
+p.plot(n.log10(xData_40[s_40]),y_40[s_40], marker ='p', mfc='None',mec='b',ls='none', label="HMD", rasterized=True)
+
+p.xlabel(r'log$_{10}[M_{200c}/(h^{-1}M_\odot)]$')
+p.ylabel(r'log$_{10}[(M^2/\rho_m) \; dn/dM]')
+p.legend(loc=3)
+p.grid()
+p.savefig(join(Pdir , "M200c-diff-function-z0.pdf"))
+p.clf()
+
+fig = p.figure(1,(9,9))
+ax = fig.add_subplot(111, projection='3d')
+
+sc1 = ax.scatter(n.log10(xData_04),z_04,y_04, s=n.ones_like(z_04)*3, c='r', marker='o',label="SMD", rasterized=True)
+sc1.set_edgecolor('face')
+
+sc1 = ax.scatter(n.log10(xData_10),z_10,y_10, s=n.ones_like(z_10)*3, c='c', marker='v',label="MDPL", rasterized=True)
+sc1.set_edgecolor('face')
+
+sc1 = ax.scatter(n.log10(xData_25),z_25,y_25, s=n.ones_like(z_25)*3, c='m', marker='s',label="BigMD", rasterized=True)
+sc1.set_edgecolor('face')
+
+sc1 = ax.scatter(n.log10(xData_40),z_40,y_40, s=n.ones_like(z_40)*3, c='b', marker='p',label="HMD", rasterized=True)
+sc1.set_edgecolor('face')
+
+ax.legend()
+ax.set_xlabel(r'$log_{10}[M_{200c}/(h^{-1}M_\odot)]$')
+ax.set_ylabel('redshift')
+ax.set_ylim((0,zmax))
+ax.set_zlabel(r'$log_{10}[(M^2/\rho_m) \; dn/dM]$')
+ax.set_zlim((-4,0))
+p.savefig(join(Pdir , "M200c-diff-function-allZ.pdf"))
 p.clf()
 
