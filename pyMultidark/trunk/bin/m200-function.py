@@ -54,12 +54,12 @@ def getDiffVF(b0, b1, val,volume,label="SMD",completeness = 100, maxV=16,errFact
 
 mf = lambda v, A, v0, alpha, beta : 10**A * (v/10**v0)**beta * n.e**(- (v/10**v0)**alpha )
 
-limits_04 = [1e7, 1e12]
-limits_10 = [1e11, 1e14]
-limits_25 = [1e12, 1e15]
-limits_40 = [1e13, 1e16]
+limits_04 = [1e10, 1e13]
+limits_10 = [3e11, 1e14]
+limits_25 = [5e12, 1e15]
+limits_40 = [1e13, 5e15]
 zmin = 0.
-zmax = 5.
+zmax = 3.
 
 dir_04 = "/data2/DATA/eBOSS/Multidark-lightcones/MD_0.4Gpc/"
 dir_10 = "/data2/DATA/eBOSS/Multidark-lightcones/MD_1Gpc_new_rockS/"
@@ -414,7 +414,7 @@ ax.set_zlabel(r'log N($>M_{200c}$) [ h$^3$ Mpc$^{-3}$]')
 ax.set_zlim((-10,0))
 #ax.set_yscale('log')
 #ax.set_zscale('log')
-p.savefig(join(Pdir , "M200c-diff-function-allZ-model.pdf"))
+p.savefig(join(Pdir , "M200c-cumulative-function-allZ-model.pdf"))
 p.clf()
 
 fig = p.figure(1,(9,9))
@@ -440,7 +440,7 @@ ax.set_zlabel(r'Data / Model')
 ax.set_zlim((0,5))
 #ax.set_yscale('log')
 #ax.set_zscale('log')
-p.savefig(join(Pdir , "M200c-diff-function-allZ-modelRatio.pdf"))
+p.savefig(join(Pdir , "M200c-cumulative-function-allZ-modelRatio.pdf"))
 p.clf()
 
 
