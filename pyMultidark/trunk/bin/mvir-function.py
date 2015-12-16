@@ -345,7 +345,7 @@ ax.set_ylabel('redshift')
 ax.set_ylim((0,zmax))
 ax.set_zlabel(r'$log_{10}[(M^2/\rho_m) \; dn/dM]$')
 ax.set_zlim((-4,0))
-p.savefig(join(Pdir , "mvir-diff-function-allZ.pdf")
+p.savefig(join(Pdir , "mvir-diff-function-allZ.pdf"))
 p.clf()
 
 
