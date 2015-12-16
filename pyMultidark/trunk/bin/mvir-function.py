@@ -437,7 +437,7 @@ ax.set_zlabel(r'log N($>M_{vir}$) [ h$^3$ Mpc$^{-3}$]')
 ax.set_zlim((-10,0))
 #ax.set_yscale('log')
 #ax.set_zscale('log')
-p.savefig(join(Pdir , "mvir-diff-function-allZ-model.pdf")
+p.savefig(join(Pdir , "mvir-diff-function-allZ-model.pdf"))
 p.clf()
 
 fig = p.figure(1,(9,9))
