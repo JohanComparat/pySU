@@ -20,8 +20,8 @@ import cPickle
 from os.path import join
 from scipy.optimize import minimize
 
-dir = "/Volumes/data/BigMD/mvirFunction/"
-Pdir = "/Volumes/data/BigMD/mvirFunction/plots/"
+dir = "/data2/DATA/eBOSS/Multidark-lightcones/"
+Pdir = join(dir,"mvirFunction") #"/Volumes/data/BigMD/mvirFunction/plots/"
 
 def getVF(b0, b1, val,volume,label="SMD",completeness = 100, maxV=16,errFactor=1.):
     """returns the cumulative function n(>X) """
@@ -85,6 +85,8 @@ print "each box has a volume of",volume_boxes, "Mpc3/h3"
 
 fileName = type + "-"+ cos +"-"+ qty +"-*.dat"
 
+############ 0.4 Gpc ##############
+
 fileList = n.array(glob.glob(join(dir_04, property_dir,fileName)))
 fileList.sort()
 
@@ -112,12 +114,34 @@ yDataErr_04 = n.hstack((yDataErr_04))
 
 n.savetxt(join(dir_04, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_0.4Gpc.dat"),n.transpose([xData_04,z_04,yData_04,yDataErr_04]), header = qty+" z N Nerr" )
 
+xData_04,yData_04,yDataErr_04,z_04 = [], [], [], []
+for ii in range(len(fileList)):
+    SMDfile = fileList[ii]
+    print SMDfile
+    b0_04, b1_04, val_04 = n.loadtxt(SMDfile,unpack=True)
+    xData_04_ii,yData_04_ii,yDataErr_04_ii,volume_04_ii = getDiffVF(b0_04, b1_04, val_04,400.**3.,completeness = limits_04[0], maxV = limits_04[1])
+    print SMDfile.split('-')[-1][:-4]
+    z_04_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_04_ii)
+    if z_04_ii[0]<zmax :
+        xData_04.append(xData_04_ii)
+        yData_04.append(yData_04_ii)
+        yDataErr_04.append(yDataErr_04_ii)
+        z_04.append(z_04_ii)
+
+z_04 = n.hstack((z_04))
+xData_04 = n.hstack((xData_04))
+yData_04 = n.hstack((yData_04))
+yDataErr_04 = n.hstack((yDataErr_04))
+
+n.savetxt(join(dir_04, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_differential_MD_0.4Gpc.dat"),n.transpose([xData_04,z_04,yData_04,yDataErr_04]), header = qty+" z N Nerr" )
+
+
 ############ 1 Gpc ##############
 fileList = glob.glob(join(dir_10, property_dir,fileName))
-xData_10,yData_10,yDataErr_10,z_10 = [], [], [], []
 nSN, aSN = n.loadtxt(zList_files[1], unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
 conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
 
+xData_10,yData_10,yDataErr_10,z_10 = [], [], [], []
 for ii in range(len(fileList)):
     SMDfile = fileList[ii]
     print SMDfile
@@ -137,13 +161,33 @@ yDataErr_10 = n.hstack((yDataErr_10))
 
 n.savetxt(join(dir_10, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_1Gpc"+".dat"),n.transpose([xData_10,z_10,yData_10,yDataErr_10]), header = qty+" z N Nerr")
 
+xData_10,yData_10,yDataErr_10,z_10 = [], [], [], []
+for ii in range(len(fileList)):
+    SMDfile = fileList[ii]
+    print SMDfile
+    b0_10, b1_10, val_10 = n.loadtxt(SMDfile,unpack=True)
+    xData_10_ii,yData_10_ii,yDataErr_10_ii,volume_10_ii = getDiffVF(b0_10, b1_10, val_10,1000.**3.,completeness = limits_10[0], maxV = limits_10[1])
+    z_10_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_10_ii)
+    if z_10_ii[0]<zmax :
+        xData_10.append(xData_10_ii)
+        yData_10.append(yData_10_ii)
+        yDataErr_10.append(yDataErr_10_ii)
+        z_10.append(z_10_ii)
+
+z_10 = n.hstack((z_10))
+xData_10 = n.hstack((xData_10))
+yData_10 = n.hstack((yData_10))
+yDataErr_10 = n.hstack((yDataErr_10))
+
+n.savetxt(join(dir_10, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_differential_MD_1Gpc"+".dat"),n.transpose([xData_10,z_10,yData_10,yDataErr_10]), header = qty+" z N Nerr")
+
 ############ 2.5 Gpc ##############
 
 fileList = glob.glob(join(dir_25, property_dir,fileName))
-xData_25,yData_25,yDataErr_25,z_25 = [], [], [], []
 nSN, aSN = n.loadtxt(zList_files[2], unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
 conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
 
+xData_25,yData_25,yDataErr_25,z_25 = [], [], [], []
 for ii in range(len(fileList)):
     SMDfile = fileList[ii]
     print SMDfile
@@ -163,13 +207,33 @@ yDataErr_25 = n.hstack((yDataErr_25))
 
 n.savetxt(join(dir_25, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_2.5Gpc"+".dat"),n.transpose([xData_25,z_25,yData_25,yDataErr_25]), header = qty+" z N Nerr")
 
+xData_25,yData_25,yDataErr_25,z_25 = [], [], [], []
+for ii in range(len(fileList)):
+    SMDfile = fileList[ii]
+    print SMDfile
+    b0_25, b1_25, val_25 = n.loadtxt(SMDfile,unpack=True)
+    xData_25_ii,yData_25_ii,yDataErr_25_ii,volume_25_ii = getDiffVF(b0_25, b1_25, val_25,2500.**3.,completeness = limits_25[0], maxV = limits_25[1])
+    z_25_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_25_ii)
+    if z_25_ii[0]<zmax :
+        xData_25.append(xData_25_ii)
+        yData_25.append(yData_25_ii)
+        yDataErr_25.append(yDataErr_25_ii)
+        z_25.append(z_25_ii)
+
+z_25 = n.hstack((z_25))
+xData_25 = n.hstack((xData_25))
+yData_25 = n.hstack((yData_25))
+yDataErr_25 = n.hstack((yDataErr_25))
+
+n.savetxt(join(dir_25, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_differential_MD_2.5Gpc"+".dat"),n.transpose([xData_25,z_25,yData_25,yDataErr_25]), header = qty+" z N Nerr")
+
 ############ 4 Gpc ##############
 
 fileList = glob.glob(join(dir_40, property_dir,fileName))
-xData_40,yData_40,yDataErr_40,z_40 = [], [], [], []
 nSN, aSN = n.loadtxt(zList_files[3], unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
 conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
 
+xData_40,yData_40,yDataErr_40,z_40 = [], [], [], []
 for ii in range(len(fileList)):
     SMDfile = fileList[ii]
     print SMDfile
@@ -189,19 +253,13 @@ yDataErr_40 = n.hstack((yDataErr_40))
 
 n.savetxt(join(dir_40, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_4Gpc"+".dat"),n.transpose([xData_40,z_40,yData_40,yDataErr_40]), header = qty+" z N Nerr")
 
-sys.exit()
-
-xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_04, property_dir, type + "-"+ cos +"-"+ qty  +"ALL_MD_0.4Gpc"+".dat"),unpack=True)
-xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir_10, property_dir, type + "-"+ cos +"-"+ qty  +"ALL_MD_1Gpc"+".dat"),unpack=True)
-xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir_25, property_dir, type + "-"+ cos +"-"+ qty  +"ALL_MD_2.5Gpc"+".dat"),unpack=True)
-xData_40,z_40,yData_40,yDataErr_40 = n.loadtxt(join(dir_40, property_dir, type + "-"+ cos +"-"+ qty  +"ALL_MD_4Gpc"+".dat"),unpack=True)
-
 xData_40,yData_40,yDataErr_40,z_40 = [], [], [], []
 for ii in range(len(fileList)):
     SMDfile = fileList[ii]
+    print SMDfile
     b0_40, b1_40, val_40 = n.loadtxt(SMDfile,unpack=True)
     xData_40_ii,yData_40_ii,yDataErr_40_ii,volume_40_ii = getDiffVF(b0_40, b1_40, val_40,4000.**3.,completeness = limits_40[0], maxV = limits_40[1])
-    z_40_ii = (1/float(SMDfile.split('-')[-1][:-4])-1)*n.ones_like(xData_40_ii)
+    z_40_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_40_ii)
     if z_40_ii[0]<zmax :
         xData_40.append(xData_40_ii)
         yData_40.append(yData_40_ii)
@@ -213,16 +271,15 @@ xData_40 = n.hstack((xData_40))
 yData_40 = n.hstack((yData_40))
 yDataErr_40 = n.hstack((yDataErr_40))
 
-n.savetxt(join(dir, "data", type + "-"+ cos +"-"+ qty  +"MD_4Gpc-diff"+".dat"),n.transpose([xData_40,z_40,yData_40,yDataErr_40]))
-
+n.savetxt(join(dir_40, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_differential_MD_4Gpc.dat"),n.transpose([xData_40,z_40,yData_40,yDataErr_40]), header = qty+" z N Nerr")
 
 ################################ Plot differential halo mass function  ################################
 
 
-xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir,"data", type + "-"+ cos +"-"+ qty  +"MD_0.4Gpc-diff"+".dat"),unpack=True)
-xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir,"data", type + "-"+ cos +"-"+ qty  +"MD_1Gpc-diff"+".dat"),unpack=True)
-xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir,"data", type + "-"+ cos +"-"+ qty  +"MD_2.5Gpc-diff"+".dat"),unpack=True)
-xData_40,z_40,yData_40,yDataErr_40 = n.loadtxt(join(dir,"data", type + "-"+ cos +"-"+ qty  +"MD_4Gpc-diff"+".dat"),unpack=True)
+xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_40, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_differential_MD_4Gpc.dat"),unpack=True)
+xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir_10, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_differential_MD_1Gpc"+".dat"),unpack=True)
+xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir_25, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_differential_MD_2.5Gpc"+".dat"),unpack=True)
+xData_40,z_40,yData_40,yDataErr_40 = n.loadtxt(join(dir_40, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_differential_MD_4Gpc.dat"),unpack=True)
 
 rhom_04 = n.array([aa.critical_density(zz).to(uu.solMass*uu.Mpc**-3).value/aa.h**2 for zz in z_04])
 rhom_10 = n.array([aa.critical_density(zz).to(uu.solMass*uu.Mpc**-3).value/aa.h**2 for zz in z_10])
@@ -234,13 +291,12 @@ rhom_10 = n.array([aa.critical_density(zz).to(uu.solMass*uu.Mpc**-3).value for z
 rhom_25 = n.array([aa.critical_density(zz).to(uu.solMass*uu.Mpc**-3).value for zz in z_25])
 rhom_40 = n.array([aa.critical_density(zz).to(uu.solMass*uu.Mpc**-3).value for zz in z_40])
 
-dat = n.loadtxt("/Volumes/data/BigMD/mVector_PLANCK_HMD.txt", unpack=True)
+#dat = n.loadtxt("/Volumes/data/BigMD/mVector_PLANCK_HMD.txt", unpack=True)
 
-p.figure(1,(6,6))
+p.figure(0,(6,6))
 p.axes([0.17,0.17,0.75,0.75])
 
-p.plot(n.log10(dat[0]),n.log10(dat[0]*dat[0]*dat[5]),'k--',lw=2)
-
+#p.plot(n.log10(dat[0]),n.log10(dat[0]*dat[0]*dat[5]),'k--',lw=2)
 s_04 = (z_04 == 0)
 y_04 = n.log10(yData_04*xData_04**2./rhom_04)
 y_04 = n.log10(yData_04*xData_04*xData_04)
@@ -265,10 +321,8 @@ p.xlabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
 p.ylabel(r'log$_{10}[(M^2/\rho_m) \; dn/dM]')
 p.legend(loc=3)
 p.grid()
-p.savefig(Pdir + "mvir-function2.pdf")
+p.savefig(Pdir + "mvir-diff-function-z0.pdf")
 p.clf()
-
-sys.exit()
 
 fig = p.figure(1,(9,9))
 ax = fig.add_subplot(111, projection='3d')
@@ -291,19 +345,16 @@ ax.set_ylabel('redshift')
 ax.set_ylim((0,zmax))
 ax.set_zlabel(r'$log_{10}[(M^2/\rho_m) \; dn/dM]$')
 ax.set_zlim((-4,0))
-p.savefig(Pdir + "mvir-function-3d-diff.pdf")
-p.show()
+p.savefig(Pdir + "mvir-diff-function-allZ.pdf")
+p.clf()
 
-
-
-sys.exit()
 
 ################################ Model Fits on the cumulative function ################################
 
-xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir,"data", type + "-"+ cos +"-"+ qty  +"MD_0.4Gpc"+".dat"),unpack=True)
-xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir,"data", type + "-"+ cos +"-"+ qty  +"MD_1Gpc"+".dat"),unpack=True)
-xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir,"data", type + "-"+ cos +"-"+ qty  +"MD_2.5Gpc"+".dat"),unpack=True)
-xData_40,z_40,yData_40,yDataErr_40 = n.loadtxt(join(dir,"data", type + "-"+ cos +"-"+ qty  +"MD_4Gpc"+".dat"),unpack=True)
+xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_04, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_0.4Gpc"+".dat"),unpack=True)
+xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir_10, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_1Gpc.dat"),unpack=True)
+xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir_25, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_2.5Gpc.dat"),unpack=True)
+xData_40,z_40,yData_40,yDataErr_40 = n.loadtxt(join(dir_40, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_4Gpc.dat"),unpack=True)
 
 redshift = n.hstack(( z_04, z_10, z_25, z_40))
 mvir = n.hstack(( xData_04, xData_10, xData_25, xData_40))
@@ -352,18 +403,13 @@ X,Y = n.meshgrid(n.logspace(n.log10(limits_04[0]),n.log10(limits_40[1]),200),n.a
 
 Z = vfGbis(X,Y,res.x)
 
-n.savetxt(join(dir,"data/best_fit.dat"),n.transpose([n.hstack((X)), n.hstack((Y)), n.hstack((Z))]) )
+n.savetxt(join(Pdir,"mvir-cumulative-function-best_fit.dat"),n.transpose([n.hstack((X)), n.hstack((Y)), n.hstack((Z))]) )
 
 #######################################################
 # now plots the results of the fit
 print "now plots the results of the fit"
 
-xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir,"data/", type + "-"+ cos +"-"+ qty  +"MD_0.4Gpc"+".dat"),unpack=True)
-xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir,"data/", type + "-"+ cos +"-"+ qty  +"MD_1Gpc"+".dat"),unpack=True)
-xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir,"data/", type + "-"+ cos +"-"+ qty  +"MD_2.5Gpc"+".dat"),unpack=True)
-xData_40,z_40,yData_40,yDataErr_40 = n.loadtxt(join(dir,"data/", type + "-"+ cos +"-"+ qty  +"MD_4Gpc"+".dat"),unpack=True)
-
-vmax_mod, z_mod, n_mod = n.loadtxt(join(dir,"data/best_fit.dat"), unpack=True)
+vmax_mod, z_mod, n_mod = n.loadtxt(join(Pdir,"mvir-cumulative-function-best_fit.dat"), unpack=True)
 
 #####################
 
@@ -391,7 +437,7 @@ ax.set_zlabel(r'log N($>M_{vir}$) [ h$^3$ Mpc$^{-3}$]')
 ax.set_zlim((-10,0))
 #ax.set_yscale('log')
 #ax.set_zscale('log')
-p.savefig(Pdir + "mvir-function-3d-0-z-4.pdf")
+p.savefig(Pdir + "mvir-diff-function-allZ-model.pdf")
 p.clf()
 
 fig = p.figure(1,(9,9))
@@ -417,8 +463,8 @@ ax.set_zlabel(r'Data / Model')
 ax.set_zlim((0,5))
 #ax.set_yscale('log')
 #ax.set_zscale('log')
-p.savefig(Pdir + "mvir-function-3d-dataOmodel-0-z-4.pdf")
-p.show()
+p.savefig(Pdir + "mvir-diff-function-allZ-modelRatio.pdf")
+p.clf()
 
 
 
