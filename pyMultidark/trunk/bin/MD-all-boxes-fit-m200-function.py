@@ -77,7 +77,7 @@ limits_10 = [3e11, 1e14]
 limits_25 = [5e12, 1e15]
 limits_40 = [1e13, 2e15]
 zmin = 0.
-zmax = 3.
+zmax = 1.5
 
 dir_04 = "/data2/DATA/eBOSS/Multidark-lightcones/MD_0.4Gpc/"
 dir_10 = "/data2/DATA/eBOSS/Multidark-lightcones/MD_1Gpc_new_rockS/"
