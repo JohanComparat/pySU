@@ -308,22 +308,22 @@ s_40 = (z_40 <= 0.01)
 
 redshift = n.hstack(( z_04[s_04], z_10[s_10], z_25[s_25], z_40[s_40]))
 print "all redshifts available:", set(redshift)
-M200c = n.hstack(( xData_04[s_04], xData_10[s_10], xData_25[s_25], xData_40[s_40]))
+M200c = n.log10(n.hstack(( xData_04[s_04], xData_10[s_10], xData_25[s_25], xData_40[s_40])))
 print "min and max masses available:", n.min(M200c), n.max(M200c)
-yData = n.hstack(( yData_04[s_04], yData_10[s_10], yData_25[s_25], yData_40[s_40]))
+yData = n.log10(n.hstack(( yData_04[s_04], yData_10[s_10], yData_25[s_25], yData_40[s_40])))
 print "min and max Y available:", n.min(yData_04), n.max(yData_04)
-yDataErr = n.hstack(( yDataErr_04[s_04], yDataErr_10[s_10], yDataErr_25[s_25], yDataErr_40[s_40]))
+yDataErr = n.log10(n.hstack(( yDataErr_04[s_04], yDataErr_10[s_10], yDataErr_25[s_25], yDataErr_40[s_40])))
 print "min and max Y error available:", n.min(yDataErr), n.max(yDataErr)
 
 # with minimize
 
 p0 = n.array([-3.5, 13.5, 0.8, -0.78])
 
-vf = lambda v, A, v0, alpha, beta : 10**A * (v/10**v0)**beta * n.e**(- (v/10**v0)**alpha )
+vf = lambda v, A, v0, alpha, beta : n.log10( 10**A * (10**v/10**v0)**beta * n.e**(- (10**v/10**v0)**alpha ) )
 vfbis = lambda v, p0 : vf(v, p0[0], p0[1], p0[2], p0[3])
 chi2fun = lambda p0 : n.sum( (vfbis(M200c,p0) - yData)**2. / (yDataErr*100)**2 )/len(yDataErr)
 
-print "looks for the optimum parameters"
+print "looks for the optimum parameters with minimize Powell"
 res_z0 = minimize(chi2fun, p0, method='Powell',options={'xtol': 1e-6, 'disp': True, 'maxiter' : 50000000, 'nfev': 1800000})
 
 print "ndof=",len(yDataErr)
@@ -337,39 +337,38 @@ print r" \alpha(z=0) & = "+str(a0)+' \\'
 print r" \beta(z=0) & = "+str(b0)+' \\'
 
 # with curve fit
+print "with curve fit"
 popt, pcov = curve_fit(vf, M200c, yData, sigma = yDataErr*100, p0 = p0 , maxfev = 5000000)
 print popt, pcov
 
 p.figure(0,(6,6))
 p.axes([0.17,0.17,0.75,0.75])
 
-p.plot(n.log10(xData_04[s_04][::3]), yData_04[s_04][::3], marker ='o', mfc='None',mec='r',ls='none', label="SMD", rasterized=True)
-p.plot(n.log10(xData_04[s_04][::3]), yData_04[s_04][::3]+yDataErr_04[s_04][::3], 'r--', rasterized=True)
-p.plot(n.log10(xData_04[s_04][::3]), yData_04[s_04][::3]-yDataErr_04[s_04][::3], 'r--', rasterized=True)
+p.plot(xData_04[s_04][::3], yData_04[s_04][::3], marker ='o', mfc='None',mec='r',ls='none', label="SMD", rasterized=True)
+#p.plot(xData_04[s_04][::3], yData_04[s_04][::3]+yDataErr_04[s_04][::3], 'r--', rasterized=True)
+#p.plot(xData_04[s_04][::3], yData_04[s_04][::3]-yDataErr_04[s_04][::3], 'r--', rasterized=True)
 
-p.plot(n.log10(xData_10[s_10][::3]),yData_10[s_10][::3], marker ='v', mfc='None',mec='c',ls='none', label="MDPL", rasterized=True)
-p.plot(n.log10(xData_25[s_25][::3]),yData_25[s_25][::3], marker ='s', mfc='None',mec='m',ls='none', label="BigMD", rasterized=True)
-p.plot(n.log10(xData_40[s_40][::3]),yData_40[s_40][::3], marker ='p', mfc='None',mec='b',ls='none', label="HMD", rasterized=True)
+p.plot(xData_10[s_10][::3],yData_10[s_10][::3], marker ='v', mfc='None',mec='c',ls='none', label="MDPL", rasterized=True)
+p.plot(xData_25[s_25][::3],yData_25[s_25][::3], marker ='s', mfc='None',mec='m',ls='none', label="BigMD", rasterized=True)
+p.plot(xData_40[s_40][::3],yData_40[s_40][::3], marker ='p', mfc='None',mec='b',ls='none', label="HMD", rasterized=True)
 
-xModel = 10**n.arange(n.min(n.log10(M200c)),n.max(n.log10(M200c)),0.1)
+xModel = n.arange(n.min(M200c),n.max(M200c),0.1)
 yModel = vfbis(xModel,res_z0.x)
 
 yModel_CF = vf(xModel,popt[0],popt[1],popt[2],popt[3])
 
-p.plot(n.log10(xModel), yModel,'k--',label="model")
+p.plot(xModel, yModel,'k--',label="model")
 
-p.plot(n.log10(xModel), yModel_CF,'r--',label="modelCF")
+p.plot(xModel, yModel_CF,'r--',label="modelCF")
 
 p.xlabel(r'log$_{10}[M_{200c}/(h^{-1}M_\odot)]$')
 p.ylabel(r' n(>M)') # log$_{10}[ n(>M)]')
-p.yscale('log')
 p.legend(loc=3)
 p.title(str(A0)+" "+str(vcut0)+" "+str(a0)+" "+str(b0))
 p.grid()
 p.savefig(join(Pdir , "M200c-cumulative-function-z0.pdf"))
 p.clf()
 
-sys.exit()
 ################################ Model Fits on the cumulative function, evolution with redshift ################################
 
 xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_04, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_0.4Gpc.dat"),unpack=True)
