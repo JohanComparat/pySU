@@ -312,7 +312,7 @@ M200c = n.log10(n.hstack(( xData_04[s_04], xData_10[s_10], xData_25[s_25], xData
 print "min and max masses available:", n.min(M200c), n.max(M200c)
 yData = n.log10(n.hstack(( yData_04[s_04], yData_10[s_10], yData_25[s_25], yData_40[s_40])))
 print "min and max Y available:", n.min(yData_04), n.max(yData_04)
-yDataErr = n.log10(n.hstack(( yDataErr_04[s_04], yDataErr_10[s_10], yDataErr_25[s_25], yDataErr_40[s_40])))
+yDataErr = n.hstack(( yDataErr_04[s_04], yDataErr_10[s_10], yDataErr_25[s_25], yDataErr_40[s_40])) / yData
 print "min and max Y error available:", n.min(yDataErr), n.max(yDataErr)
 
 # with minimize
@@ -369,6 +369,7 @@ p.grid()
 p.savefig(join(Pdir , "M200c-cumulative-function-z0.pdf"))
 p.clf()
 
+sys.exit()
 ################################ Model Fits on the cumulative function, evolution with redshift ################################
 
 xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_04, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_0.4Gpc.dat"),unpack=True)
