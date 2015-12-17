@@ -334,7 +334,7 @@ print res_z0
 print "with curve fit"
 popt, pcov = curve_fit(vf, M200c, yData, p0 = p0 , maxfev = 5000000)
 print popt, pcov
-A0, vcut0, a0, b0 = n.round(popt.x,2)
+A0, vcut0, a0, b0 = n.round(popt,2)
 
 print "redshift 0 model for the M200c cumulative function :"
 print "A(z=0) & = "+str(A0)+ r"\pm ", n.round(cov[0][0]**0.5,2), '\\'
@@ -354,9 +354,9 @@ p.plot(n.log10(xData_25[s_25][::3]), n.log10(yData_25[s_25][::3]), marker ='s', 
 p.plot(n.log10(xData_40[s_40][::3]), n.log10(yData_40[s_40][::3]), marker ='p', mfc='None',mec='b',ls='none', label="HMD", rasterized=True)
 
 xModel = n.arange(n.min(M200c),n.max(M200c),0.1)
-yModel = vfbis(xModel,res_z0.x)
+#yModel = vfbis(xModel,res_z0.x)
 
-yModel_CF = vf(xModel,popt[0],popt[1],popt[2],popt[3])
+yModel_CF = vf(xModel, A0, vcut0, a0, b0)
 
 #p.plot(xModel, yModel,'k--',label="model")
 
