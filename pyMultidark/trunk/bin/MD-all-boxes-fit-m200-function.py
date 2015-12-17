@@ -315,6 +315,8 @@ print "min and max Y available:", n.min(yData_04), n.max(yData_04)
 yDataErr = n.hstack(( yDataErr_04[s_04], yDataErr_10[s_10], yDataErr_25[s_25], yDataErr_40[s_40]))
 print "min and max Y error available:", n.min(yDataErr), n.max(yDataErr)
 
+# with minimize
+
 p0 = n.array([-3., 13., 0.5, -0.8])
 
 vf = lambda v, A, v0, alpha, beta : 10**A * (v/10**v0)**beta * n.e**(- (v/10**v0)**alpha )
@@ -334,7 +336,10 @@ print r" M_{200c}^{cut}(z=0) & = "+str(vcut0)+' \\'
 print r" \alpha(z=0) & = "+str(a0)+' \\'
 print r" \beta(z=0) & = "+str(b0)+' \\'
 
-# now outputs the model
+# with curve fit
+
+popt, pcov = curve_fit(vf, M200c, yData, p0 = p0 )
+print popt, pcov
 
 p.figure(0,(6,6))
 p.axes([0.17,0.17,0.75,0.75])
@@ -350,7 +355,11 @@ p.plot(n.log10(xData_40[s_40][::3]),yData_40[s_40][::3], marker ='p', mfc='None'
 xModel = 10**n.arange(n.min(n.log10(M200c)),n.max(n.log10(M200c)),0.1)
 yModel = vfbis(xModel,res_z0.x)
 
+yModel_CF = vf(xModel,popt[0],popt[1],popt[2],popt[3])
+
 p.plot(n.log10(xModel), yModel,'k--',label="model")
+
+p.plot(n.log10(xModel), yModeCF,'r--',label="modelCF")
 
 p.xlabel(r'log$_{10}[M_{200c}/(h^{-1}M_\odot)]$')
 p.ylabel(r' n(>M)') # log$_{10}[ n(>M)]')
