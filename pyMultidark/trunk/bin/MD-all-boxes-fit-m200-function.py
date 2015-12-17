@@ -420,13 +420,13 @@ X,Y = n.meshgrid(xModel,n.arange(0,zmax+0.025,0.025))
 
 Z = vfGbis(X,Y,res.x)
 
-n.savetxt(join(Pdir,"M200c-cumulative-function-best_fit.dat"),n.transpose([n.hstack((X)), n.hstack((Y)), n.hstack((Z))]) )
+n.savetxt(join(Pdir,"M200c-cumulative-function-best_fit.txt"),n.transpose([n.hstack((X)), n.hstack((Y)), n.hstack((Z))]) )
 
 #######################################################
 # now plots the results of the fit
 print "now plots the results of the fit"
 
-vmax_mod, z_mod, n_mod = n.loadtxt(join(Pdir,"M200c-cumulative-function-best_fit.dat"), unpack=True)
+vmax_mod, z_mod, n_mod = n.loadtxt(join(Pdir,"M200c-cumulative-function-best_fit.txt"), unpack=True)
 
 #####################
 
