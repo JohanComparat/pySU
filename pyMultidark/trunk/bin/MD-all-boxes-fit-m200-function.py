@@ -23,24 +23,42 @@ from scipy.optimize import minimize
 dir = "/data2/DATA/eBOSS/Multidark-lightcones/"
 Pdir = join(dir,"M200cFunction") #"/Volumes/data/BigMD/M200cFunction/plots/"
 
-def get_cumulative_function(b0, b1, val,volume,label="SMD",completeness = 100, maxV=16,errFactor=1.):
-    """returns the cumulative function n(>X) """
+def get_cumulative_function(b0, b1, val, volume, minVx = 1e7, maxVx=1e16, SNRminPoisson=10, SNRminVolume=10.):
+    """returns the cumulative function n(>X) 
+    :param b0: lowerboundary of the bin
+    :param b1: higher boundary of the bin
+    :param volume:volume of the box in (Mpc/h)^3
+    :param minVx: lower value cut. Selectes data in the bins > minVx 
+    :param maxVx: higher value cut. Selects data in the bins < maxVx 
+    :param SNRminPoisson: poisson noise cut: selects points where the value > SNRminPoisson * poisson error
+    :param SNRminVolume: volume cut: selects points where the value * volume > SNRminVolume
+    """
     Nc = n.array([ n.sum(val[ii:]) for ii in range(len(val)) ])
     xData_A = (10**b0+10**b1)/2.
     yData_A = Nc/(volume ) 
-    yDataErr_A = errFactor/val**0.5
-    sel = (yDataErr_A!=n.inf)&(yData_A>0) &(yData_A * volume >= 1) &(xData_A > completeness)&(xData_A < maxV)
+    yDataErr_A = val**(-0.5)
+    boundaries = (xData_A > minVx) & (xData_A < maxVx) & (yData_A > SNRminPoisson * yDataErr_A ) & (yData_A * volume >= SNRminVolume)
+    sel = (yDataErr_A!=n.inf) & (yData_A>0)  & (boundaries)
     xData = xData_A[sel]
     yData = yData_A[sel]
     yDataErr = yDataErr_A[sel]*yData_A[sel]
     return xData,yData,yDataErr,volume
 
-def get_differential_function(b0, b1, val,volume,label="SMD",completeness = 100, maxV=16,errFactor=1.):
-    """returns the differential function dn / dX """
+def get_differential_function(b0, b1, val, volume, minVx = 1e7, maxVx=1e16, SNRminPoisson=10, SNRminVolume=10.):
+    """returns the cumulative function n(>X) 
+    :param b0: lowerboundary of the bin
+    :param b1: higher boundary of the bin
+    :param volume:volume of the box in (Mpc/h)^3
+    :param minVx: lower value cut. Selectes data in the bins > minVx 
+    :param maxVx: higher value cut. Selects data in the bins < maxVx 
+    :param SNRminPoisson: poisson noise cut: selects points where the value > SNRminPoisson * poisson error
+    :param SNRminVolume: volume cut: selects points where the value * volume > SNRminVolume
+    """
     xData_A = (10**b0+10**b1)/2.
     yData_A = val/(volume * (10**b1-10**b0))
-    yDataErr_A = errFactor/val**0.5
-    sel = (yDataErr_A!=n.inf)&(yData_A>0) &(yDataErr_A<1.) & (yDataErr_A>0.) &(xData_A > completeness)&(xData_A < maxV)
+    yDataErr_A = val**(-0.5)
+    boundaries = (xData_A > minVx) & (xData_A < maxVx) & (yData_A > SNRminPoisson * yDataErr_A ) & (yData_A * volume >= SNRminVolume)
+    sel = (yDataErr_A!=n.inf) & (yData_A>0)  & (boundaries)
     xData = xData_A[sel]
     yData = yData_A[sel]
     yDataErr = yDataErr_A[sel]*yData_A[sel]
@@ -54,10 +72,11 @@ def get_differential_function(b0, b1, val,volume,label="SMD",completeness = 100,
 
 mf = lambda v, A, v0, alpha, beta : 10**A * (v/10**v0)**beta * n.e**(- (v/10**v0)**alpha )
 
+# limits at z0
 limits_04 = [1e10, 1e13]
 limits_10 = [3e11, 1e14]
 limits_25 = [5e12, 1e15]
-limits_40 = [1e13, 1e15]
+limits_40 = [1e13, 2e15]
 zmin = 0.
 zmax = 3.
 
@@ -98,7 +117,7 @@ for ii in range(len(fileList)):
     SMDfile = fileList[ii]
     #print SMDfile
     b0_04, b1_04, val_04 = n.loadtxt(SMDfile,unpack=True)
-    xData_04_ii,yData_04_ii,yDataErr_04_ii,volume_04_ii = get_cumulative_function(b0_04, b1_04, val_04,400.**3.,completeness = limits_04[0], maxV = limits_04[1])
+    xData_04_ii,yData_04_ii,yDataErr_04_ii,volume_04_ii = get_cumulative_function(b0_04, b1_04, val_04,400.**3.,minVx = limits_04[0], maxVx = limits_04[1])
     #print SMDfile.split('-')[-1][:-4]
     z_04_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_04_ii)
     if z_04_ii[0]<zmax :
@@ -119,7 +138,7 @@ for ii in range(len(fileList)):
     SMDfile = fileList[ii]
     #print SMDfile
     b0_04, b1_04, val_04 = n.loadtxt(SMDfile,unpack=True)
-    xData_04_ii,yData_04_ii,yDataErr_04_ii,volume_04_ii = get_differential_function(b0_04, b1_04, val_04,400.**3.,completeness = limits_04[0], maxV = limits_04[1])
+    xData_04_ii,yData_04_ii,yDataErr_04_ii,volume_04_ii = get_differential_function(b0_04, b1_04, val_04,400.**3.,minVx = limits_04[0], maxVx = limits_04[1])
     #print SMDfile.split('-')[-1][:-4]
     z_04_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_04_ii)
     if z_04_ii[0]<zmax :
@@ -146,7 +165,7 @@ for ii in range(len(fileList)):
     SMDfile = fileList[ii]
     #print SMDfile
     b0_10, b1_10, val_10 = n.loadtxt(SMDfile,unpack=True)
-    xData_10_ii,yData_10_ii,yDataErr_10_ii,volume_10_ii = get_cumulative_function(b0_10, b1_10, val_10,1000.**3.,completeness = limits_10[0], maxV = limits_10[1])
+    xData_10_ii,yData_10_ii,yDataErr_10_ii,volume_10_ii = get_cumulative_function(b0_10, b1_10, val_10,1000.**3.,minVx = limits_10[0], maxVx = limits_10[1])
     z_10_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_10_ii)
     if z_10_ii[0]<zmax :
         xData_10.append(xData_10_ii)
@@ -166,7 +185,7 @@ for ii in range(len(fileList)):
     SMDfile = fileList[ii]
     #print SMDfile
     b0_10, b1_10, val_10 = n.loadtxt(SMDfile,unpack=True)
-    xData_10_ii,yData_10_ii,yDataErr_10_ii,volume_10_ii = get_differential_function(b0_10, b1_10, val_10,1000.**3.,completeness = limits_10[0], maxV = limits_10[1])
+    xData_10_ii,yData_10_ii,yDataErr_10_ii,volume_10_ii = get_differential_function(b0_10, b1_10, val_10,1000.**3.,minVx = limits_10[0], maxVx = limits_10[1])
     z_10_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_10_ii)
     if z_10_ii[0]<zmax :
         xData_10.append(xData_10_ii)
@@ -192,7 +211,7 @@ for ii in range(len(fileList)):
     SMDfile = fileList[ii]
     #print SMDfile
     b0_25, b1_25, val_25 = n.loadtxt(SMDfile,unpack=True)
-    xData_25_ii,yData_25_ii,yDataErr_25_ii,volume_25_ii = get_cumulative_function(b0_25, b1_25, val_25,2500.**3.,completeness = limits_25[0], maxV = limits_25[1])
+    xData_25_ii,yData_25_ii,yDataErr_25_ii,volume_25_ii = get_cumulative_function(b0_25, b1_25, val_25,2500.**3.,minVx = limits_25[0], maxVx = limits_25[1])
     z_25_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_25_ii)
     if z_25_ii[0]<zmax :
         xData_25.append(xData_25_ii)
@@ -212,7 +231,7 @@ for ii in range(len(fileList)):
     SMDfile = fileList[ii]
     #print SMDfile
     b0_25, b1_25, val_25 = n.loadtxt(SMDfile,unpack=True)
-    xData_25_ii,yData_25_ii,yDataErr_25_ii,volume_25_ii = get_differential_function(b0_25, b1_25, val_25,2500.**3.,completeness = limits_25[0], maxV = limits_25[1])
+    xData_25_ii,yData_25_ii,yDataErr_25_ii,volume_25_ii = get_differential_function(b0_25, b1_25, val_25,2500.**3.,minVx = limits_25[0], maxVx = limits_25[1])
     z_25_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_25_ii)
     if z_25_ii[0]<zmax :
         xData_25.append(xData_25_ii)
@@ -238,7 +257,7 @@ for ii in range(len(fileList)):
     SMDfile = fileList[ii]
     #print SMDfile
     b0_40, b1_40, val_40 = n.loadtxt(SMDfile,unpack=True)
-    xData_40_ii,yData_40_ii,yDataErr_40_ii,volume_40_ii = get_cumulative_function(b0_40, b1_40, val_40,4000.**3.,completeness = limits_40[0], maxV = limits_40[1])
+    xData_40_ii,yData_40_ii,yDataErr_40_ii,volume_40_ii = get_cumulative_function(b0_40, b1_40, val_40,4000.**3.,minVx = limits_40[0], maxVx = limits_40[1])
     z_40_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_40_ii)
     if z_40_ii[0]<zmax :
         xData_40.append(xData_40_ii)
@@ -258,7 +277,7 @@ for ii in range(len(fileList)):
     SMDfile = fileList[ii]
     #print SMDfile
     b0_40, b1_40, val_40 = n.loadtxt(SMDfile,unpack=True)
-    xData_40_ii,yData_40_ii,yDataErr_40_ii,volume_40_ii = get_differential_function(b0_40, b1_40, val_40,4000.**3.,completeness = limits_40[0], maxV = limits_40[1])
+    xData_40_ii,yData_40_ii,yDataErr_40_ii,volume_40_ii = get_differential_function(b0_40, b1_40, val_40,4000.**3.,minVx = limits_40[0], maxVx = limits_40[1])
     z_40_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_40_ii)
     if z_40_ii[0]<zmax :
         xData_40.append(xData_40_ii)
