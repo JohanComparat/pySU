@@ -311,7 +311,7 @@ print "all redshifts available:", set(redshift)
 M200c = n.log10(n.hstack(( xData_04[s_04], xData_10[s_10], xData_25[s_25], xData_40[s_40])))
 print "min and max masses available:", n.min(M200c), n.max(M200c)
 yData = n.log10(n.hstack(( yData_04[s_04], yData_10[s_10], yData_25[s_25], yData_40[s_40])))
-print "min and max Y available:", n.min(yData_04), n.max(yData_04)
+print "min and max Y available:", n.min(yData), n.max(yData)
 yDataErr = abs(n.hstack(( yDataErr_04[s_04], yDataErr_10[s_10], yDataErr_25[s_25], yDataErr_40[s_40])) / yData)
 print "min and max Y error available:", n.min(yDataErr), n.max(yDataErr)
 
@@ -321,7 +321,7 @@ p0 = n.array([-3.5, 13.5, 0.8, -0.78])
 
 vf = lambda v, A, v0, alpha, beta : n.log10( 10**A * (10**v/10**v0)**beta * n.e**(- (10**v/10**v0)**alpha ) )
 vfbis = lambda v, p0 : vf(v, p0[0], p0[1], p0[2], p0[3])
-chi2fun = lambda p0 : n.sum( (vfbis(M200c,p0) - yData)**2. / (yDataErr)**2 )/len(yDataErr)
+chi2fun = lambda p0 : n.sum( (vfbis(M200c,p0) - yData)**2. / (yDataErr*100)**2 )/len(yDataErr)
 
 print "looks for the optimum parameters with minimize Powell"
 res_z0 = minimize(chi2fun, p0, method='Powell',options={'xtol': 1e-6, 'disp': True, 'maxiter' : 50000000, 'nfev': 1800000})
@@ -338,7 +338,7 @@ print r" \beta(z=0) & = "+str(b0)+' \\'
 
 # with curve fit
 print "with curve fit"
-popt, pcov = curve_fit(vf, M200c, yData, sigma = yDataErr, p0 = p0 , maxfev = 5000000)
+popt, pcov = curve_fit(vf, M200c, yData, p0 = p0 , maxfev = 5000000)
 print popt, pcov
 
 p.figure(0,(6,6))
