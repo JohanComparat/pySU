@@ -337,8 +337,8 @@ print r" \alpha(z=0) & = "+str(a0)+' \\'
 print r" \beta(z=0) & = "+str(b0)+' \\'
 
 # with curve fit
-# popt, pcov = curve_fit(vf, M200c, yData, sigma = yDataErr*10, p0 = p0 , maxfev = 5000000)
-# print popt, pcov
+popt, pcov = curve_fit(vf, M200c, yData, sigma = yDataErr*100, p0 = p0 , maxfev = 5000000)
+print popt, pcov
 
 p.figure(0,(6,6))
 p.axes([0.17,0.17,0.75,0.75])
