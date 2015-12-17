@@ -344,13 +344,13 @@ print popt, pcov
 p.figure(0,(6,6))
 p.axes([0.17,0.17,0.75,0.75])
 
-p.plot(xData_04[s_04][::3], yData_04[s_04][::3], marker ='o', mfc='None',mec='r',ls='none', label="SMD", rasterized=True)
+p.plot(n.log10(xData_04[s_04][::3]), n.log10(yData_04[s_04][::3]), marker ='o', mfc='None',mec='r',ls='none', label="SMD", rasterized=True)
 #p.plot(xData_04[s_04][::3], yData_04[s_04][::3]+yDataErr_04[s_04][::3], 'r--', rasterized=True)
 #p.plot(xData_04[s_04][::3], yData_04[s_04][::3]-yDataErr_04[s_04][::3], 'r--', rasterized=True)
 
-p.plot(xData_10[s_10][::3],yData_10[s_10][::3], marker ='v', mfc='None',mec='c',ls='none', label="MDPL", rasterized=True)
-p.plot(xData_25[s_25][::3],yData_25[s_25][::3], marker ='s', mfc='None',mec='m',ls='none', label="BigMD", rasterized=True)
-p.plot(xData_40[s_40][::3],yData_40[s_40][::3], marker ='p', mfc='None',mec='b',ls='none', label="HMD", rasterized=True)
+p.plot(n.log10(xData_10[s_10][::3]), n.log10(yData_10[s_10][::3]), marker ='v', mfc='None',mec='c',ls='none', label="MDPL", rasterized=True)
+p.plot(n.log10(xData_25[s_25][::3]), n.log10(yData_25[s_25][::3]), marker ='s', mfc='None',mec='m',ls='none', label="BigMD", rasterized=True)
+p.plot(n.log10(xData_40[s_40][::3]), n.log10(yData_40[s_40][::3]), marker ='p', mfc='None',mec='b',ls='none', label="HMD", rasterized=True)
 
 xModel = n.arange(n.min(M200c),n.max(M200c),0.1)
 yModel = vfbis(xModel,res_z0.x)
