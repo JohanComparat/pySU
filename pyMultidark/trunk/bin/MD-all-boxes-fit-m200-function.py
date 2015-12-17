@@ -72,10 +72,10 @@ def get_differential_function(b0, b1, val, volume, minVx = 1e7, maxVx=1e16, Nmin
 mf = lambda v, A, v0, alpha, beta : 10**A * (v/10**v0)**beta * n.e**(- (v/10**v0)**alpha )
 
 # limits at z0
-limits_04 = [1e10, 5e11]
-limits_10 = [5e11, 5e12]
-limits_25 = [5e12, 5e13]
-limits_40 = [5e13, 5e15]
+limits_04 = [1e10, 5e12]
+limits_10 = [5e11, 5e13]
+limits_25 = [5e12, 5e14]
+limits_40 = [1e13, 5e15]
 zmin = 0.
 zmax = 0.5
 
