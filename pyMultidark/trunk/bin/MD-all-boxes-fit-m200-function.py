@@ -315,7 +315,7 @@ print "min and max Y available:", n.min(yData_04), n.max(yData_04)
 yDataErr = n.hstack(( yDataErr_04[s_04], yDataErr_10[s_10], yDataErr_25[s_25], yDataErr_40[s_40]))
 print "min and max Y error available:", n.min(yDataErr), n.max(yDataErr)
 
-p0 = n.array([-4, 14, 1, -1])
+p0 = n.array([-4., 14., 1., -0.8])
 
 vf = lambda v, A, v0, alpha, beta : 10**A * (v/10**v0)**beta * n.e**(- (v/10**v0)**alpha )
 vfbis = lambda v, p0 : vf(v, p0[0], p0[1], p0[2], p0[3])
@@ -340,6 +340,9 @@ p.figure(0,(6,6))
 p.axes([0.17,0.17,0.75,0.75])
 
 p.plot(n.log10(xData_04[s_04][::3]), yData_04[s_04][::3], marker ='o', mfc='None',mec='r',ls='none', label="SMD", rasterized=True)
+p.plot(n.log10(xData_04[s_04][::3]), yData_04[s_04][::3]+yDataErr_04[s_04][::3], 'r--', rasterized=True)
+p.plot(n.log10(xData_04[s_04][::3]), yData_04[s_04][::3]-yDataErr_04[s_04][::3], 'r--', rasterized=True)
+
 p.plot(n.log10(xData_10[s_10][::3]),yData_10[s_10][::3], marker ='v', mfc='None',mec='c',ls='none', label="MDPL", rasterized=True)
 p.plot(n.log10(xData_25[s_25][::3]),yData_25[s_25][::3], marker ='s', mfc='None',mec='m',ls='none', label="BigMD", rasterized=True)
 p.plot(n.log10(xData_40[s_40][::3]),yData_40[s_40][::3], marker ='p', mfc='None',mec='b',ls='none', label="HMD", rasterized=True)
