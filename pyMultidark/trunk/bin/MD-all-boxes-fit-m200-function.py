@@ -72,9 +72,9 @@ def get_differential_function(b0, b1, val, volume, minVx = 1e7, maxVx=1e16, Nmin
 mf = lambda v, A, v0, alpha, beta : 10**A * (v/10**v0)**beta * n.e**(- (v/10**v0)**alpha )
 
 # limits at z0
-limits_04 = [1e10, 1e12]
-limits_10 = [5e11, 1e13]
-limits_25 = [5e12, 1e14]
+limits_04 = [1e10, 5e11]
+limits_10 = [5e11, 5e12]
+limits_25 = [5e12, 5e13]
 limits_40 = [5e13, 5e15]
 zmin = 0.
 zmax = 0.5
@@ -296,7 +296,7 @@ n.savetxt(join(dir_40, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_different
 
 ################################ Plot cumulative halo mass function and model at z=0  ################################
 
-xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_04, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_0.4Gpc"+".dat"),unpack=True)
+xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_04, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_0.4Gpc.dat"),unpack=True)
 xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir_10, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_1Gpc.dat"),unpack=True)
 xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir_25, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_2.5Gpc.dat"),unpack=True)
 xData_40,z_40,yData_40,yDataErr_40 = n.loadtxt(join(dir_40, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_4Gpc.dat"),unpack=True)
@@ -315,7 +315,7 @@ print "min and max Y available:", n.min(yData_04), n.max(yData_04)
 yDataErr = n.hstack(( yDataErr_04[s_04], yDataErr_10[s_10], yDataErr_25[s_25], yDataErr_40[s_40]))
 print "min and max Y error available:", n.min(yDataErr), n.max(yDataErr)
 
-p0 = n.array([-4., 14., 1., -0.8])
+p0 = n.array([-3., 13., 0.5, -0.8])
 
 vf = lambda v, A, v0, alpha, beta : 10**A * (v/10**v0)**beta * n.e**(- (v/10**v0)**alpha )
 vfbis = lambda v, p0 : vf(v, p0[0], p0[1], p0[2], p0[3])
@@ -364,7 +364,7 @@ p.clf()
 
 ################################ Model Fits on the cumulative function, evolution with redshift ################################
 
-xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_04, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_0.4Gpc"+".dat"),unpack=True)
+xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_04, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_0.4Gpc.dat"),unpack=True)
 xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir_10, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_1Gpc.dat"),unpack=True)
 xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir_25, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_2.5Gpc.dat"),unpack=True)
 xData_40,z_40,yData_40,yDataErr_40 = n.loadtxt(join(dir_40, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_4Gpc.dat"),unpack=True)
