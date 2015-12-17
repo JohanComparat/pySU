@@ -319,7 +319,7 @@ p0 = n.array([-3., 13., 0.5, -0.8])
 
 vf = lambda v, A, v0, alpha, beta : 10**A * (v/10**v0)**beta * n.e**(- (v/10**v0)**alpha )
 vfbis = lambda v, p0 : vf(v, p0[0], p0[1], p0[2], p0[3])
-chi2fun = lambda p0 : n.sum( (vfbis(M200c,p0) - yData)**2. / yDataErr**2. )/len(yDataErr)
+chi2fun = lambda p0 : n.sum( (vfbis(M200c,p0) - yData)**2.)# / yDataErr**2. )/len(yDataErr)
 
 print "looks for the optimum parameters"
 res_z0 = minimize(chi2fun, p0, method='Powell',options={'xtol': 1e-6, 'disp': True, 'maxiter' : 50000000, 'nfev': 1800000})
