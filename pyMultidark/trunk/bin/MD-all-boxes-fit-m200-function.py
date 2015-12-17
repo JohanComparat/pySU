@@ -79,6 +79,8 @@ limits_40 = [1e13, 5e15]
 zmin = 0.
 zmax = 0.5
 
+NDecimal = 4
+
 dir_04 = "/data2/DATA/eBOSS/Multidark-lightcones/MD_0.4Gpc/"
 dir_10 = "/data2/DATA/eBOSS/Multidark-lightcones/MD_1Gpc_new_rockS/"
 dir_25 = "/data2/DATA/eBOSS/Multidark-lightcones/MD_2.5Gpc/"
@@ -334,13 +336,13 @@ print res_z0
 print "with curve fit"
 popt, cov = curve_fit(vf, M200c, yData, p0 = p0 , maxfev = 5000000)
 print popt, cov
-A0, vcut0, a0, b0 = n.round(popt,2)
+A0, vcut0, a0, b0 = n.round(popt,NDecimal)
 
 print "redshift 0 model for the M200c cumulative function :"
-print "A(z=0) & = "+str(A0)+ r"\pm ", n.round(cov[0][0]**0.5,2), '\\'
-print r" M_{200c}^{cut}(z=0) & = "+str(vcut0)+ r"\pm ", n.round(cov[1][1]**0.5,2), '\\'
-print r" \alpha(z=0) & = "+str(a0)+ r"\pm ", n.round(cov[2][2]**0.5,2), '\\'
-print r" \beta(z=0) & = "+str(b0)+ r"\pm ", n.round(cov[3][3]**0.5,2), '\\'
+print "A(z=0) & = "+str(A0)+ r"\pm ", n.round(cov[0][0]**0.5, NDecimal), '\\'
+print r" M_{200c}^{cut}(z=0) & = "+str(vcut0)+ r"\pm ", n.round(cov[1][1]**0.5, NDecimal), '\\'
+print r" \alpha(z=0) & = "+str(a0)+ r"\pm ", n.round(cov[2][2]**0.5, NDecimal), '\\'
+print r" \beta(z=0) & = "+str(b0)+ r"\pm ", n.round(cov[3][3]**0.5, NDecimal), '\\'
 
 p.figure(0,(6,6))
 p.axes([0.17,0.17,0.75,0.75])
