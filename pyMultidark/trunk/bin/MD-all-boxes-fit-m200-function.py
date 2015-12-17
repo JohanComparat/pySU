@@ -119,7 +119,7 @@ for ii in range(len(fileList)):
     xData_04_ii,yData_04_ii,yDataErr_04_ii,volume_04_ii = get_cumulative_function(b0_04, b1_04, val_04,400.**3.,minVx = limits_04[0], maxVx = limits_04[1])
     #print SMDfile.split('-')[-1][:-4]
     z_04_ii = conversion[float(SMDfile.split('-')[-1][:-4])]
-    if z_04_ii<zmax and len(xData_04)>0 :
+    if z_04_ii<zmax and len(xData_04_ii)>0 :
         xData_04.append(xData_04_ii)
         yData_04.append(yData_04_ii)
         yDataErr_04.append(yDataErr_04_ii)
@@ -141,7 +141,7 @@ for ii in range(len(fileList)):
     #print SMDfile.split('-')[-1][:-4]
     z_04_ii = conversion[float(SMDfile.split('-')[-1][:-4])]
     #print z_04_ii
-    if z_04_ii<zmax  and len(xData_04)>0 :
+    if z_04_ii<zmax  and len(xData_04_ii)>0 :
         xData_04.append(xData_04_ii)
         yData_04.append(yData_04_ii)
         yDataErr_04.append(yDataErr_04_ii)
