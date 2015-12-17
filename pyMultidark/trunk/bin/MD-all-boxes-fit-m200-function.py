@@ -337,10 +337,10 @@ print popt, pcov
 A0, vcut0, a0, b0 = n.round(popt.x,2)
 
 print "redshift 0 model for the M200c cumulative function :"
-print "A(z=0) & = "+str(A0)+ r"\pm ", n.round(cov[0][0]**0.5,2) '\\'
-print r" M_{200c}^{cut}(z=0) & = "+str(vcut0)+ r"\pm ", n.round(cov[1][1]**0.5,2) '\\'
-print r" \alpha(z=0) & = "+str(a0)+ r"\pm ", n.round(cov[2][2]**0.5,2) '\\'
-print r" \beta(z=0) & = "+str(b0)+ r"\pm ", n.round(cov[3][3]**0.5,2) '\\'
+print "A(z=0) & = "+str(A0)+ r"\pm ", n.round(cov[0][0]**0.5,2), '\\'
+print r" M_{200c}^{cut}(z=0) & = "+str(vcut0)+ r"\pm ", n.round(cov[1][1]**0.5,2), '\\'
+print r" \alpha(z=0) & = "+str(a0)+ r"\pm ", n.round(cov[2][2]**0.5,2), '\\'
+print r" \beta(z=0) & = "+str(b0)+ r"\pm ", n.round(cov[3][3]**0.5,2), '\\'
 
 p.figure(0,(6,6))
 p.axes([0.17,0.17,0.75,0.75])
