@@ -322,14 +322,14 @@ print "min and max Y error available:", n.min(yDataErr), n.max(yDataErr)
 p0 = n.array([-3.5, 13.5, 0.8, -0.78])
 
 vf = lambda v, A, v0, alpha, beta : n.log10( 10**A * (10**v/10**v0)**beta * n.e**(- (10**v/10**v0)**alpha ) )
-vfbis = lambda v, p0 : vf(v, p0[0], p0[1], p0[2], p0[3])
-chi2fun = lambda p0 : n.sum( (vfbis(M200c,p0) - yData)**2. / (yDataErr*100)**2 )/len(yDataErr)
+#vfbis = lambda v, p0 : vf(v, p0[0], p0[1], p0[2], p0[3])
+#chi2fun = lambda p0 : n.sum( (vfbis(M200c,p0) - yData)**2. / (yDataErr*100)**2 )/len(yDataErr)
 
-print "looks for the optimum parameters with minimize Powell"
-res_z0 = minimize(chi2fun, p0, method='Powell',options={'xtol': 1e-6, 'disp': True, 'maxiter' : 50000000, 'nfev': 1800000})
+#print "looks for the optimum parameters with minimize Powell"
+#res_z0 = minimize(chi2fun, p0, method='Powell',options={'xtol': 1e-6, 'disp': True, 'maxiter' : 50000000, 'nfev': 1800000})
 
-print "ndof=",len(yDataErr)
-print res_z0
+#print "ndof=",len(yDataErr)
+#print res_z0
 
 
 # with curve fit
@@ -373,7 +373,6 @@ p.savefig(join(Pdir , "M200c-cumulative-function-z0.pdf"))
 p.clf()
 
 
-sys.exit()
 ################################ Model Fits on the cumulative function, evolution with redshift ################################
 
 xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_04, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_0.4Gpc.dat"),unpack=True)
@@ -388,26 +387,26 @@ s_40 = (z_40 >= 0.0) & (z_40 <= zmax)
 
 redshift = n.hstack(( z_04[s_04], z_10[s_10], z_25[s_25], z_40[s_40]))
 print "all redshifts available:", set(redshift)
-M200c = n.hstack(( xData_04[s_04], xData_10[s_10], xData_25[s_25], xData_40[s_40]))
+M200c = n.log10(n.hstack(( xData_04[s_04], xData_10[s_10], xData_25[s_25], xData_40[s_40])))
 print "min and max masses available:", n.min(M200c), n.max(M200c)
-yData = n.hstack(( yData_04[s_04], yData_10[s_10], yData_25[s_25], yData_40[s_40]))
-print "min and max Y available:", n.min(yData_04), n.max(yData_04)
-yDataErr = n.hstack(( yDataErr_04[s_04], yDataErr_10[s_10], yDataErr_25[s_25], yDataErr_40[s_40]))
+yData = n.log10(n.hstack(( yData_04[s_04], yData_10[s_10], yData_25[s_25], yData_40[s_40])))
+print "min and max Y available:", n.min(yData), n.max(yData)
+yDataErr = abs(n.hstack(( yDataErr_04[s_04], yDataErr_10[s_10], yDataErr_25[s_25], yDataErr_40[s_40])) / yData)
 print "min and max Y error available:", n.min(yDataErr), n.max(yDataErr)
 
 #vfG = lambda v, z, A0, A1, vcut0, vcut1, b0, b1 : 10**(A0 + A1 * z) * (1+ (v/10**(vcut0 + vcut1 * z))**(b0 + b1 * z) )* n.e**(- (v/10**(vcut0 + vcut1 * z))**(a0 ) )
-vfG = lambda v, z, A1, vcut1, a1, b1 : 10**(A0 + A1 * z) * (1+ (v/10**(vcut0 + vcut1 * z))**(b0 + b1 * z) )* n.e**(- (v/10**(vcut0 + vcut1 * z))**(a0 +a1*z) )
+vfG = lambda v, z, A1, vcut1, a1, b1 : n.log10( 10**(A0 + A1 * z) * (1+ (10**v/10**(vcut0 + vcut1 * z))**(b0 + b1 * z) )* n.e**(- (10**v/10**(vcut0 + vcut1 * z))**(a0 +a1*z) ))
 vfGbis = lambda v, z, ps : vfG(v,z,ps[0],ps[1],ps[2],ps[3])
-chi2fun = lambda ps : n.sum((vfGbis(M200c,redshift,ps) - yData)**2. / yDataErr**2. )/len(yDataErr)
+chi2fun = lambda ps : n.sum((vfGbis(M200c,redshift,ps) - yData)**2. ) #/ yDataErr**2. )/len(yDataErr)
 
 p1 = n.array([ 0., 0., 0., 0.])
 
 print "looks for the optimum parameters"
 res = minimize(chi2fun, p1, method='Powell',options={'xtol': 1e-6, 'disp': True, 'maxiter' : 50000000, 'nfev': 1800000})
 
-print "ndof=",len(yDataErr)
+print "ndof=",len(yData)
 print res
-A1, vcut1, a1, b1 = n.round(res.x,2)
+A1, vcut1, a1, b1 = n.round(res.x,4)
 
 print "A(z) & = "+str(A0)+" + "+str(A1)+r'\times z \\'
 print r" M_{cut}(z) & = "+str(vcut0)+" + "+str(vcut1)+r'\times z \\'
@@ -415,8 +414,7 @@ print r" \alpha(z) & = "+str(a0)+" + "+str(a1)+r'\times z \\' #+ '+str(a2)+r'\ti
 print r" \beta(z) & = "+str(b0)+" + "+str(b1)+r'\times z \\'
 
 # now outputs the model
-xModel = 10**n.arange(n.min(n.log10(M200c)),n.max(n.log10(M200c)),0.1)
-yModel = vfbis(xModel,res_z0.x)
+xModel = n.arange(n.min(n.log10(M200c)),n.max(n.log10(M200c)),0.1)
 
 X,Y = n.meshgrid(xModel,n.arange(0,zmax+0.025,0.025))
 
@@ -437,14 +435,17 @@ ax = fig.add_subplot(111, projection='3d')
 
 ax.plot_wireframe(n.log10(X), Y, n.log10(Z), rstride=10, cstride=10)
 
-sc1 = ax.scatter(n.log10(xData_04),z_04,n.log10(yData_04), s=n.ones_like(z_04)*3, c='r', marker='o',label="SMD", rasterized=True)
+sc1 = ax.scatter(M200c, redshift,yData, s=n.ones_like(yData)*3, c='r', marker='o',label="MD data", rasterized=True)
 sc1.set_edgecolor('face')
-sc1 = ax.scatter(n.log10(xData_10),z_10,n.log10(yData_10), s=n.ones_like(z_10)*3, c='c', marker='v',label="MDPL", rasterized=True)
-sc1.set_edgecolor('face')
-sc1 = ax.scatter(n.log10(xData_25),z_25,n.log10(yData_25), s=n.ones_like(z_25)*3, c='m', marker='s',label="BigMD", rasterized=True)
-sc1.set_edgecolor('face')
-sc1 = ax.scatter(n.log10(xData_40),z_40,n.log10(yData_40), s=n.ones_like(z_40)*3, c='b', marker='p',label="HMD", rasterized=True)
-sc1.set_edgecolor('face')
+
+#sc1 = ax.scatter(n.log10(xData_04),z_04,n.log10(yData_04), s=n.ones_like(z_04)*3, c='r', marker='o',label="SMD", rasterized=True)
+#sc1.set_edgecolor('face')
+#sc1 = ax.scatter(n.log10(xData_10),z_10,n.log10(yData_10), s=n.ones_like(z_10)*3, c='c', marker='v',label="MDPL", rasterized=True)
+#sc1.set_edgecolor('face')
+#sc1 = ax.scatter(n.log10(xData_25),z_25,n.log10(yData_25), s=n.ones_like(z_25)*3, c='m', marker='s',label="BigMD", rasterized=True)
+#sc1.set_edgecolor('face')
+#sc1 = ax.scatter(n.log10(xData_40),z_40,n.log10(yData_40), s=n.ones_like(z_40)*3, c='b', marker='p',label="HMD", rasterized=True)
+#sc1.set_edgecolor('face')
 
 ax.legend()
 ax.set_xlabel(r'log $M_{200c}$ [km s$^{-1}$]')
@@ -460,21 +461,24 @@ p.clf()
 fig = p.figure(1,(9,9))
 ax = fig.add_subplot(111, projection='3d')
 
-sc1 = ax.scatter(n.log10(xData_04),z_04,yData_04/vfGbis(xData_04,z_04,res.x), s=n.ones_like(z_04)*3, c='r', marker='o',label="SMD", rasterized=True)
+sc1 = ax.scatter(M200c, redshift, yData/vfGbis(M200c,redshift,res.x), s=n.ones_like(yData)*3, c='r', marker='o',label="MD data", rasterized=True)
 sc1.set_edgecolor('face')
-sc1 = ax.scatter(n.log10(xData_10),z_10,yData_10/vfGbis(xData_10,z_10,res.x), s=n.ones_like(z_10)*3, c='c', marker='v',label="MDPL", rasterized=True)
-sc1.set_edgecolor('face')
-sc1 = ax.scatter(n.log10(xData_25),z_25,yData_25/vfGbis(xData_25,z_25,res.x), s=n.ones_like(z_25)*3, c='m', marker='s',label="BigMD", rasterized=True)
-sc1.set_edgecolor('face')
-sc1 = ax.scatter(n.log10(xData_40),z_40,yData_40/vfGbis(xData_40,z_40,res.x), s=n.ones_like(z_40)*3, c='b', marker='p',label="HMD", rasterized=True)
-sc1.set_edgecolor('face')
+
+#sc1 = ax.scatter(n.log10(xData_04),z_04,yData_04/vfGbis(xData_04,z_04,res.x), s=n.ones_like(z_04)*3, c='r', marker='o',label="SMD", rasterized=True)
+#sc1.set_edgecolor('face')
+#sc1 = ax.scatter(n.log10(xData_10),z_10,yData_10/vfGbis(xData_10,z_10,res.x), s=n.ones_like(z_10)*3, c='c', marker='v',label="MDPL", rasterized=True)
+#sc1.set_edgecolor('face')
+#sc1 = ax.scatter(n.log10(xData_25),z_25,yData_25/vfGbis(xData_25,z_25,res.x), s=n.ones_like(z_25)*3, c='m', marker='s',label="BigMD", rasterized=True)
+#sc1.set_edgecolor('face')
+#sc1 = ax.scatter(n.log10(xData_40),z_40,yData_40/vfGbis(xData_40,z_40,res.x), s=n.ones_like(z_40)*3, c='b', marker='p',label="HMD", rasterized=True)
+#sc1.set_edgecolor('face')
 
 ax.legend()
 ax.set_xlabel(r'log $M_{200c}$ [km s$^{-1}$]')
 ax.set_ylabel('redshift')
 ax.set_ylim((0,zmax))
 ax.set_zlabel(r'Data / Model')
-ax.set_zlim((0,5))
+ax.set_zlim((0,3))
 #ax.set_yscale('log')
 #ax.set_zscale('log')
 p.savefig(join(Pdir , "M200c-cumulative-function-allZ-modelRatio.pdf"))
