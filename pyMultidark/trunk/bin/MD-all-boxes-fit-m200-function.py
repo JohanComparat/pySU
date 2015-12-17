@@ -109,10 +109,10 @@ fileName = type + "-"+ cos +"-"+ qty +"-*.dat"
 fileList = n.array(glob.glob(join(dir_04, property_dir,fileName)))
 fileList.sort()
 
-xData_04,yData_04,yDataErr_04,z_04 = [], [], [], []
 nSN, aSN = n.loadtxt(zList_files[0], unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
 conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
 
+xData_04,yData_04,yDataErr_04,z_04 = [], [], [], []
 for ii in range(len(fileList)):
     SMDfile = fileList[ii]
     #print SMDfile
@@ -136,10 +136,10 @@ n.savetxt(join(dir_04, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulativ
 xData_04,yData_04,yDataErr_04,z_04 = [], [], [], []
 for ii in range(len(fileList)):
     SMDfile = fileList[ii]
-    #print SMDfile
+    print SMDfile
     b0_04, b1_04, val_04 = n.loadtxt(SMDfile,unpack=True)
     xData_04_ii,yData_04_ii,yDataErr_04_ii,volume_04_ii = get_differential_function(b0_04, b1_04, val_04,400.**3.,minVx = limits_04[0], maxVx = limits_04[1])
-    #print SMDfile.split('-')[-1][:-4]
+    print SMDfile.split('-')[-1][:-4]
     z_04_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_04_ii)
     if z_04_ii[0]<zmax :
         xData_04.append(xData_04_ii)
