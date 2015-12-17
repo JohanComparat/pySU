@@ -57,7 +57,7 @@ mf = lambda v, A, v0, alpha, beta : 10**A * (v/10**v0)**beta * n.e**(- (v/10**v0
 limits_04 = [1e10, 1e13]
 limits_10 = [3e11, 1e14]
 limits_25 = [5e12, 1e15]
-limits_40 = [1e13, 5e15]
+limits_40 = [1e13, 1e15]
 zmin = 0.
 zmax = 3.
 
