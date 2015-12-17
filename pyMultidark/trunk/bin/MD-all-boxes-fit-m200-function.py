@@ -75,7 +75,7 @@ mf = lambda v, A, v0, alpha, beta : 10**A * (v/10**v0)**beta * n.e**(- (v/10**v0
 limits_04 = [1e10, 1e12]
 limits_10 = [5e11, 1e13]
 limits_25 = [5e12, 1e14]
-limits_40 = [1e13, 5e15]
+limits_40 = [5e13, 5e15]
 zmin = 0.
 zmax = 0.5
 
@@ -118,12 +118,12 @@ for ii in range(len(fileList)):
     b0_04, b1_04, val_04 = n.loadtxt(SMDfile,unpack=True)
     xData_04_ii,yData_04_ii,yDataErr_04_ii,volume_04_ii = get_cumulative_function(b0_04, b1_04, val_04,400.**3.,minVx = limits_04[0], maxVx = limits_04[1])
     #print SMDfile.split('-')[-1][:-4]
-    z_04_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_04_ii)
-    if z_04_ii[0]<zmax :
+    z_04_ii = conversion[float(SMDfile.split('-')[-1][:-4])]
+    if z_04_ii<zmax and len(xData_04)>0 :
         xData_04.append(xData_04_ii)
         yData_04.append(yData_04_ii)
         yDataErr_04.append(yDataErr_04_ii)
-        z_04.append(z_04_ii)
+        z_04.append(z_04_ii*n.ones_like(xData_04_ii))
 
 z_04 = n.hstack((z_04))
 xData_04 = n.hstack((xData_04))
@@ -139,13 +139,13 @@ for ii in range(len(fileList)):
     b0_04, b1_04, val_04 = n.loadtxt(SMDfile,unpack=True)
     xData_04_ii,yData_04_ii,yDataErr_04_ii,volume_04_ii = get_differential_function(b0_04, b1_04, val_04,400.**3.,minVx = limits_04[0], maxVx = limits_04[1])
     #print SMDfile.split('-')[-1][:-4]
-    z_04_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_04_ii)
+    z_04_ii = conversion[float(SMDfile.split('-')[-1][:-4])]
     #print z_04_ii
-    if z_04_ii[0]<zmax :
+    if z_04_ii<zmax  and len(xData_04)>0 :
         xData_04.append(xData_04_ii)
         yData_04.append(yData_04_ii)
         yDataErr_04.append(yDataErr_04_ii)
-        z_04.append(z_04_ii)
+        z_04.append(z_04_ii*n.ones_like(xData_04_ii))
 
 z_04 = n.hstack((z_04))
 xData_04 = n.hstack((xData_04))
@@ -166,12 +166,12 @@ for ii in range(len(fileList)):
     #print SMDfile
     b0_10, b1_10, val_10 = n.loadtxt(SMDfile,unpack=True)
     xData_10_ii,yData_10_ii,yDataErr_10_ii,volume_10_ii = get_cumulative_function(b0_10, b1_10, val_10,1000.**3.,minVx = limits_10[0], maxVx = limits_10[1])
-    z_10_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_10_ii)
-    if z_10_ii[0]<zmax :
+    z_10_ii = conversion[float(SMDfile.split('-')[-1][:-4])]
+    if z_10_ii<zmax and len(xData_10_ii)>0 :
         xData_10.append(xData_10_ii)
         yData_10.append(yData_10_ii)
         yDataErr_10.append(yDataErr_10_ii)
-        z_10.append(z_10_ii)
+        z_10.append(z_10_ii*n.ones_like(xData_10_ii))
 
 z_10 = n.hstack((z_10))
 xData_10 = n.hstack((xData_10))
@@ -186,12 +186,12 @@ for ii in range(len(fileList)):
     #print SMDfile
     b0_10, b1_10, val_10 = n.loadtxt(SMDfile,unpack=True)
     xData_10_ii,yData_10_ii,yDataErr_10_ii,volume_10_ii = get_differential_function(b0_10, b1_10, val_10,1000.**3.,minVx = limits_10[0], maxVx = limits_10[1])
-    z_10_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_10_ii)
-    if z_10_ii[0]<zmax :
+    z_10_ii = conversion[float(SMDfile.split('-')[-1][:-4])]
+    if z_10_ii<zmax and len(xData_10_ii)>0 :
         xData_10.append(xData_10_ii)
         yData_10.append(yData_10_ii)
         yDataErr_10.append(yDataErr_10_ii)
-        z_10.append(z_10_ii)
+        z_10.append(z_10_ii*n.ones_like(xData_10_ii))
 
 z_10 = n.hstack((z_10))
 xData_10 = n.hstack((xData_10))
@@ -212,12 +212,12 @@ for ii in range(len(fileList)):
     #print SMDfile
     b0_25, b1_25, val_25 = n.loadtxt(SMDfile,unpack=True)
     xData_25_ii,yData_25_ii,yDataErr_25_ii,volume_25_ii = get_cumulative_function(b0_25, b1_25, val_25,2500.**3.,minVx = limits_25[0], maxVx = limits_25[1])
-    z_25_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_25_ii)
-    if z_25_ii[0]<zmax :
+    z_25_ii = conversion[float(SMDfile.split('-')[-1][:-4])]
+    if z_25_ii<zmax and len(xData_25_ii):
         xData_25.append(xData_25_ii)
         yData_25.append(yData_25_ii)
         yDataErr_25.append(yDataErr_25_ii)
-        z_25.append(z_25_ii)
+        z_25.append(z_25_ii*n.ones_like(xData_25_ii))
 
 z_25 = n.hstack((z_25))
 xData_25 = n.hstack((xData_25))
@@ -232,12 +232,12 @@ for ii in range(len(fileList)):
     #print SMDfile
     b0_25, b1_25, val_25 = n.loadtxt(SMDfile,unpack=True)
     xData_25_ii,yData_25_ii,yDataErr_25_ii,volume_25_ii = get_differential_function(b0_25, b1_25, val_25,2500.**3.,minVx = limits_25[0], maxVx = limits_25[1])
-    z_25_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_25_ii)
-    if z_25_ii[0]<zmax :
+    z_25_ii = conversion[float(SMDfile.split('-')[-1][:-4])]
+    if z_25_ii<zmax and len(xData_25_ii):
         xData_25.append(xData_25_ii)
         yData_25.append(yData_25_ii)
         yDataErr_25.append(yDataErr_25_ii)
-        z_25.append(z_25_ii)
+        z_25.append(z_25_ii*n.ones_like(xData_25_ii))
 
 z_25 = n.hstack((z_25))
 xData_25 = n.hstack((xData_25))
@@ -258,12 +258,12 @@ for ii in range(len(fileList)):
     #print SMDfile
     b0_40, b1_40, val_40 = n.loadtxt(SMDfile,unpack=True)
     xData_40_ii,yData_40_ii,yDataErr_40_ii,volume_40_ii = get_cumulative_function(b0_40, b1_40, val_40,4000.**3.,minVx = limits_40[0], maxVx = limits_40[1])
-    z_40_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_40_ii)
-    if z_40_ii[0]<zmax :
+    z_40_ii = conversion[float(SMDfile.split('-')[-1][:-4])]
+    if z_40_ii<zmax and len(xData_40_ii):
         xData_40.append(xData_40_ii)
         yData_40.append(yData_40_ii)
         yDataErr_40.append(yDataErr_40_ii)
-        z_40.append(z_40_ii)
+        z_40.append(z_40_ii*n.ones_like(xData_40_ii))
 
 z_40 = n.hstack((z_40))
 xData_40 = n.hstack((xData_40))
@@ -278,12 +278,12 @@ for ii in range(len(fileList)):
     #print SMDfile
     b0_40, b1_40, val_40 = n.loadtxt(SMDfile,unpack=True)
     xData_40_ii,yData_40_ii,yDataErr_40_ii,volume_40_ii = get_differential_function(b0_40, b1_40, val_40,4000.**3.,minVx = limits_40[0], maxVx = limits_40[1])
-    z_40_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_40_ii)
-    if z_40_ii[0]<zmax :
+    z_40_ii = conversion[float(SMDfile.split('-')[-1][:-4])]
+    if z_40_ii<zmax and len(xData_40_ii):
         xData_40.append(xData_40_ii)
         yData_40.append(yData_40_ii)
         yDataErr_40.append(yDataErr_40_ii)
-        z_40.append(z_40_ii)
+        z_40.append(z_40_ii*n.ones_like(xData_40_ii))
 
 z_40 = n.hstack((z_40))
 xData_40 = n.hstack((xData_40))
