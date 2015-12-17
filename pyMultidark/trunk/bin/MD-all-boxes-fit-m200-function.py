@@ -332,7 +332,7 @@ print res_z0
 
 # with curve fit
 print "with curve fit"
-popt, pcov = curve_fit(vf, M200c, yData, p0 = p0 , maxfev = 5000000)
+popt, cov = curve_fit(vf, M200c, yData, p0 = p0 , maxfev = 5000000)
 print popt, pcov
 A0, vcut0, a0, b0 = n.round(popt,2)
 
