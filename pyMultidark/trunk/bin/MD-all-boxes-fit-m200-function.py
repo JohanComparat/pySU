@@ -338,7 +338,7 @@ print r" \beta(z=0) & = "+str(b0)+' \\'
 
 # with curve fit
 
-popt, pcov = curve_fit(vf, M200c, yData, p0 = p0 )
+popt, pcov = curve_fit(vf, M200c, yData, p0 = p0 , maxfev = 5000000)
 print popt, pcov
 
 p.figure(0,(6,6))
