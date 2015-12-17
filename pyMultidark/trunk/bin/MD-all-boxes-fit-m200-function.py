@@ -321,7 +321,7 @@ p0 = n.array([-3.5, 13.5, 0.8, -0.78])
 
 vf = lambda v, A, v0, alpha, beta : 10**A * (v/10**v0)**beta * n.e**(- (v/10**v0)**alpha )
 vfbis = lambda v, p0 : vf(v, p0[0], p0[1], p0[2], p0[3])
-chi2fun = lambda p0 : n.sum( (vfbis(M200c,p0) - yData)**2. / yDataErr )/len(yDataErr)
+chi2fun = lambda p0 : n.sum( (vfbis(M200c,p0) - yData)**2. / (yDataErr*10)**2 )/len(yDataErr)
 
 print "looks for the optimum parameters"
 res_z0 = minimize(chi2fun, p0, method='Powell',options={'xtol': 1e-6, 'disp': True, 'maxiter' : 50000000, 'nfev': 1800000})
@@ -338,7 +338,7 @@ print r" \beta(z=0) & = "+str(b0)+' \\'
 
 # with curve fit
 
-popt, pcov = curve_fit(vf, M200c, yData, sigma = yDataErr, p0 = p0 , maxfev = 5000000)
+popt, pcov = curve_fit(vf, M200c, yData, sigma = yDataErr*10, p0 = p0 , maxfev = 5000000)
 print popt, pcov
 
 p.figure(0,(6,6))
@@ -359,7 +359,7 @@ yModel_CF = vf(xModel,popt[0],popt[1],popt[2],popt[3])
 
 p.plot(n.log10(xModel), yModel,'k--',label="model")
 
-p.plot(n.log10(xModel), yMode_CF,'r--',label="modelCF")
+p.plot(n.log10(xModel), yModel_CF,'r--',label="modelCF")
 
 p.xlabel(r'log$_{10}[M_{200c}/(h^{-1}M_\odot)]$')
 p.ylabel(r' n(>M)') # log$_{10}[ n(>M)]')
