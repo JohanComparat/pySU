@@ -328,18 +328,19 @@ res_z0 = minimize(chi2fun, p0, method='Powell',options={'xtol': 1e-6, 'disp': Tr
 
 print "ndof=",len(yDataErr)
 print res_z0
-A0, vcut0, a0, b0 = n.round(res_z0.x,2)
 
-print "redshift 0 model for the M200c cumulative function :"
-print "A(z=0) & = "+str(A0)+' \\'
-print r" M_{200c}^{cut}(z=0) & = "+str(vcut0)+' \\'
-print r" \alpha(z=0) & = "+str(a0)+' \\'
-print r" \beta(z=0) & = "+str(b0)+' \\'
 
 # with curve fit
 print "with curve fit"
 popt, pcov = curve_fit(vf, M200c, yData, p0 = p0 , maxfev = 5000000)
 print popt, pcov
+A0, vcut0, a0, b0 = n.round(popt.x,2)
+
+print "redshift 0 model for the M200c cumulative function :"
+print "A(z=0) & = "+str(A0)+ r"\pm ", n.round(cov[0][0]**0.5,2) '\\'
+print r" M_{200c}^{cut}(z=0) & = "+str(vcut0)+ r"\pm ", n.round(cov[1][1]**0.5,2) '\\'
+print r" \alpha(z=0) & = "+str(a0)+ r"\pm ", n.round(cov[2][2]**0.5,2) '\\'
+print r" \beta(z=0) & = "+str(b0)+ r"\pm ", n.round(cov[3][3]**0.5,2) '\\'
 
 p.figure(0,(6,6))
 p.axes([0.17,0.17,0.75,0.75])
@@ -357,9 +358,9 @@ yModel = vfbis(xModel,res_z0.x)
 
 yModel_CF = vf(xModel,popt[0],popt[1],popt[2],popt[3])
 
-p.plot(xModel, yModel,'k--',label="model")
+#p.plot(xModel, yModel,'k--',label="model")
 
-p.plot(xModel, yModel_CF,'r--',label="modelCF")
+p.plot(xModel, yModel_CF,'r--',label="model")
 
 p.xlabel(r'log$_{10}[M_{200c}/(h^{-1}M_\odot)]$')
 p.ylabel(r' n(>M)') # log$_{10}[ n(>M)]')
@@ -368,6 +369,7 @@ p.title(str(A0)+" "+str(vcut0)+" "+str(a0)+" "+str(b0))
 p.grid()
 p.savefig(join(Pdir , "M200c-cumulative-function-z0.pdf"))
 p.clf()
+
 
 sys.exit()
 ################################ Model Fits on the cumulative function, evolution with redshift ################################
