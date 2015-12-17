@@ -23,7 +23,7 @@ from scipy.optimize import minimize
 dir = "/data2/DATA/eBOSS/Multidark-lightcones/"
 Pdir = join(dir,"M200cFunction") #"/Volumes/data/BigMD/M200cFunction/plots/"
 
-def getVF(b0, b1, val,volume,label="SMD",completeness = 100, maxV=16,errFactor=1.):
+def get_cumulative_function(b0, b1, val,volume,label="SMD",completeness = 100, maxV=16,errFactor=1.):
     """returns the cumulative function n(>X) """
     Nc = n.array([ n.sum(val[ii:]) for ii in range(len(val)) ])
     xData_A = (10**b0+10**b1)/2.
@@ -35,7 +35,7 @@ def getVF(b0, b1, val,volume,label="SMD",completeness = 100, maxV=16,errFactor=1
     yDataErr = yDataErr_A[sel]*yData_A[sel]
     return xData,yData,yDataErr,volume
 
-def getDiffVF(b0, b1, val,volume,label="SMD",completeness = 100, maxV=16,errFactor=1.):
+def get_differential_function(b0, b1, val,volume,label="SMD",completeness = 100, maxV=16,errFactor=1.):
     """returns the differential function dn / dX """
     xData_A = (10**b0+10**b1)/2.
     yData_A = val/(volume * (10**b1-10**b0))
@@ -85,7 +85,7 @@ print "each box has a volume of",volume_boxes, "Mpc3/h3"
 
 fileName = type + "-"+ cos +"-"+ qty +"-*.dat"
 
-############ 0.4 Gpc ##############
+############ MD 0.4 Gpc concatenate all functions ##############
 
 fileList = n.array(glob.glob(join(dir_04, property_dir,fileName)))
 fileList.sort()
@@ -96,10 +96,10 @@ conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
 
 for ii in range(len(fileList)):
     SMDfile = fileList[ii]
-    print SMDfile
+    #print SMDfile
     b0_04, b1_04, val_04 = n.loadtxt(SMDfile,unpack=True)
-    xData_04_ii,yData_04_ii,yDataErr_04_ii,volume_04_ii = getVF(b0_04, b1_04, val_04,400.**3.,completeness = limits_04[0], maxV = limits_04[1])
-    print SMDfile.split('-')[-1][:-4]
+    xData_04_ii,yData_04_ii,yDataErr_04_ii,volume_04_ii = get_cumulative_function(b0_04, b1_04, val_04,400.**3.,completeness = limits_04[0], maxV = limits_04[1])
+    #print SMDfile.split('-')[-1][:-4]
     z_04_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_04_ii)
     if z_04_ii[0]<zmax :
         xData_04.append(xData_04_ii)
@@ -117,10 +117,10 @@ n.savetxt(join(dir_04, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulativ
 xData_04,yData_04,yDataErr_04,z_04 = [], [], [], []
 for ii in range(len(fileList)):
     SMDfile = fileList[ii]
-    print SMDfile
+    #print SMDfile
     b0_04, b1_04, val_04 = n.loadtxt(SMDfile,unpack=True)
-    xData_04_ii,yData_04_ii,yDataErr_04_ii,volume_04_ii = getDiffVF(b0_04, b1_04, val_04,400.**3.,completeness = limits_04[0], maxV = limits_04[1])
-    print SMDfile.split('-')[-1][:-4]
+    xData_04_ii,yData_04_ii,yDataErr_04_ii,volume_04_ii = get_differential_function(b0_04, b1_04, val_04,400.**3.,completeness = limits_04[0], maxV = limits_04[1])
+    #print SMDfile.split('-')[-1][:-4]
     z_04_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_04_ii)
     if z_04_ii[0]<zmax :
         xData_04.append(xData_04_ii)
@@ -144,9 +144,9 @@ conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
 xData_10,yData_10,yDataErr_10,z_10 = [], [], [], []
 for ii in range(len(fileList)):
     SMDfile = fileList[ii]
-    print SMDfile
+    #print SMDfile
     b0_10, b1_10, val_10 = n.loadtxt(SMDfile,unpack=True)
-    xData_10_ii,yData_10_ii,yDataErr_10_ii,volume_10_ii = getVF(b0_10, b1_10, val_10,1000.**3.,completeness = limits_10[0], maxV = limits_10[1])
+    xData_10_ii,yData_10_ii,yDataErr_10_ii,volume_10_ii = get_cumulative_function(b0_10, b1_10, val_10,1000.**3.,completeness = limits_10[0], maxV = limits_10[1])
     z_10_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_10_ii)
     if z_10_ii[0]<zmax :
         xData_10.append(xData_10_ii)
@@ -164,9 +164,9 @@ n.savetxt(join(dir_10, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulativ
 xData_10,yData_10,yDataErr_10,z_10 = [], [], [], []
 for ii in range(len(fileList)):
     SMDfile = fileList[ii]
-    print SMDfile
+    #print SMDfile
     b0_10, b1_10, val_10 = n.loadtxt(SMDfile,unpack=True)
-    xData_10_ii,yData_10_ii,yDataErr_10_ii,volume_10_ii = getDiffVF(b0_10, b1_10, val_10,1000.**3.,completeness = limits_10[0], maxV = limits_10[1])
+    xData_10_ii,yData_10_ii,yDataErr_10_ii,volume_10_ii = get_differential_function(b0_10, b1_10, val_10,1000.**3.,completeness = limits_10[0], maxV = limits_10[1])
     z_10_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_10_ii)
     if z_10_ii[0]<zmax :
         xData_10.append(xData_10_ii)
@@ -190,9 +190,9 @@ conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
 xData_25,yData_25,yDataErr_25,z_25 = [], [], [], []
 for ii in range(len(fileList)):
     SMDfile = fileList[ii]
-    print SMDfile
+    #print SMDfile
     b0_25, b1_25, val_25 = n.loadtxt(SMDfile,unpack=True)
-    xData_25_ii,yData_25_ii,yDataErr_25_ii,volume_25_ii = getVF(b0_25, b1_25, val_25,2500.**3.,completeness = limits_25[0], maxV = limits_25[1])
+    xData_25_ii,yData_25_ii,yDataErr_25_ii,volume_25_ii = get_cumulative_function(b0_25, b1_25, val_25,2500.**3.,completeness = limits_25[0], maxV = limits_25[1])
     z_25_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_25_ii)
     if z_25_ii[0]<zmax :
         xData_25.append(xData_25_ii)
@@ -210,9 +210,9 @@ n.savetxt(join(dir_25, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulativ
 xData_25,yData_25,yDataErr_25,z_25 = [], [], [], []
 for ii in range(len(fileList)):
     SMDfile = fileList[ii]
-    print SMDfile
+    #print SMDfile
     b0_25, b1_25, val_25 = n.loadtxt(SMDfile,unpack=True)
-    xData_25_ii,yData_25_ii,yDataErr_25_ii,volume_25_ii = getDiffVF(b0_25, b1_25, val_25,2500.**3.,completeness = limits_25[0], maxV = limits_25[1])
+    xData_25_ii,yData_25_ii,yDataErr_25_ii,volume_25_ii = get_differential_function(b0_25, b1_25, val_25,2500.**3.,completeness = limits_25[0], maxV = limits_25[1])
     z_25_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_25_ii)
     if z_25_ii[0]<zmax :
         xData_25.append(xData_25_ii)
@@ -236,9 +236,9 @@ conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
 xData_40,yData_40,yDataErr_40,z_40 = [], [], [], []
 for ii in range(len(fileList)):
     SMDfile = fileList[ii]
-    print SMDfile
+    #print SMDfile
     b0_40, b1_40, val_40 = n.loadtxt(SMDfile,unpack=True)
-    xData_40_ii,yData_40_ii,yDataErr_40_ii,volume_40_ii = getVF(b0_40, b1_40, val_40,4000.**3.,completeness = limits_40[0], maxV = limits_40[1])
+    xData_40_ii,yData_40_ii,yDataErr_40_ii,volume_40_ii = get_cumulative_function(b0_40, b1_40, val_40,4000.**3.,completeness = limits_40[0], maxV = limits_40[1])
     z_40_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_40_ii)
     if z_40_ii[0]<zmax :
         xData_40.append(xData_40_ii)
@@ -256,9 +256,9 @@ n.savetxt(join(dir_40, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulativ
 xData_40,yData_40,yDataErr_40,z_40 = [], [], [], []
 for ii in range(len(fileList)):
     SMDfile = fileList[ii]
-    print SMDfile
+    #print SMDfile
     b0_40, b1_40, val_40 = n.loadtxt(SMDfile,unpack=True)
-    xData_40_ii,yData_40_ii,yDataErr_40_ii,volume_40_ii = getDiffVF(b0_40, b1_40, val_40,4000.**3.,completeness = limits_40[0], maxV = limits_40[1])
+    xData_40_ii,yData_40_ii,yDataErr_40_ii,volume_40_ii = get_differential_function(b0_40, b1_40, val_40,4000.**3.,completeness = limits_40[0], maxV = limits_40[1])
     z_40_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_40_ii)
     if z_40_ii[0]<zmax :
         xData_40.append(xData_40_ii)
@@ -275,7 +275,7 @@ n.savetxt(join(dir_40, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_different
 
 
 
-################################ Plot cumulative halo mass function,model at z=0  ################################
+################################ Plot cumulative halo mass function and model at z=0  ################################
 
 xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_04, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_0.4Gpc"+".dat"),unpack=True)
 xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir_10, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_1Gpc.dat"),unpack=True)
@@ -303,21 +303,21 @@ vfbis = lambda v, p0 : vf(v, p0[0], p0[1], p0[2], p0[3])
 chi2fun = lambda p0 : n.sum( (vfbis(M200c,p0) - yData)**2. / yDataErr**2. )/len(yDataErr)
 
 print "looks for the optimum parameters"
-res = minimize(chi2fun, p0, method='Powell',options={'xtol': 1e-6, 'disp': True, 'maxiter' : 50000000, 'nfev': 1800000})
+res_z0 = minimize(chi2fun, p0, method='Powell',options={'xtol': 1e-6, 'disp': True, 'maxiter' : 50000000, 'nfev': 1800000})
 
 print "ndof=",len(yDataErr)
-print res
+print res_z0
 A0, vcut0, a0, b0 = n.round(res.x,2)
-#A1, vcut1, a1, a2, b1 = n.round(res.x,2)
+#A1, vcut1, a1, a2, b1 = n.round(res_z0.x,2)
 #A0 = -3.48
 #vcut0 = 1.48
 #a0 = -2.70
 #b0 =  2.74
-print "redshift 0 model for the M200c cumulqtive function :"
-print "A(z) & = "+str(A0)+' \\'
-print r" M_{200c}^{cut}(z) & = "+str(vcut0)+' \\'
-print r" \alpha(z) & = "+str(a0)+' \\'
-print r" \beta(z) & = "+str(b0)+' \\'
+print "redshift 0 model for the M200c cumulative function :"
+print "A(z=0) & = "+str(A0)+' \\'
+print r" M_{200c}^{cut}(z=0) & = "+str(vcut0)+' \\'
+print r" \alpha(z=0) & = "+str(a0)+' \\'
+print r" \beta(z=0) & = "+str(b0)+' \\'
 
 # now outputs the model
 
@@ -330,7 +330,7 @@ p.plot(n.log10(xData_25[s_25]),yData_25[s_25], marker ='s', mfc='None',mec='m',l
 p.plot(n.log10(xData_40[s_40]),yData_40[s_40], marker ='p', mfc='None',mec='b',ls='none', label="HMD", rasterized=True)
 
 xModel = 10**n.arange(n.min(n.log10(M200c)),n.max(n.log10(M200c)),0.1)
-yModel = vfbis(xModel,res.x)
+yModel = vfbis(xModel,res_z0.x)
 
 p.plot(n.log10(xModel), yModel,'k--',label="model")
 
@@ -338,49 +338,57 @@ p.xlabel(r'log$_{10}[M_{200c}/(h^{-1}M_\odot)]$')
 p.ylabel(r' n(>M)') # log$_{10}[ n(>M)]')
 p.yscale('log')
 p.legend(loc=3)
+p.title(str(A0)+" "+str(vcut0)+" "+str(a0)+" "+str(b0))
 p.grid()
 p.savefig(join(Pdir , "M200c-cumulative-function-z0.pdf"))
 p.clf()
 
 
-
-################################ Model Fits on the cumulative function ################################
+################################ Model Fits on the cumulative function, evolution with redshift ################################
 
 xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_04, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_0.4Gpc"+".dat"),unpack=True)
 xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir_10, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_1Gpc.dat"),unpack=True)
 xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir_25, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_2.5Gpc.dat"),unpack=True)
 xData_40,z_40,yData_40,yDataErr_40 = n.loadtxt(join(dir_40, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_4Gpc.dat"),unpack=True)
 
-redshift = n.hstack(( z_04, z_10, z_25, z_40))
-M200c = n.hstack(( xData_04, xData_10, xData_25, xData_40))
-yData = n.hstack(( yData_04, yData_10, yData_25, yData_40))
-yDataErr = n.hstack(( yDataErr_04, yDataErr_10, yDataErr_25, yDataErr_40))
+s_04 = (z_04 >= 0.0) & (z_04 <= zmax)
+s_10 = (z_10 >= 0.0) & (z_10 <= zmax)
+s_25 = (z_25 >= 0.0) & (z_25 <= zmax)
+s_40 = (z_40 >= 0.0) & (z_40 <= zmax)
 
-vfG = lambda v, z, A0, A1, vcut0, vcut1, b0, b1 : 10**(A0 + A1 * z) * (1+ (v/10**(vcut0 + vcut1 * z))**(b0 + b1 * z) )* n.e**(- (v/10**(vcut0 + vcut1 * z))**(a0 ) )
-vfGbis = lambda v, z, p0 : vfG(v,z,p0[0],p0[1],p0[2],p0[3],p0[4],p0[5])
-chi2fun = lambda p0 : n.sum((vfGbis(M200c,redshift,p0) - yData)**2. / yDataErr**2. )/len(yDataErr)
+redshift = n.hstack(( z_04[s_04], z_10[s_10], z_25[s_25], z_40[s_40]))
+print "all redshifts available:", set(redshift)
+M200c = n.hstack(( xData_04[s_04], xData_10[s_10], xData_25[s_25], xData_40[s_40]))
+print "min and max masses available:", n.min(M200c), n.max(M200c)
+yData = n.hstack(( yData_04[s_04], yData_10[s_10], yData_25[s_25], yData_40[s_40]))
+print "min and max Y available:", n.min(yData_04), n.max(yData_04)
+yDataErr = n.hstack(( yDataErr_04[s_04], yDataErr_10[s_10], yDataErr_25[s_25], yDataErr_40[s_40]))
+print "min and max Y error available:", n.min(yDataErr), n.max(yDataErr)
 
-p1 = n.array([A0, 0., vcut0, 0., b0, 0.])
+#vfG = lambda v, z, A0, A1, vcut0, vcut1, b0, b1 : 10**(A0 + A1 * z) * (1+ (v/10**(vcut0 + vcut1 * z))**(b0 + b1 * z) )* n.e**(- (v/10**(vcut0 + vcut1 * z))**(a0 ) )
+vfG = lambda v, z, A1, vcut1, a1, b1 : 10**(A0 + A1 * z) * (1+ (v/10**(vcut0 + vcut1 * z))**(b0 + b1 * z) )* n.e**(- (v/10**(vcut0 + vcut1 * z))**(a0 +a1*z) )
+vfGbis = lambda v, z, ps : vfG(v,z,ps[0],ps[1],ps[2],ps[3])
+chi2fun = lambda ps : n.sum((vfGbis(M200c,redshift,ps) - yData)**2. / yDataErr**2. )/len(yDataErr)
+
+p1 = n.array([ 0., 0., 0., 0.])
 
 print "looks for the optimum parameters"
 res = minimize(chi2fun, p1, method='Powell',options={'xtol': 1e-6, 'disp': True, 'maxiter' : 50000000, 'nfev': 1800000})
 
 print "ndof=",len(yDataErr)
 print res
-A0, A1, vcut0, vcut1, b0, b1 = n.round(res.x,2)
-#A1, vcut1, a1, a2, b1 = n.round(res.x,2)
-#A0 = -3.48
-#vcut0 = 1.48
-#a0 = -2.70
-#b0 =  2.74
+A1, vcut1, a1, b1 = n.round(res.x,2)
 
 print "A(z) & = "+str(A0)+" + "+str(A1)+r'\times z \\'
 print r" M_{cut}(z) & = "+str(vcut0)+" + "+str(vcut1)+r'\times z \\'
-print r" \alpha(z) & = "+str(a0)#+" + "+str(a1)+r'\times z \\' #+ '+str(a2)+r'\times z^2 \\'
+print r" \alpha(z) & = "+str(a0)+" + "+str(a1)+r'\times z \\' #+ '+str(a2)+r'\times z^2 \\'
 print r" \beta(z) & = "+str(b0)+" + "+str(b1)+r'\times z \\'
 
 # now outputs the model
-X,Y = n.meshgrid(n.logspace(n.log10(limits_04[0]),n.log10(limits_40[1]),200),n.arange(0,zmax,0.025))
+xModel = 10**n.arange(n.min(n.log10(M200c)),n.max(n.log10(M200c)),0.1)
+yModel = vfbis(xModel,res_z0.x)
+
+X,Y = n.meshgrid(xModel,n.arange(0,zmax+0.025,0.025))
 
 Z = vfGbis(X,Y,res.x)
 
@@ -396,17 +404,15 @@ vmax_mod, z_mod, n_mod = n.loadtxt(join(Pdir,"M200c-cumulative-function-best_fit
 
 fig = p.figure(1,(9,9))
 ax = fig.add_subplot(111, projection='3d')
+
 ax.plot_wireframe(n.log10(X), Y, n.log10(Z), rstride=10, cstride=10)
 
 sc1 = ax.scatter(n.log10(xData_04),z_04,n.log10(yData_04), s=n.ones_like(z_04)*3, c='r', marker='o',label="SMD", rasterized=True)
 sc1.set_edgecolor('face')
-
 sc1 = ax.scatter(n.log10(xData_10),z_10,n.log10(yData_10), s=n.ones_like(z_10)*3, c='c', marker='v',label="MDPL", rasterized=True)
 sc1.set_edgecolor('face')
-
 sc1 = ax.scatter(n.log10(xData_25),z_25,n.log10(yData_25), s=n.ones_like(z_25)*3, c='m', marker='s',label="BigMD", rasterized=True)
 sc1.set_edgecolor('face')
-
 sc1 = ax.scatter(n.log10(xData_40),z_40,n.log10(yData_40), s=n.ones_like(z_40)*3, c='b', marker='p',label="HMD", rasterized=True)
 sc1.set_edgecolor('face')
 
@@ -426,13 +432,10 @@ ax = fig.add_subplot(111, projection='3d')
 
 sc1 = ax.scatter(n.log10(xData_04),z_04,yData_04/vfGbis(xData_04,z_04,res.x), s=n.ones_like(z_04)*3, c='r', marker='o',label="SMD", rasterized=True)
 sc1.set_edgecolor('face')
-
 sc1 = ax.scatter(n.log10(xData_10),z_10,yData_10/vfGbis(xData_10,z_10,res.x), s=n.ones_like(z_10)*3, c='c', marker='v',label="MDPL", rasterized=True)
 sc1.set_edgecolor('face')
-
 sc1 = ax.scatter(n.log10(xData_25),z_25,yData_25/vfGbis(xData_25,z_25,res.x), s=n.ones_like(z_25)*3, c='m', marker='s',label="BigMD", rasterized=True)
 sc1.set_edgecolor('face')
-
 sc1 = ax.scatter(n.log10(xData_40),z_40,yData_40/vfGbis(xData_40,z_40,res.x), s=n.ones_like(z_40)*3, c='b', marker='p',label="HMD", rasterized=True)
 sc1.set_edgecolor('face')
 
