@@ -317,11 +317,11 @@ print "min and max Y error available:", n.min(yDataErr), n.max(yDataErr)
 
 # with minimize
 
-p0 = n.array([-3., 13., 0.5, -0.8])
+p0 = n.array([-3.5, 13.5, 0.8, -0.78])
 
 vf = lambda v, A, v0, alpha, beta : 10**A * (v/10**v0)**beta * n.e**(- (v/10**v0)**alpha )
 vfbis = lambda v, p0 : vf(v, p0[0], p0[1], p0[2], p0[3])
-chi2fun = lambda p0 : n.sum( (vfbis(M200c,p0) - yData)**2.)# / yDataErr**2. )/len(yDataErr)
+chi2fun = lambda p0 : n.sum( (vfbis(M200c,p0) - yData)**2. / yDataErr )/len(yDataErr)
 
 print "looks for the optimum parameters"
 res_z0 = minimize(chi2fun, p0, method='Powell',options={'xtol': 1e-6, 'disp': True, 'maxiter' : 50000000, 'nfev': 1800000})
@@ -359,7 +359,7 @@ yModel_CF = vf(xModel,popt[0],popt[1],popt[2],popt[3])
 
 p.plot(n.log10(xModel), yModel,'k--',label="model")
 
-p.plot(n.log10(xModel), yModeCF,'r--',label="modelCF")
+p.plot(n.log10(xModel), yMode_CF,'r--',label="modelCF")
 
 p.xlabel(r'log$_{10}[M_{200c}/(h^{-1}M_\odot)]$')
 p.ylabel(r' n(>M)') # log$_{10}[ n(>M)]')
