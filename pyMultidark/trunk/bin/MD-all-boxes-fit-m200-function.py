@@ -23,7 +23,7 @@ from scipy.optimize import minimize
 dir = "/data2/DATA/eBOSS/Multidark-lightcones/"
 Pdir = join(dir,"M200cFunction") #"/Volumes/data/BigMD/M200cFunction/plots/"
 
-def get_cumulative_function(b0, b1, val, volume, minVx = 1e7, maxVx=1e16, Nmin_Occurence=10.):
+def get_cumulative_function(b0, b1, val, volume, minVx = 1e7, maxVx=1e16, Nmin_Occurence=100.):
     """returns the cumulative function n(>X) 
     :param b0: lowerboundary of the bin
     :param b1: higher boundary of the bin
@@ -43,7 +43,7 @@ def get_cumulative_function(b0, b1, val, volume, minVx = 1e7, maxVx=1e16, Nmin_O
     yDataErr = yDataErr_A[sel]*yData_A[sel]
     return xData,yData,yDataErr,volume
 
-def get_differential_function(b0, b1, val, volume, minVx = 1e7, maxVx=1e16, Nmin_Occurence=10.):
+def get_differential_function(b0, b1, val, volume, minVx = 1e7, maxVx=1e16, Nmin_Occurence=100.):
     """returns the cumulative function n(>X) 
     :param b0: lowerboundary of the bin
     :param b1: higher boundary of the bin
@@ -72,7 +72,7 @@ def get_differential_function(b0, b1, val, volume, minVx = 1e7, maxVx=1e16, Nmin
 mf = lambda v, A, v0, alpha, beta : 10**A * (v/10**v0)**beta * n.e**(- (v/10**v0)**alpha )
 
 # limits at z0
-limits_04 = [1e7, 1e13]
+limits_04 = [1e10, 1e13]
 limits_10 = [3e11, 1e14]
 limits_25 = [5e12, 1e15]
 limits_40 = [1e13, 2e15]
@@ -135,12 +135,12 @@ n.savetxt(join(dir_04, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulativ
 xData_04,yData_04,yDataErr_04,z_04 = [], [], [], []
 for ii in range(len(fileList)):
     SMDfile = fileList[ii]
-    print SMDfile
+    #print SMDfile
     b0_04, b1_04, val_04 = n.loadtxt(SMDfile,unpack=True)
     xData_04_ii,yData_04_ii,yDataErr_04_ii,volume_04_ii = get_differential_function(b0_04, b1_04, val_04,400.**3.,minVx = limits_04[0], maxVx = limits_04[1])
-    print SMDfile.split('-')[-1][:-4]
+    #print SMDfile.split('-')[-1][:-4]
     z_04_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_04_ii)
-    print z_04_ii
+    #print z_04_ii
     if z_04_ii[0]<zmax :
         xData_04.append(xData_04_ii)
         yData_04.append(yData_04_ii)
@@ -339,10 +339,10 @@ print r" \beta(z=0) & = "+str(b0)+' \\'
 p.figure(0,(6,6))
 p.axes([0.17,0.17,0.75,0.75])
 
-p.plot(n.log10(xData_04[s_04]), yData_04[s_04], marker ='o', mfc='None',mec='r',ls='none', label="SMD", rasterized=True)
-p.plot(n.log10(xData_10[s_10]),yData_10[s_10], marker ='v', mfc='None',mec='c',ls='none', label="MDPL", rasterized=True)
-p.plot(n.log10(xData_25[s_25]),yData_25[s_25], marker ='s', mfc='None',mec='m',ls='none', label="BigMD", rasterized=True)
-p.plot(n.log10(xData_40[s_40]),yData_40[s_40], marker ='p', mfc='None',mec='b',ls='none', label="HMD", rasterized=True)
+p.plot(n.log10(xData_04[s_04][::3]), yData_04[s_04][::3], marker ='o', mfc='None',mec='r',ls='none', label="SMD", rasterized=True)
+p.plot(n.log10(xData_10[s_10][::3]),yData_10[s_10][::3], marker ='v', mfc='None',mec='c',ls='none', label="MDPL", rasterized=True)
+p.plot(n.log10(xData_25[s_25][::3]),yData_25[s_25][::3], marker ='s', mfc='None',mec='m',ls='none', label="BigMD", rasterized=True)
+p.plot(n.log10(xData_40[s_40][::3]),yData_40[s_40][::3], marker ='p', mfc='None',mec='b',ls='none', label="HMD", rasterized=True)
 
 xModel = 10**n.arange(n.min(n.log10(M200c)),n.max(n.log10(M200c)),0.1)
 yModel = vfbis(xModel,res_z0.x)
