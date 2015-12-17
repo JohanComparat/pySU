@@ -75,9 +75,9 @@ mf = lambda v, A, v0, alpha, beta : 10**A * (v/10**v0)**beta * n.e**(- (v/10**v0
 limits_04 = [1e10, 1e12]
 limits_10 = [5e11, 1e13]
 limits_25 = [5e12, 1e14]
-limits_40 = [5e13, 5e15]
+limits_40 = [1e13, 5e15]
 zmin = 0.
-zmax = 1.5
+zmax = 0.5
 
 dir_04 = "/data2/DATA/eBOSS/Multidark-lightcones/MD_0.4Gpc/"
 dir_10 = "/data2/DATA/eBOSS/Multidark-lightcones/MD_1Gpc_new_rockS/"
