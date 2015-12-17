@@ -338,7 +338,7 @@ print r" \beta(z=0) & = "+str(b0)+' \\'
 
 # with curve fit
 
-popt, pcov = curve_fit(vf, M200c, yData, p0 = p0 , maxfev = 5000000)
+popt, pcov = curve_fit(vf, M200c, yData, sigma = yDataErr, p0 = p0 , maxfev = 5000000)
 print popt, pcov
 
 p.figure(0,(6,6))
@@ -370,7 +370,7 @@ p.grid()
 p.savefig(join(Pdir , "M200c-cumulative-function-z0.pdf"))
 p.clf()
 
-
+sys.exit()
 ################################ Model Fits on the cumulative function, evolution with redshift ################################
 
 xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_04, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_cumulative_MD_0.4Gpc.dat"),unpack=True)
