@@ -414,7 +414,7 @@ print r" \alpha(z) & = "+str(a0)+" + "+str(a1)+r'\times z \\' #+ '+str(a2)+r'\ti
 print r" \beta(z) & = "+str(b0)+" + "+str(b1)+r'\times z \\'
 
 # now outputs the model
-xModel = n.arange(n.min(n.log10(M200c)),n.max(n.log10(M200c)),0.1)
+xModel = n.arange(n.min(M200c),n.max(M200c),0.1)
 
 X,Y = n.meshgrid(xModel,n.arange(0,zmax+0.025,0.025))
 
