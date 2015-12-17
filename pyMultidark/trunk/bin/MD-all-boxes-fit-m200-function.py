@@ -307,12 +307,8 @@ res_z0 = minimize(chi2fun, p0, method='Powell',options={'xtol': 1e-6, 'disp': Tr
 
 print "ndof=",len(yDataErr)
 print res_z0
-A0, vcut0, a0, b0 = n.round(res.x,2)
-#A1, vcut1, a1, a2, b1 = n.round(res_z0.x,2)
-#A0 = -3.48
-#vcut0 = 1.48
-#a0 = -2.70
-#b0 =  2.74
+A0, vcut0, a0, b0 = n.round(res_z0.x,2)
+
 print "redshift 0 model for the M200c cumulative function :"
 print "A(z=0) & = "+str(A0)+' \\'
 print r" M_{200c}^{cut}(z=0) & = "+str(vcut0)+' \\'
