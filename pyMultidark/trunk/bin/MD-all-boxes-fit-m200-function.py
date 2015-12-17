@@ -321,7 +321,7 @@ p0 = n.array([-3.5, 13.5, 0.8, -0.78])
 
 vf = lambda v, A, v0, alpha, beta : 10**A * (v/10**v0)**beta * n.e**(- (v/10**v0)**alpha )
 vfbis = lambda v, p0 : vf(v, p0[0], p0[1], p0[2], p0[3])
-chi2fun = lambda p0 : n.sum( (vfbis(M200c,p0) - yData)**2. / (yDataErr*10)**2 )/len(yDataErr)
+chi2fun = lambda p0 : n.sum( (vfbis(M200c,p0) - yData)**2. / (yDataErr*100)**2 )/len(yDataErr)
 
 print "looks for the optimum parameters"
 res_z0 = minimize(chi2fun, p0, method='Powell',options={'xtol': 1e-6, 'disp': True, 'maxiter' : 50000000, 'nfev': 1800000})
@@ -337,9 +337,8 @@ print r" \alpha(z=0) & = "+str(a0)+' \\'
 print r" \beta(z=0) & = "+str(b0)+' \\'
 
 # with curve fit
-
-popt, pcov = curve_fit(vf, M200c, yData, sigma = yDataErr*10, p0 = p0 , maxfev = 5000000)
-print popt, pcov
+# popt, pcov = curve_fit(vf, M200c, yData, sigma = yDataErr*10, p0 = p0 , maxfev = 5000000)
+# print popt, pcov
 
 p.figure(0,(6,6))
 p.axes([0.17,0.17,0.75,0.75])
