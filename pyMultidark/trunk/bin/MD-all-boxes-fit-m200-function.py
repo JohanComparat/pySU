@@ -433,7 +433,7 @@ vmax_mod, z_mod, n_mod = n.loadtxt(join(Pdir,"M200c-cumulative-function-best_fit
 fig = p.figure(1,(9,9))
 ax = fig.add_subplot(111, projection='3d')
 
-ax.plot_wireframe(n.log10(X), Y, n.log10(Z), rstride=10, cstride=10)
+ax.plot_wireframe(X, Y, Z, rstride=10, cstride=10)
 
 sc1 = ax.scatter(M200c, redshift,yData, s=n.ones_like(yData)*3, c='r', marker='o',label="MD data", rasterized=True)
 sc1.set_edgecolor('face')
@@ -478,7 +478,7 @@ ax.set_xlabel(r'log $M_{200c}$ [km s$^{-1}$]')
 ax.set_ylabel('redshift')
 ax.set_ylim((0,zmax))
 ax.set_zlabel(r'Data / Model')
-ax.set_zlim((0,3))
+ax.set_zlim((0.5,1.5))
 #ax.set_yscale('log')
 #ax.set_zscale('log')
 p.savefig(join(Pdir , "M200c-cumulative-function-allZ-modelRatio.pdf"))
