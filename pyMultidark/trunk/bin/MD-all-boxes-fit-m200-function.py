@@ -23,42 +23,40 @@ from scipy.optimize import minimize
 dir = "/data2/DATA/eBOSS/Multidark-lightcones/"
 Pdir = join(dir,"M200cFunction") #"/Volumes/data/BigMD/M200cFunction/plots/"
 
-def get_cumulative_function(b0, b1, val, volume, minVx = 1e7, maxVx=1e16, SNRminPoisson=10., SNRminVolume=2.):
+def get_cumulative_function(b0, b1, val, volume, minVx = 1e7, maxVx=1e16, Nmin_Occurence=10.):
     """returns the cumulative function n(>X) 
     :param b0: lowerboundary of the bin
     :param b1: higher boundary of the bin
     :param volume:volume of the box in (Mpc/h)^3
     :param minVx: lower value cut. Selectes data in the bins > minVx 
     :param maxVx: higher value cut. Selects data in the bins < maxVx 
-    :param SNRminPoisson: poisson noise cut: selects points where the value > SNRminPoisson * poisson error
-    :param SNRminVolume: volume cut: selects points where the value * volume > SNRminVolume
+    :param Nmin_Occurence: Numberofcounts in a binmustbe larger than Nmin_Occurence tobe considered
     """
     Nc = n.array([ n.sum(val[ii:]) for ii in range(len(val)) ])
     xData_A = (10**b0+10**b1)/2.
     yData_A = Nc/(volume ) 
     yDataErr_A = Nc**(0.5) / volume 
-    boundaries = (xData_A > minVx) & (xData_A < maxVx) & (yData_A > SNRminPoisson * yDataErr_A ) & (yData_A * volume >= SNRminVolume)
+    boundaries = (xData_A > minVx) & (xData_A < maxVx) & (val > Nmin_Occurence )
     sel = (yDataErr_A!=n.inf) & (yData_A>0)  & (boundaries)
     xData = xData_A[sel]
     yData = yData_A[sel]
     yDataErr = yDataErr_A[sel]*yData_A[sel]
     return xData,yData,yDataErr,volume
 
-def get_differential_function(b0, b1, val, volume, minVx = 1e7, maxVx=1e16, SNRminPoisson=10., SNRminVolume=2.):
+def get_differential_function(b0, b1, val, volume, minVx = 1e7, maxVx=1e16, Nmin_Occurence=10.):
     """returns the cumulative function n(>X) 
     :param b0: lowerboundary of the bin
     :param b1: higher boundary of the bin
     :param volume:volume of the box in (Mpc/h)^3
     :param minVx: lower value cut. Selectes data in the bins > minVx 
     :param maxVx: higher value cut. Selects data in the bins < maxVx 
-    :param SNRminPoisson: poisson noise cut: selects points where the value > SNRminPoisson * poisson error
-    :param SNRminVolume: volume cut: selects points where the value * volume > SNRminVolume
+    :param Nmin_Occurence: Numberofcounts in a binmustbe larger than Nmin_Occurence tobe considered
     """
     xData_A = (10**b0+10**b1)/2.
     volume_per_bin = (volume * (10**b1-10**b0)) # dV dbin NOT IN LOG
     yData_A = val / volume_per_bin
     yDataErr_A = val**(0.5) / volume_per_bin
-    boundaries = (xData_A > minVx) & (xData_A < maxVx) & (yData_A > SNRminPoisson * yDataErr_A ) & (yData_A * volume >= SNRminVolume)
+    boundaries = (xData_A > minVx) & (xData_A < maxVx) &(val > Nmin_Occurence )
     sel = (yDataErr_A!=n.inf) & (yData_A>0)  & (boundaries)
     xData = xData_A[sel]
     yData = yData_A[sel]
