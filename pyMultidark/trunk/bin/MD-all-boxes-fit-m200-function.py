@@ -77,7 +77,7 @@ limits_10 = [5e11, 5e13]
 limits_25 = [5e12, 5e14]
 limits_40 = [1e13, 5e15]
 zmin = 0.
-zmax = 0.5
+zmax = 0.2
 
 NDecimal = 4
 
