@@ -23,7 +23,7 @@ from scipy.optimize import minimize
 dir = "/data2/DATA/eBOSS/Multidark-lightcones/"
 Pdir = join(dir,"M200cFunction") #"/Volumes/data/BigMD/M200cFunction/plots/"
 
-def get_cumulative_function(b0, b1, val, volume, minVx = 1e7, maxVx=1e16, SNRminPoisson=10, SNRminVolume=10.):
+def get_cumulative_function(b0, b1, val, volume, minVx = 1e7, maxVx=1e16, SNRminPoisson=10., SNRminVolume=2.):
     """returns the cumulative function n(>X) 
     :param b0: lowerboundary of the bin
     :param b1: higher boundary of the bin
@@ -36,7 +36,7 @@ def get_cumulative_function(b0, b1, val, volume, minVx = 1e7, maxVx=1e16, SNRmin
     Nc = n.array([ n.sum(val[ii:]) for ii in range(len(val)) ])
     xData_A = (10**b0+10**b1)/2.
     yData_A = Nc/(volume ) 
-    yDataErr_A = val**(-0.5)
+    yDataErr_A = Nc**(0.5) / volume 
     boundaries = (xData_A > minVx) & (xData_A < maxVx) & (yData_A > SNRminPoisson * yDataErr_A ) & (yData_A * volume >= SNRminVolume)
     sel = (yDataErr_A!=n.inf) & (yData_A>0)  & (boundaries)
     xData = xData_A[sel]
@@ -44,7 +44,7 @@ def get_cumulative_function(b0, b1, val, volume, minVx = 1e7, maxVx=1e16, SNRmin
     yDataErr = yDataErr_A[sel]*yData_A[sel]
     return xData,yData,yDataErr,volume
 
-def get_differential_function(b0, b1, val, volume, minVx = 1e7, maxVx=1e16, SNRminPoisson=10, SNRminVolume=10.):
+def get_differential_function(b0, b1, val, volume, minVx = 1e7, maxVx=1e16, SNRminPoisson=10., SNRminVolume=2.):
     """returns the cumulative function n(>X) 
     :param b0: lowerboundary of the bin
     :param b1: higher boundary of the bin
@@ -55,8 +55,9 @@ def get_differential_function(b0, b1, val, volume, minVx = 1e7, maxVx=1e16, SNRm
     :param SNRminVolume: volume cut: selects points where the value * volume > SNRminVolume
     """
     xData_A = (10**b0+10**b1)/2.
-    yData_A = val/(volume * (10**b1-10**b0))
-    yDataErr_A = val**(-0.5)
+    volume_per_bin = (volume * (10**b1-10**b0)) # dV dbin NOT IN LOG
+    yData_A = val / volume_per_bin
+    yDataErr_A = val**(0.5) / volume_per_bin
     boundaries = (xData_A > minVx) & (xData_A < maxVx) & (yData_A > SNRminPoisson * yDataErr_A ) & (yData_A * volume >= SNRminVolume)
     sel = (yDataErr_A!=n.inf) & (yData_A>0)  & (boundaries)
     xData = xData_A[sel]
@@ -141,6 +142,7 @@ for ii in range(len(fileList)):
     xData_04_ii,yData_04_ii,yDataErr_04_ii,volume_04_ii = get_differential_function(b0_04, b1_04, val_04,400.**3.,minVx = limits_04[0], maxVx = limits_04[1])
     print SMDfile.split('-')[-1][:-4]
     z_04_ii = conversion[float(SMDfile.split('-')[-1][:-4])]*n.ones_like(xData_04_ii)
+    print z_04_ii
     if z_04_ii[0]<zmax :
         xData_04.append(xData_04_ii)
         yData_04.append(yData_04_ii)
