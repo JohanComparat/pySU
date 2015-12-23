@@ -33,7 +33,7 @@ limits_04 = [1e10, 5e12]
 limits_10 = [5e11, 5e13]
 limits_25 = [5e12, 5e14]
 limits_40 = [1e13, 5e15]
-zmin = 0.
+zmin = -0.1
 zmax = 4
 
 NDecimal = 3
@@ -59,10 +59,10 @@ xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir,"hist-Central-M200c_ALL_
 xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir,"hist-Central-M200c_ALL_cumulative_MD_2.5Gpc.dat"),unpack=True)
 xData_40,z_40,yData_40,yDataErr_40 = n.loadtxt(join(dir,"hist-Central-M200c_ALL_cumulative_MD_4Gpc.dat"),unpack=True)
 
-s_04 = (z_04 >= 0.0) & (z_04 <= zmax)
-s_10 = (z_10 >= 0.0) & (z_10 <= zmax)
-s_25 = (z_25 >= 0.0) & (z_25 <= zmax)
-s_40 = (z_40 >= 0.0) & (z_40 <= zmax)
+s_04 = (z_04 >= zmin) & (z_04 <= zmax)
+s_10 = (z_10 >= zmin) & (z_10 <= zmax)
+s_25 = (z_25 >= zmin) & (z_25 <= zmax)
+s_40 = (z_40 >= zmin) & (z_40 <= zmax)
 
 redshift = n.hstack(( z_04[s_04], z_10[s_10], z_25[s_25], z_40[s_40]))
 print "all redshifts available:", set(redshift)
@@ -77,18 +77,20 @@ fitList = n.array(glob.glob(join(dir,"MF-4params-z-*-fit")))
 
 data = n.empty((7,10))
 
-data[0] = n.loadtxt("D:\BigMD\M200cFunction\MF-4params-z-0.105225074332-fit.txt")
-data[1] = n.loadtxt("D:\BigMD\M200cFunction\MF-4params-z-0.336691790552-fit.txt")
-data[2] = n.loadtxt("D:\BigMD\M200cFunction\MF-4params-z-0.673566901501-fit.txt")
-data[3] = n.loadtxt("D:\BigMD\M200cFunction\MF-4params-z-1.009782226-fit.txt")
-data[4] = n.loadtxt("D:\BigMD\M200cFunction\MF-4params-z-1.46051122015-fit.txt")
-data[5] = n.loadtxt("D:\BigMD\M200cFunction\MF-4params-z-2.10636649588-fit.txt")
+data[0] = n.loadtxt("D:\BigMD\M200cFunction\MF-4params-z-0.0-fit.txt")
+data[1] = n.loadtxt("D:\BigMD\M200cFunction\MF-4params-z-0.105225074332-fit.txt")
+data[2] = n.loadtxt("D:\BigMD\M200cFunction\MF-4params-z-0.336691790552-fit.txt")
+data[3] = n.loadtxt("D:\BigMD\M200cFunction\MF-4params-z-0.673566901501-fit.txt")
+data[4] = n.loadtxt("D:\BigMD\M200cFunction\MF-4params-z-1.009782226-fit.txt")
+data[5] = n.loadtxt("D:\BigMD\M200cFunction\MF-4params-z-1.46051122015-fit.txt")
+#data[5] = n.loadtxt("D:\BigMD\M200cFunction\MF-4params-z-2.10636649588-fit.txt")
 data[6] = n.loadtxt("D:\BigMD\M200cFunction\MF-4params-z-2.91314105144-fit.txt")
 
 A0,A0_err,vcut0, vcut0_err, a0, a0_err, b0, b0_err, z, z_err = n.transpose(data)
 
 pl1= lambda x, p0, p1 : p0 + p1*x 
 pl2 = lambda x, p0, p1,p2 : p0 + p1*x + p2*x*x
+
 
 p0 = n.array([-3.9,1])
 
@@ -124,16 +126,45 @@ def fitPL2modelToParameters(x, y, x_err, y_err, p0, ylab):
 	p.ylabel(ylab) # log$_{10}[ n(>M)]')
 	p.title(str(n.round(popt[0],NDecimal))+" "+str(n.round(popt[1],NDecimal))+" "+str(n.round(popt[2],NDecimal)) )
 	p.grid()
-	p.show()
-	return popt, pcov
+	p.show()	
 	
+
+def fitPL2AncheredmodelToParameters(x, y, x_err, y_err, pGuess,p0, ylab):
+	model = lambda x, p1, p2 : pl2(x, p0, p1, p2)
+	popt, cov = curve_fit(model, x, y, sigma=y_err, p0 = pGuess , maxfev = 5000000)
+	print popt, cov
+	xModel = n.arange(x.min()*0.9,x.max()*1.1,0.1)
+	yModel = model(xModel,popt[0],popt[1])
+	p.figure(0,(6,6))
+	p.axes([0.17,0.17,0.75,0.75])
+	p.errorbar(x, y, xerr= x_err,yerr = y_err, fmt='none')
+	p.plot(xModel, yModel,'k--',label="model")
+	p.xlabel('z')
+	p.ylabel(ylab) # log$_{10}[ n(>M)]')
+	p.title(str(n.round(p0,NDecimal))+" "+str(n.round(popt[0],NDecimal))+" "+str(n.round(popt[1],NDecimal)) )
+	p.grid()
+	p.show()	
 		
+p0 = n.array([0,0])
+
+fitPL2AncheredmodelToParameters(z, A0, z_err, A0_err, p0, -4.009,r'$A_0$')
+fitPL2AncheredmodelToParameters(z, vcut0, z_err, vcut0_err, p0,13.826,r'$M_{cut}$')
+fitPL2AncheredmodelToParameters(z, a0, z_err, a0_err, p0,0.578,r'$\alpha$')
+fitPL2AncheredmodelToParameters(z, b0, z_err, b0_err, p0,-0.876,r'$\beta$')
+
+sys.exit()
 
 fitPL1modelToParameters(z, A0, z_err, A0_err, p0,r'$A_0$')
 fitPL1modelToParameters(z, vcut0, z_err, vcut0_err, p0,r'$M_{cut}$')
 fitPL1modelToParameters(z, a0, z_err, a0_err, p0,r'$\alpha$')
 fitPL1modelToParameters(z, b0, z_err, b0_err, p0,r'$\beta$')
 
+p0 = n.array([-4,0,0])
+
+fitPL2modelToParameters(z, A0, z_err, A0_err, p0,r'$A_0$')
+fitPL2modelToParameters(z, vcut0, z_err, vcut0_err, p0,r'$M_{cut}$')
+fitPL2modelToParameters(z, a0, z_err, a0_err, p0,r'$\alpha$')
+fitPL2modelToParameters(z, b0, z_err, b0_err, p0,r'$\beta$')
 
 sys.exit()
 ################################ Plot cumulative halo mass function and model at z=0  ################################

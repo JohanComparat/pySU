@@ -10,6 +10,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from scipy.interpolate import interp1d
 import numpy as n
 import matplotlib
+
 matplotlib.rcParams['font.size']=12
 import matplotlib.pyplot as p
 import glob
@@ -21,7 +22,7 @@ from scipy.optimize import minimize
 
 dir = join("D:","data","MultiDark")
 
-def get_cumulative_function(b0, b1, val, volume, minVx = 1e7, maxVx=1e16, Nmin_Occurence=100.):
+def get_cumulative_function(b0, b1, val, volume, minVx = 10 ,maxVx=1e4, Nmin_Occurence=100.):
     """returns the cumulative function n(>X) 
     :param b0: lowerboundary of the bin
     :param b1: higher boundary of the bin
@@ -41,7 +42,7 @@ def get_cumulative_function(b0, b1, val, volume, minVx = 1e7, maxVx=1e16, Nmin_O
     yDataErr = yDataErr_A[sel]*yData_A[sel]
     return xData,yData,yDataErr,volume
 
-def get_differential_function(b0, b1, val, volume, minVx = 1e7, maxVx=1e16, Nmin_Occurence=100.):
+def get_differential_function(b0, b1, val, volume,  minVx = 10, maxVx=1e4, Nmin_Occurence=100.):
     """returns the cumulative function n(>X) 
     :param b0: lowerboundary of the bin
     :param b1: higher boundary of the bin
@@ -70,12 +71,12 @@ def get_differential_function(b0, b1, val, volume, minVx = 1e7, maxVx=1e16, Nmin
 mf = lambda v, A, v0, alpha, beta : 10**A * (v/10**v0)**beta * n.e**(- (v/10**v0)**alpha )
 
 # limits at z0
-limits_04 = [1e10, 5e12]
-limits_10 = [5e11, 5e13]
-limits_25 = [5e12, 5e14]
-limits_40 = [1e13, 5e15]
+limits_04 = [70, 3000]
+limits_10 = [200, 3000]
+limits_25 = [400, 3000]
+limits_40 = [650, 5000]
 zmin = 0.
-zmax = 5
+zmax = 5.5
 
 NDecimal = 4
 
@@ -85,14 +86,14 @@ dir_25 = join(dir,"MD_2.5Gpc")
 dir_40 = join(dir,"MD_4Gpc")
 
 dir_boxes =  n.array([dir_04, dir_10, dir_25, dir_40])
-zList_files = n.array([ join(dir_box,"redshift-list.txt") for dir_box in dir_boxes])
+zList_files = n.array([ join(dir_box, "redshift-list.txt") for dir_box in dir_boxes])
 qty_limits = n.array([limits_04, limits_10, limits_25, limits_40])
 volume_boxes =  n.array([400.**3., 1000**3., 2500**3., 4000.**3.])
 
-property_dir = "M200c-mvir"
+property_dir = "vmax-mvir"
 type = "hist"
 cos = "Central" # centrak or satellite ?
-qty = "M200c"
+qty = "vmax"
 
 print "we consider the ",type,"of",qty,"of", cos
 print "in the redshift range",zmin,zmax
@@ -292,14 +293,15 @@ yDataErr_40 = n.hstack((yDataErr_40))
 
 n.savetxt(join(dir_40, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_differential_MD_4Gpc.dat"),n.transpose([xData_40,z_40,yData_40,yDataErr_40]), header = qty+" z N Nerr")
 
+############################################################################
+#               SAT
+############################################################################
 
-###########################################################################
 
-
-property_dir = "M200c-mvir"
+property_dir = "vmax-mvir"
 type = "hist"
 cos = "Satellite" # centrak or satellite ?
-qty = "M200c"
+qty = "vmax"
 
 print "we consider the ",type,"of",qty,"of", cos
 print "in the redshift range",zmin,zmax
@@ -501,11 +503,10 @@ n.savetxt(join(dir_40, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_different
 
 
 
-
-xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_04, property_dir,"hist-Central-M200c_ALL_cumulative_MD_0.4Gpc.dat"),unpack=True)
-xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir_10, property_dir,"hist-Central-M200c_ALL_cumulative_MD_1Gpc.dat"),unpack=True)
-xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir_25, property_dir,"hist-Central-M200c_ALL_cumulative_MD_2.5Gpc.dat"),unpack=True)
-xData_40,z_40,yData_40,yDataErr_40 = n.loadtxt(join(dir_40, property_dir,"hist-Central-M200c_ALL_cumulative_MD_4Gpc.dat"),unpack=True)
+xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_04, property_dir,"hist-Central-vmax_ALL_cumulative_MD_0.4Gpc.dat"),unpack=True)
+xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir_10, property_dir,"hist-Central-vmax_ALL_cumulative_MD_1Gpc.dat"),unpack=True)
+xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir_25, property_dir,"hist-Central-vmax_ALL_cumulative_MD_2.5Gpc.dat"),unpack=True)
+xData_40,z_40,yData_40,yDataErr_40 = n.loadtxt(join(dir_40, property_dir,"hist-Central-vmax_ALL_cumulative_MD_4Gpc.dat"),unpack=True)
 
 s_04 = (z_04 >= zmin) & (z_04 <= zmax)
 s_10 = (z_10 >= zmin) & (z_10 <= zmax)
@@ -514,29 +515,59 @@ s_40 = (z_40 >= zmin) & (z_40 <= zmax)
 
 redshift = n.hstack(( z_04[s_04], z_10[s_10], z_25[s_25], z_40[s_40]))
 print "all redshifts available:", set(redshift)
-M200c = n.log10(n.hstack(( xData_04[s_04], xData_10[s_10], xData_25[s_25], xData_40[s_40])))
-print "min and max masses available:", n.min(M200c), n.max(M200c)
-yData = n.log10(n.hstack(( yData_04[s_04], yData_10[s_10], yData_25[s_25], yData_40[s_40])))
+vmax = n.log10(n.hstack(( xData_04[s_04], xData_10[s_10], xData_25[s_25], xData_40[s_40])))
+print "min and max vmax available:", n.min(vmax), n.max(vmax)
+yData = n.hstack(( yData_04[s_04], yData_10[s_10], yData_25[s_25], yData_40[s_40]))
 print "min and max Y available:", n.min(yData), n.max(yData)
 yDataErr = abs(n.hstack(( yDataErr_04[s_04], yDataErr_10[s_10], yDataErr_25[s_25], yDataErr_40[s_40])) / yData)
 print "min and max Y error available:", n.min(yDataErr), n.max(yDataErr)
 
 
 fig = p.figure(1,(6,6))
-sc1=p.scatter(M200c,yData, s=n.ones_like(yData)*3, c=redshift, marker='o',label="MD data", rasterized=True)
+sc1=p.scatter(vmax,n.log10(yData), s=n.ones_like(yData)*3, c=redshift, marker='o',label="MD data", rasterized=True)
 sc1.set_edgecolor('face')
 cb = p.colorbar(shrink=0.8)
 cb.set_label("redshift")
-p.xlabel(r'log $M_{200c}$ [h$^{-1}$ M$_{sun}$]')
+p.xlabel(r'$\rm \log V_{max} [s^{-1} km$]')
 p.ylim((-9,0))
-p.ylabel(r'log N(M>M$_{200c}$) [ h$^3$ Mpc$^{-3}$ ]')
+p.ylabel(r'log N(V>V$_{max}$) [ h$^3$ Mpc$^{-3}$ ]')
 p.grid()
 p.show()
 
-xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_04, property_dir,"hist-Central-M200c_ALL_differential_MD_0.4Gpc.dat"),unpack=True)
-xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir_10, property_dir,"hist-Central-M200c_ALL_differential_MD_1Gpc.dat"),unpack=True)
-xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir_25, property_dir,"hist-Central-M200c_ALL_differential_MD_2.5Gpc.dat"),unpack=True)
-xData_40,z_40,yData_40,yDataErr_40 = n.loadtxt(join(dir_40, property_dir,"hist-Central-M200c_ALL_differential_MD_4Gpc.dat"),unpack=True)
+
+fig = p.figure(1,(6,6))
+#p.plot(vmax, n.log10(vmax**-12),'b+')
+sc1=p.scatter(vmax,n.log10(10**(2.8*vmax) * yData), s=n.ones_like(yData)*3, c=redshift, marker='o',label="MD data", rasterized=True)
+sc1.set_edgecolor('face')
+cb = p.colorbar(shrink=0.8)
+cb.set_label("redshift")
+p.xlabel(r'$\rm \log V_{max} [s^{-1} km$]')
+#p.ylim((-9,0))
+p.ylabel(r' $\rm log N(V>V_{max}) V^{2.8}_{max} [ h^3 Mpc^{-3} s^{-2.8} km^{2.8}$ ]')
+p.grid()
+p.show()
+
+hh = aa.H(redshift) /(100 * uu.km / (uu.Mpc* uu.s)) / aa.h
+
+yy = 10**(3*vmax) * yData * (uu.km**3 *  uu.s**-3 * uu.Mpc**-3 ) / aa.H(redshift) **3 * hh**3.
+
+fig = p.figure(1,(6,6))
+#p.plot(vmax, n.log10(vmax**-12),'b+')
+sc1=p.scatter(vmax,n.log10(yy), s=n.ones_like(yData)*3, c=redshift, marker='o',label="MD data", rasterized=True)
+sc1.set_edgecolor('face')
+cb = p.colorbar(shrink=0.8)
+cb.set_label("redshift")
+p.xlabel(r'$\rm \log V_{max} [s^{-1} km$]')
+#p.ylim((-9,0))
+p.ylabel(r' $\rm log [( V^{3}_{max} / H^3(z)) N(V>V_{max})]$ ')
+p.grid()
+p.show()
+
+
+xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_04, property_dir,"hist-Central-vmax_ALL_differential_MD_0.4Gpc.dat"),unpack=True)
+xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir_10, property_dir,"hist-Central-vmax_ALL_differential_MD_1Gpc.dat"),unpack=True)
+xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir_25, property_dir,"hist-Central-vmax_ALL_differential_MD_2.5Gpc.dat"),unpack=True)
+xData_40,z_40,yData_40,yDataErr_40 = n.loadtxt(join(dir_40, property_dir,"hist-Central-vmax_ALL_differential_MD_4Gpc.dat"),unpack=True)
 
 s_04 = (z_04 >= zmin) & (z_04 <= zmax)
 s_10 = (z_10 >= zmin) & (z_10 <= zmax)
@@ -545,26 +576,25 @@ s_40 = (z_40 >= zmin) & (z_40 <= zmax)
 
 redshift = n.hstack(( z_04[s_04], z_10[s_10], z_25[s_25], z_40[s_40]))
 print "all redshifts available:", set(redshift)
-M200c = n.log10(n.hstack(( xData_04[s_04], xData_10[s_10], xData_25[s_25], xData_40[s_40])))
-print "min and max masses available:", n.min(M200c), n.max(M200c)
+vmax = n.log10(n.hstack(( xData_04[s_04], xData_10[s_10], xData_25[s_25], xData_40[s_40])))
+print "min and max vmax available:", n.min(vmax), n.max(vmax)
 yData = n.hstack(( yData_04[s_04], yData_10[s_10], yData_25[s_25], yData_40[s_40]))
 print "min and max Y available:", n.min(yData), n.max(yData)
 yDataErr = n.hstack(( yDataErr_04[s_04], yDataErr_10[s_10], yDataErr_25[s_25], yDataErr_40[s_40])) 
 print "min and max Y error available:", n.min(yDataErr), n.max(yDataErr)
 
-hh = aa.H(redshift) /(100 * uu.km / (uu.Mpc* uu.s)) / aa.h
 # aa.Om0*
 # aa.Om(redshift) *
-m2rhom = 10**(2*M200c)/( aa.critical_density(redshift).to(uu.Msun*uu.Mpc**(-3)) * hh**-2)
+m2rhom = 10**(2*vmax)/( aa.critical_density(redshift).to(uu.Msun*uu.Mpc**(-3)) * hh**-2)
+
+aa.H(redshift) **3
 
 fig = p.figure(1,(6,6))
-sc1=p.scatter(M200c,m2rhom*yData, s=n.ones_like(yData)*3, c=redshift, marker='o',label="MD data", rasterized=True)
+sc1=p.scatter(vmax, n.log10(10**(vmax) * yData), s=n.ones_like(yData)*3, c=redshift, marker='o',label="MD data", rasterized=True)
 sc1.set_edgecolor('face')
 cb = p.colorbar(shrink=0.8)
 cb.set_label("redshift")
-p.xlabel(r'$\rm \log M_{200c} [h^{-1} M_{sun}$]')
-p.ylim((5e-5,0.1))
-p.yscale('log')
-p.ylabel(r'$\rm (M_{200c}^2 /\rho_{cr}(z)) \, dN/dM_{200c}$') #\; [ h^4 Mpc^{-3} M_{sun}^{-1}$]")
+p.xlabel(r'$\rm \log V_{max} [s^{-1} km$]')
+p.ylabel(r'$\rm log \;  V_{max} \; dN/dV_{max} [ h^3 Mpc^{-3} $]')
 p.grid()
 p.show()

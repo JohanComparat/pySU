@@ -85,14 +85,14 @@ dir_25 = join(dir,"MD_2.5Gpc")
 dir_40 = join(dir,"MD_4Gpc")
 
 dir_boxes =  n.array([dir_04, dir_10, dir_25, dir_40])
-zList_files = n.array([ join(dir_box,"redshift-list.txt") for dir_box in dir_boxes])
+zList_files = n.array([ join(dir_box, "redshift-list.txt") for dir_box in dir_boxes])
 qty_limits = n.array([limits_04, limits_10, limits_25, limits_40])
 volume_boxes =  n.array([400.**3., 1000**3., 2500**3., 4000.**3.])
 
 property_dir = "M200c-mvir"
 type = "hist"
 cos = "Central" # centrak or satellite ?
-qty = "M200c"
+qty = "mvir"
 
 print "we consider the ",type,"of",qty,"of", cos
 print "in the redshift range",zmin,zmax
@@ -293,13 +293,13 @@ yDataErr_40 = n.hstack((yDataErr_40))
 n.savetxt(join(dir_40, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_differential_MD_4Gpc.dat"),n.transpose([xData_40,z_40,yData_40,yDataErr_40]), header = qty+" z N Nerr")
 
 
-###########################################################################
+####################################################################
 
 
 property_dir = "M200c-mvir"
 type = "hist"
 cos = "Satellite" # centrak or satellite ?
-qty = "M200c"
+qty = "mvir"
 
 print "we consider the ",type,"of",qty,"of", cos
 print "in the redshift range",zmin,zmax
@@ -502,10 +502,10 @@ n.savetxt(join(dir_40, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_different
 
 
 
-xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_04, property_dir,"hist-Central-M200c_ALL_cumulative_MD_0.4Gpc.dat"),unpack=True)
-xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir_10, property_dir,"hist-Central-M200c_ALL_cumulative_MD_1Gpc.dat"),unpack=True)
-xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir_25, property_dir,"hist-Central-M200c_ALL_cumulative_MD_2.5Gpc.dat"),unpack=True)
-xData_40,z_40,yData_40,yDataErr_40 = n.loadtxt(join(dir_40, property_dir,"hist-Central-M200c_ALL_cumulative_MD_4Gpc.dat"),unpack=True)
+xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_04, property_dir,"hist-Central-mvir_ALL_cumulative_MD_0.4Gpc.dat"),unpack=True)
+xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir_10, property_dir,"hist-Central-mvir_ALL_cumulative_MD_1Gpc.dat"),unpack=True)
+xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir_25, property_dir,"hist-Central-mvir_ALL_cumulative_MD_2.5Gpc.dat"),unpack=True)
+xData_40,z_40,yData_40,yDataErr_40 = n.loadtxt(join(dir_40, property_dir,"hist-Central-mvir_ALL_cumulative_MD_4Gpc.dat"),unpack=True)
 
 s_04 = (z_04 >= zmin) & (z_04 <= zmax)
 s_10 = (z_10 >= zmin) & (z_10 <= zmax)
@@ -527,16 +527,16 @@ sc1=p.scatter(M200c,yData, s=n.ones_like(yData)*3, c=redshift, marker='o',label=
 sc1.set_edgecolor('face')
 cb = p.colorbar(shrink=0.8)
 cb.set_label("redshift")
-p.xlabel(r'log $M_{200c}$ [h$^{-1}$ M$_{sun}$]')
+p.xlabel(r'log $M_{vir}$ [h$^{-1}$ M$_{sun}$]')
 p.ylim((-9,0))
-p.ylabel(r'log N(M>M$_{200c}$) [ h$^3$ Mpc$^{-3}$ ]')
+p.ylabel(r'log N(M>M$_{vir}$) [ h$^3$ Mpc$^{-3}$ ]')
 p.grid()
 p.show()
 
-xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_04, property_dir,"hist-Central-M200c_ALL_differential_MD_0.4Gpc.dat"),unpack=True)
-xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir_10, property_dir,"hist-Central-M200c_ALL_differential_MD_1Gpc.dat"),unpack=True)
-xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir_25, property_dir,"hist-Central-M200c_ALL_differential_MD_2.5Gpc.dat"),unpack=True)
-xData_40,z_40,yData_40,yDataErr_40 = n.loadtxt(join(dir_40, property_dir,"hist-Central-M200c_ALL_differential_MD_4Gpc.dat"),unpack=True)
+xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_04, property_dir,"hist-Central-mvir_ALL_differential_MD_0.4Gpc.dat"),unpack=True)
+xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir_10, property_dir,"hist-Central-mvir_ALL_differential_MD_1Gpc.dat"),unpack=True)
+xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir_25, property_dir,"hist-Central-mvir_ALL_differential_MD_2.5Gpc.dat"),unpack=True)
+xData_40,z_40,yData_40,yDataErr_40 = n.loadtxt(join(dir_40, property_dir,"hist-Central-mvir_ALL_differential_MD_4Gpc.dat"),unpack=True)
 
 s_04 = (z_04 >= zmin) & (z_04 <= zmax)
 s_10 = (z_10 >= zmin) & (z_10 <= zmax)
@@ -562,9 +562,9 @@ sc1=p.scatter(M200c,m2rhom*yData, s=n.ones_like(yData)*3, c=redshift, marker='o'
 sc1.set_edgecolor('face')
 cb = p.colorbar(shrink=0.8)
 cb.set_label("redshift")
-p.xlabel(r'$\rm \log M_{200c} [h^{-1} M_{sun}$]')
+p.xlabel(r'$\rm \log M_{vir} [h^{-1} M_{sun}$]')
 p.ylim((5e-5,0.1))
 p.yscale('log')
-p.ylabel(r'$\rm (M_{200c}^2 /\rho_{cr}(z)) \, dN/dM_{200c}$') #\; [ h^4 Mpc^{-3} M_{sun}^{-1}$]")
+p.ylabel(r'$\rm (M_{vir}^2 /\rho_{cr}(z)) \, dN/dM_{vir}$') #\; [ h^4 Mpc^{-3} M_{sun}^{-1}$]")
 p.grid()
 p.show()

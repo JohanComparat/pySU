@@ -72,16 +72,71 @@ print "min and max Y available:", n.min(yData), n.max(yData)
 yDataErr = abs(n.hstack(( yDataErr_04[s_04], yDataErr_10[s_10], yDataErr_25[s_25], yDataErr_40[s_40])) / yData)
 print "min and max Y error available:", n.min(yDataErr), n.max(yDataErr)
 
-vcut0 = 13.828
-vcut1 = -0.811
-b0 = -0.873
-b1 = -0.025
-a0 = 0.564
-a1 = -0.046
-A0 = -3.995
-A1 = 0.716
+vcut0 = 13.826 # 13.8425
+vcut1 = -0.832 # -0.8762
+vcut2 =0.021 #  0.0414
 
-vfG = lambda v, z : n.log10( 10**(A0 + A1 * z) * (1+ (10**v/10**(vcut0 + vcut1 * z))**(b0 + b1 * z) )* n.e**(- (10**v/10**(vcut0 + vcut1 * z))**(a0 +a1*z) ))
+b0 = -0.876 # -0.8749
+b1 = -0.009 # -0.0124
+b2 = -0.011 # -0.0090
+
+a0 = 0.578# 0.5702
+a1 = -0.089 # -0.072
+a2 = 0.02 # 0.014
+
+A0 = -4.009 # -4.0178
+A1 = 0.799 # 0.8232
+A2 = -0.06 # -0.0714
+
+
+vfG = lambda v, z : n.log10( 10**(A0 + A1 * z) * ((10**v/10**(vcut0 + vcut1 * z))**(b0 + b1 * z) )* n.e**(- (10**v/10**(vcut0 + vcut1 * z))**(a0 +a1*z) ))
+
+vfG = lambda v, z : n.log10( 10**(A0 + A1 * z + A2*z*z) * ((10**v/10**(vcut0 + vcut1 * z + vcut2*z*z))**(b0 + b1 * z + b2*z*z) )* n.e**(- (10**v/10**(vcut0 + vcut1 * z+ vcut2*z*z))**(a0 +a1*z+ a2*z*z) ))
+
+# now outputs the model
+xModel = n.arange(n.min(M200c),15,0.1)
+
+X,Y = n.meshgrid(xModel,n.arange(0,n.max(redshift)+0.025,0.025))
+
+Z = vfG(X,Y)
+
+n.savetxt(join(dir,"M200c-cumulative-function-best_fit.txt"),n.transpose([n.hstack((X)), n.hstack((Y)), n.hstack((Z))]) )
+
+#######################################################
+# now plots the results of the fit
+print "now plots the results of the fit"
+
+vmax_mod, z_mod, n_mod = n.loadtxt(join(dir,"M200c-cumulative-function-best_fit.txt"), unpack=True)
+
+
+p.figure(0,(6,6))
+p.axes([0.17,0.17,0.75,0.75])
+
+sc1=p.scatter(vmax_mod, n_mod, c=z_mod,s=5, marker='o',label="model", rasterized=True)
+sc1.set_edgecolor('face')
+cb = p.colorbar(shrink=0.8)
+cb.set_label("redshift")
+p.xlabel(r'log$_{10}[M_{200c}/(h^{-1}M_\odot)]$')
+p.ylabel(r' n(>M)') # log$_{10}[ n(>M)]')
+p.legend(loc=3)
+p.ylim((-9,0))
+p.grid()
+p.show()
+
+sys.exit()
+
+p.savefig("M200c-cumulative-function-model.pdf")
+p.clf()
+
+
+
+
+
+
+
+
+
+sys.exit()
 
 vfG = lambda v, z, A1, vcut1, a1, b1 : n.log10( 10**(A0 + A1 * z) * (1+ (10**v/10**(vcut0 + vcut1 * z))**(b0 + b1 * z) )* n.e**(- (10**v/10**(vcut0 + vcut1 * z))**(a0 +a1*z) ))
 vfGbis = lambda v, z, ps : vfG(v,z,ps[0],ps[1],ps[2],ps[3])
@@ -118,38 +173,6 @@ print r" M_{cut}(z) & = "+str(vcut0)+" + "+str(vcut1)+r'\times z \\'
 print r" \alpha(z) & = "+str(a0)+" + "+str(a1)+r'\times z \\' #+ '+str(a2)+r'\times z^2 \\'
 print r" \beta(z) & = "+str(b0)+" + "+str(b1)+r'\times z \\'
 
-# now outputs the model
-xModel = n.arange(n.min(M200c),15,0.1)
-
-X,Y = n.meshgrid(xModel,n.arange(0,n.max(redshift)+0.025,0.025))
-
-Z = vfG(X,Y)
-
-n.savetxt(join(dir,"M200c-cumulative-function-best_fit.txt"),n.transpose([n.hstack((X)), n.hstack((Y)), n.hstack((Z))]) )
-
-#######################################################
-# now plots the results of the fit
-print "now plots the results of the fit"
-
-vmax_mod, z_mod, n_mod = n.loadtxt(join(dir,"M200c-cumulative-function-best_fit.txt"), unpack=True)
-
-
-p.figure(0,(6,6))
-p.axes([0.17,0.17,0.75,0.75])
-
-sc1=p.scatter(vmax_mod, n_mod, c=z_mod,s=10, marker='o',label="MD data", rasterized=True)
-sc1.set_edgecolor('face')
-cb = p.colorbar(shrink=0.8)
-cb.set_label("redshift")
-p.xlabel(r'log$_{10}[M_{200c}/(h^{-1}M_\odot)]$')
-p.ylabel(r' n(>M)') # log$_{10}[ n(>M)]')
-p.legend(loc=3)
-p.ylim((-9,0))
-p.grid()
-p.show()
-
-p.savefig("M200c-cumulative-function-model.pdf")
-p.clf()
 
 #####################
 
