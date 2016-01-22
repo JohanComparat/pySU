@@ -10,7 +10,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from scipy.interpolate import interp1d
 import numpy as n
 import matplotlib
-matplotlib.rcParams['font.size']=12
+matplotlib.rcParams['font.size']=14
 import matplotlib.pyplot as p
 import glob
 import sys
@@ -91,7 +91,7 @@ volume_boxes =  n.array([400.**3., 1000**3., 2500**3., 4000.**3.])
 
 property_dir = "M200c-mvir"
 type = "hist"
-cos = "Central" # centrak or satellite ?
+cos = "Central" #"Central" # centrak or satellite ?
 qty = "M200c"
 
 print "we consider the ",type,"of",qty,"of", cos
@@ -111,6 +111,7 @@ fileList.sort()
 nSN, aSN = n.loadtxt(zList_files[0], unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
 conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
 
+"""
 xData_04,yData_04,yDataErr_04,z_04 = [], [], [], []
 for ii in range(len(fileList)):
     SMDfile = fileList[ii]
@@ -499,7 +500,7 @@ yDataErr_40 = n.hstack((yDataErr_40))
 
 n.savetxt(join(dir_40, property_dir, type + "-"+ cos +"-"+ qty  +"_ALL_differential_MD_4Gpc.dat"),n.transpose([xData_40,z_40,yData_40,yDataErr_40]), header = qty+" z N Nerr")
 
-
+"""
 
 
 xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_04, property_dir,"hist-Central-M200c_ALL_cumulative_MD_0.4Gpc.dat"),unpack=True)
@@ -522,14 +523,16 @@ yDataErr = abs(n.hstack(( yDataErr_04[s_04], yDataErr_10[s_10], yDataErr_25[s_25
 print "min and max Y error available:", n.min(yDataErr), n.max(yDataErr)
 
 
-fig = p.figure(1,(6,6))
+fig = p.figure(1,(5,5))
+p.axes([0.19,0.2,0.75,0.75])
 sc1=p.scatter(M200c,yData, s=n.ones_like(yData)*3, c=redshift, marker='o',label="MD data", rasterized=True)
 sc1.set_edgecolor('face')
 cb = p.colorbar(shrink=0.8)
 cb.set_label("redshift")
 p.xlabel(r'log $M_{200c}$ [h$^{-1}$ M$_{sun}$]')
 p.ylim((-9,0))
-p.ylabel(r'log N(M>M$_{200c}$) [ h$^3$ Mpc$^{-3}$ ]')
+p.xlim((9,16))
+p.ylabel(r'log N$_{cen}$(M>M$_{200c}$) [ h$^3$ Mpc$^{-3}$ ]')
 p.grid()
 p.show()
 
@@ -557,14 +560,87 @@ hh = aa.H(redshift) /(100 * uu.km / (uu.Mpc* uu.s)) / aa.h
 # aa.Om(redshift) *
 m2rhom = 10**(2*M200c)/( aa.critical_density(redshift).to(uu.Msun*uu.Mpc**(-3)) * hh**-2)
 
-fig = p.figure(1,(6,6))
+fig = p.figure(1,(5,5))
+p.axes([0.19,0.2,0.75,0.75])
 sc1=p.scatter(M200c,m2rhom*yData, s=n.ones_like(yData)*3, c=redshift, marker='o',label="MD data", rasterized=True)
 sc1.set_edgecolor('face')
 cb = p.colorbar(shrink=0.8)
 cb.set_label("redshift")
 p.xlabel(r'$\rm \log M_{200c} [h^{-1} M_{sun}$]')
 p.ylim((5e-5,0.1))
+p.xlim((9,16))
 p.yscale('log')
-p.ylabel(r'$\rm (M_{200c}^2 /\rho_{cr}(z)) \, dN/dM_{200c}$') #\; [ h^4 Mpc^{-3} M_{sun}^{-1}$]")
+p.ylabel(r'$\rm (M_{200c}^2 /\rho_{cr}(z)) \, dN_{Cen}/dM_{200c}$') #\; [ h^4 Mpc^{-3} M_{sun}^{-1}$]")
+p.grid()
+p.show()
+
+
+xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_04, property_dir,"hist-Satellite-M200c_ALL_cumulative_MD_0.4Gpc.dat"),unpack=True)
+xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir_10, property_dir,"hist-Satellite-M200c_ALL_cumulative_MD_1Gpc.dat"),unpack=True)
+#xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir_25, property_dir,"hist-Satellite-M200c_ALL_cumulative_MD_2.5Gpc.dat"),unpack=True)
+#xData_40,z_40,yData_40,yDataErr_40 = n.loadtxt(join(dir_40, property_dir,"hist-Satellite-M200c_ALL_cumulative_MD_4Gpc.dat"),unpack=True)
+
+s_04 = (z_04 >= zmin) & (z_04 <= zmax)
+s_10 = (z_10 >= zmin) & (z_10 <= zmax)
+#s_25 = (z_25 >= zmin) & (z_25 <= zmax)
+#s_40 = (z_40 >= zmin) & (z_40 <= zmax)
+
+redshift = n.hstack(( z_04[s_04], z_10[s_10])) #, z_25[s_25], z_40[s_40]))
+print "all redshifts available:", set(redshift)
+M200c = n.log10(n.hstack(( xData_04[s_04], xData_10[s_10] )) )#, xData_25[s_25], xData_40[s_40])))
+print "min and max masses available:", n.min(M200c), n.max(M200c)
+yData = n.log10(n.hstack(( yData_04[s_04], yData_10[s_10])) )#, yData_25[s_25], yData_40[s_40])))
+print "min and max Y available:", n.min(yData), n.max(yData)
+yDataErr = abs(n.hstack(( yDataErr_04[s_04], yDataErr_10[s_10])) )#, yDataErr_25[s_25], yDataErr_40[s_40])) / yData)
+print "min and max Y error available:", n.min(yDataErr), n.max(yDataErr)
+
+fig = p.figure(1,(5,5))
+p.axes([0.19,0.2,0.75,0.75])
+sc1=p.scatter(M200c,yData, s=n.ones_like(yData)*3, c=redshift, marker='o',label="MD data", rasterized=True)
+sc1.set_edgecolor('face')
+cb = p.colorbar(shrink=0.8)
+cb.set_label("redshift")
+p.xlabel(r'log $M_{200c}$ [h$^{-1}$ M$_{sun}$]')
+p.ylim((-9,0))
+p.xlim((9,16))
+p.ylabel(r'log N$_{sat}$(M>M$_{200c}$) [ h$^3$ Mpc$^{-3}$ ]')
+p.grid()
+p.show()
+
+xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_04, property_dir,"hist-Satellite-M200c_ALL_differential_MD_0.4Gpc.dat"),unpack=True)
+xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir_10, property_dir,"hist-Satellite-M200c_ALL_differential_MD_1Gpc.dat"),unpack=True)
+xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir_25, property_dir,"hist-Satellite-M200c_ALL_differential_MD_2.5Gpc.dat"),unpack=True)
+xData_40,z_40,yData_40,yDataErr_40 = n.loadtxt(join(dir_40, property_dir,"hist-Satellite-M200c_ALL_differential_MD_4Gpc.dat"),unpack=True)
+
+s_04 = (z_04 >= zmin) & (z_04 <= zmax)
+s_10 = (z_10 >= zmin) & (z_10 <= zmax)
+s_25 = (z_25 >= zmin) & (z_25 <= zmax)
+s_40 = (z_40 >= zmin) & (z_40 <= zmax)
+
+redshift = n.hstack(( z_04[s_04], z_10[s_10])) #, z_25[s_25], z_40[s_40]))
+print "all redshifts available:", set(redshift)
+M200c = n.log10(n.hstack(( xData_04[s_04], xData_10[s_10])) )#, xData_25[s_25], xData_40[s_40])))
+print "min and max masses available:", n.min(M200c), n.max(M200c)
+yData = n.hstack(( yData_04[s_04], yData_10[s_10])) #, yData_25[s_25], yData_40[s_40]))
+print "min and max Y available:", n.min(yData), n.max(yData)
+yDataErr = n.hstack(( yDataErr_04[s_04], yDataErr_10[s_10])) #, yDataErr_25[s_25], yDataErr_40[s_40])) 
+print "min and max Y error available:", n.min(yDataErr), n.max(yDataErr)
+
+hh = aa.H(redshift) /(100 * uu.km / (uu.Mpc* uu.s)) / aa.h
+# aa.Om0*
+# aa.Om(redshift) *
+m2rhom = 10**(2*M200c)/( aa.critical_density(redshift).to(uu.Msun*uu.Mpc**(-3)) * hh**-2)
+
+fig = p.figure(1,(5,5))
+p.axes([0.19,0.2,0.75,0.75])
+sc1=p.scatter(M200c,m2rhom*yData, s=n.ones_like(yData)*3, c=redshift, marker='o',label="MD data", rasterized=True)
+sc1.set_edgecolor('face')
+cb = p.colorbar(shrink=0.8)
+cb.set_label("redshift")
+p.xlabel(r'$\rm \log M_{200c} [h^{-1} M_{sun}$]')
+p.ylim((5e-5,0.1))
+p.xlim((9,16))
+p.yscale('log')
+p.ylabel(r'$\rm (M_{200c}^2 /\rho_{cr}(z)) \, dN_{sat}/dM_{200c}$') #\; [ h^4 Mpc^{-3} M_{sun}^{-1}$]")
 p.grid()
 p.show()
