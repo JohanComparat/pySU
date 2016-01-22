@@ -18,7 +18,7 @@ linesFittedVIMOS=n.array([ [[H1_4862,"H1_4862"],[O3_5007,"O3_5007"]], [[O3_5007,
 areaDeep=0.61
 area = areaDeep
 #areaUDeep=512./3600.
-MagLimS = [22.5,23,23.5, 24.]
+MagLimS = [22.]
 for MagLim in MagLimS :
 	for ii in range(len(zsVIMOSmin)):
 		zmin = zsVIMOSmin[ii]
