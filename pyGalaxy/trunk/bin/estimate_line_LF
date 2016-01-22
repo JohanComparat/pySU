@@ -9,6 +9,67 @@ from LineLuminosityFunction import *
 from lineListAir import *
 import glob
 
+
+# from VVDS WIDE survey
+areaWide=4.0+2.2+1.9
+area = areaWide
+zsVIMOSmin=n.array([0.18,0.41,0.51,0.56,0.65,0.84, 1.1])
+zsVIMOSmax=n.array([0.41,0.65,0.7,0.83,0.84,1.1, 1.3])
+linesFittedVIMOS=n.array([ [[H1_4862,"H1_4862"],[O3_5007,"O3_5007"]], [[O3_5007,"O3_5007"],[H1_4862,"H1_4862"]], [[O3_5007,"O3_5007"],[O2_mean,"O2_3728"],[H1_4862,"H1_4862"]], [[O3_5007,"O3_5007"],[O2_mean,"O2_3728"],[H1_4862,"H1_4862"]], [[O3_5007,"O3_5007"],[O2_mean,"O2_3728"],[H1_4862,"H1_4862"]], [[O2_mean,"O2_3728"]],[[O2_mean,"O2_3728"]] ])
+
+
+MagLimS = [22.5, 22., 21.5, 21]
+for MagLim in MagLimS :
+	for ii in range(len(zsVIMOSmin)):
+		zmin = zsVIMOSmin[ii]
+		zmax = zsVIMOSmax[ii]
+		lineSet=linesFittedVIMOS[ii]
+		for line in lineSet :
+			print "---------------------------------------------------"
+			print line, zmin, zmax
+			lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "VVDS", redshift_catalog = "VVDS_WIDE_summary.LFcatalog.fits", luminosityBins = n.logspace(38,45,50), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions/" , zmin = zmin, zmax = zmax)
+			lf.setRedshiftArray( redshiftColumn='Z' )
+			lf.setRedshiftSelection( redshiftQualityColumn='ZFLAGS', lowerBound=1.9, upperBound=9.1)
+			lf.setWeightArray( 1./(area * lf.catalog['SSR']*lf.catalog['TSR']), area )
+			selection = (lf.catalog['TSR']>0) & (lf.catalog['SSR']>0)& (lf.catalog['MAGI']<MagLim)
+			lf.computeHistogramLF(selection)
+			lf.computeHistogramVariance(selection,jk=0.1)
+			lf.computeMeanWeightedRedshift(selection)
+			lf.get_completness_limit(selection)
+			lf.correctVolumeEffect(n.ones_like(lf.LF), n.zeros_like(lf.LF))
+			lf.writeLF(selection,surveyNameSuffix="WIDE"+"I"+str(MagLim))
+
+
+
+# from VIPERS survey
+print "VIPERS"
+zsVIMOSmin=n.array([0.65,0.84, 1.1])
+zsVIMOSmax=n.array([0.84,1.1, 1.3])
+linesFittedVIMOS=n.array([ [[O3_5007,"O3_5007"],[O2_mean,"O2_3728"],[H1_4862,"H1_4862"]], [[O2_mean,"O2_3728"]], [[O2_mean,"O2_3728"]]])
+
+area=24.
+MagLimS = [22.5, 22., 21.5, 21]
+for MagLim in MagLimS :
+	for ii in range(len(zsVIMOSmin)):
+		zmin = zsVIMOSmin[ii]
+		zmax = zsVIMOSmax[ii]
+		lineSet=linesFittedVIMOS[ii]
+		for line in lineSet :
+			lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "VIPERS", redshift_catalog = "VIPERS_W14_summary_v1.LFcatalog.fits", luminosityBins = n.logspace(38,45,50), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions/" , zmin = zmin, zmax = zmax)
+			lf.setRedshiftArray( redshiftColumn='zspec' )
+			lf.setRedshiftSelection( redshiftQualityColumn='zflg', lowerBound=0.9, upperBound=100.)
+			lf.setWeightArray( 1./(area * lf.catalog['SSR']*lf.catalog['TSR']), area )
+			selection = (lf.catalog['TSR']>0) & (lf.catalog['SSR']>0)& (lf.catalog['MAGI']<MagLim)
+			lf.computeHistogramLF(selection)
+			print "---------------------------------------------------"
+			print line, zmin, zmax, lf.ngals
+			lf.computeHistogramVariance(selection,jk=0.1)
+			lf.computeMeanWeightedRedshift(selection)
+			lf.get_completness_limit(selection)
+			lf.correctVolumeEffect(n.ones_like(lf.LF), n.zeros_like(lf.LF))
+			lf.writeLF(selection,surveyNameSuffix="I"+str(MagLim))
+
+sys.exit()
 # from VVDS DEEP survey
 print "VVDS DEEP"
 zsVIMOSmin=n.array([0.18,0.41,0.51,0.56,0.65,0.84, 1.1])
@@ -110,63 +171,4 @@ for MagLim in MagLimS :
 
 
 sys.exit()
-
-# from VVDS WIDE survey
-areaWide=4.0+2.2+1.9
-area = areaWide
-zsVIMOSmin=n.array([0.18,0.41,0.51,0.56,0.65,0.84, 1.1])
-zsVIMOSmax=n.array([0.41,0.65,0.7,0.83,0.84,1.1, 1.3])
-linesFittedVIMOS=n.array([ [[H1_4862,"H1_4862"],[O3_5007,"O3_5007"]], [[O3_5007,"O3_5007"],[H1_4862,"H1_4862"]], [[O3_5007,"O3_5007"],[O2_mean,"O2_3728"],[H1_4862,"H1_4862"]], [[O3_5007,"O3_5007"],[O2_mean,"O2_3728"],[H1_4862,"H1_4862"]], [[O3_5007,"O3_5007"],[O2_mean,"O2_3728"],[H1_4862,"H1_4862"]], [[O2_mean,"O2_3728"]],[[O2_mean,"O2_3728"]] ])
-
-
-for ii in range(len(zsVIMOSmin)):
-	zmin = zsVIMOSmin[ii]
-	zmax = zsVIMOSmax[ii]
-	lineSet=linesFittedVIMOS[ii]
-	for line in lineSet :
-		print "---------------------------------------------------"
-		print line, zmin, zmax
-		lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "VVDS", redshift_catalog = "VVDS_WIDE_summary.LFcatalog.fits", luminosityBins = n.logspace(38,45,50), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions/" , zmin = zmin, zmax = zmax)
-		lf.setRedshiftArray( redshiftColumn='Z' )
-		lf.setRedshiftSelection( redshiftQualityColumn='ZFLAGS', lowerBound=1.9, upperBound=9.1)
-		lf.setWeightArray( 1./(area * lf.catalog['SSR']*lf.catalog['TSR']), area )
-		selection = (lf.catalog['TSR']>0) & (lf.catalog['SSR']>0)
-		lf.computeHistogramLF(selection)
-		lf.computeHistogramVariance(selection,jk=0.1)
-		lf.computeMeanWeightedRedshift(selection)
-		lf.get_completness_limit(selection)
-		lf.correctVolumeEffect(n.ones_like(lf.LF), n.zeros_like(lf.LF))
-		lf.writeLF(selection,surveyNameSuffix="WIDE")
-
-import sys
-sys.exit()
-
-
-# from VIPERS survey
-print "VIPERS"
-zsVIMOSmin=n.array([0.65,0.84, 1.1])
-zsVIMOSmax=n.array([0.84,1.1, 1.3])
-linesFittedVIMOS=n.array([ [[O3_5007,"O3_5007"],[O2_mean,"O2_3728"],[H1_4862,"H1_4862"]], [[O2_mean,"O2_3728"]], [[O2_mean,"O2_3728"]]])
-
-area=24.
-
-for ii in range(len(zsVIMOSmin)):
-	zmin = zsVIMOSmin[ii]
-	zmax = zsVIMOSmax[ii]
-	lineSet=linesFittedVIMOS[ii]
-	for line in lineSet :
-		lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "VIPERS", redshift_catalog = "VIPERS_W14_summary_v1.LFcatalog.fits", luminosityBins = n.logspace(38,45,50), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions/" , zmin = zmin, zmax = zmax)
-		lf.setRedshiftArray( redshiftColumn='zspec' )
-		lf.setRedshiftSelection( redshiftQualityColumn='zflg', lowerBound=0.9, upperBound=100.)
-		lf.setWeightArray( 1./(area * lf.catalog['SSR']*lf.catalog['TSR']), area )
-		selection = (lf.catalog['TSR']>0) & (lf.catalog['SSR']>0)
-		lf.computeHistogramLF(selection)
-		print "---------------------------------------------------"
-		print line, zmin, zmax, lf.ngals
-		lf.computeHistogramVariance(selection,jk=0.1)
-		lf.computeMeanWeightedRedshift(selection)
-		lf.get_completness_limit(selection)
-		lf.correctVolumeEffect(n.ones_like(lf.LF), n.zeros_like(lf.LF))
-		lf.writeLF(selection)#,surveyNameSuffix="DEEP")
-
 
