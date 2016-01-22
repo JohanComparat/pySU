@@ -18,37 +18,38 @@ linesFittedVIMOS=n.array([ [[H1_4862,"H1_4862"],[O3_5007,"O3_5007"]], [[O3_5007,
 areaDeep=0.61
 area = areaDeep
 #areaUDeep=512./3600.
+MagLimS = [22.5,23,23.5, 24.]
+for MagLim in MagLimS :
+	for ii in range(len(zsVIMOSmin)):
+		zmin = zsVIMOSmin[ii]
+		zmax = zsVIMOSmax[ii]
+		lineSet=linesFittedVIMOS[ii]
+		for line in lineSet :		
+			lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "VVDS", redshift_catalog = "VVDS_DEEP_summary.LFcatalog.fits", luminosityBins = n.logspace(38,45,25), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions/" , zmin = zmin, zmax = zmax)
+			lf.setRedshiftArray( redshiftColumn='Z' )
+			lf.setRedshiftSelection( redshiftQualityColumn='ZFLAGS', lowerBound=1.9, upperBound=9.1)
+			lf.setWeightArray( 1./(area * lf.catalog['SSR']*lf.catalog['TSR']), area )
+			selection = (lf.catalog['TSR']>0) & (lf.catalog['SSR']>0)& (lf.catalog['MAGI']<MagLim)
+			lf.computeHistogramLF(selection)
+			print "---------------------------------------------------"
+			print line, zmin, zmax, lf.ngals
+			lf.computeHistogramVariance(selection,jk=0.1)
+			lf.computeMeanWeightedRedshift(selection)
+			lf.get_completness_limit(selection)
+			lll=n.array( glob.glob( "/home/comparat/database/Simulations/galform-lightcone/products/emissionLineLuminosityFunctions/" + line[1] + "/" + line[1] + "-GALFORM-VVDSNEXT-z*Rcorrection.txt" ))
+			redshifts=[]
+			for el in lll :
+				base = el.split('/')[-1]
+				out = base.split('-')
+				redshifts.append(float(out[3][1:5]))
 
-for ii in range(len(zsVIMOSmin)):
-	zmin = zsVIMOSmin[ii]
-	zmax = zsVIMOSmax[ii]
-	lineSet=linesFittedVIMOS[ii]
-	for line in lineSet :		
-		lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "VVDS", redshift_catalog = "VVDS_DEEP_summary.LFcatalog.fits", luminosityBins = n.logspace(38,45,25), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions/" , zmin = zmin, zmax = zmax)
-		lf.setRedshiftArray( redshiftColumn='Z' )
-		lf.setRedshiftSelection( redshiftQualityColumn='ZFLAGS', lowerBound=1.9, upperBound=9.1)
-		lf.setWeightArray( 1./(area * lf.catalog['SSR']*lf.catalog['TSR']), area )
-		selection = (lf.catalog['TSR']>0) & (lf.catalog['SSR']>0)
-		lf.computeHistogramLF(selection)
-		print "---------------------------------------------------"
-		print line, zmin, zmax, lf.ngals
-		lf.computeHistogramVariance(selection,jk=0.1)
-		lf.computeMeanWeightedRedshift(selection)
-		lf.get_completness_limit(selection)
-		lll=n.array( glob.glob( "/home/comparat/database/Simulations/galform-lightcone/products/emissionLineLuminosityFunctions/" + line[1] + "/" + line[1] + "-GALFORM-VVDSNEXT-z*Rcorrection.txt" ))
-		redshifts=[]
-		for el in lll :
-			base = el.split('/')[-1]
-			out = base.split('-')
-			redshifts.append(float(out[3][1:5]))
-
-		redshifts = n.array(redshifts)
-		#print redshifts, lf.meanRedshift
-		sel = (lf.meanRedshift - 0.05 < redshifts) & (redshifts < lf.meanRedshift + 0.05)
-		#print lll[sel]
-		#mCorr, error  = n.loadtxt(lll[sel][0],unpack=True ) 
-		lf.correctVolumeEffect(n.ones_like(lf.LF), n.zeros_like(lf.LF))#mCorr, error)
-		lf.writeLF(selection,surveyNameSuffix="DEEP")
+			redshifts = n.array(redshifts)
+			#print redshifts, lf.meanRedshift
+			sel = (lf.meanRedshift - 0.05 < redshifts) & (redshifts < lf.meanRedshift + 0.05)
+			#print lll[sel]
+			#mCorr, error  = n.loadtxt(lll[sel][0],unpack=True ) 
+			lf.correctVolumeEffect(n.ones_like(lf.LF), n.zeros_like(lf.LF))#mCorr, error)
+			lf.writeLF(selection,surveyNameSuffix="DEEP"+"I"+str(MagLim))
 
 
 import sys
