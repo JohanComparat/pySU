@@ -2,6 +2,10 @@
 
 import glob
 import numpy as n
+import os
+from os.path import join
+data_dir = os.environ['DATA_DIR']
 
-Stack_number, survey, line, Lmin, Lmax, Zmin, Zmax, N1, N2, Age_Gyrs, Metallicity, Stellar_mass = n.loadtxt("/database/Products_Galaxies/emissionLineLuminosityFunctions/fireflyFits/1LF-v1$/av_props.dat" , unpack=True )
+Stack_number, survey, line, Lmin, Lmax, Zmin, Zmax, N1, N2, Age_Gyrs, Metallicity, Stellar_mass = n.loadtxt(join(data_dir,"VVDS", "emissionLineLuminosityFunctions", "fireflyFits", "1LF-v1$", "av_props.dat" ), unpack=True )
 
+# NOT YET IMPLEMENTED ...

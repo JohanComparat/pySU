@@ -18,11 +18,13 @@ from os.path import join
 
 class HandleReducedELGPlate:
 	"""
+	Now outdated by the SDSS4 svn product : elgredshiftflag
+	
 	Loads the environement proper to the SDSS survey :
 
         :param plate: plate number
         :param mjd: modified julian date
-
+	
 	"""
 	def __init__(self,plate = 8123, mjd = 56931, dV=-9999.99, fitWidth = 40. ):
 		self.plate = plate
@@ -33,7 +35,7 @@ class HandleReducedELGPlate:
 
 	def loadPlate(self):
 		"""
-		Opens the plate files: spPlate, spZbest.
+		Opens the plate files: spPlate, spZbest. In the case one isworking on the Utah cluster.
 		"""
 		spfile = join( os.environ['BOSS_SPECTRO_REDUX'] , os.environ['RUN2D'] , str(self.plate) , "spPlate-"+ str(self.plate) +"-"+ str(self.mjd) +".fits" )
 		zbfile = join( os.environ['BOSS_SPECTRO_REDUX'] , os.environ['RUN2D'] , str(self.plate) , os.environ['RUN1D'] , "spZbest-" + str(self.plate) +"-"+ str(self.mjd) +".fits" )
@@ -106,7 +108,7 @@ class HandleReducedELGPlate:
 
 	def assign_ELG_redshift_flag(self,SNRhigh=5., SNRlow=2.):
 		"""
-		Assigns redshift flags to ELGs.
+		Assigns redshift flags to ELGs by fitting emission lines.
 
 		"""
 		lines=n.array(["O2_3728", "Ne3_3869", "O3_4960", "O3_5007", "N2_6549", "N2_6585", "S2_6718", "S2_6732", "H1_1216", "H1_3970", "H1_4102", "H1_4341", "H1_4862", "H1_6564"])

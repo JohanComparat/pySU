@@ -1,17 +1,21 @@
-#! /usr/bin/env python
+#! ", "usr", "bin", "env python
 
 """
 This script produces quality plots to check that the LFs are fine.
 """
 
 import sys
+import os
+from os.path import join
+data_dir = os.environ['DATA_DIR']
+
 from lib_plot import *
 from lineListAir import *
 SNlim = 5
 
 
-plotDir="/home/comparat/database/VVDS/products/emissionLineLuminosityFunctions/plotLFs-raw/"
-dir="/home/comparat/database/VVDS/products/emissionLineLuminosityFunctions/??_????/"
+plotDir=join(data_dir, "VVDS", "products", "emissionLineLuminosityFunctions", "plotLFs-raw")
+dir=join(data_dir, "VVDS", "products", "emissionLineLuminosityFunctions", "??_????")
 import glob
 lf_measurement_files=glob.glob(dir+"*.txt")
 
@@ -21,8 +25,8 @@ for jj in range(len(lf_measurement_files)):
 	lf_measurement_file=lf_measurement_files[jj]
 	plot_EW_LF_measurement(lf_fits_file,lf_measurement_file,plotDir)
 
-plotDir="/home/comparat/database/DEEP2/products/emissionLineLuminosityFunctions/plotLFs-raw/"
-dir="/home/comparat/database/DEEP2/products/emissionLineLuminosityFunctions/??_????/"
+plotDir=join(data_dir, "DEEP2", "products", "emissionLineLuminosityFunctions", "plotLFs-raw")
+dir=join(data_dir, "DEEP2", "products", "emissionLineLuminosityFunctions", "??_????")
 import glob
 lf_measurement_files=glob.glob(dir+"*.txt")
 
@@ -32,8 +36,8 @@ for jj in range(len(lf_measurement_files)):
 	lf_measurement_file=lf_measurement_files[jj]
 	plot_EW_LF_measurement(lf_fits_file,lf_measurement_file,plotDir)
 
-plotDir="/home/comparat/database/VIPERS/products/emissionLineLuminosityFunctions/plotLFs-raw/"
-dir="/home/comparat/database/VIPERS/products/emissionLineLuminosityFunctions/??_????/"
+plotDir=join(data_dir, "VIPERS", "products", "emissionLineLuminosityFunctions", "plotLFs-raw")
+dir=join(data_dir, "VIPERS", "products", "emissionLineLuminosityFunctions", "??_????")
 import glob
 lf_measurement_files=glob.glob(dir+"*.txt")
 

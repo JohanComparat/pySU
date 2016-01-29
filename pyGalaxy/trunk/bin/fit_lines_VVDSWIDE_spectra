@@ -4,6 +4,8 @@
 This script computes the fits the line strength on the spectra from of the VVDS DEEP survey
 """
 from lib_plot import *
+from os.path import join
+
 # defines the survey object
 import GalaxySurveyVVDS as gs
 #survey = gs.GalaxySurveyVVDS(redshift_catalog="VVDS_DEEP_summary.fits")#  
@@ -21,7 +23,7 @@ survey.resolution = 200. # resolution of the Keck deimos setting used
 survey.path_to_output_catalog  =  survey.vvds_catalog_dir+ "VVDS_WIDE_summary.linesFitted.fits"
 survey.Ngalaxies=len(survey.catalog)
 
-plotDir = survey.vvds_dir+'products/emissionLineLuminosityFunctions/plots/lineFits/'
+plotDir = join(survey.vvds_dir, "products", "emissionLineLuminosityFunctions", "plots", "lineFits")
 
 # line list to be fitted
 from lineListAir import *

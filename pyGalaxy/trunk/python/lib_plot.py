@@ -214,7 +214,7 @@ def plot_EW_LF_measurement(lf_fits_file,lf_measurement_file,plotDir):
 	p.xscale('log')
 	p.grid()
 
-	p.savefig(plotDir+lf_measurement_file.split('/')[-1][:-4]+".pdf")
+	p.savefig(join(plotDir,lf_measurement_file.split('/')[-1][:-4]+".pdf"))
 	p.clf()
 
 def plot_EW_LF_measurement_simulation(lf_fits_file,lf_measurement_file,plotDir,lfsdata):
@@ -303,5 +303,5 @@ def plot_EW_LF_measurement_simulation(lf_fits_file,lf_measurement_file,plotDir,l
 	p.xscale('log')
 	p.grid()
 
-	p.savefig(plotDir+lf_measurement_file.split('/')[-1][:-4]+".pdf")
+	p.savefig(join(plotDir,lf_measurement_file.split('/')[-1][:-4]+".pdf"))
 	p.clf()

@@ -49,8 +49,6 @@ doubletList = n.array([[O2_3727,"O2_3727",O2_3729,"O2_3729",O2_mean]])
 # import the fitting routines
 import LineFittingLibrary as lineFit
 
-#SpectraStacking("/home/comparat/database/DEEP2/products/emissionLineLuminosityFunctions/O2_3728/O2_3728-DEEP2-z0.925.fits")
-
 O2a=3727.092 
 O2b=3729.875 
 O2=(O2a+O2b)/2.
@@ -555,10 +553,6 @@ class ModelSpectraStacks:
 
 		p.savefig(self.stack_file[:-5] + "-fit.pdf")
 		p.clf()
-
-
-
-
 
 	def plot_spectrum(self):
 		"""

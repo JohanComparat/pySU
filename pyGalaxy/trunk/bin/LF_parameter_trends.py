@@ -6,10 +6,12 @@ import glob
 import sys
 from scipy.optimize import curve_fit
 import cPickle
-from os.path import join
 from mpl_toolkits.mplot3d import Axes3D
+import os
+from os.path import join
+data_dir = os.environ['DATA_DIR']
 
-Pdir = "/Users/johancomparat/Documents/papers-reports/2015_LF_O2HbO3/figures/Products_Galaxies/emissionLineLuminosityFunctions"
+Pdir = join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions")
 # "/home/comparat/database/Products_Galaxies/emissionLineLuminosityFunctions/" # on eboss
 lines = "H1_4862", "O3_5007", "O2_3728"
 

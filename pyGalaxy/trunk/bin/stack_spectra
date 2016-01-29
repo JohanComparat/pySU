@@ -4,10 +4,13 @@
 This script produces the stacks for emission line luminosity limited samples.
 """
 import sys
+import os 
+from os.path import join
+data_dir = os.environ['DATA_DIR']
 
 from SpectraStacking import *
 
-tobestacked = glob.glob( "/home/comparat/database/DEEP2/products/emissionLineLuminosityFunctions/*/*.fits")
+tobestacked = glob.glob( join(data_dir,"DEEP2", "products", "emissionLineLuminosityFunctions", "*", "*.fits"))
 
 for el in tobestacked:
 	print "--------------------------------------"
@@ -22,7 +25,7 @@ for el in tobestacked:
 		st.stackSpectra()
 
 
-tobestacked = glob.glob( "/home/comparat/database/VVDS/products/emissionLineLuminosityFunctions/*/*.fits")
+tobestacked = glob.glob( join(data_dir,"VVDS", "products", "emissionLineLuminosityFunctions", "*", "*.fits"))
 
 for el in tobestacked:
 	print "--------------------------------------"
@@ -32,7 +35,7 @@ for el in tobestacked:
 	st.stackSpectra()
 
 sys.exit()
-tobestacked = glob.glob( "/home/comparat/database/VIPERS/products/emissionLineLuminosityFunctions/*/*.fits")
+tobestacked = glob.glob( join(data_dir,"VIPERS", "products", "emissionLineLuminosityFunctions", "*", "*.fits"))
 
 for el in tobestacked:
 		st=SpectraStacking(el)
@@ -41,7 +44,7 @@ for el in tobestacked:
 
 sys.exit()
 
-tobestacked = glob.glob( "/home/comparat/database/VVDS/products/emissionLineLuminosityFunctions/*/*.fits")
+tobestacked = glob.glob( join(data_dir,"VVDS", "products", "emissionLineLuminosityFunctions", "*", "*.fits"))
 
 for el in tobestacked:
 	print "--------------------------------------"
@@ -55,7 +58,7 @@ for el in tobestacked:
 		st=SpectraStacking(el, Nspec = 100)
 		st.stackSpectra()
 
-tobestacked = glob.glob( "/home/comparat/database/DEEP2/products/emissionLineLuminosityFunctions/*/*.fits")
+tobestacked = glob.glob( join(data_dir,"DEEP2", "products", "emissionLineLuminosityFunctions", "*", "*.fits"))
 
 for el in tobestacked:
 	print "--------------------------------------"
@@ -70,7 +73,7 @@ for el in tobestacked:
 		st.stackSpectra()
 
 sys.exit()
-tobestacked = glob.glob( "/home/comparat/database/VIPERS/products/emissionLineLuminosityFunctions/*/*.fits")
+tobestacked = glob.glob( join(data_dir,"VIPERS", "products", "emissionLineLuminosityFunctions", "*", "*.fits"))
 
 for el in tobestacked:
 	if el.find('stack') > 0 :

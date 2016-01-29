@@ -33,7 +33,7 @@ class ModelLuminosityFunction:
         self.lineName = lineName
         self.cosmology = cosmology
         self.database_dir = os.environ['DATA_DIR']
-        self.biblioPts_dir = join(self.database_dir , "Products_Galaxies/emissionLineLuminosityFunctions/bibliographyPoints")
+        self.biblioPts_dir = join(self.database_dir , "Products_Galaxies","emissionLineLuminosityFunctions","bibliographyPoints")
         self.fixedSigma = fixedSigma
         self.fixedAlpha = fixedAlpha
 

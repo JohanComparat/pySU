@@ -2,7 +2,13 @@
 
 from ModelSpectraStacks import *
 import glob
-stack_files=n.hstack(( n.array(glob.glob( "../../LFstacks/*VVDS*linesFittedfireflyFitsMarastonUVext.fits")), n.array(glob.glob( "../../LFstacks/*VVDS*linesFittedfireflyFitsMilesUVextended.fits")) ))
+from os.path import join
+import os
+
+data_dir = os.environ['DATA_DIR']
+
+stack_files=n.hstack(( n.array(glob.glob(join(data_dir,"VVDS","products","emissionLineLuminosityFunctions","*", "SPM-MILES.fits"))), 
+n.array(glob.glob(join(data_dir,"VVDS","products","emissionLineLuminosityFunctions","*", "SPM-STELIB.fits"))) ))
 
 stack_files.sort()
 
@@ -10,7 +16,7 @@ stack_files.sort()
 
 for file in stack_files:
 	print( file )
-	if len(glob.glob(file[:-7]+"*modeled*"))>0:
+	if len(glob.glob(file[:-4]+"*modeled*"))>0:
 		print( file, "out" )
 		continue
 

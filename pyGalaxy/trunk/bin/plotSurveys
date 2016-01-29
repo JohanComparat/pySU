@@ -7,10 +7,13 @@ This script produces quality plots to check that the Surveys and their catalogs 
 from lib_plot import *
 from lineListAir import *
 SNlim = 5
+import os
+from os.path import join
+data_dir = os.environ['DATA_DIR']
 
 
 from GalaxySurveyVVDS import *
-plotDir="/home/comparat/database/VVDS/products/emissionLineLuminosityFunctions/plotSurvey/"
+plotDir = join(data_dir, "VVDS", "products", "emissionLineLuminosityFunctions", "plotSurvey")
 
 # UDEEP
 survey = GalaxySurveyVVDS(redshift_catalog="VVDS_UDEEP_summary.LFcatalog.fits")
@@ -110,7 +113,7 @@ plotZ_EW(survey.catalog['Z'][ok],survey.catalog['H1_4862_EW'][ok], "vvdsdeep-EW-
 
 
 from GalaxySurveyDEEP2 import *
-plotDir="/home/comparat/database/DEEP2/products/emissionLineLuminosityFunctions/plotSurvey/"
+plotDir=join(data_dir, "DEEP2", "products", "emissionLineLuminosityFunctions", "plotSurvey")
 survey = GalaxySurveyDEEP2(redshift_catalog="zcat.deep2.dr4.v2.LFcatalog.fits", calibration = False)
 
 zok=(survey.catalog['ZQUALITY']>0.9)
@@ -150,7 +153,7 @@ plotZ_EW(survey.catalog['ZBEST'][ok],survey.catalog['H1_4862_EW'][ok], "deep2-EW
 
 
 from GalaxySurveyVIPERS import *
-plotDir="/home/comparat/database/VIPERS/products/emissionLineLuminosityFunctions/plotSurvey/"
+plotDir=join(data_dir, "VIPERS", "products", "emissionLineLuminosityFunctions", "plotSurvey")
 
 # VIPERS
 survey = GalaxySurveyVIPERS(redshift_catalog="VIPERS_W14_summary_v1.LFcatalog.fits")

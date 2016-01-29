@@ -12,7 +12,6 @@
 
 import os 
 from os.path import join
-
 import astropy.cosmology as co
 cosmo=co.FlatLambdaCDM(H0=70,Om0=0.3)
 import astropy.io.fits as fits
@@ -44,10 +43,10 @@ class IntrinsicStacksAndLFs:
 	:param zmin: minimum redshift included
 	:param zmax: maximum redshift included
 	"""
-	def __init__(self, LF_file="/home/comparat/database/DEEP2/products/emissionLineLuminosityFunctions/H1_4862/H1_4862-DEEP2-z0.746.fits", fireflyModel = "MarastonUVext"
-):
+	def __init__(self, LF_file, fireflyModel = "MarastonUVext"):
 		self.LF_file = LF_file
-		self.stackList = n.array(glob.glob( join("/home/comparat/database/LFstacks/" , self.LF_file.split('/')[-1][:-5] + "_stack_*"+fireflyModel +"-modeled.fits") ))
+		self.database_dir = os.environ['DATA_DIR']
+		self.stackList = n.array(glob.glob( join(self.database_dir,"LFstacks" , self.LF_file.split('/')[-1][:-5] + "_stack_*"+fireflyModel +"-modeled.fits") ))
 		self.LF_measurement = self.LF_file[:-5] + ".txt"
 
 		self.survey=LF_file.split('/')[-1].split('-')[1]
@@ -68,9 +67,11 @@ class IntrinsicStacksAndLFs:
 		self.completeness = self.catalog[0].header['COMPLETENESS']
 		self.volume = self.catalog[0].header['VOLUME']
 
-		
 
 	def define_correction(self):
+		"""
+		Defines the correction tobeappliedonthe LF
+		"""
 		correction=[]
 		for el in self.stackList:
 			names = el.split('_')
@@ -87,6 +88,9 @@ class IntrinsicStacksAndLFs:
 		print self.correction
 
 	def apply_correction(self):
+		"""
+		Applies the correction to the LF
+		"""
 		self.define_correction()
 		if len(self.correction)>0:
 			Lmin, Lmax, Lmean, phi, phiErr, phiErr_poisson, ngals = 	n.loadtxt( self.LF_measurement,unpack=True)
