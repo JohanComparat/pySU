@@ -14,8 +14,8 @@ from scipy.interpolate import interp1d
 import time
 lfit  =  lineFit.LineFittingLibrary(fitWidth = 40.)
 
-# CASE VVDS DEEP
-iMags = n.arange(22,24.1,0.1)
+# CASE DEEP2
+iMags = n.arange(20,24.1,0.5)
 snr5Flux = n.empty(len(iMags))
 snr7Flux = n.empty(len(iMags))
 snr5EW = n.empty(len(iMags))
@@ -24,22 +24,22 @@ for jj,mag in enumerate(iMags):
 	print mag, time.time()
 	signal_level =  lfit.flambda(mag,8300)
 	# fixed noise level for the DEEP
-	noise_level = lfit.flambda(24,8300) / 0.897 # 3.56*10**-19
-	wavelength = n.arange(8000,8600,7)
+	noise_level = lfit.flambda(22,8300) / 6. # 3.56*10**-19
+	wavelength = n.arange(8000,8600,0.5)
 	error = n.ones_like(wavelength) * noise_level
-	flux_no_line = lfit.gaussianLine(wavelength,10,0,8300,signal_level)
+	flux_no_line = lfit.gaussianLine(wavelength,4,0,8300,signal_level)
 	total = n.sum(flux_no_line)
-	shares = n.arange(0.,1,0.05)
+	shares = n.arange(0.05,1,0.05)
 	data=n.empty((len(shares),12))
 	for ii,share in enumerate(shares):
 		print share, time.time()
-		flux_with_line_clean = lfit.gaussianLine(wavelength,2,total*share,8300,total*(1-share)/len(wavelength))
+		flux_with_line_clean = lfit.gaussianLine(wavelength,4,total*share,8300,total*(1-share)/len(wavelength))
 		flux_with_line = flux_with_line_clean + noise_level * ( n.random.random(len(wavelength))*2.-1. )
 		dat_mean,mI,hI=lfit.fit_Line(wavelength,flux_with_line,error,8300, lineName="O3_5007", continuumSide="left", model="gaussian",p0_sigma=1,DLC=100)
 		data[ii]=dat_mean
 		
 	SNR =data.T[1]/data.T[2]
-	snrBins = n.arange(0,100,2)
+	snrBins = n.arange(0.01,100,2)
 	snrVal = (snrBins[1:]+snrBins[:-1])/2.
 	medianFlux = n.empty(len(snrVal))
 	medianEW = n.empty(len(snrVal))
@@ -55,8 +55,8 @@ for jj,mag in enumerate(iMags):
 	snr5EW[jj] = snr_to_ew(5)
 	snr7EW[jj] = snr_to_ew(7)
 
-n.savetxt("mag-limit-flux-ew-vvdsdeep.dat",n.transpose([iMags, snr5Flux, snr7Flux, snr5EW, snr7EW]))
-n.savetxt("snr-flux-ew-relation-i24-vvdsdeep.dat",n.transpose([	snrVal, medianFlux, medianEW]))
+n.savetxt("mag-limit-flux-ew-deep2.dat",n.transpose([iMags, snr5Flux, snr7Flux, snr5EW, snr7EW]))
+n.savetxt("snr-flux-ew-relation-i24-deep2.dat",n.transpose([	snrVal, medianFlux, medianEW]))
 	
 p.plot(iMags,snr5Flux,'b+',label="SNR=5")
 p.plot(iMags,snr7Flux,'r+',label="SNR=7")
@@ -67,7 +67,7 @@ p.ylim((1e-19,5e-16))
 p.yscale('log')
 p.grid()
 p.legend(loc=3)
-p.savefig("../../../../../snr-mag-flux-vvdsdeep.png")
+p.savefig("../../../../../snr-mag-flux-deep2.png")
 p.clf()
 
 
@@ -80,7 +80,7 @@ p.xlim((21.5,25))
 p.yscale('log')
 p.grid()
 p.legend(loc=3)
-p.savefig("../../../../../snr-mag-ew-vvdsdeep.png")
+p.savefig("../../../../../snr-mag-ew-deep2.png")
 p.clf()
 
 import sys
