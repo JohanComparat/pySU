@@ -1,4 +1,4 @@
-#! ", "usr", "bin", "env python
+#!/usr/bin/env python
 
 """
 This script produces quality plots to check that the LFs are fine.
@@ -18,6 +18,7 @@ plotDir=join(data_dir, "VVDS", "products", "emissionLineLuminosityFunctions", "p
 
 
 lf_measurement_files=glob.glob(join(data_dir,"VVDS", "products", "emissionLineLuminosityFunctions", "O2_3728", "O2_3728-VVDSDEEPI*z0.7*.txt") )
+lf_measurement_files.sort()
 
 lf_ref=lf_measurement_files[-1]
 dataRef = n.loadtxt( lf_ref, unpack=True)
@@ -27,7 +28,7 @@ for jj in range(len(lf_measurement_files[:-1])):
 	lf_obs=lf_measurement_files[jj]
 	data= n.loadtxt( lf_obs, unpack=True)
 	phiRatio[jj] = data[3] / dataRef[3]	
-	print lf_obs[-15:-4]
+	print lf_obs
 	
 
 p.figure(0,(6,6))
@@ -45,6 +46,7 @@ p.savefig(join(plotDir,"O2_3728_VVDSDEEP_trendMag-z0.7.jpg"))
 p.clf()
 
 lf_measurement_files=glob.glob(join(data_dir,"VVDS", "products", "emissionLineLuminosityFunctions", "O2_3728", "O2_3728-VVDSDEEPI*z0.9*.txt") )
+lf_measurement_files.sort()
 
 lf_ref=lf_measurement_files[-1]
 dataRef = n.loadtxt( lf_ref, unpack=True)
@@ -54,7 +56,7 @@ for jj in range(len(lf_measurement_files[:-1])):
 	lf_obs=lf_measurement_files[jj]
 	data= n.loadtxt( lf_obs, unpack=True)
 	phiRatio[jj] = data[3] / dataRef[3]	
-	print lf_obs[-15:-4]
+	print lf_obs
 	
 
 p.figure(0,(6,6))
@@ -72,6 +74,7 @@ p.savefig(join(plotDir,"O2_3728_VVDSDEEP_trendMag-z0.9.jpg"))
 p.clf()
 
 lf_measurement_files=glob.glob(join(data_dir,"VVDS", "products", "emissionLineLuminosityFunctions", "O2_3728", "O2_3728-VVDSDEEPI*z1.1*.txt") )
+lf_measurement_files.sort()
 
 lf_ref=lf_measurement_files[-1]
 dataRef = n.loadtxt( lf_ref, unpack=True)
@@ -81,7 +84,7 @@ for jj in range(len(lf_measurement_files[:-1])):
 	lf_obs=lf_measurement_files[jj]
 	data= n.loadtxt( lf_obs, unpack=True)
 	phiRatio[jj] = data[3] / dataRef[3]	
-	print lf_obs[-15:-4]
+	print lf_obs
 	
 
 p.figure(0,(6,6))
@@ -112,7 +115,7 @@ for jj in range(len(lf_measurement_files[1:])):
 	lf_obs=lf_measurement_files[jj]
 	data= n.loadtxt( lf_obs, unpack=True)
 	phiRatio[jj] = data[3] / dataRef[3]	
-	print lf_obs[-15:-4]
+	print lf_obs
 	
 
 p.figure(0,(6,6))
@@ -141,7 +144,7 @@ for jj in range(len(lf_measurement_files[1:])):
 	lf_obs=lf_measurement_files[jj]
 	data= n.loadtxt( lf_obs, unpack=True)
 	phiRatio[jj] = data[3] / dataRef[3]	
-	print lf_obs[-15:-4]
+	print lf_obs
 	
 
 p.figure(0,(6,6))
@@ -170,7 +173,7 @@ for jj in range(len(lf_measurement_files[1:])):
 	lf_obs=lf_measurement_files[jj]
 	data= n.loadtxt( lf_obs, unpack=True)
 	phiRatio[jj] = data[3] / dataRef[3]	
-	print lf_obs[-15:-4]
+	print lf_obs
 	
 
 p.figure(0,(6,6))
@@ -199,7 +202,7 @@ for jj in range(len(lf_measurement_files[1:])):
 	lf_obs=lf_measurement_files[jj]
 	data= n.loadtxt( lf_obs, unpack=True)
 	phiRatio[jj] = data[3] / dataRef[3]	
-	print lf_obs[-15:-4]
+	print lf_obs
 	
 
 p.figure(0,(6,6))
