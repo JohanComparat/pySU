@@ -112,7 +112,7 @@ dataRef = n.loadtxt( lf_ref, unpack=True)
 phiRatio = n.empty([ len(lf_measurement_files[:-1]), len(dataRef[0]) ])
 label = n.array([ "R<22.5", "R<23.0","R<23.5"])
 for jj in range(len(lf_measurement_files[1:])):
-	lf_obs=lf_measurement_files[jj]
+	lf_obs=lf_measurement_files[jj+1]
 	data= n.loadtxt( lf_obs, unpack=True)
 	phiRatio[jj] = data[3] / dataRef[3]	
 	print lf_obs
@@ -141,7 +141,7 @@ dataRef = n.loadtxt( lf_ref, unpack=True)
 phiRatio = n.empty([ len(lf_measurement_files[:-1]), len(dataRef[0]) ])
 label = n.array([ "R<22.5", "R<23.0","R<23.5"])
 for jj in range(len(lf_measurement_files[1:])):
-	lf_obs=lf_measurement_files[jj]
+	lf_obs=lf_measurement_files[jj+1]
 	data= n.loadtxt( lf_obs, unpack=True)
 	phiRatio[jj] = data[3] / dataRef[3]	
 	print lf_obs
@@ -170,7 +170,7 @@ dataRef = n.loadtxt( lf_ref, unpack=True)
 phiRatio = n.empty([ len(lf_measurement_files[:-1]), len(dataRef[0]) ])
 label = n.array([ "R<22.5", "R<23.0","R<23.5"])
 for jj in range(len(lf_measurement_files[1:])):
-	lf_obs=lf_measurement_files[jj]
+	lf_obs=lf_measurement_files[jj+1]
 	data= n.loadtxt( lf_obs, unpack=True)
 	phiRatio[jj] = data[3] / dataRef[3]	
 	print lf_obs
@@ -199,7 +199,7 @@ dataRef = n.loadtxt( lf_ref, unpack=True)
 phiRatio = n.empty([ len(lf_measurement_files[:-1]), len(dataRef[0]) ])
 label = n.array([ "R<22.5", "R<23.0","R<23.5"])
 for jj in range(len(lf_measurement_files[1:])):
-	lf_obs=lf_measurement_files[jj]
+	lf_obs=lf_measurement_files[jj+1]
 	data= n.loadtxt( lf_obs, unpack=True)
 	phiRatio[jj] = data[3] / dataRef[3]	
 	print lf_obs
