@@ -1,0 +1,226 @@
+#! ", "usr", "bin", "env python
+
+"""
+This script produces quality plots to check that the LFs are fine.
+"""
+
+import sys
+import os
+from os.path import join
+data_dir = os.environ['DATA_DIR']
+import glob
+
+from lib_plot import *
+#from lineListAir import *
+SNlim = 5
+
+plotDir=join(data_dir, "VVDS", "products", "emissionLineLuminosityFunctions", "plotLF-ratio")
+
+
+lf_measurement_files=glob.glob(join(data_dir,"VVDS", "products", "emissionLineLuminosityFunctions", "O2_3728", "O2_3728-VVDSDEEPI*z0.7*.txt") )
+
+lf_ref=lf_measurement_files[-1]
+dataRef = n.loadtxt( lf_ref, unpack=True)
+phiRatio = n.empty([ len(lf_measurement_files[:-1]), len(dataRef[0]) ])
+label = n.array(["I<22.0", "I<22.5", "I<23.0","I<23.5"])
+for jj in range(len(lf_measurement_files[:-1])):
+	lf_obs=lf_measurement_files[jj]
+	data= n.loadtxt( lf_obs, unpack=True)
+	phiRatio[jj] = data[3] / dataRef[3]	
+	print lf_obs[-15:-4]
+	
+
+p.figure(0,(6,6))
+for jj in range(len(label)):
+	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+
+p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
+p.ylabel(r'$\Phi/\Phi_{ref}$')
+p.xscale('log')
+p.xlim((1e40,1e43))
+p.ylim((-0.05,1.05))
+p.grid()
+p.legend(loc=2)
+p.savefig(join(plotDir,"O2_3728_VVDSDEEP_trendMag-z0.7.jpg"))
+p.clf()
+
+lf_measurement_files=glob.glob(join(data_dir,"VVDS", "products", "emissionLineLuminosityFunctions", "O2_3728", "O2_3728-VVDSDEEPI*z0.9*.txt") )
+
+lf_ref=lf_measurement_files[-1]
+dataRef = n.loadtxt( lf_ref, unpack=True)
+phiRatio = n.empty([ len(lf_measurement_files[:-1]), len(dataRef[0]) ])
+label = n.array(["I<22.0", "I<22.5", "I<23.0","I<23.5"])
+for jj in range(len(lf_measurement_files[:-1])):
+	lf_obs=lf_measurement_files[jj]
+	data= n.loadtxt( lf_obs, unpack=True)
+	phiRatio[jj] = data[3] / dataRef[3]	
+	print lf_obs[-15:-4]
+	
+
+p.figure(0,(6,6))
+for jj in range(len(label)):
+	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+
+p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
+p.ylabel(r'$\Phi/\Phi_{ref}$')
+p.xscale('log')
+p.xlim((1e40,1e43))
+p.ylim((-0.05,1.05))
+p.grid()
+p.legend(loc=2)
+p.savefig(join(plotDir,"O2_3728_VVDSDEEP_trendMag-z0.9.jpg"))
+p.clf()
+
+lf_measurement_files=glob.glob(join(data_dir,"VVDS", "products", "emissionLineLuminosityFunctions", "O2_3728", "O2_3728-VVDSDEEPI*z1.1*.txt") )
+
+lf_ref=lf_measurement_files[-1]
+dataRef = n.loadtxt( lf_ref, unpack=True)
+phiRatio = n.empty([ len(lf_measurement_files[:-1]), len(dataRef[0]) ])
+label = n.array(["I<22.0", "I<22.5", "I<23.0","I<23.5"])
+for jj in range(len(lf_measurement_files[:-1])):
+	lf_obs=lf_measurement_files[jj]
+	data= n.loadtxt( lf_obs, unpack=True)
+	phiRatio[jj] = data[3] / dataRef[3]	
+	print lf_obs[-15:-4]
+	
+
+p.figure(0,(6,6))
+for jj in range(len(label)):
+	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+
+p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
+p.ylabel(r'$\Phi/\Phi_{ref}$')
+p.xscale('log')
+p.xlim((1e40,1e43))
+p.ylim((-0.05,1.05))
+p.grid()
+p.legend(loc=2)
+p.savefig(join(plotDir,"O2_3728_VVDSDEEP_trendMag-z1.1.jpg"))
+p.clf()
+
+
+plotDir=join(data_dir, "DEEP2", "products", "emissionLineLuminosityFunctions", "plotLF-ratio")
+
+lf_measurement_files=glob.glob(join(data_dir,"DEEP2", "products", "emissionLineLuminosityFunctions", "O2_3728", "O2_3728-*z1*.txt") )
+lf_measurement_files.sort()
+
+lf_ref=lf_measurement_files[0]
+dataRef = n.loadtxt( lf_ref, unpack=True)
+phiRatio = n.empty([ len(lf_measurement_files[:-1]), len(dataRef[0]) ])
+label = n.array([ "R<22.5", "R<23.0","R<23.5"])
+for jj in range(len(lf_measurement_files[1:])):
+	lf_obs=lf_measurement_files[jj]
+	data= n.loadtxt( lf_obs, unpack=True)
+	phiRatio[jj] = data[3] / dataRef[3]	
+	print lf_obs[-15:-4]
+	
+
+p.figure(0,(6,6))
+for jj in range(len(label)):
+	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+
+p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
+p.ylabel(r'$\Phi/\Phi_{ref}$')
+p.xscale('log')
+p.xlim((1e40,1e43))
+p.ylim((-0.05,1.05))
+p.grid()
+p.legend(loc=2)
+p.savefig(join(plotDir,"O2_3728_DEEP2_trendMag-z1.2.jpg"))
+p.clf()
+
+
+lf_measurement_files=glob.glob(join(data_dir,"DEEP2", "products", "emissionLineLuminosityFunctions", "O2_3728", "O2_3728-*z0.9*.txt") )
+lf_measurement_files.sort()
+
+lf_ref=lf_measurement_files[0]
+dataRef = n.loadtxt( lf_ref, unpack=True)
+phiRatio = n.empty([ len(lf_measurement_files[:-1]), len(dataRef[0]) ])
+label = n.array([ "R<22.5", "R<23.0","R<23.5"])
+for jj in range(len(lf_measurement_files[1:])):
+	lf_obs=lf_measurement_files[jj]
+	data= n.loadtxt( lf_obs, unpack=True)
+	phiRatio[jj] = data[3] / dataRef[3]	
+	print lf_obs[-15:-4]
+	
+
+p.figure(0,(6,6))
+for jj in range(len(label)):
+	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+
+p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
+p.ylabel(r'$\Phi/\Phi_{ref}$')
+p.xscale('log')
+p.xlim((1e40,1e43))
+p.ylim((-0.05,1.05))
+p.grid()
+p.legend(loc=2)
+p.savefig(join(plotDir,"O2_3728_DEEP2_trendMag-z0.9.jpg"))
+p.clf()
+
+
+lf_measurement_files=glob.glob(join(data_dir,"DEEP2", "products", "emissionLineLuminosityFunctions", "O2_3728", "O2_3728-*z0.8*.txt") )
+lf_measurement_files.sort()
+
+lf_ref=lf_measurement_files[0]
+dataRef = n.loadtxt( lf_ref, unpack=True)
+phiRatio = n.empty([ len(lf_measurement_files[:-1]), len(dataRef[0]) ])
+label = n.array([ "R<22.5", "R<23.0","R<23.5"])
+for jj in range(len(lf_measurement_files[1:])):
+	lf_obs=lf_measurement_files[jj]
+	data= n.loadtxt( lf_obs, unpack=True)
+	phiRatio[jj] = data[3] / dataRef[3]	
+	print lf_obs[-15:-4]
+	
+
+p.figure(0,(6,6))
+for jj in range(len(label)):
+	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+
+p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
+p.ylabel(r'$\Phi/\Phi_{ref}$')
+p.xscale('log')
+p.xlim((1e40,1e43))
+p.ylim((-0.05,1.05))
+p.grid()
+p.legend(loc=2)
+p.savefig(join(plotDir,"O2_3728_DEEP2_trendMag-z0.8.jpg"))
+p.clf()
+
+
+lf_measurement_files=glob.glob(join(data_dir,"DEEP2", "products", "emissionLineLuminosityFunctions", "O2_3728", "O2_3728-*z0.7*.txt") )
+lf_measurement_files.sort()
+
+lf_ref=lf_measurement_files[0]
+dataRef = n.loadtxt( lf_ref, unpack=True)
+phiRatio = n.empty([ len(lf_measurement_files[:-1]), len(dataRef[0]) ])
+label = n.array([ "R<22.5", "R<23.0","R<23.5"])
+for jj in range(len(lf_measurement_files[1:])):
+	lf_obs=lf_measurement_files[jj]
+	data= n.loadtxt( lf_obs, unpack=True)
+	phiRatio[jj] = data[3] / dataRef[3]	
+	print lf_obs[-15:-4]
+	
+
+p.figure(0,(6,6))
+for jj in range(len(label)):
+	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+
+p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
+p.ylabel(r'$\Phi/\Phi_{ref}$')
+p.xscale('log')
+p.xlim((1e40,1e43))
+p.ylim((-0.05,1.05))
+p.grid()
+p.legend(loc=2)
+p.savefig(join(plotDir,"O2_3728_DEEP2_trendMag-z0.7.jpg"))
+p.clf()
+
+
+
+
+
+
+
+
+
