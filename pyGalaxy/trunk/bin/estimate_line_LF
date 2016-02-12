@@ -22,7 +22,7 @@ linesFittedVIMOS=n.array([ [[O3_5007,"O3_5007"],[O2_mean,"O2_3728"],[H1_4862,"H1
 
 
 area=24.
-ColorLimS = n.arange(0.,2.1,0.5)
+ColorLimS = n.arange(1.,2.1,0.5)
 for ColorLim in ColorLimS :
 	print "color limit=", ColorLim
 	for ii in range(len(zsVIMOSmin)):
@@ -46,7 +46,7 @@ for ColorLim in ColorLimS :
 			lf.correctVolumeEffect(n.ones_like(lf.LF), n.zeros_like(lf.LF))
 			lf.writeLF(selection,surveyNameSuffix="gr_lt_"+str(n.round(ColorLim,1)))
 
-ColorLimS = n.arange(0.,2.1,0.5)
+ColorLimS = n.arange(1.,2.1,0.5)
 for ColorLim in ColorLimS :
 	print "color limit=", ColorLim
 	for ii in range(len(zsVIMOSmin)):
@@ -70,7 +70,7 @@ for ColorLim in ColorLimS :
 			lf.correctVolumeEffect(n.ones_like(lf.LF), n.zeros_like(lf.LF))
 			lf.writeLF(selection,surveyNameSuffix="rz_lt_"+str(n.round(ColorLim,1)))
 			
-ColorLimS = n.arange(0.,2.1,0.5)
+ColorLimS = n.arange(0.,1.1,0.5)
 for ColorLim in ColorLimS :
 	print "color limit=", ColorLim
 	for ii in range(len(zsVIMOSmin)):
@@ -94,7 +94,7 @@ for ColorLim in ColorLimS :
 			lf.correctVolumeEffect(n.ones_like(lf.LF), n.zeros_like(lf.LF))
 			lf.writeLF(selection,surveyNameSuffix="gr_gt_"+str(n.round(ColorLim,1)))
 
-ColorLimS = n.arange(0.,2.1,0.5)
+ColorLimS = n.arange(0.,1.1,0.5)
 for ColorLim in ColorLimS :
 	print "color limit=", ColorLim
 	for ii in range(len(zsVIMOSmin)):
