@@ -22,8 +22,9 @@ linesFittedVIMOS=n.array([ [[O3_5007,"O3_5007"],[O2_mean,"O2_3728"],[H1_4862,"H1
 
 
 area=24.
-ColorLimS = n.arange(-0.5,2.1,0.5)
+ColorLimS = n.arange(0.,2.1,0.5)
 for ColorLim in ColorLimS :
+	print "color limit=", ColorLim
 	for ii in range(len(zsVIMOSmin)):
 		zmin = zsVIMOSmin[ii]
 		zmax = zsVIMOSmax[ii]
