@@ -36,6 +36,7 @@ for ColorLim in ColorLimS :
 			lf.setWeightArray( 1./(area * lf.catalog['SSR']*lf.catalog['TSR']), area )
 
 			selection = (lf.catalog['TSR']>0) & (lf.catalog['SSR']>0)& (lf.catalog['g']-lf.catalog['r']<ColorLim)
+			print len(selection.nonzero()[0])
 			lf.computeHistogramLF(selection)
 			print "---------------------------------------------------"
 			print line, zmin, zmax, lf.ngals
@@ -45,7 +46,21 @@ for ColorLim in ColorLimS :
 			lf.correctVolumeEffect(n.ones_like(lf.LF), n.zeros_like(lf.LF))
 			lf.writeLF(selection,surveyNameSuffix="gr_lt_"+str(n.round(ColorLim,1)))
 
+ColorLimS = n.arange(0.,2.1,0.5)
+for ColorLim in ColorLimS :
+	print "color limit=", ColorLim
+	for ii in range(len(zsVIMOSmin)):
+		zmin = zsVIMOSmin[ii]
+		zmax = zsVIMOSmax[ii]
+		lineSet=linesFittedVIMOS[ii]
+		for line in lineSet :
+			lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "VIPERS", redshift_catalog = "VIPERS_W14_summary_v1.LFcatalog.fits", luminosityBins = n.logspace(38,45,50), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions/" , zmin = zmin, zmax = zmax)
+			lf.setRedshiftArray( redshiftColumn='zspec' )
+			lf.setRedshiftSelection( redshiftQualityColumn='zflg', lowerBound=0.9, upperBound=100.)
+			lf.setWeightArray( 1./(area * lf.catalog['SSR']*lf.catalog['TSR']), area )
+
 			selection = (lf.catalog['TSR']>0) & (lf.catalog['SSR']>0)& (lf.catalog['r']-lf.catalog['z']<ColorLim)
+			print len(selection.nonzero()[0])
 			lf.computeHistogramLF(selection)
 			print "---------------------------------------------------"
 			print line, zmin, zmax, lf.ngals
@@ -55,7 +70,21 @@ for ColorLim in ColorLimS :
 			lf.correctVolumeEffect(n.ones_like(lf.LF), n.zeros_like(lf.LF))
 			lf.writeLF(selection,surveyNameSuffix="rz_lt_"+str(n.round(ColorLim,1)))
 			
+ColorLimS = n.arange(0.,2.1,0.5)
+for ColorLim in ColorLimS :
+	print "color limit=", ColorLim
+	for ii in range(len(zsVIMOSmin)):
+		zmin = zsVIMOSmin[ii]
+		zmax = zsVIMOSmax[ii]
+		lineSet=linesFittedVIMOS[ii]
+		for line in lineSet :
+			lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "VIPERS", redshift_catalog = "VIPERS_W14_summary_v1.LFcatalog.fits", luminosityBins = n.logspace(38,45,50), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions/" , zmin = zmin, zmax = zmax)
+			lf.setRedshiftArray( redshiftColumn='zspec' )
+			lf.setRedshiftSelection( redshiftQualityColumn='zflg', lowerBound=0.9, upperBound=100.)
+			lf.setWeightArray( 1./(area * lf.catalog['SSR']*lf.catalog['TSR']), area )
+
 			selection = (lf.catalog['TSR']>0) & (lf.catalog['SSR']>0)& (lf.catalog['g']-lf.catalog['r']>ColorLim)
+			print len(selection.nonzero()[0])
 			lf.computeHistogramLF(selection)
 			print "---------------------------------------------------"
 			print line, zmin, zmax, lf.ngals
@@ -65,6 +94,20 @@ for ColorLim in ColorLimS :
 			lf.correctVolumeEffect(n.ones_like(lf.LF), n.zeros_like(lf.LF))
 			lf.writeLF(selection,surveyNameSuffix="gr_gt_"+str(n.round(ColorLim,1)))
 
+ColorLimS = n.arange(0.,2.1,0.5)
+for ColorLim in ColorLimS :
+	print "color limit=", ColorLim
+	for ii in range(len(zsVIMOSmin)):
+		zmin = zsVIMOSmin[ii]
+		zmax = zsVIMOSmax[ii]
+		lineSet=linesFittedVIMOS[ii]
+		for line in lineSet :
+			lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "VIPERS", redshift_catalog = "VIPERS_W14_summary_v1.LFcatalog.fits", luminosityBins = n.logspace(38,45,50), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions/" , zmin = zmin, zmax = zmax)
+			lf.setRedshiftArray( redshiftColumn='zspec' )
+			lf.setRedshiftSelection( redshiftQualityColumn='zflg', lowerBound=0.9, upperBound=100.)
+			lf.setWeightArray( 1./(area * lf.catalog['SSR']*lf.catalog['TSR']), area )
+
+			print len(selection.nonzero()[0])
 			selection = (lf.catalog['TSR']>0) & (lf.catalog['SSR']>0)& (lf.catalog['r']-lf.catalog['z']>ColorLim)
 			lf.computeHistogramLF(selection)
 			print "---------------------------------------------------"
