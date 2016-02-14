@@ -22,6 +22,8 @@ import shlex
 sys.path.insert(0, os.path.abspath('/home/comparat/database/pySU/'))
 sys.path.insert(0, os.path.abspath('/home/comparat/database/pySU/pyGalaxy/'))
 sys.path.insert(0, os.path.abspath('/home/comparat/database/pySU/pyMultidark/'))
+sys.path.insert(0, os.path.abspath('/home/comparat/database/pySU/pyGalaxy/trunk/python/'))
+sys.path.insert(0, os.path.abspath('/home/comparat/database/pySU/pyMultidark/trunk/python/'))
 
 # -- General configuration ------------------------------------------------
 

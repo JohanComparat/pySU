@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# pyELG documentation build configuration file, created by
+# pySU documentation build configuration file, created by
 # sphinx-quickstart on Tue Sep  8 18:11:55 2015.
 #
 # This file is execfile()d with the current directory set to its
@@ -19,7 +19,7 @@ import shlex
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.insert(0, os.path.abspath('/home/comparat/database/pyELG/src/'))
+sys.path.insert(0, os.path.abspath('/home/comparat/database/pySU/'))
 
 # -- General configuration ------------------------------------------------
 
@@ -51,7 +51,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'pyELG'
+project = u'pySU'
 copyright = u'2015, johan comparat'
 author = u'johan comparat'
 
@@ -205,7 +205,7 @@ html_static_path = ['_static']
 #html_search_scorer = 'scorer.js'
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'pyELGdoc'
+htmlhelp_basename = 'pySUdoc'
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -227,7 +227,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  (master_doc, 'pyELG.tex', u'pyELG Documentation',
+  (master_doc, 'pySU.tex', u'pySU Documentation',
    u'johan comparat', 'manual'),
 ]
 
@@ -257,7 +257,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'pyelg', u'pyELG Documentation',
+    (master_doc, 'pysu', u'pySU Documentation',
      [author], 1)
 ]
 
@@ -271,8 +271,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  (master_doc, 'pyELG', u'pyELG Documentation',
-   author, 'pyELG', 'One line description of project.',
+  (master_doc, 'pySU', u'pySU Documentation',
+   author, 'pySU', 'One line description of project.',
    'Miscellaneous'),
 ]
 
