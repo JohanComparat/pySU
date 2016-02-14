@@ -52,6 +52,8 @@
 <span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s">&#39;pdf&#39;</span><span class="p">)</span>
 <span class="n">matplotlib</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s">&#39;font.size&#39;</span><span class="p">]</span><span class="o">=</span><span class="mi">14</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">p</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">join</span>
+
 
 <div class="viewcode-block" id="plotRaDecEBV"><a class="viewcode-back" href="../lib_plot.html#lib_plot.plotRaDecEBV">[docs]</a><span class="k">def</span> <span class="nf">plotRaDecEBV</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span><span class="n">dec</span><span class="p">,</span><span class="n">ebv</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">pDir</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;</span>
@@ -71,7 +73,7 @@
 	<span class="n">cb</span><span class="o">=</span><span class="n">p</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
 	<span class="n">cb</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="s">&#39;E(B-V)&#39;</span><span class="p">)</span>
 	<span class="n">p</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
-	<span class="n">p</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">pDir</span> <span class="o">+</span> <span class="n">name</span><span class="p">)</span>
+	<span class="n">p</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">pDir</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
 	<span class="n">p</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="plotZ_SSR"><a class="viewcode-back" href="../lib_plot.html#lib_plot.plotZ_SSR">[docs]</a><span class="k">def</span> <span class="nf">plotZ_SSR</span><span class="p">(</span><span class="n">zz</span><span class="p">,</span><span class="n">ssr</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">ylab</span><span class="p">,</span><span class="n">pDir</span><span class="p">):</span>
@@ -91,7 +93,7 @@
 	<span class="c">#p.ylim((-17.5,-14.5))</span>
 	<span class="n">p</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">1.4</span><span class="p">))</span>
 	<span class="n">p</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
-	<span class="n">p</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">pDir</span> <span class="o">+</span> <span class="n">name</span><span class="p">)</span>
+	<span class="n">p</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">pDir</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
 	<span class="n">p</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="plot_I_TSR"><a class="viewcode-back" href="../lib_plot.html#lib_plot.plot_I_TSR">[docs]</a><span class="k">def</span> <span class="nf">plot_I_TSR</span><span class="p">(</span><span class="n">mag</span><span class="p">,</span><span class="n">tsr</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">ylab</span><span class="p">,</span><span class="n">pDir</span><span class="p">):</span>
@@ -111,7 +113,7 @@
 	<span class="c">#p.ylim((-17.5,-14.5))</span>
 	<span class="c">#p.xlim((0.1,1.4))</span>
 	<span class="n">p</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
-	<span class="n">p</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">pDir</span> <span class="o">+</span> <span class="n">name</span><span class="p">)</span>
+	<span class="n">p</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">pDir</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
 	<span class="n">p</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
 
 
@@ -136,7 +138,7 @@
 	<span class="n">p</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="o">-</span><span class="mf">17.5</span><span class="p">,</span><span class="o">-</span><span class="mf">14.5</span><span class="p">))</span>
 	<span class="n">p</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">1.4</span><span class="p">))</span>
 	<span class="n">p</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
-	<span class="n">p</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">pDir</span> <span class="o">+</span> <span class="n">name</span><span class="p">)</span>
+	<span class="n">p</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">pDir</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
 	<span class="n">p</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="plotZ_EW"><a class="viewcode-back" href="../lib_plot.html#lib_plot.plotZ_EW">[docs]</a><span class="k">def</span> <span class="nf">plotZ_EW</span><span class="p">(</span><span class="n">zz</span><span class="p">,</span><span class="n">ew</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">ylab</span><span class="p">,</span><span class="n">pDir</span><span class="p">):</span>
@@ -159,7 +161,7 @@
 	<span class="n">p</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
 	<span class="n">p</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">1.4</span><span class="p">))</span>
 	<span class="n">p</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
-	<span class="n">p</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">pDir</span> <span class="o">+</span> <span class="n">name</span><span class="p">)</span>
+	<span class="n">p</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">pDir</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
 	<span class="n">p</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="plotZ_Luminosity"><a class="viewcode-back" href="../lib_plot.html#lib_plot.plotZ_Luminosity">[docs]</a><span class="k">def</span> <span class="nf">plotZ_Luminosity</span><span class="p">(</span><span class="n">zz</span><span class="p">,</span><span class="n">lum</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">ylab</span><span class="p">,</span><span class="n">pDir</span><span class="p">):</span>
@@ -182,7 +184,7 @@
 	<span class="n">p</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="mi">39</span><span class="p">,</span><span class="mi">44</span><span class="p">))</span>
 	<span class="n">p</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">1.4</span><span class="p">))</span>
 	<span class="n">p</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
-	<span class="n">p</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">pDir</span> <span class="o">+</span> <span class="n">name</span><span class="p">)</span>
+	<span class="n">p</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">pDir</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
 	<span class="n">p</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="plot_EW_LF_measurement"><a class="viewcode-back" href="../lib_plot.html#lib_plot.plot_EW_LF_measurement">[docs]</a><span class="k">def</span> <span class="nf">plot_EW_LF_measurement</span><span class="p">(</span><span class="n">lf_fits_file</span><span class="p">,</span><span class="n">lf_measurement_file</span><span class="p">,</span><span class="n">plotDir</span><span class="p">):</span>
@@ -257,7 +259,7 @@
 	<span class="n">p</span><span class="o">.</span><span class="n">xscale</span><span class="p">(</span><span class="s">&#39;log&#39;</span><span class="p">)</span>
 	<span class="n">p</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
 
-	<span class="n">p</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">plotDir</span><span class="o">+</span><span class="n">lf_measurement_file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">][:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span><span class="o">+</span><span class="s">&quot;.pdf&quot;</span><span class="p">)</span>
+	<span class="n">p</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">plotDir</span><span class="p">,</span><span class="n">lf_measurement_file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">][:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span><span class="o">+</span><span class="s">&quot;.pdf&quot;</span><span class="p">))</span>
 	<span class="n">p</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="plot_EW_LF_measurement_simulation"><a class="viewcode-back" href="../lib_plot.html#lib_plot.plot_EW_LF_measurement_simulation">[docs]</a><span class="k">def</span> <span class="nf">plot_EW_LF_measurement_simulation</span><span class="p">(</span><span class="n">lf_fits_file</span><span class="p">,</span><span class="n">lf_measurement_file</span><span class="p">,</span><span class="n">plotDir</span><span class="p">,</span><span class="n">lfsdata</span><span class="p">):</span>
@@ -346,7 +348,7 @@
 	<span class="n">p</span><span class="o">.</span><span class="n">xscale</span><span class="p">(</span><span class="s">&#39;log&#39;</span><span class="p">)</span>
 	<span class="n">p</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
 
-	<span class="n">p</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">plotDir</span><span class="o">+</span><span class="n">lf_measurement_file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">][:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span><span class="o">+</span><span class="s">&quot;.pdf&quot;</span><span class="p">)</span>
+	<span class="n">p</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">plotDir</span><span class="p">,</span><span class="n">lf_measurement_file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">][:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span><span class="o">+</span><span class="s">&quot;.pdf&quot;</span><span class="p">))</span>
 	<span class="n">p</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span></div>
 </pre></div>
 

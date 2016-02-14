@@ -64,30 +64,19 @@
 <dl class="class">
 <dt>
 <em class="property">class </em><code class="descclassname">LineLuminosityFunction.</code><code class="descname">LineLuminosityFunction</code><span class="sig-paren">(</span><em>lineWavelength=3727.4228417998916</em>, <em>lineName='O2_3728'</em>, <em>cosmology=FlatLambdaCDM(H0=70 km / (Mpc s)</em>, <em>Om0=0.3</em>, <em>Tcmb0=2.725 K</em>, <em>Neff=3.04</em>, <em>m_nu=[ 0.  0.  0.] eV</em>, <em>Ob0=None)</em>, <em>surveyName='DEEP2'</em>, <em>redshift_catalog='zcat.deep2.dr4.v2.LFcatalog.fits'</em>, <em>SNlimit=5.0</em>, <em>luminosityBins=array([  1.00000000e+38</em>, <em>1.38949549e+38</em>, <em>1.93069773e+38</em>, <em>2.68269580e+38</em>, <em>3.72759372e+38</em>, <em>5.17947468e+38</em>, <em>7.19685673e+38</em>, <em>1.00000000e+39</em>, <em>1.38949549e+39</em>, <em>1.93069773e+39</em>, <em>2.68269580e+39</em>, <em>3.72759372e+39</em>, <em>5.17947468e+39</em>, <em>7.19685673e+39</em>, <em>1.00000000e+40</em>, <em>1.38949549e+40</em>, <em>1.93069773e+40</em>, <em>2.68269580e+40</em>, <em>3.72759372e+40</em>, <em>5.17947468e+40</em>, <em>7.19685673e+40</em>, <em>1.00000000e+41</em>, <em>1.38949549e+41</em>, <em>1.93069773e+41</em>, <em>2.68269580e+41</em>, <em>3.72759372e+41</em>, <em>5.17947468e+41</em>, <em>7.19685673e+41</em>, <em>1.00000000e+42</em>, <em>1.38949549e+42</em>, <em>1.93069773e+42</em>, <em>2.68269580e+42</em>, <em>3.72759372e+42</em>, <em>5.17947468e+42</em>, <em>7.19685673e+42</em>, <em>1.00000000e+43</em>, <em>1.38949549e+43</em>, <em>1.93069773e+43</em>, <em>2.68269580e+43</em>, <em>3.72759372e+43</em>, <em>5.17947468e+43</em>, <em>7.19685673e+43</em>, <em>1.00000000e+44</em>, <em>1.38949549e+44</em>, <em>1.93069773e+44</em>, <em>2.68269580e+44</em>, <em>3.72759372e+44</em>, <em>5.17947468e+44</em>, <em>7.19685673e+44</em>, <em>1.00000000e+45])</em>, <em>Nstack=400</em>, <em>Nclustering=400</em>, <em>outputFolder='emissionLineLuminosityFunctions/'</em>, <em>zmin=0.6</em>, <em>zmax=0.8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/LineLuminosityFunction.html#LineLuminosityFunction"><span class="viewcode-link">[source]</span></a></dt>
-<dd><blockquote>
-<div>The line luminosity function class
+<dd><p>The line luminosity function class
 :param lineWavelength: restframe wavelength in the air
 :param lineName: name of the line used in the catalogs.
-:param cosmology: cosmology used (astropy class) Default H0=70,Omega matter=0.3</div></blockquote>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>surveyName</strong> &#8211; Name of the survey used (needs to be the one given in the database)</li>
-<li><strong>redshift_catalog</strong> &#8211; name of the redshift catalog 
+:param cosmology: cosmology used (astropy class) Default H0=70,Omega matter=0.3
+:param surveyName: Name of the survey used (needs to be the one given in the database)
+:param redshift_catalog: name of the redshift catalog 
 :param SNlimit: signal to noise ratio limit. For a line measurement to be included SN of the line must be greater than SNlimit.
 :param luminosityBins: bins in luminosity equally spaced in log space.
 :param Nstack: number of spectra per stack
-:param Nclustering:     number of spectra per clustering sample from the brightest to the faintest
+:param Nclustering: number of spectra per clustering sample from the brightest to the faintest
 :param outputFolder: folder where the results will be written
 :param zmin: minimum redshift included
-:param zmax: maximum redshift included</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
+:param zmax: maximum redshift included</p>
 <dl class="method">
 <dt id="LineLuminosityFunction.LineLuminosityFunction.computeHistogramLF">
 <code class="descname">computeHistogramLF</code><span class="sig-paren">(</span><em>sel</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/LineLuminosityFunction.html#LineLuminosityFunction.computeHistogramLF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#LineLuminosityFunction.LineLuminosityFunction.computeHistogramLF" title="Permalink to this definition">¶</a></dt>

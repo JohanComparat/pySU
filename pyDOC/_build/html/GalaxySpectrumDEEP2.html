@@ -59,7 +59,7 @@
 <p>The class GalaxySpectrumDEEP2 is dedicated to handling DEEP2 spectra</p>
 <dl class="class">
 <dt>
-<em class="property">class </em><code class="descclassname">GalaxySpectrumDEEP2.</code><code class="descname">GalaxySpectrumDEEP2</code><span class="sig-paren">(</span><em>catalog_entry</em>, <em>calibration=True</em>, <em>lineFits=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GalaxySpectrumDEEP2.html#GalaxySpectrumDEEP2"><span class="viewcode-link">[source]</span></a></dt>
+<em class="property">class </em><code class="descclassname">GalaxySpectrumDEEP2.</code><code class="descname">GalaxySpectrumDEEP2</code><span class="sig-paren">(</span><em>catalog_entry</em>, <em>survey=&lt;GalaxySurveyDEEP2.GalaxySurveyDEEP2 instance&gt;</em>, <em>calibration=False</em>, <em>lineFits=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GalaxySpectrumDEEP2.html#GalaxySpectrumDEEP2"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Loads the environement proper to the DEEP2 survey.</p>
 <p>Two modes of operation : flux calibration or line fitting</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -68,6 +68,7 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>catalog_entry</strong> &#8211; an entry of the deep2 catalog</li>
+<li><strong>survey</strong> &#8211; survey python class</li>
 <li><strong>calibration</strong> &#8211; if the class is loaded with intention of flux calibrating the DEEP2 data.</li>
 <li><strong>lineFits</strong> &#8211; if the class is loaded with intention of fitting line fluxes on the DEEP2 spectra.</li>
 </ul>

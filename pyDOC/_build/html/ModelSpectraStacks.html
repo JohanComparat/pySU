@@ -73,13 +73,21 @@
 </div>
 <dl class="class">
 <dt id="ModelSpectraStacks.ModelSpectraStacks">
-<em class="property">class </em><code class="descclassname">ModelSpectraStacks.</code><code class="descname">ModelSpectraStacks</code><span class="sig-paren">(</span><em>stack_file</em>, <em>cosmo=FlatLambdaCDM(H0=70 km / (Mpc s)</em>, <em>Om0=0.3</em>, <em>Tcmb0=2.725 K</em>, <em>Neff=3.04</em>, <em>m_nu=[ 0.  0.  0.] eV</em>, <em>Ob0=None)</em>, <em>firefly_min_wavelength=1000.0</em>, <em>firefly_max_wavelength=7500.0</em>, <em>dV=-9999.99</em>, <em>N_spectra_limitFraction=0.8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelSpectraStacks.html#ModelSpectraStacks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelSpectraStacks.ModelSpectraStacks" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">ModelSpectraStacks.</code><code class="descname">ModelSpectraStacks</code><span class="sig-paren">(</span><em>stack_file</em>, <em>mode='MILES'</em>, <em>cosmo=FlatLambdaCDM(H0=70 km / (Mpc s)</em>, <em>Om0=0.3</em>, <em>Tcmb0=2.725 K</em>, <em>Neff=3.04</em>, <em>m_nu=[ 0.  0.  0.] eV</em>, <em>Ob0=None)</em>, <em>firefly_min_wavelength=1000.0</em>, <em>firefly_max_wavelength=7500.0</em>, <em>dV=-9999.99</em>, <em>N_spectra_limitFraction=0.8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelSpectraStacks.html#ModelSpectraStacks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelSpectraStacks.ModelSpectraStacks" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class fits the emission lines on the continuum-subtracted stack.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>stack_file</strong> &#8211; fits file generated with a LF in a luminosity bin.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>stack_file</strong> &#8211; fits file generated with a LF in a luminosity bin.</li>
+<li><strong>cosmo</strong> &#8211; cosmology class from astropy</li>
+<li><strong>firefly_min_wavelength</strong> &#8211; minimum wavelength considered by firefly (default : 1000)</li>
+<li><strong>firefly_max_wavelength</strong> &#8211; minimum wavelength considered by firefly (default : 7500)</li>
+<li><strong>dV</strong> &#8211; default value that hold the place (default : -9999.99)</li>
+<li><strong>N_spectra_limitFraction</strong> &#8211; If the stack was made with N spectra. N_spectra_limitFraction selects the points that have were computed using more thant N_spectra_limitFraction * N spectra. (default : 0.8)</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
@@ -87,11 +95,11 @@
 <dt id="ModelSpectraStacks.ModelSpectraStacks.compute_derived_quantities">
 <code class="descname">compute_derived_quantities</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelSpectraStacks.html#ModelSpectraStacks.compute_derived_quantities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelSpectraStacks.ModelSpectraStacks.compute_derived_quantities" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
-<dt>Computes the different line ratios and converts to extinction.</dt>
+<dt>Computes the different line ratios and converts to extinction :</dt>
 <dd><ul class="first last simple">
-<li>Balmer decrement and E(B-V) CORRection using 4862 / 4341</li>
-<li>Balmer decrement and E(B-V) CORRection using 4862 / 4102</li>
-<li>Balmer decrement and E(B-V) CORRection using 4341 / 4102</li>
+<li>Balmer decrement and E(B-V) Correction using 4862 / 4341</li>
+<li>Balmer decrement and E(B-V) Correction using 4862 / 4102</li>
+<li>Balmer decrement and E(B-V) Correction using 4341 / 4102</li>
 <li>O32 : O3/O2</li>
 <li>intrinsic fluxes O3 4960 and 5007</li>
 <li>intrinsic fluxes O2</li>
@@ -112,19 +120,25 @@
 <dl class="method">
 <dt id="ModelSpectraStacks.ModelSpectraStacks.fit_lines_to_lineSpectrum">
 <code class="descname">fit_lines_to_lineSpectrum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelSpectraStacks.html#ModelSpectraStacks.fit_lines_to_lineSpectrum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelSpectraStacks.ModelSpectraStacks.fit_lines_to_lineSpectrum" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fits the emission lines in the line spectrum.</p>
+<dd><p>Fits the emission lines on the line spectrum.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="ModelSpectraStacks.ModelSpectraStacks.interpolate_model">
 <code class="descname">interpolate_model</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelSpectraStacks.html#ModelSpectraStacks.interpolate_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelSpectraStacks.ModelSpectraStacks.interpolate_model" title="Permalink to this definition">¶</a></dt>
-<dd><p>interpolates the model to an array with the same coverage as the stack.</p>
+<dd><p>Interpolates the model to an array with the same coverage as the stack.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="ModelSpectraStacks.ModelSpectraStacks.interpolate_stack">
 <code class="descname">interpolate_stack</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelSpectraStacks.html#ModelSpectraStacks.interpolate_stack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelSpectraStacks.ModelSpectraStacks.interpolate_stack" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads the stack and divides it in three parts to be compared to the model.</p>
+<dd><p>Divides the measured stack in overlapping and non-overlapping parts with the model.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ModelSpectraStacks.ModelSpectraStacks.plot_fit">
+<code class="descname">plot_fit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelSpectraStacks.html#ModelSpectraStacks.plot_fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelSpectraStacks.ModelSpectraStacks.plot_fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the fit.</p>
 </dd></dl>
 
 <dl class="method">
@@ -136,13 +150,13 @@
 <dl class="method">
 <dt id="ModelSpectraStacks.ModelSpectraStacks.save_spectrum">
 <code class="descname">save_spectrum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelSpectraStacks.html#ModelSpectraStacks.save_spectrum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelSpectraStacks.ModelSpectraStacks.save_spectrum" title="Permalink to this definition">¶</a></dt>
-<dd><p>Saves the stack spectrum and the model plus derived quantities.</p>
+<dd><p>Saves the stack spectrum, the model and derived quantities in a single fits file with different hdus.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="ModelSpectraStacks.ModelSpectraStacks.subtract_continuum_model">
 <code class="descname">subtract_continuum_model</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelSpectraStacks.html#ModelSpectraStacks.subtract_continuum_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelSpectraStacks.ModelSpectraStacks.subtract_continuum_model" title="Permalink to this definition">¶</a></dt>
-<dd><p>creates the continuum substracted spectrum</p>
+<dd><p>Creates the continuum substracted spectrum: the &#8216;line&#8217; spectrum.</p>
 </dd></dl>
 
 </dd></dl>
