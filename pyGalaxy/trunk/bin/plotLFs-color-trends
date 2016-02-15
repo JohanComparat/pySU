@@ -17,6 +17,84 @@ SNlim = 5
 plotDir=join(data_dir, "VIPERS", "products", "emissionLineLuminosityFunctions", "plotLF-ratio")
 
 
+lf_measurement_files=glob.glob(join(data_dir,"VIPERS", "products", "emissionLineLuminosityFunctions", "O3_5007", "O3_5007-VIPERS*z0.7*.txt") )
+lf_measurement_files.sort()
+
+lf_ref=lf_measurement_files[0]
+dataRef = n.loadtxt( lf_ref, unpack=True)
+
+label = n.array(["I<21.5", "I<22.0", "I<22.5"])
+phiRatio = n.empty([ 3, len(dataRef[0]) ])
+for ii, jj in enumerate(n.arange(1,4,1)):
+	lf_obs=lf_measurement_files[jj]
+	data= n.loadtxt( lf_obs, unpack=True)
+	phiRatio[ii] = data[3] / dataRef[3]	
+	print lf_obs
+
+p.figure(0,(6,6))
+for jj in range(len(label)):
+	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+
+p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
+p.ylabel(r'$\Phi/\Phi_{ref}$')
+p.xscale('log')
+p.xlim((8e40,5e43))
+p.ylim((-0.05,1.05))
+p.grid()
+p.legend(loc=4)
+p.savefig(join(plotDir,"O3_5007_VIPERS_trend_MagI-z0.75.jpg"))
+p.clf()
+
+
+label = n.array(["g-r>0", "g-r>0.5", "g-r>1", "g-r<1", "g-r<1.5", "g-r<2"])
+phiRatio = n.empty([ 6, len(dataRef[0]) ])
+for ii, jj in enumerate(n.arange(4,10,1)):
+	lf_obs=lf_measurement_files[jj]
+	data= n.loadtxt( lf_obs, unpack=True)
+	phiRatio[ii] = data[3] / dataRef[3]	
+	print lf_obs
+
+p.figure(0,(6,6))
+for jj in range(len(label)):
+	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+
+p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
+p.ylabel(r'$\Phi/\Phi_{ref}$')
+p.xscale('log')
+p.xlim((8e40,5e43))
+p.ylim((-0.05,1.05))
+p.grid()
+p.legend(loc=4)
+p.savefig(join(plotDir,"O3_5007_VIPERS_trend_GR-z0.75.jpg"))
+p.clf()
+
+
+
+label = n.array(["r-z>0", "r-z>0.5", "r-z>1", "r-z<1", "r-z<1.5", "r-z<2"])
+phiRatio = n.empty([ 6, len(dataRef[0]) ])
+for ii, jj in enumerate(n.arange(10,16,1)):
+	lf_obs=lf_measurement_files[jj]
+	data= n.loadtxt( lf_obs, unpack=True)
+	phiRatio[ii] = data[3] / dataRef[3]	
+	print lf_obs
+
+p.figure(0,(6,6))
+for jj in range(len(label)):
+	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+
+p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
+p.ylabel(r'$\Phi/\Phi_{ref}$')
+p.xscale('log')
+p.xlim((8e40,5e43))
+p.ylim((-0.05,1.05))
+p.grid()
+p.legend(loc=4)
+p.savefig(join(plotDir,"O3_5007_VIPERS_trend_RZ-z0.75.jpg"))
+p.clf()
+
+
+sys.exit()
+
 lf_measurement_files=glob.glob(join(data_dir,"VIPERS", "products", "emissionLineLuminosityFunctions", "O2_3728", "O2_3728-VIPERS*z0.7*.txt") )
 lf_measurement_files.sort()
 
