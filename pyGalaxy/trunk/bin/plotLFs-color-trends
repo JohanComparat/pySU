@@ -42,7 +42,7 @@ p.xlim((1e40,1e43))
 p.ylim((-0.05,1.05))
 p.grid()
 p.legend(loc=4)
-p.savefig(join(plotDir,"O2_3728_VIPERS_trendMag-z0.75.jpg"))
+p.savefig(join(plotDir,"O2_3728_VIPERS_trend_MagI-z0.75.jpg"))
 p.clf()
 
 
@@ -65,7 +65,7 @@ p.xlim((1e40,1e43))
 p.ylim((-0.05,1.05))
 p.grid()
 p.legend(loc=4)
-p.savefig(join(plotDir,"O2_3728_VIPERS_trendGR-z0.75.jpg"))
+p.savefig(join(plotDir,"O2_3728_VIPERS_trend_GR-z0.75.jpg"))
 p.clf()
 
 
@@ -89,7 +89,7 @@ p.xlim((1e40,1e43))
 p.ylim((-0.05,1.05))
 p.grid()
 p.legend(loc=4)
-p.savefig(join(plotDir,"O2_3728_VIPERS_trendRZ-z0.75.jpg"))
+p.savefig(join(plotDir,"O2_3728_VIPERS_trend_RZ-z0.75.jpg"))
 p.clf()
 
 
