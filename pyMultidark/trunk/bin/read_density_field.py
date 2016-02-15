@@ -7,6 +7,7 @@ dir = join("/data2", "users", "gustavo", "BigMD", "1Gpc_3840_Planck1_New", "DENS
 filename = "dmdens_cic_087.dat"
 
 outDir =  join("/data2", "DATA", "eBOSS", "Multidark-lightcones", "MD_1Gpc_new_rockS", "densityField")
+path_to_outputCat = join(outDir, "dmdens_cic_087_01.fits")
 
 path_to_file = join(dir,filename)
 
@@ -20,10 +21,10 @@ n.histogram(n.log10(data1))
 c0 = fits.Column(name="densityField",format='D', array=data1 )
 c1 = fits.Column(name="ID",format='I', array=n.arange(len(data1)) )
 
-cols = fits.ColDefs([c0, c1])
+cols = fits.ColDefs([c0])
 
 hdu = fits.BinTableHDU.from_columns(cols)
-hdu.writeto(outputCat)
+hdu.writeto(path_to_outputCat)
 
 
 # create fits file
