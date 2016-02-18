@@ -150,6 +150,109 @@ class MultiDarkSimulation :
         n.savetxt(join(output_dir,name+".bins"),n.transpose([bins]))
 
 
+    def computeDensityFieldDistributionFunction(self, path_to_DF, outputFile, bins ) :
+        """
+        Extracts the distribution of quantity 'name' out of all snapshots of the Multidark simulation.        
+        :param path_to_DF: path to the density field file
+        :param outputFile: where the histogram iswritten
+        :param bins: binning scheme to compute the historgram.
+        """		
+        NperBatch = 512**3
+		Ntotal = 2048**3
+		Nratio = Ntotal / NperBatch
+        #qtyCentral = n.empty( (64,NperBatch) ) 
+		f=open(path_to_DF,'r')
+		qty = n.empty( (Nratio,len(bins)-1) ) 
+		for ii in n.arange(Nratio):
+			data1 =  n.fromfile(f,dtype="float64",count=NperBatch) # 512 cube
+			nnM,bb = n.histogram(n.log10(data1),bins = bins)
+			qty[ii] = nnM
+		        
+        n.savetxt(outputFile+".hist",n.transpose([bins[:-1], bins[1:], qty.sum(axis=0) ]), header = " minLogDelta maxLogDelta N")
+
+	
+    def computeDensityFieldForHaloNumber(self, path_to_DF, path_to_RS, outputFile, gridSize=2048, subgridSize = 256 ) :
+		"""
+        Extracts the distribution of quantity 'name' out of all snapshots of the Multidark simulation.        
+        :param path_to_DF: path to the density field file
+        :param path_to_RS: path to the rockstar halo catalog file
+        :param outputFile: where the histogram iswritten
+        :param bins: binning scheme to compute the historgram.
+		:param gridSize: grid size from the density field
+		:param subgridSize: grid size to compute histograms on and write outputs.
+        """		
+        #In each cell, average the number of counts in the RS file : Ncen Nsat
+		dL = 1000./gridSize
+		NperBatch = subgridSize**3
+		Ntotal = gridSize**3
+		Nratio = Ntotal / NperBatch
+
+		hf=open(path_to_RS,'r')
+		DEFINE x, y, z, c_o_s, 
+		REWRITE halos of interest ?
+		
+		f=open(path_to_DF,'r')
+		out = n.empty( (subgridSize**3, 3) )
+		count = 0
+		countOut = 0
+		for kk in n.arange(gridSize):
+			for jj in n.arange(gridSize):
+				for ii in n.arange(gridSize):
+					sel =( x > dL*(0.5 + ii) ) & ( x < dL*(0.5 + ii + 1) ) & ( y > dL*(0.5 + jj) ) & ( y < dL*(0.5 + jj + 1) ) & ( x > dL*(0.5 + kz) ) & ( z < dL*(0.5 + kk + 1) )
+					Nhalos = len(sel.nonzero()[0])
+					selCen =  (sel) & (CONDITION_CEN)
+					NCentrals = len(selCen.nonzero()[0])
+					deltaValue = n.fromfile(f,dtype="float64",count=1)
+					out[count] = n.array([deltaValue, Nhalos, Ncentrals])
+					if count == subgridSize**3 :
+						dataAB_tot = n.histogram2d(n.log10(out.T[0]), n.log10(out.T[1]) ,bins = [binsA,binsB])
+						dataAB_cen = n.histogram2d(n.log10(out.T[0]), n.log10(out.T[2]) ,bins = [binsA,binsB])
+						f = open(outputFile + "_" +str(countOut)+".pkl" ,'w')
+						cPickle.dump([binsA,binsB,dataAB_tot, dataAB_cen],f)
+						f.close()
+
+						out = n.empty( (subgridSize**3, 3) )
+						countOut +=1 
+					
+					count += 1
+					
+		#GATHER RESULTS
+		fileList = glob.glob(outputFile + "_*.pkl")
+		out_all = n.empty( (Nratio, len(binsA)-1, len(binsB)-1) )
+		out_cen = n.empty( (Nratio, len(binsA)-1, len(binsB)-1) )
+		for ii, el in enumerate(fileList):
+			f = open(el ,'r')
+			binsA,binsB,dataAB_tot, dataAB_cen = cPickle.dump([binsA,binsB,dataAB_tot, dataAB_cen],f)
+			f.close()
+			out_all[ii] = dataAB_tot
+			out_cen[ii] = dataAB_cen
+
+		
+		f = open(outputFile + "_all.pkl" ,'w')
+		cPickle.dump([binsA,binsB,n.sum(out_all, xis=0), n.sum(out_cen, xis=0)],f)
+		f.close()
+
+		
+    def computeDensityFieldHaloCorrelation(self, path_to_DF, path_to_RS, outputFile, bins ) :
+		"""
+        Extracts the distribution of quantity 'name' out of all snapshots of the Multidark simulation.        
+        :param path_to_DF: path to the density field file
+        :param path_to_RS: path to the rockstar halo catalog file
+        :param outputFile: where the histogram iswritten
+        :param bins: binning scheme to compute the historgram.
+        """		
+        #In each cell, average the number of counts in the RS file : Ncen Nsat
+		NperBatch = 512**3
+		Ntotal = 2048**3
+		Nratio = Ntotal / NperBatch
+
+		dL = 1000/2048.
+		
+		f=open(path_to_DF,'r')
+		for N in n.arange(Ntotal):
+			deltaValue = n.fromfile(f,dtype="float64",count=1) # 512 cube
+			sel =( x > dL*(0.5 + N) ) & ( x < dL*(0.5 + N + 1) )
+		
 
     def combinesSingleDistributionFunction(self, ii, name='Vpeak', bins=10**n.arange(0,3.5,0.01), type = "Central" ) :
         """
