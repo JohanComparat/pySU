@@ -297,7 +297,7 @@ bps1=[10**aa,(bb+cc)/2.,(bb-cc)/2.,"L07"]
 
 # VVDS DEEP
 Lmin, Lmax, Lmean, phi, phiErr, phiErr_poisson, ngals = n.loadtxt(listTxt[13],unpack=True)
-sel = (phi>0)&(Lmean>4 * 10**40)
+sel = (phi>0)&(Lmean>4 * 10**41)
 bps0 = [ Lmean[sel], phi[sel], phiErr[sel], 'VVDSWIDE' ]
 
 bps=[bps0, bps1]
