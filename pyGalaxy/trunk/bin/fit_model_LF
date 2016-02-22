@@ -48,7 +48,7 @@ p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
 	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt=None,elinewidth=1)
 
-p.plot(xF,yM,label='fit' )
+p.plot(xF,yM,label='fit',color='k',lw=2 )
 p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=$'+str(n.round(popt[2],2))+r', $\sigma=0.53$',fontsize=12)
 
 p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
@@ -78,7 +78,7 @@ p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
 	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt=None,elinewidth=1)
 
-p.plot(xF,yM,label='fit' )
+p.plot(xF,yM,label='fit',color='k',lw=2 )
 p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=$'+str(n.round(popt[2],2))+r', $\sigma=0.53$',fontsize=12)
 
 p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
@@ -110,7 +110,7 @@ p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
 	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt=None,elinewidth=1)
 
-p.plot(xF,yM,label='fit' )
+p.plot(xF,yM,label='fit',color='k',lw=2 )
 p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=-1.8$'+r', $\sigma=0.53$',fontsize=12)
 
 p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
@@ -142,7 +142,7 @@ p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
 	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt=None,elinewidth=1)
 
-p.plot(xF,yM,label='fit' )
+p.plot(xF,yM,label='fit',color='k',lw=2 )
 p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=-1.8$'+r', $\sigma=0.53$',fontsize=12)
 
 p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
@@ -174,7 +174,7 @@ p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
 	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt=None,elinewidth=1)
 
-p.plot(xF,yM,label='fit' )
+p.plot(xF,yM,label='fit',color='k',lw=2 )
 p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=-1.8$'+r', $\sigma=0.53$',fontsize=12)
 
 p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
@@ -205,7 +205,7 @@ p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
 	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt=None,elinewidth=1)
 
-p.plot(xF,yM,label='fit' )
+p.plot(xF,yM,label='fit',color='k',lw=2 )
 p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=-1.8$'+r', $\sigma=0.53$',fontsize=12)
 
 p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
@@ -254,7 +254,7 @@ p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
 	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt=None,elinewidth=1)
 
-p.plot(xF,yM,label='fit' )
+p.plot(xF,yM,label='fit',color='k',lw=2 )
 p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=$'+str(n.round(popt[2],2))+r', $\sigma=0.53$',fontsize=12)
 
 p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
@@ -286,7 +286,7 @@ p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
 	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt=None,elinewidth=1)
 
-p.plot(xF,yM,label='fit' )
+p.plot(xF,yM,label='fit',color='k',lw=2 )
 p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=-1.4$'+r', $\sigma=0.53$',fontsize=12)
 
 p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
@@ -327,7 +327,7 @@ p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
 	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt=None,elinewidth=1)
 
-p.plot(xF,yM,label='fit' )
+p.plot(xF,yM,label='fit',color='k',lw=2 )
 p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=-1.4$'+r', $\sigma=0.53$',fontsize=12)
 
 p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
@@ -378,7 +378,7 @@ p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
 	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt=None,elinewidth=1)
 
-p.plot(xF,yM,label='fit' )
+p.plot(xF,yM,label='fit',color='k',lw=2 )
 p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=-1.4$'+r', $\sigma=0.53$',fontsize=12)
 
 p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
@@ -438,7 +438,7 @@ p.axes([0.2,0.2,0.75,0.75])
 for ii in range(len(x)):
 	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt=None,elinewidth=1)
 
-p.plot(xF,yM,label='fit' )
+p.plot(xF,yM,label='fit',color='k',lw=2 )
 p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=-1.8$ '+r', $\sigma=0.53$',fontsize=12)
 
 p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
@@ -480,7 +480,7 @@ p.axes([0.2,0.2,0.75,0.75])
 for ii in range(len(x)):
 	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt=None,elinewidth=1)
 
-p.plot(xF,yM,label='fit' )
+p.plot(xF,yM,label='fit',color='k',lw=2 )
 p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=-1.8$ '+r', $\sigma=0.53$',fontsize=12)
 
 p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
@@ -514,7 +514,7 @@ p.axes([0.2,0.2,0.75,0.75])
 for ii in range(len(x)):
 	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt=None,elinewidth=1)
 
-p.plot(xF,yM,label='fit' )
+p.plot(xF,yM,label='fit',color='k',lw=2 )
 p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=-1.8$ '+r', $\sigma=0.53$',fontsize=12)
 
 p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
@@ -604,7 +604,7 @@ p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
 	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt=None,elinewidth=1)
 
-p.plot(xF,yM,label='fit' )
+p.plot(xF,yM,label='fit',color='k',lw=2 )
 p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+ str(n.round(n.log10(popt[1]),2)) +r', $\alpha=$'+ str(n.round(popt[2],2))+r', $\sigma=$'+ str(n.round(popt[3],2)) ,fontsize=12)
 p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi$ [Mpc$^{-3}/$dlog L]')
