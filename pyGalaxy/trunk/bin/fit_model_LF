@@ -46,7 +46,15 @@ yM = modelFit.model_to_fit(n.log10(xF),popt[0],popt[1],popt[2])#,popt[3])
 p.figure(1,(4.5,4.5))
 p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
-	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none')
+	if name=="VVDSWIDE":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='g')
+	elif name=="VVDSDEEP":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='b')
+	elif name=="DEEP2":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='r')
+	else :
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='m')
+		
 
 p.plot(xF,yM,label='fit',color='k',lw=2 )
 p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=$'+str(n.round(popt[2],2))+r', $\sigma=0.53$',fontsize=12)
@@ -55,6 +63,8 @@ p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi$ [Mpc$^{-3}/$dlog L]')
 p.yscale('log')
 p.xscale('log')
+p.text(2e42,2e-2,"z=0.292")
+
 p.xlim((1e39,1e44))
 p.ylim((1e-6,1e-1))
 p.grid()
@@ -70,6 +80,7 @@ listFits = n.array([ el[:-4]+".fits" for el in listTxt[ids]])
 listToFit = n.transpose([listFits, listTxt[ids]])
 modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="H1_4862", cosmology = cosmo, LF_file_list = listToFit, model='Saunders3P', p0=[41.,10**(-1.7), -1.5], outputDirectory= join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions", "H1_4862"), fileName= fileName, fixedSigma = 0.53)
 
+
 popt,popc,xF,yF,yeF, x, y, ye, name=modelFit.fitModel()
 
 yM = modelFit.model_to_fit(n.log10(xF),popt[0],popt[1],popt[2])#,popt[3])
@@ -77,7 +88,14 @@ yM = modelFit.model_to_fit(n.log10(xF),popt[0],popt[1],popt[2])#,popt[3])
 p.figure(1,(4.5,4.5))
 p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
-	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none')
+	if name=="VVDSWIDE":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='g')
+	elif name=="VVDSDEEP":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='b')
+	elif name=="DEEP2":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='r')
+	else :
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='m')
 
 p.plot(xF,yM,label='fit',color='k',lw=2 )
 p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=$'+str(n.round(popt[2],2))+r', $\sigma=0.53$',fontsize=12)
@@ -86,6 +104,7 @@ p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi$ [Mpc$^{-3}/$dlog L]')
 p.yscale('log')
 p.xscale('log')
+p.text(2e42,2e-2,"z=0.397")
 p.xlim((1e39,1e44))
 p.ylim((1e-6,1e-1))
 p.grid()
@@ -109,7 +128,14 @@ yM = modelFit.model_to_fit(n.log10(xF),popt[0],popt[1])#,popt[2])#,popt[3])
 p.figure(1,(4.5,4.5))
 p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
-	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none')
+	if name=="VVDSWIDE":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='g')
+	elif name=="VVDSDEEP":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='b')
+	elif name=="DEEP2":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='r')
+	else :
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='m')
 
 p.plot(xF,yM,label='fit',color='k',lw=2 )
 p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=-1.8$'+r', $\sigma=0.53$',fontsize=12)
@@ -118,6 +144,8 @@ p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi$ [Mpc$^{-3}/$dlog L]')
 p.yscale('log')
 p.xscale('log')
+p.text(2e42,2e-2,"z=0.496")
+
 p.xlim((1e39,1e44))
 p.ylim((1e-6,1e-1))
 p.grid()
@@ -141,7 +169,14 @@ yM = modelFit.model_to_fit(n.log10(xF),popt[0],popt[1])#,popt[2])#,popt[3])
 p.figure(1,(4.5,4.5))
 p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
-	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none')
+	if name=="VVDSWIDE":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='g')
+	elif name=="VVDSDEEP":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='b')
+	elif name=="DEEP2":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='r')
+	else :
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='m')
 
 p.plot(xF,yM,label='fit',color='k',lw=2 )
 p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=-1.8$'+r', $\sigma=0.53$',fontsize=12)
@@ -150,6 +185,8 @@ p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi$ [Mpc$^{-3}/$dlog L]')
 p.yscale('log')
 p.xscale('log')
+p.text(2e42,2e-2,"z=0.652")
+
 p.xlim((1e39,1e44))
 p.ylim((1e-6,1e-1))
 p.grid()
@@ -173,7 +210,14 @@ yM = modelFit.model_to_fit(n.log10(xF),popt[0],popt[1])#,popt[2])#,popt[3])
 p.figure(1,(4.5,4.5))
 p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
-	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none')
+	if name=="VVDSWIDE":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='g')
+	elif name=="VVDSDEEP":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='b')
+	elif name=="DEEP2":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='r')
+	else :
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='m')
 
 p.plot(xF,yM,label='fit',color='k',lw=2 )
 p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=-1.8$'+r', $\sigma=0.53$',fontsize=12)
@@ -182,6 +226,8 @@ p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi$ [Mpc$^{-3}/$dlog L]')
 p.yscale('log')
 p.xscale('log')
+p.text(2e42,2e-2,"z=0.746")
+
 p.xlim((1e39,1e44))
 p.ylim((1e-6,1e-1))
 p.grid()
@@ -204,7 +250,14 @@ yM = modelFit.model_to_fit(n.log10(xF),popt[0],popt[1])#,popt[2])#,popt[3])
 p.figure(1,(4.5,4.5))
 p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
-	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none')
+	if name=="VVDSWIDE":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='g')
+	elif name=="VVDSDEEP":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='b')
+	elif name=="DEEP2":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='r')
+	else :
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='m')
 
 p.plot(xF,yM,label='fit',color='k',lw=2 )
 p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=-1.8$'+r', $\sigma=0.53$',fontsize=12)
@@ -213,6 +266,8 @@ p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi$ [Mpc$^{-3}/$dlog L]')
 p.yscale('log')
 p.xscale('log')
+p.text(2e42,2e-2,"z=0.775")
+
 p.xlim((1e39,1e44))
 p.ylim((1e-6,1e-1))
 p.grid()
@@ -253,7 +308,14 @@ yM = modelFit.model_to_fit(n.log10(xF),popt[0],popt[1],popt[2])#,popt[3])
 p.figure(1,(4.5,4.5))
 p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
-	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none')
+	if name=="VVDSWIDE":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='g')
+	elif name=="VVDSDEEP":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='b')
+	elif name=="DEEP2":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='r')
+	else :
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='m')
 
 p.plot(xF,yM,label='fit',color='k',lw=2 )
 p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=$'+str(n.round(popt[2],2))+r', $\sigma=0.53$',fontsize=12)
@@ -285,7 +347,14 @@ yM = modelFit.model_to_fit(n.log10(xF),popt[0],popt[1])#,popt[3])
 p.figure(1,(4.5,4.5))
 p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
-	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none')
+	if name=="VVDSWIDE":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='g')
+	elif name=="VVDSDEEP":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='b')
+	elif name=="DEEP2":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='r')
+	else :
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='m')
 
 p.plot(xF,yM,label='fit',color='k',lw=2 )
 p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=-1.4$'+r', $\sigma=0.53$',fontsize=12)
@@ -326,7 +395,14 @@ yM = modelFit.model_to_fit(n.log10(xF),popt[0],popt[1])#,popt[3])
 p.figure(1,(4.5,4.5))
 p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
-	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none')
+	if name=="VVDSWIDE":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='g')
+	elif name=="VVDSDEEP":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='b')
+	elif name=="DEEP2":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='r')
+	else :
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='m')
 
 p.plot(xF,yM,label='fit',color='k',lw=2 )
 p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=-1.4$'+r', $\sigma=0.53$',fontsize=12)
@@ -377,7 +453,14 @@ yM = modelFit.model_to_fit(n.log10(xF),popt[0],popt[1])#,popt[3])
 p.figure(1,(4.5,4.5))
 p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
-	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none')
+	if name=="VVDSWIDE":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='g')
+	elif name=="VVDSDEEP":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='b')
+	elif name=="DEEP2":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='r')
+	else :
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='m')
 
 p.plot(xF,yM,label='fit',color='k',lw=2 )
 p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=-1.4$'+r', $\sigma=0.53$',fontsize=12)
@@ -437,7 +520,14 @@ yM = modelFit.model_to_fit(n.log10(xF),popt[0],popt[1])#,popt[2])
 p.figure(1,(4.5,4.5))
 p.axes([0.2,0.2,0.75,0.75])
 for ii in range(len(x)):
-	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none')
+	if name=="VVDSWIDE":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='g')
+	elif name=="VVDSDEEP":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='b')
+	elif name=="DEEP2":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='r')
+	else :
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='m')
 
 p.plot(xF,yM,label='fit',color='k',lw=2 )
 p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=-1.8$ '+r', $\sigma=0.53$',fontsize=12)
@@ -479,7 +569,14 @@ yM = modelFit.model_to_fit(n.log10(xF),popt[0],popt[1])#,popt[2])
 p.figure(1,(4.5,4.5))
 p.axes([0.2,0.2,0.75,0.75])
 for ii in range(len(x)):
-	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none')
+	if name=="VVDSWIDE":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='g')
+	elif name=="VVDSDEEP":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='b')
+	elif name=="DEEP2":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='r')
+	else :
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='m')
 
 p.plot(xF,yM,label='fit',color='k',lw=2 )
 p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=-1.8$ '+r', $\sigma=0.53$',fontsize=12)
@@ -513,7 +610,14 @@ yM = modelFit.model_to_fit(n.log10(xF),popt[0],popt[1])#,popt[2])
 p.figure(1,(4.5,4.5))
 p.axes([0.2,0.2,0.75,0.75])
 for ii in range(len(x)):
-	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none')
+	if name=="VVDSWIDE":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='g')
+	elif name=="VVDSDEEP":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='b')
+	elif name=="DEEP2":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='r')
+	else :
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='m')
 
 p.plot(xF,yM,label='fit',color='k',lw=2 )
 p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=-1.8$ '+r', $\sigma=0.53$',fontsize=12)
@@ -552,7 +656,14 @@ yM = modelFit.model_to_fit(n.log10(xF),popt[0],popt[1],popt[2],popt[3])
 p.figure(1,(4.5,4.5))
 p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
-	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none')
+	if name=="VVDSWIDE":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='g')
+	elif name=="VVDSDEEP":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='b')
+	elif name=="DEEP2":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='r')
+	else :
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='m')
 
 p.plot(xF,yM,label='fit')
 p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+str(n.round(n.log10(popt[1]),2))+r', $\alpha=$'+str(n.round(popt[2],2))+r', $\sigma=$'+str(n.round(popt[3],2)),fontsize=12)
@@ -603,7 +714,14 @@ yM = modelFit.model_to_fit(n.log10(xF),popt[0],popt[1],popt[2],popt[3])
 p.figure(1,(4.5,4.5))
 p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
-	p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none')
+	if name=="VVDSWIDE":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='g')
+	elif name=="VVDSDEEP":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='b')
+	elif name=="DEEP2":
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='r')
+	else :
+		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='m')
 
 p.plot(xF,yM,label='fit',color='k',lw=2 )
 p.title(r'$L_*=$'+str(n.round(popt[0],2))+r', $\phi_*=$'+ str(n.round(n.log10(popt[1]),2)) +r', $\alpha=$'+ str(n.round(popt[2],2))+r', $\sigma=$'+ str(n.round(popt[3],2)) ,fontsize=12)
