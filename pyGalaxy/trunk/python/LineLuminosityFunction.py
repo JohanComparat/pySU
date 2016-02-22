@@ -94,8 +94,8 @@ class ModelLuminosityFunction:
         popt,popc=curve_fit(self.model_to_fit,n.log10(xF),yF,p0=self.p0, sigma=yeF, maxfev=5000000)
         print "result", popt, popc
         #yMod=self.model_to_fit(xF,popt)
-        n.savetxt(self.outputDirectory+self.fileName+".points"),n.transpose([xF,yF,yeF]))
-        f = open(join(self.outputDirectory,self.fileName+".fitInfo",'w')
+        n.savetxt(join(self.outputDirectory,self.fileName+".points"),n.transpose([xF,yF,yeF]))
+        f = open(join(self.outputDirectory,self.fileName+".fitInfo"),'w')
         for el in self.LF_file_list :
             f.write(el[0])
             f.write(' \n')
