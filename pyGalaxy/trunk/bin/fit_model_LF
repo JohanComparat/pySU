@@ -217,7 +217,7 @@ p.ylim((1e-6,1e-1))
 p.grid()
 gl = p.legend(loc=3,fontsize=10)
 gl.set_frame_on(False)
-p.savefig(join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions", "H1_4862",fileName+".pdf")))
+p.savefig(join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions", "H1_4862",fileName+".pdf"))
 p.clf()
 
 
