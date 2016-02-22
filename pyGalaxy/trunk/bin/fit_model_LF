@@ -282,7 +282,7 @@ p.clf()
 #                    O3 5007
 #########################################################################
 #########################################################################
-listTxt = n.array( glob.glob( join(data_dir, "*/products", "emissionLineLuminosityFunctions", "O3_5007", "*.txt")))
+listTxt = n.hstack(( n.array( glob.glob(join(data_dir, "*", "products", "emissionLineLuminosityFunctions", "O3_5007", "O3_5007-DEEP2-z*.txt"))),n.array( glob.glob(join(data_dir, "*", "products", "emissionLineLuminosityFunctions", "O3_5007", "O3_5007-VVDSDEEP-z*.txt"))), n.array( glob.glob(join(data_dir, "*", "products", "emissionLineLuminosityFunctions", "O3_5007", "O3_5007-VVDSWIDE-z*.txt")))  ))
 listTxt.sort()
 
 ########## O3 z=0.35
@@ -290,13 +290,13 @@ ids = n.array([ 0 ])
 fileName = "O3_5007_z0328"
 listFits = n.array([ el[:-4]+".fits" for el in listTxt[ids]])
 listToFit = n.transpose([listFits, listTxt[ids]])
-modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="O3_5007", cosmology = cosmo, LF_file_list = listToFit, model='Saunders3P', p0=[40.1,10**(-1.8), -1.3], outputDirectory= join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions", "O3_5007"), fileName= fileName, fixedSigma = 0.53)
+modelFit = ModelLuminosityFunction(lineWavelength=5008., lineName="O3_5007", cosmology = cosmo, LF_file_list = listToFit, model='Saunders3P', p0=[40.1,10**(-1.8), -1.3], outputDirectory= join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions", "O3_5007"), fileName= fileName, fixedSigma = 0.53)
 
 aa,bb,cc = n.loadtxt(join(modelFit.biblioPts_dir,"ly-OIII-04.dat"),unpack=True)
 bps1=[10**aa,(bb+cc)/2.,(bb-cc)/2.,"L07"]
 
 # VVDS DEEP
-Lmin, Lmax, Lmean, phi, phiErr, phiErr_poisson, ngals = n.loadtxt(listTxt[7],unpack=True)
+Lmin, Lmax, Lmean, phi, phiErr, phiErr_poisson, ngals = n.loadtxt(listTxt[13],unpack=True)
 sel = (phi>0)&(Lmean>4 * 10**40)
 bps0 = [ Lmean[sel], phi[sel], phiErr[sel], 'VVDSWIDE' ]
 
@@ -326,6 +326,8 @@ p.yscale('log')
 p.xscale('log')
 p.xlim((1e39,1e44))
 p.ylim((1e-6,1e-1))
+p.text(2e42,2e-2,"z=0.35")
+
 p.grid()
 gl = p.legend(loc=3,fontsize=10)
 gl.set_frame_on(False)
@@ -333,11 +335,11 @@ p.savefig(join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions",
 p.clf()
 
 ########## O3 z=0.5
-ids = n.array([ 2, 8 ])
+ids = n.array([ 2, 7 ])
 fileName = "O3_5007_z546"
 listFits = n.array([ el[:-4]+".fits" for el in listTxt[ids]])
 listToFit = n.transpose([listFits, listTxt[ids]])
-modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="O3_5007", cosmology = cosmo, LF_file_list = listToFit, model='Saunders2P', p0=[40.1,10**(-1.8)], outputDirectory= join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions", "O3_5007"), fileName= fileName, fixedSigma = 0.53, fixedAlpha = -1.4)
+modelFit = ModelLuminosityFunction(lineWavelength=5008., lineName="O3_5007", cosmology = cosmo, LF_file_list = listToFit, model='Saunders2P', p0=[40.1,10**(-1.8)], outputDirectory= join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions", "O3_5007"), fileName= fileName, fixedSigma = 0.53, fixedAlpha = -1.4)
 
 
 popt,popc,xF,yF,yeF, x, y, ye, name=modelFit.fitModel()
@@ -363,6 +365,8 @@ p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi$ [Mpc$^{-3}/$dlog L]')
 p.yscale('log')
 p.xscale('log')
+p.text(2e42,2e-2,"z=0.546")
+
 p.xlim((1e39,1e44))
 p.ylim((1e-6,1e-1))
 p.grid()
@@ -376,7 +380,7 @@ ids = n.array([ 3 ])
 fileName = "O3_5007_z0651"
 listFits = n.array([ el[:-4]+".fits" for el in listTxt[ids]])
 listToFit = n.transpose([listFits, listTxt[ids]])
-modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="O3_5007", cosmology = cosmo, LF_file_list = listToFit, model='Saunders2P', p0=[40.1,10**(-1.8)], outputDirectory= join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions", "O3_5007"), fileName= fileName, fixedSigma = 0.53, fixedAlpha = -1.4)
+modelFit = ModelLuminosityFunction(lineWavelength=5008., lineName="O3_5007", cosmology = cosmo, LF_file_list = listToFit, model='Saunders2P', p0=[40.1,10**(-1.8)], outputDirectory= join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions", "O3_5007"), fileName= fileName, fixedSigma = 0.53, fixedAlpha = -1.4)
 
 dl=n.loadtxt(join(modelFit.biblioPts_dir,"drake-OIII-063-low.csv"),delimiter=',',unpack=True)
 du=n.loadtxt(join(modelFit.biblioPts_dir,"drake-OIII-063-up.csv"),delimiter=',',unpack=True)
@@ -411,6 +415,8 @@ p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi$ [Mpc$^{-3}/$dlog L]')
 p.yscale('log')
 p.xscale('log')
+p.text(2e42,2e-2,"z=0.65")
+
 p.xlim((1e39,1e44))
 p.ylim((1e-6,1e-1))
 p.grid()
@@ -427,12 +433,12 @@ listToFit = n.transpose([listFits, listTxt[ids]])
 modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="O3_5007", cosmology = cosmo, LF_file_list = listToFit, model='Saunders2P', p0=[40.1,10**(-1.8)], outputDirectory= join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions", "O3_5007"), fileName= fileName, fixedSigma = 0.53, fixedAlpha = -1.4)
 
 # VVDS WIDE
-Lmin, Lmax, Lmean, phi, phiErr, phiErr_poisson, ngals = n.loadtxt(listTxt[18],unpack=True)
+Lmin, Lmax, Lmean, phi, phiErr, phiErr_poisson, ngals = n.loadtxt(listTxt[16],unpack=True)
 sel = (phi>0)&(Lmean>8 * 10**42)
 bps0 = [ Lmean[sel], phi[sel], phiErr[sel], 'VVDSWIDE' ]
 
 # VVDS WIDE
-Lmin, Lmax, Lmean, phi, phiErr, phiErr_poisson, ngals = n.loadtxt(listTxt[13],unpack=True)
+Lmin, Lmax, Lmean, phi, phiErr, phiErr_poisson, ngals = n.loadtxt(listTxt[12],unpack=True)
 sel = (phi>0)&(Lmean> 3*10**41)&(Lmean < 2*10**42)
 bps2 = [ Lmean[sel], phi[sel], phiErr[sel], 'VVDSDEEP' ]
 
@@ -469,6 +475,8 @@ p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi$ [Mpc$^{-3}/$dlog L]')
 p.yscale('log')
 p.xscale('log')
+p.text(2e42,2e-2,"z=0.74")
+
 p.xlim((1e39,1e44))
 p.ylim((1e-6,1e-1))
 p.grid()
@@ -484,18 +492,18 @@ p.clf()
 #########################################################################
 #########################################################################
 
-listTxt = n.array( glob.glob( join(data_dir, "*/products", "emissionLineLuminosityFunctions", "O2_3728/*.txt")))
-
+listTxt = n.hstack(( n.array( glob.glob(join(data_dir, "*", "products", "emissionLineLuminosityFunctions", "O2_3728", "O2_3728-DEEP2-z*.txt"))),n.array( glob.glob(join(data_dir, "*", "products", "emissionLineLuminosityFunctions", "O2_3728", "O2_3728-VVDSDEEP-z*.txt"))), n.array( glob.glob(join(data_dir, "*", "products", "emissionLineLuminosityFunctions", "O2_3728", "O2_3728-VVDSWIDE-z*.txt")))  ))
+listTxt.sort()
 
 ########## O2 z=0.6
-ids = n.array([ 21 ])
+ids = n.array([ 4 ])
 fileName = "O2_3728_z0610"
 listFits = n.array([ el[:-4]+".fits" for el in listTxt[ids]])
 listToFit = n.transpose([listFits, listTxt[ids]])
 modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="O2_3728", cosmology = cosmo, LF_file_list = listToFit, model='Saunders2P', p0=[41.,10**(-1.7)], outputDirectory= join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions", "O2_3728"), fileName= fileName, fixedSigma = 0.53, fixedAlpha=-1.8)
 
 # VVDS WIDE
-Lmin, Lmax, Lmean, phi, phiErr, phiErr_poisson, ngals = n.loadtxt(listTxt[11],unpack=True)
+Lmin, Lmax, Lmean, phi, phiErr, phiErr_poisson, ngals = n.loadtxt(listTxt[17],unpack=True)
 sel = (phi>0)&(Lmean>41)
 bps0 = [ Lmean[sel], phi[sel], phiErr[sel], 'VVDSWIDE' ]
 
@@ -536,6 +544,8 @@ p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi$ [Mpc$^{-3}/$dlog L]')
 p.yscale('log')
 p.xscale('log')
+p.text(2e42,2e-2,"z=0.6")
+
 p.xlim((1e39,1e44))
 p.ylim((1e-6,1e-1))
 p.grid()
@@ -546,14 +556,14 @@ p.clf()
 #"""
 ########## O2 z=0.75
 #"""
-ids = n.array([ 19 ])
+ids = n.array([ 8 ])
 fileName = "O2_3728_z0745"
 listFits = n.array([ el[:-4]+".fits" for el in listTxt[ids]])
 listToFit = n.transpose([listFits, listTxt[ids]])
 modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="O2_3728", cosmology = cosmo, LF_file_list = listToFit, model='Saunders2P', p0=[41.,10**(-1.7)], outputDirectory= join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions", "O2_3728"), fileName= fileName, fixedSigma = 0.53, fixedAlpha = -1.8)
 
 # VVDS WIDE
-Lmin, Lmax, Lmean, phi, phiErr, phiErr_poisson, ngals = n.loadtxt(listTxt[18],unpack=True)
+Lmin, Lmax, Lmean, phi, phiErr, phiErr_poisson, ngals = n.loadtxt(listTxt[21],unpack=True)
 sel = (phi>0)&(Lmean>5*10**42)
 bps0 = [ Lmean[sel], phi[sel], phiErr[sel], 'VVDSWIDE' ]
 
@@ -585,6 +595,8 @@ p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi$ [Mpc$^{-3}/$dlog L]')
 p.yscale('log')
 p.xscale('log')
+p.text(2e42,2e-2,"z=0.75")
+
 p.xlim((1e39,1e44))
 p.ylim((1e-6,1e-1))
 p.grid()
@@ -597,7 +609,7 @@ p.clf()
 
 ########## O2 z=0.8
 #"""
-ids = n.array([ 24 ])
+ids = n.array([ 1 ])
 fileName = "O2_3728_z0804"
 listFits = n.array([ el[:-4]+".fits" for el in listTxt[ids]])
 listToFit = n.transpose([listFits, listTxt[ids]])
@@ -628,6 +640,8 @@ p.yscale('log')
 p.xscale('log')
 p.xlim((1e39,1e44))
 p.ylim((1e-6,1e-1))
+p.text(2e42,2e-2,"z=0.8")
+
 p.grid()
 gl = p.legend(loc=3,fontsize=10)
 gl.set_frame_on(False)
@@ -637,7 +651,7 @@ p.clf()
 
 ########## O2 z=0.93 
 #"""
-ids = n.array([0, 26 ])
+ids = n.array([2, 11 ])
 fileName = "O2_3728_z0935"
 listFits = n.array([ el[:-4]+".fits" for el in listTxt[ids]])
 listToFit = n.transpose([listFits, listTxt[ids]])
@@ -671,6 +685,8 @@ p.xlabel(r'$log_{10}(L$'+lineDict[modelFit.lineName]+'$)$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi$ [Mpc$^{-3}/$dlog L]')
 p.yscale('log')
 p.xscale('log')
+p.text(2e42,2e-2,"z=0.93")
+
 p.xlim((1e39,1e44))
 p.ylim((1e-6,1e-1))
 p.grid()
@@ -682,7 +698,7 @@ p.clf()
 
 ########## O2 z=1.20
 #"""
-ids = n.array([  27 ])
+ids = n.array([  3 ])
 fileName = "O2_3728_z120"
 listFits = n.array([ el[:-4]+".fits" for el in listTxt[ids]])
 listToFit = n.transpose([listFits, listTxt[ids]])
@@ -701,7 +717,7 @@ sel=(n.log10(drake025[0])<41.5)
 bps1=[drake025[0][sel],(drake025[1][sel]+drake025[2][sel])/2.,(-drake025[1][sel]+drake025[2][sel])/2.,"D13"]
 
 # VVDS DEEP
-Lmin, Lmax, Lmean, phi, phiErr, phiErr_poisson, ngals = n.loadtxt(listTxt[8],unpack=True)
+Lmin, Lmax, Lmean, phi, phiErr, phiErr_poisson, ngals = n.loadtxt(listTxt[14],unpack=True)
 sel = (phi>0)&(Lmean>8*10**41)&(Lmean<4*10**42)
 bps2 = [ Lmean[sel], phi[sel], phiErr[sel], 'VVDSDEEP' ]
 
@@ -731,6 +747,8 @@ p.yscale('log')
 p.xscale('log')
 p.xlim((1e39,1e44))
 p.ylim((1e-6,1e-1))
+p.text(2e42,2e-2,"z=1.2")
+
 p.grid()
 gl = p.legend(loc=3,fontsize=10)
 gl.set_frame_on(False)
