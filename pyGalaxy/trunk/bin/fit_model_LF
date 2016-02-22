@@ -46,11 +46,11 @@ yM = modelFit.model_to_fit(n.log10(xF),popt[0],popt[1],popt[2])#,popt[3])
 p.figure(1,(4.5,4.5))
 p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
-	if name=="VVDSWIDE":
+	if name[ii]=="VVDSWIDE":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='g')
-	elif name=="VVDSDEEP":
+	elif name[ii]=="VVDSDEEP":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='b')
-	elif name=="DEEP2":
+	elif name[ii]=="DEEP2":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='r')
 	else :
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='m')
@@ -88,11 +88,11 @@ yM = modelFit.model_to_fit(n.log10(xF),popt[0],popt[1],popt[2])#,popt[3])
 p.figure(1,(4.5,4.5))
 p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
-	if name=="VVDSWIDE":
+	if name[ii]=="VVDSWIDE":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='g')
-	elif name=="VVDSDEEP":
+	elif name[ii]=="VVDSDEEP":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='b')
-	elif name=="DEEP2":
+	elif name[ii]=="DEEP2":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='r')
 	else :
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='m')
@@ -128,11 +128,11 @@ yM = modelFit.model_to_fit(n.log10(xF),popt[0],popt[1])#,popt[2])#,popt[3])
 p.figure(1,(4.5,4.5))
 p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
-	if name=="VVDSWIDE":
+	if name[ii]=="VVDSWIDE":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='g')
-	elif name=="VVDSDEEP":
+	elif name[ii]=="VVDSDEEP":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='b')
-	elif name=="DEEP2":
+	elif name[ii]=="DEEP2":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='r')
 	else :
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='m')
@@ -169,11 +169,11 @@ yM = modelFit.model_to_fit(n.log10(xF),popt[0],popt[1])#,popt[2])#,popt[3])
 p.figure(1,(4.5,4.5))
 p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
-	if name=="VVDSWIDE":
+	if name[ii]=="VVDSWIDE":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='g')
-	elif name=="VVDSDEEP":
+	elif name[ii]=="VVDSDEEP":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='b')
-	elif name=="DEEP2":
+	elif name[ii]=="DEEP2":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='r')
 	else :
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='m')
@@ -210,11 +210,11 @@ yM = modelFit.model_to_fit(n.log10(xF),popt[0],popt[1])#,popt[2])#,popt[3])
 p.figure(1,(4.5,4.5))
 p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
-	if name=="VVDSWIDE":
+	if name[ii]=="VVDSWIDE":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='g')
-	elif name=="VVDSDEEP":
+	elif name[ii]=="VVDSDEEP":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='b')
-	elif name=="DEEP2":
+	elif name[ii]=="DEEP2":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='r')
 	else :
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='m')
@@ -250,11 +250,11 @@ yM = modelFit.model_to_fit(n.log10(xF),popt[0],popt[1])#,popt[2])#,popt[3])
 p.figure(1,(4.5,4.5))
 p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
-	if name=="VVDSWIDE":
+	if name[ii]=="VVDSWIDE":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='g')
-	elif name=="VVDSDEEP":
+	elif name[ii]=="VVDSDEEP":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='b')
-	elif name=="DEEP2":
+	elif name[ii]=="DEEP2":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='r')
 	else :
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='m')
@@ -308,11 +308,11 @@ yM = modelFit.model_to_fit(n.log10(xF),popt[0],popt[1],popt[2])#,popt[3])
 p.figure(1,(4.5,4.5))
 p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
-	if name=="VVDSWIDE":
+	if name[ii]=="VVDSWIDE":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='g')
-	elif name=="VVDSDEEP":
+	elif name[ii]=="VVDSDEEP":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='b')
-	elif name=="DEEP2":
+	elif name[ii]=="DEEP2":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='r')
 	else :
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='m')
@@ -347,11 +347,11 @@ yM = modelFit.model_to_fit(n.log10(xF),popt[0],popt[1])#,popt[3])
 p.figure(1,(4.5,4.5))
 p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
-	if name=="VVDSWIDE":
+	if name[ii]=="VVDSWIDE":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='g')
-	elif name=="VVDSDEEP":
+	elif name[ii]=="VVDSDEEP":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='b')
-	elif name=="DEEP2":
+	elif name[ii]=="DEEP2":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='r')
 	else :
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='m')
@@ -395,11 +395,11 @@ yM = modelFit.model_to_fit(n.log10(xF),popt[0],popt[1])#,popt[3])
 p.figure(1,(4.5,4.5))
 p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
-	if name=="VVDSWIDE":
+	if name[ii]=="VVDSWIDE":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='g')
-	elif name=="VVDSDEEP":
+	elif name[ii]=="VVDSDEEP":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='b')
-	elif name=="DEEP2":
+	elif name[ii]=="DEEP2":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='r')
 	else :
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='m')
@@ -453,11 +453,11 @@ yM = modelFit.model_to_fit(n.log10(xF),popt[0],popt[1])#,popt[3])
 p.figure(1,(4.5,4.5))
 p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
-	if name=="VVDSWIDE":
+	if name[ii]=="VVDSWIDE":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='g')
-	elif name=="VVDSDEEP":
+	elif name[ii]=="VVDSDEEP":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='b')
-	elif name=="DEEP2":
+	elif name[ii]=="DEEP2":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='r')
 	else :
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='m')
@@ -520,11 +520,11 @@ yM = modelFit.model_to_fit(n.log10(xF),popt[0],popt[1])#,popt[2])
 p.figure(1,(4.5,4.5))
 p.axes([0.2,0.2,0.75,0.75])
 for ii in range(len(x)):
-	if name=="VVDSWIDE":
+	if name[ii]=="VVDSWIDE":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='g')
-	elif name=="VVDSDEEP":
+	elif name[ii]=="VVDSDEEP":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='b')
-	elif name=="DEEP2":
+	elif name[ii]=="DEEP2":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='r')
 	else :
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='m')
@@ -569,11 +569,11 @@ yM = modelFit.model_to_fit(n.log10(xF),popt[0],popt[1])#,popt[2])
 p.figure(1,(4.5,4.5))
 p.axes([0.2,0.2,0.75,0.75])
 for ii in range(len(x)):
-	if name=="VVDSWIDE":
+	if name[ii]=="VVDSWIDE":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='g')
-	elif name=="VVDSDEEP":
+	elif name[ii]=="VVDSDEEP":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='b')
-	elif name=="DEEP2":
+	elif name[ii]=="DEEP2":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='r')
 	else :
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='m')
@@ -610,11 +610,11 @@ yM = modelFit.model_to_fit(n.log10(xF),popt[0],popt[1])#,popt[2])
 p.figure(1,(4.5,4.5))
 p.axes([0.2,0.2,0.75,0.75])
 for ii in range(len(x)):
-	if name=="VVDSWIDE":
+	if name[ii]=="VVDSWIDE":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='g')
-	elif name=="VVDSDEEP":
+	elif name[ii]=="VVDSDEEP":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='b')
-	elif name=="DEEP2":
+	elif name[ii]=="DEEP2":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='r')
 	else :
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='m')
@@ -656,11 +656,11 @@ yM = modelFit.model_to_fit(n.log10(xF),popt[0],popt[1],popt[2],popt[3])
 p.figure(1,(4.5,4.5))
 p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
-	if name=="VVDSWIDE":
+	if name[ii]=="VVDSWIDE":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='g')
-	elif name=="VVDSDEEP":
+	elif name[ii]=="VVDSDEEP":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='b')
-	elif name=="DEEP2":
+	elif name[ii]=="DEEP2":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='r')
 	else :
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='m')
@@ -714,11 +714,11 @@ yM = modelFit.model_to_fit(n.log10(xF),popt[0],popt[1],popt[2],popt[3])
 p.figure(1,(4.5,4.5))
 p.axes([0.2,0.2,0.75,0.7])
 for ii in range(len(x)):
-	if name=="VVDSWIDE":
+	if name[ii]=="VVDSWIDE":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='g')
-	elif name=="VVDSDEEP":
+	elif name[ii]=="VVDSDEEP":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='b')
-	elif name=="DEEP2":
+	elif name[ii]=="DEEP2":
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='r')
 	else :
 		p.errorbar(x[ii],y[ii],yerr=ye[ii],label=name[ii],fmt='o',elinewidth=2, mfc='none',color='m')
