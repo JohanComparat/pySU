@@ -94,8 +94,8 @@ class ModelLuminosityFunction:
         popt,popc=curve_fit(self.model_to_fit,n.log10(xF),yF,p0=self.p0, sigma=yeF, maxfev=5000000)
         print "result", popt, popc
         #yMod=self.model_to_fit(xF,popt)
-        n.savetxt(self.outputDirectory+self.fileName+".points",n.transpose([xF,yF,yeF]))
-        f = open(self.outputDirectory+self.fileName+".fitInfo",'w')
+        n.savetxt(self.outputDirectory+self.fileName+".points"),n.transpose([xF,yF,yeF]))
+        f = open(join(self.outputDirectory,self.fileName+".fitInfo",'w')
         for el in self.LF_file_list :
             f.write(el[0])
             f.write(' \n')
@@ -110,15 +110,15 @@ class ModelLuminosityFunction:
         f.write(' \n')
         f.close()
         if len(popt)==4:
-            f = open(self.outputDirectory+self.fileName+".fitInfo.PKL",'w')
+            f = open(join(self.outputDirectory,self.fileName+".fitInfo.PKL"),'w')
             cPickle.dump([popt,popc,self.fileName],f)
             f.close()
         if len(popt)==3:
-            f = open(self.outputDirectory+self.fileName+".fitInfo.PKL",'w')
+            f = open(join(self.outputDirectory,self.fileName+".fitInfo.PKL"),'w')
             cPickle.dump([popt,popc,self.fileName, self.fixedSigma],f)
             f.close()
         if len(popt)==2:
-            f = open(self.outputDirectory+self.fileName+".fitInfo.PKL",'w')
+            f = open(join(self.outputDirectory,self.fileName+".fitInfo.PKL"),'w')
             cPickle.dump([popt,popc,self.fileName, self.fixedSigma, self.fixedAlpha],f)
             f.close()
         return popt,popc,xF,yF,yeF, x, y, ye, name
@@ -150,7 +150,7 @@ class LineLuminosityFunction:
         self.database_dir = os.environ['DATA_DIR']
         self.survey_dir = join( self.database_dir, self.surveyName)
         self.catalog_dir = join(self.survey_dir,"catalogs")
-        self.output_dir = join(self.survey_dir,"products",outputFolder+lineName)
+        self.output_dir = join(self.survey_dir,"products",outputFolder,lineName)
         os.system('mkdir '+self.output_dir)
         hd = fits.open(join(self.catalog_dir,self.redshift_catalog))
         self.catalog = hd[1].data
