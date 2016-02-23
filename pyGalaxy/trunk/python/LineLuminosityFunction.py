@@ -298,11 +298,11 @@ class LineLuminosityFunction:
 
         head= " Lmin & Lmax  & Lmean & phi & phiErr & Ngalaxy"
         f=open(join(self.output_dir , filename + ".tex"),'w')
-        n.savetxt(f, n.transpose([n.log10(self.luminosityBins[:-1][self.xL>self.completness_limit_luminosity]), n.log10(self.luminosityBins[1:][self.xL>self.completness_limit_luminosity]), n.log10(self.xL[self.xL>self.completness_limit_luminosity]), n.log10(self.phi[self.xL>self.completness_limit_luminosity]), n.log10(self.phiErr[self.xL>self.completness_limit_luminosity]), self.ngals[self.xL>self.completness_limit_luminosity]]) ,header= head, delimiter = "&", fmt='%.2e', newline= " \\")
+        n.savetxt(f, n.transpose([n.log10(self.luminosityBins[:-1][self.xL>self.completness_limit_luminosity]), n.log10(self.luminosityBins[1:][self.xL>self.completness_limit_luminosity]), n.log10(self.xL[self.xL>self.completness_limit_luminosity]), n.log10(self.phi[self.xL>self.completness_limit_luminosity]), n.log10(self.phiErr[self.xL>self.completness_limit_luminosity]), self.ngals[self.xL>self.completness_limit_luminosity]]) ,header= head, delimiter = "&", fmt='%10.5f', newline= " \\\\ ")
         f.close()
 
         head= " Lmin & Lmax  & Lmean & phi & phiErr & Ngalaxy "+self.surveyName
         f=open(join(self.output_dir , filename + "summaryLine.tex"),'w')
-        n.savetxt(f, [self.meanRedshift , self.zmin , self.zmax , n.log10(self.volume.value) , self.area , n.sum(self.ngals[self.xL>self.completness_limit_luminosity]) , n.min(self.xL[self.xL>self.completness_limit_luminosity]) , n.max(self.xL[self.xL>self.completness_limit_luminosity])] ,header= head, delimiter = "&", fmt='%.2e', newline= " \\")
+        n.savetxt(f,  n.transpose([self.meanRedshift , self.zmin , self.zmax , n.log10(self.volume.value) , self.area , n.sum(self.ngals[self.xL>self.completness_limit_luminosity]) , n.min(self.xL[self.xL>self.completness_limit_luminosity]) , n.max(self.xL[self.xL>self.completness_limit_luminosity])]) ,header= head, delimiter = "&", fmt='%10.5f', newline= " \\\\ ")
         f.close()
  
