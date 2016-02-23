@@ -118,7 +118,7 @@ for ColorLim in ColorLimS :
 
 """
 area=24.
-MagLimS = [22.5, 22., 21.5, 21]
+MagLimS = [22.5, 22., 21.5]
 for MagLim in MagLimS :
 	print "mag limit=", MagLim
 	for ii in range(len(zsVIMOSmin)):
