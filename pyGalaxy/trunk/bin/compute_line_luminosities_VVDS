@@ -5,17 +5,18 @@ This script computes the line luminosities from of the VVDS survey
 """
 
 # line list to be converted to luminosities
+from os.path import join
+import astropy.cosmology as co
+cosmo=co.Planck15 #co.FlatLambdaCDM(H0=70,Om0=0.3)
+
 from lineListAir import *
 lineList = n.array([[O2,O2_mean,"O2_3728"],[Ne3,Ne3_3869,"Ne3_3869"], [O3,O3_4363,"O3_4363"], [O3,O3_4960,"O3_4960"], [O3,O3_5007,"O3_5007"], [N2,N2_6549,"N2_6549"], [N2,N2_6585,"N2_6585"], [S2,S2_6718,"S2_6718"], [S2,S2_6732,"S2_6732"],  [Ar3,Ar3_7137,"Ar3_7137"],[H1,H1_1216,"H1_1216"], [H1,H1_3970,"H1_3970"], [H1,H1_4102,"H1_4102"], [H1,H1_4341,"H1_4341"], [H1,H1_4862,"H1_4862"], [H1,H1_6564,"H1_6564"]])
-
-import astropy.cosmology as co
-cosmo=co.FlatLambdaCDM(H0=70,Om0=0.3)
 
 from GalaxySurveyVVDS import *
 
 # now for the WIDE
 survey = GalaxySurveyVVDS(redshift_catalog="VVDS_WIDE_summary.linesFitted.fits")
-survey.path_to_output_catalog  =  survey.vvds_catalog_dir+ "VVDS_WIDE_summary.LFcatalog.fits"
+survey.path_to_output_catalog  =  join(survey.vvds_catalog_dir+ "VVDS_WIDE_summary.LFcatalog.Planck15.fits")
 survey.Ngalaxies=len(survey.catalog)
 new_columns = survey.catalog.columns
 
@@ -34,7 +35,7 @@ hdu.writeto(survey.path_to_output_catalog)
 
 # VVDS UDEEP catalog
 survey = GalaxySurveyVVDS(redshift_catalog="VVDS_UDEEP_summary.linesFitted.fits")
-survey.path_to_output_catalog  =  survey.vvds_catalog_dir+ "VVDS_UDEEP_summary.LFcatalog.fits"
+survey.path_to_output_catalog  =  join(survey.vvds_catalog_dir+ "VVDS_UDEEP_summary.LFcatalog.Planck1.fits")
 survey.Ngalaxies=len(survey.catalog)
 new_columns = survey.catalog.columns
 
@@ -53,7 +54,7 @@ hdu.writeto(survey.path_to_output_catalog)
 
 # VVDS DEEP catalog
 survey = GalaxySurveyVVDS(redshift_catalog="VVDS_DEEP_summary.linesFitted.fits")
-survey.path_to_output_catalog  =  survey.vvds_catalog_dir+ "VVDS_DEEP_summary.LFcatalog.fits"
+survey.path_to_output_catalog  =  join(survey.vvds_catalog_dir+ "VVDS_DEEP_summary.LFcatalog.Planck1.fits")
 survey.Ngalaxies=len(survey.catalog)
 new_columns = survey.catalog.columns
 

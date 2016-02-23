@@ -8,7 +8,7 @@ The class SpectraStacking is dedicated to stacking spectra
 """
 import os 
 import astropy.cosmology as co
-cosmo=co.FlatLambdaCDM(H0=70,Om0=0.3)
+cosmo=co.Planck15 # co.FlatLambdaCDM(H0=70,Om0=0.3)
 import astropy.io.fits as fits
 import numpy as n
 from scipy.optimize import curve_fit
