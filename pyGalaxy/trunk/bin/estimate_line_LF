@@ -236,7 +236,7 @@ area2=0.62
 area3=0.90
 area4=0.66
 areaAll=area1+area2+area3+area4
-MagLimS = [23, 23.5, 24.2]
+MagLimS = [23.5, 24.2]
 for MagLim in MagLimS :
 	print "mag limit=", MagLim
 	for ii in range(len(zsDEEP2min)):
