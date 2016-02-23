@@ -296,5 +296,13 @@ class LineLuminosityFunction:
         n.savetxt(f, n.transpose([self.luminosityBins[:-1], self.luminosityBins[1:], self.xL, self.phi, self.phiErr, self.phiErr_poisson, self.ngals]) ,header= head)
         f.close()
 
+        head= " Lmin & Lmax  & Lmean & phi & phiErr & Ngalaxy"
+        f=open(join(self.output_dir , filename + ".tex"),'w')
+        n.savetxt(f, n.transpose([n.log10(self.luminosityBins[:-1][lf.xL>lf.completness_limit_luminosity]), n.log10(self.luminosityBins[1:][lf.xL>lf.completness_limit_luminosity]), n.log10(self.xL[lf.xL>lf.completness_limit_luminosity]), n.log10(self.phi[lf.xL>lf.completness_limit_luminosity]), n.log10(self.phiErr[lf.xL>lf.completness_limit_luminosity]), self.ngals[lf.xL>lf.completness_limit_luminosity]]) ,header= head, delimiter = "&", `fmt='%.2e'`, newline= " \\")
+        f.close()
 
-
+        head= " Lmin & Lmax  & Lmean & phi & phiErr & Ngalaxy "+lf.surveyName
+        f=open(join(self.output_dir , filename + "summaryLine.tex"),'w')
+        n.savetxt(f, [self.meanRedshift , self.zmin , self.zmax , n.log10(self.volume.value) , self.area , n.sum(self.ngals[lf.xL>lf.completness_limit_luminosity]) , n.min(self.xL[lf.xL>lf.completness_limit_luminosity]) , n.max(self.xL[lf.xL>lf.completness_limit_luminosity])] ,header= head, delimiter = "&", `fmt='%.2e'`, newline= " \\")
+        f.close()
+ 

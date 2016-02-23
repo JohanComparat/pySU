@@ -12,8 +12,6 @@ data_dir = os.environ['DATA_DIR']
 from lineListAir import *
 import glob
 
-
-
 # from VIPERS survey
 print "VIPERS"
 zsVIMOSmin=n.array([0.65,0.84, 1.1])
@@ -34,7 +32,7 @@ for ColorLim in ColorLimS :
 			lf.setRedshiftArray( redshiftColumn='zspec' )
 			lf.setRedshiftSelection( redshiftQualityColumn='zflg', lowerBound=0.9, upperBound=100.)
 			lf.setWeightArray( 1./(area * lf.catalog['SSR']*lf.catalog['TSR']), area )
-
+			lf.area = area
 			selection = (lf.catalog['TSR']>0) & (lf.catalog['SSR']>0)& (lf.catalog['g']-lf.catalog['r']<ColorLim)
 			print len(selection.nonzero()[0])
 			lf.computeHistogramLF(selection)
@@ -58,7 +56,7 @@ for ColorLim in ColorLimS :
 			lf.setRedshiftArray( redshiftColumn='zspec' )
 			lf.setRedshiftSelection( redshiftQualityColumn='zflg', lowerBound=0.9, upperBound=100.)
 			lf.setWeightArray( 1./(area * lf.catalog['SSR']*lf.catalog['TSR']), area )
-
+			lf.area = area
 			selection = (lf.catalog['TSR']>0) & (lf.catalog['SSR']>0)& (lf.catalog['r']-lf.catalog['z']<ColorLim)
 			print len(selection.nonzero()[0])
 			lf.computeHistogramLF(selection)
@@ -82,7 +80,7 @@ for ColorLim in ColorLimS :
 			lf.setRedshiftArray( redshiftColumn='zspec' )
 			lf.setRedshiftSelection( redshiftQualityColumn='zflg', lowerBound=0.9, upperBound=100.)
 			lf.setWeightArray( 1./(area * lf.catalog['SSR']*lf.catalog['TSR']), area )
-
+			lf.area = area
 			selection = (lf.catalog['TSR']>0) & (lf.catalog['SSR']>0)& (lf.catalog['g']-lf.catalog['r']>ColorLim)
 			print len(selection.nonzero()[0])
 			lf.computeHistogramLF(selection)
@@ -106,7 +104,7 @@ for ColorLim in ColorLimS :
 			lf.setRedshiftArray( redshiftColumn='zspec' )
 			lf.setRedshiftSelection( redshiftQualityColumn='zflg', lowerBound=0.9, upperBound=100.)
 			lf.setWeightArray( 1./(area * lf.catalog['SSR']*lf.catalog['TSR']), area )
-
+			lf.area = area
 			print len(selection.nonzero()[0])
 			selection = (lf.catalog['TSR']>0) & (lf.catalog['SSR']>0)& (lf.catalog['r']-lf.catalog['z']>ColorLim)
 			lf.computeHistogramLF(selection)
@@ -118,10 +116,7 @@ for ColorLim in ColorLimS :
 			lf.correctVolumeEffect(n.ones_like(lf.LF), n.zeros_like(lf.LF))
 			lf.writeLF(selection,surveyNameSuffix="rz_gt_"+str(n.round(ColorLim,1)))
 
-			
-			
-sys.exit()
-
+		
 area=24.
 MagLimS = [22.5, 22., 21.5, 21]
 for MagLim in MagLimS :
@@ -136,6 +131,7 @@ for MagLim in MagLimS :
 			lf.setWeightArray( 1./(area * lf.catalog['SSR']*lf.catalog['TSR']), area )
 			selection = (lf.catalog['TSR']>0) & (lf.catalog['SSR']>0)& (lf.catalog['MAGI']<MagLim)
 			lf.computeHistogramLF(selection)
+			lf.area = area
 			print "---------------------------------------------------"
 			print line, zmin, zmax, lf.ngals
 			lf.computeHistogramVariance(selection,jk=0.1)
@@ -144,7 +140,7 @@ for MagLim in MagLimS :
 			lf.correctVolumeEffect(n.ones_like(lf.LF), n.zeros_like(lf.LF))
 			lf.writeLF(selection,surveyNameSuffix="I"+str(MagLim))
 
-sys.exit()
+#sys.exit()
 
 
 # from VVDS WIDE survey
@@ -164,6 +160,7 @@ for MagLim in MagLimS :
 		for line in lineSet :
 			print "---------------------------------------------------"
 			print line, zmin, zmax
+			lf.area = area
 			lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "VVDS", redshift_catalog = "VVDS_WIDE_summary.LFcatalog.fits", luminosityBins = n.logspace(38,45,50), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions/" , zmin = zmin, zmax = zmax)
 			lf.setRedshiftArray( redshiftColumn='Z' )
 			lf.setRedshiftSelection( redshiftQualityColumn='ZFLAGS', lowerBound=1.9, upperBound=9.1)
@@ -200,6 +197,7 @@ for MagLim in MagLimS :
 			lf.setWeightArray( 1./(area * lf.catalog['SSR']*lf.catalog['TSR']), area )
 			selection = (lf.catalog['TSR']>0) & (lf.catalog['SSR']>0)& (lf.catalog['MAGI']<MagLim)
 			lf.computeHistogramLF(selection)
+			lf.area = area
 			print "---------------------------------------------------"
 			print line, zmin, zmax, lf.ngals
 			lf.computeHistogramVariance(selection,jk=0.1)
@@ -220,9 +218,6 @@ for MagLim in MagLimS :
 			lf.correctVolumeEffect(n.ones_like(lf.LF), n.zeros_like(lf.LF))#mCorr, error)
 			lf.writeLF(selection,surveyNameSuffix="DEEP"+"I"+str(MagLim))
 
-
-import sys
-sys.exit()
 
 
 # from DEEP2 survey
@@ -258,7 +253,7 @@ for MagLim in MagLimS :
 				area = areaAll
 				lf.setWeightArray( 1./(area * lf.catalog['SSR']*lf.catalog['TSR']), area )
 				selection = (lf.catalog['TSR']>0) & (lf.catalog['SSR']>0)& (lf.catalog['MAGR']<MagLim)
-
+			lf.area = area
 			lf.computeHistogramLF(selection)
 			lf.computeHistogramVariance(selection,jk=0.1)
 			lf.computeMeanWeightedRedshift(selection)
@@ -278,5 +273,5 @@ for MagLim in MagLimS :
 			lf.writeLF(selection,surveyNameSuffix="R"+str(MagLim))
 
 
-sys.exit()
+#sys.exit()
 

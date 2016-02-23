@@ -32,7 +32,7 @@ ids = n.array([ 6 ])
 fileName = "H1_4862_z0292"
 listFits = n.array([ el[:-4]+".fits" for el in listTxt[ids]])
 listToFit = n.transpose([listFits, listTxt[ids]])
-modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="H1_4862", cosmology = cosmo, LF_file_list = listToFit, model='Saunders3P', p0=[41.,10**(-1.7), -1.5], outputDirectory= join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions", "H1_4862"), fileName= fileName, fixedSigma = 0.53)
+modelFit = ModelLuminosityFunction(lineWavelength=4862., lineName="H1_4862", cosmology = cosmo, LF_file_list = listToFit, model='Saunders3P', p0=[41.,10**(-1.7), -1.5], outputDirectory= join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions", "H1_4862"), fileName= fileName, fixedSigma = 0.53)
 
 # VVDS WIDE
 Lmin, Lmax, Lmean, phi, phiErr, phiErr_poisson, ngals = n.loadtxt(listTxt[11],unpack=True)
@@ -78,7 +78,7 @@ ids = n.array([ 0 ])
 fileName = "H1_4862_z0397"
 listFits = n.array([ el[:-4]+".fits" for el in listTxt[ids]])
 listToFit = n.transpose([listFits, listTxt[ids]])
-modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="H1_4862", cosmology = cosmo, LF_file_list = listToFit, model='Saunders3P', p0=[41.,10**(-1.7), -1.5], outputDirectory= join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions", "H1_4862"), fileName= fileName, fixedSigma = 0.53)
+modelFit = ModelLuminosityFunction(lineWavelength=4862., lineName="H1_4862", cosmology = cosmo, LF_file_list = listToFit, model='Saunders3P', p0=[41.,10**(-1.7), -1.5], outputDirectory= join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions", "H1_4862"), fileName= fileName, fixedSigma = 0.53)
 
 
 popt,popc,xF,yF,yeF, x, y, ye, name=modelFit.fitModel()
@@ -119,7 +119,7 @@ ids = n.array([ 1 ])
 fileName = "H1_4862_z0496"
 listFits = n.array([ el[:-4]+".fits" for el in listTxt[ids]])
 listToFit = n.transpose([listFits, listTxt[ids]])
-modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="H1_4862", cosmology = cosmo, LF_file_list = listToFit, model='Saunders2P', p0=[41.,10**(-1.7)], outputDirectory= join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions", "H1_4862"), fileName= fileName, fixedSigma = 0.53, fixedAlpha=-1.8)
+modelFit = ModelLuminosityFunction(lineWavelength=4862., lineName="H1_4862", cosmology = cosmo, LF_file_list = listToFit, model='Saunders2P', p0=[41.,10**(-1.7)], outputDirectory= join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions", "H1_4862"), fileName= fileName, fixedSigma = 0.53, fixedAlpha=-1.8)
 
 popt,popc,xF,yF,yeF, x, y, ye, name=modelFit.fitModel()
 
@@ -160,7 +160,7 @@ ids = n.array([ 2 ])
 fileName = "H1_4862_z0652"
 listFits = n.array([ el[:-4]+".fits" for el in listTxt[ids]])
 listToFit = n.transpose([listFits, listTxt[ids]])
-modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="H1_4862", cosmology = cosmo, LF_file_list = listToFit,model='Saunders2P', p0=[41.,10**(-1.7)], outputDirectory= join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions", "H1_4862"), fileName= fileName, fixedSigma = 0.53, fixedAlpha=-1.8)
+modelFit = ModelLuminosityFunction(lineWavelength=4862., lineName="H1_4862", cosmology = cosmo, LF_file_list = listToFit,model='Saunders2P', p0=[41.,10**(-1.7)], outputDirectory= join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions", "H1_4862"), fileName= fileName, fixedSigma = 0.53, fixedAlpha=-1.8)
 
 popt,popc,xF,yF,yeF, x, y, ye, name=modelFit.fitModel()
 
@@ -201,7 +201,7 @@ ids = n.array([ 3 ]) # 9, 13
 fileName = "H1_4862_z0746"
 listFits = n.array([ el[:-4]+".fits" for el in listTxt[ids]])
 listToFit = n.transpose([listFits, listTxt[ids]])
-modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="H1_4862", cosmology = cosmo, LF_file_list = listToFit, model='Saunders2P', p0=[41.,10**(-1.7)], outputDirectory= join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions", "H1_4862"), fileName= fileName, fixedSigma = 0.53, fixedAlpha=-1.8)
+modelFit = ModelLuminosityFunction(lineWavelength=4862., lineName="H1_4862", cosmology = cosmo, LF_file_list = listToFit, model='Saunders2P', p0=[41.,10**(-1.7)], outputDirectory= join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions", "H1_4862"), fileName= fileName, fixedSigma = 0.53, fixedAlpha=-1.8)
 
 popt,popc,xF,yF,yeF, x, y, ye, name=modelFit.fitModel()
 
@@ -241,7 +241,7 @@ ids = n.array([ 4 ])
 fileName = "H1_4862_z0775"
 listFits = n.array([ el[:-4]+".fits" for el in listTxt[ids]])
 listToFit = n.transpose([listFits, listTxt[ids]])
-modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="H1_4862", cosmology = cosmo, LF_file_list = listToFit, model='Saunders2P', p0=[41.,10**(-1.7)], outputDirectory= join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions", "H1_4862"), fileName= fileName, fixedSigma = 0.53, fixedAlpha=-1.8)
+modelFit = ModelLuminosityFunction(lineWavelength=4862., lineName="H1_4862", cosmology = cosmo, LF_file_list = listToFit, model='Saunders2P', p0=[41.,10**(-1.7)], outputDirectory= join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions", "H1_4862"), fileName= fileName, fixedSigma = 0.53, fixedAlpha=-1.8)
 
 popt,popc,xF,yF,yeF, x, y, ye, name=modelFit.fitModel()
 
@@ -290,7 +290,7 @@ ids = n.array([ 0 ])
 fileName = "O3_5007_z0328"
 listFits = n.array([ el[:-4]+".fits" for el in listTxt[ids]])
 listToFit = n.transpose([listFits, listTxt[ids]])
-modelFit = ModelLuminosityFunction(lineWavelength=5008., lineName="O3_5007", cosmology = cosmo, LF_file_list = listToFit, model='Saunders3P', p0=[40.1,10**(-1.8), -1.3], outputDirectory= join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions", "O3_5007"), fileName= fileName, fixedSigma = 0.53)
+modelFit = ModelLuminosityFunction(lineWavelength=5007., lineName="O3_5007", cosmology = cosmo, LF_file_list = listToFit, model='Saunders3P', p0=[40.1,10**(-1.8), -1.3], outputDirectory= join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions", "O3_5007"), fileName= fileName, fixedSigma = 0.53)
 
 aa,bb,cc = n.loadtxt(join(modelFit.biblioPts_dir,"ly-OIII-04.dat"),unpack=True)
 bps1=[10**aa,(bb+cc)/2.,(bb-cc)/2.,"L07"]
@@ -339,7 +339,7 @@ ids = n.array([ 2, 7 ])
 fileName = "O3_5007_z546"
 listFits = n.array([ el[:-4]+".fits" for el in listTxt[ids]])
 listToFit = n.transpose([listFits, listTxt[ids]])
-modelFit = ModelLuminosityFunction(lineWavelength=5008., lineName="O3_5007", cosmology = cosmo, LF_file_list = listToFit, model='Saunders2P', p0=[40.1,10**(-1.8)], outputDirectory= join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions", "O3_5007"), fileName= fileName, fixedSigma = 0.53, fixedAlpha = -1.4)
+modelFit = ModelLuminosityFunction(lineWavelength=5007., lineName="O3_5007", cosmology = cosmo, LF_file_list = listToFit, model='Saunders2P', p0=[40.1,10**(-1.8)], outputDirectory= join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions", "O3_5007"), fileName= fileName, fixedSigma = 0.53, fixedAlpha = -1.4)
 
 
 popt,popc,xF,yF,yeF, x, y, ye, name=modelFit.fitModel()
@@ -380,7 +380,7 @@ ids = n.array([ 3 ])
 fileName = "O3_5007_z0651"
 listFits = n.array([ el[:-4]+".fits" for el in listTxt[ids]])
 listToFit = n.transpose([listFits, listTxt[ids]])
-modelFit = ModelLuminosityFunction(lineWavelength=5008., lineName="O3_5007", cosmology = cosmo, LF_file_list = listToFit, model='Saunders2P', p0=[40.1,10**(-1.8)], outputDirectory= join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions", "O3_5007"), fileName= fileName, fixedSigma = 0.53, fixedAlpha = -1.4)
+modelFit = ModelLuminosityFunction(lineWavelength=5007., lineName="O3_5007", cosmology = cosmo, LF_file_list = listToFit, model='Saunders2P', p0=[40.1,10**(-1.8)], outputDirectory= join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions", "O3_5007"), fileName= fileName, fixedSigma = 0.53, fixedAlpha = -1.4)
 
 dl=n.loadtxt(join(modelFit.biblioPts_dir,"drake-OIII-063-low.csv"),delimiter=',',unpack=True)
 du=n.loadtxt(join(modelFit.biblioPts_dir,"drake-OIII-063-up.csv"),delimiter=',',unpack=True)
@@ -430,7 +430,7 @@ ids = n.array([ 4 ])
 fileName = "O3_5007_z0740"
 listFits = n.array([ el[:-4]+".fits" for el in listTxt[ids]])
 listToFit = n.transpose([listFits, listTxt[ids]])
-modelFit = ModelLuminosityFunction(lineWavelength=3727.4228417998916, lineName="O3_5007", cosmology = cosmo, LF_file_list = listToFit, model='Saunders2P', p0=[40.1,10**(-1.8)], outputDirectory= join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions", "O3_5007"), fileName= fileName, fixedSigma = 0.53, fixedAlpha = -1.4)
+modelFit = ModelLuminosityFunction(lineWavelength=5007., lineName="O3_5007", cosmology = cosmo, LF_file_list = listToFit, model='Saunders2P', p0=[40.1,10**(-1.8)], outputDirectory= join(data_dir, "Products_Galaxies", "emissionLineLuminosityFunctions", "O3_5007"), fileName= fileName, fixedSigma = 0.53, fixedAlpha = -1.4)
 
 # VVDS WIDE
 Lmin, Lmax, Lmean, phi, phiErr, phiErr_poisson, ngals = n.loadtxt(listTxt[16],unpack=True)
