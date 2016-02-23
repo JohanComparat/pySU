@@ -303,6 +303,6 @@ class LineLuminosityFunction:
 
         head= " zMean & zmin & zmax  & logV & area & NgalaxyTotal & Lmin & Lmax & "+self.surveyName
         f=open(join(self.output_dir , filename + "summaryLine.tex"),'w')
-        n.savetxt(f,  n.transpose([[self.meanRedshift] , [self.zmin] , [self.zmax] , [n.log10(self.volume.value)] , [self.area] , [n.sum(self.ngals[self.xL>self.completness_limit_luminosity]).T] , [n.log10(n.min(self.xL[self.xL>self.completness_limit_luminosity]))] , [n.log10(n.max(self.xL[self.xL>self.completness_limit_luminosity]))]) ,header= head, delimiter = "&", fmt='%10.2f', newline= " \\\\ ")
+        n.savetxt(f,  n.transpose([[self.meanRedshift] , [self.zmin] , [self.zmax] , [n.log10(self.volume.value)] , [self.area] , [n.sum(self.ngals[self.xL>self.completness_limit_luminosity]).T] , [n.log10(n.min(self.xL[self.xL>self.completness_limit_luminosity]))] , [n.log10(n.max(self.xL[self.xL>self.completness_limit_luminosity]))] ]) ,header= head, delimiter = "&", fmt='%10.2f', newline= " \\\\ ")
         f.close()
  
