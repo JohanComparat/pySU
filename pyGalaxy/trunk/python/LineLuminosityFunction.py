@@ -301,8 +301,8 @@ class LineLuminosityFunction:
         n.savetxt(f, n.transpose([n.log10(self.luminosityBins[:-1][self.xL>self.completness_limit_luminosity]), n.log10(self.luminosityBins[1:][self.xL>self.completness_limit_luminosity]), n.log10(self.xL[self.xL>self.completness_limit_luminosity]), n.log10(self.phi[self.xL>self.completness_limit_luminosity]), n.log10(self.phiErr[self.xL>self.completness_limit_luminosity]), self.ngals[self.xL>self.completness_limit_luminosity]]) ,header= head, delimiter = "&", fmt='%10.2f', newline= " \\\\ ")
         f.close()
 
-        head= " zMean & zmin & zmax  & logV & area & NgalaxyTotal "+self.surveyName
+        head= " zMean & zmin & zmax  & logV & area & NgalaxyTotal & Lmin & Lmax & "+self.surveyName
         f=open(join(self.output_dir , filename + "summaryLine.tex"),'w')
-        n.savetxt(f,  n.transpose([self.meanRedshift , self.zmin , self.zmax , n.log10(self.volume.value) , self.area , n.sum(self.ngals[self.xL>self.completness_limit_luminosity]).T , n.log10(n.min(self.xL[self.xL>self.completness_limit_luminosity])) , n.log10(n.max(self.xL[self.xL>self.completness_limit_luminosity]))]) ,header= head, delimiter = "&", fmt='%10.2f', newline= " \\\\ ")
+        n.savetxt(f,  n.transpose([[self.meanRedshift] , [self.zmin] , [self.zmax] , [n.log10(self.volume.value)] , [self.area] , [n.sum(self.ngals[self.xL>self.completness_limit_luminosity]).T] , [n.log10(n.min(self.xL[self.xL>self.completness_limit_luminosity]))] , [n.log10(n.max(self.xL[self.xL>self.completness_limit_luminosity]))]) ,header= head, delimiter = "&", fmt='%10.2f', newline= " \\\\ ")
         f.close()
  
