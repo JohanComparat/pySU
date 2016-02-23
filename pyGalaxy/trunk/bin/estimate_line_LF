@@ -141,7 +141,7 @@ for MagLim in MagLimS :
 			lf.correctVolumeEffect(n.ones_like(lf.LF), n.zeros_like(lf.LF))
 			lf.writeLF(selection,surveyNameSuffix="I"+str(MagLim))
 
-"""
+
 
 # from VVDS WIDE survey
 areaWide=4.0+2.2+1.9
@@ -222,7 +222,7 @@ for MagLim in MagLimS :
 			lf.writeLF(selection,surveyNameSuffix="DEEP"+"I"+str(MagLim))
 
 
-
+"""
 # from DEEP2 survey
 zsDEEP2min=n.array([0.33,0.33,0.4,0.45,0.50,0.60,0.70,0.75,0.78,0.83, 1.16 ])
 zsDEEP2max=n.array([0.40,0.45,0.5,0.55,0.60,0.70,0.78,0.8,0.83,1.03, 1.3 ])
@@ -236,7 +236,7 @@ area2=0.62
 area3=0.90
 area4=0.66
 areaAll=area1+area2+area3+area4
-MagLimS = [22.5,23,23.5, 24.2]
+MagLimS = [23, 23.5, 24.2]
 for MagLim in MagLimS :
 	print "mag limit=", MagLim
 	for ii in range(len(zsDEEP2min)):
