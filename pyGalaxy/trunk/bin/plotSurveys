@@ -16,7 +16,7 @@ from GalaxySurveyVVDS import *
 plotDir = join(data_dir, "VVDS", "products", "emissionLineLuminosityFunctions", "plotSurvey")
 
 # UDEEP
-survey = GalaxySurveyVVDS(redshift_catalog="VVDS_UDEEP_summary.LFcatalog.fits")
+survey = GalaxySurveyVVDS(redshift_catalog="VVDS_UDEEP_summary.LFcatalog.Planck15.fits")
 
 zok=(survey.catalog['ZFLAGS']>1.9)&(survey.catalog['ZFLAGS']<9.1)
 
@@ -46,7 +46,7 @@ ok=(zok) & (survey.catalog['H1_4862_EW']>0.)& (survey.catalog['H1_4862_flux']>0.
 plotZ_EW(survey.catalog['Z'][ok],survey.catalog['H1_4862_EW'][ok], "vvdsudeep-EW-H1_4862-z.pdf",r'$log_{10}(EW\,H^{4861}_{\beta})$ [A]', plotDir)
 
 # WIDE
-survey = GalaxySurveyVVDS(redshift_catalog="VVDS_WIDE_summary.LFcatalog.fits")
+survey = GalaxySurveyVVDS(redshift_catalog="VVDS_WIDE_summary.LFcatalog.Planck15.fits")
 
 zok=(survey.catalog['ZFLAGS']>1.9)&(survey.catalog['ZFLAGS']<9.1)
 sel1=(survey.catalog['alpha']<170)&(zok)
@@ -82,7 +82,7 @@ ok=(zok) & (survey.catalog['H1_4862_EW']>0.)& (survey.catalog['H1_4862_flux']>0.
 plotZ_EW(survey.catalog['Z'][ok],survey.catalog['H1_4862_EW'][ok], "vvdswide-EW-H1_4862-z.pdf",r'$log_{10}(EW\,H^{4861}_{\beta})$ [A]', plotDir)
 
 # DEEP
-survey = GalaxySurveyVVDS(redshift_catalog="VVDS_DEEP_summary.LFcatalog.fits")
+survey = GalaxySurveyVVDS(redshift_catalog="VVDS_DEEP_summary.LFcatalog.Planck15.fits")
 
 zok=(survey.catalog['ZFLAGS']>1.9)&(survey.catalog['ZFLAGS']<9.1)
 
@@ -114,7 +114,7 @@ plotZ_EW(survey.catalog['Z'][ok],survey.catalog['H1_4862_EW'][ok], "vvdsdeep-EW-
 
 from GalaxySurveyDEEP2 import *
 plotDir=join(data_dir, "DEEP2", "products", "emissionLineLuminosityFunctions", "plotSurvey")
-survey = GalaxySurveyDEEP2(redshift_catalog="zcat.deep2.dr4.v2.LFcatalog.fits", calibration = False)
+survey = GalaxySurveyDEEP2(redshift_catalog="zcat.deep2.dr4.v2.LFcatalog.Planck15.fits", calibration = False)
 
 zok=(survey.catalog['ZQUALITY']>0.9)
 sel1=(survey.catalog['DEC']>50)&(zok)
@@ -156,7 +156,7 @@ from GalaxySurveyVIPERS import *
 plotDir=join(data_dir, "VIPERS", "products", "emissionLineLuminosityFunctions", "plotSurvey")
 
 # VIPERS
-survey = GalaxySurveyVIPERS(redshift_catalog="VIPERS_W14_summary_v1.LFcatalog.fits")
+survey = GalaxySurveyVIPERS(redshift_catalog="VIPERS_W14_summary_v1.LFcatalog.Planck15.fits")
 
 zok=(survey.catalog['zflg']>0.9)&(survey.catalog['zflg']<100)
 
