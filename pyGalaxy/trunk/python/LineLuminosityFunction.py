@@ -291,9 +291,9 @@ class LineLuminosityFunction:
         os.system('rm -rf '+join(self.output_dir , filename + ".fits"))
         thdulist.writeto(join(self.output_dir , filename + ".fits"))                        
 
-        head= " Lmin Lmax Lmean phi phiErr phiErr_poisson Ngalaxy"
+        head= "z_mean z_min z_max L_mean L_min L_max phi_mean phi_min phi_max  Ngalaxy"
         f=open(join(self.output_dir , filename + ".txt"),'w')
-        n.savetxt(f, n.transpose([self.luminosityBins[:-1], self.luminosityBins[1:], self.xL, self.phi, self.phiErr, self.phiErr_poisson, self.ngals]) ,header= head)
+        n.savetxt(f, n.transpose([self.meanRedshift*n.ones_like(self.phi) , self.zmin*n.ones_like(self.phi) , self.zmax*n.ones_like(self.phi), self.xL, self.luminosityBins[:-1], self.luminosityBins[1:], self.phi, self.phi-self.phiErr, self.phi + self.phiErr, self.ngals]), header= head)
         f.close()
 
         head= " Lmin & Lmax  & Lmean & phi & phiErr & Ngalaxy"
