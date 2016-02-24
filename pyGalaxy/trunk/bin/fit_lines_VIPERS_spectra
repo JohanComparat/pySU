@@ -6,7 +6,7 @@ This script computes the fits the line strength on the spectra from of the VIPER
 
 # defines the survey object
 import GalaxySurveyVIPERS as gs
-survey = gs.GalaxySurveyVIPERS(redshift_catalog="VIPERS_W14_summary_v1.fits")
+survey = gs.GalaxySurveyVIPERS(redshift_catalog="VIPERS_W14_summary_v1.1.fits")
 
 # global parameters to add to the survey class
 survey.zmin = 0.5 # minimum redshift considered
@@ -14,7 +14,7 @@ survey.zmax = 1.4 # maximum redshift considered
 survey.WLmin = 5800. # lambda min
 survey.WLmax = 9200. # lambda max of the spectrum
 survey.resolution = 200. # resolution of the Keck deimos setting used
-survey.path_to_output_catalog  =  survey.vipers_catalog_dir+ "VIPERS_W14_summary_v1.linesFitted.fits"
+survey.path_to_output_catalog  =  survey.vipers_catalog_dir+ "VIPERS_W14_summary_v1.1.linesFitted.fits"
 survey.Ngalaxies=len(survey.catalog)
 
 # line list to be fitted

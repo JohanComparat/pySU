@@ -112,9 +112,9 @@ ok=(zok) & (survey.catalog['H1_4862_EW']>0.)& (survey.catalog['H1_4862_flux']>0.
 plotZ_EW(survey.catalog['Z'][ok],survey.catalog['H1_4862_EW'][ok], "vvdsdeep-EW-H1_4862-z.pdf",r'$log_{10}(EW\,H^{4861}_{\beta})$ [A]', plotDir)
 
 
-from GalaxySurveyDEEP2 import *
+from GalaxySurveyDEEP2 import * 
 plotDir=join(data_dir, "DEEP2", "products", "emissionLineLuminosityFunctions", "plotSurvey")
-survey = GalaxySurveyDEEP2(redshift_catalog="zcat.deep2.dr4.v2.LFcatalog.Planck15.fits", calibration = False)
+survey = GalaxySurveyDEEP2(redshift_catalog="zcat.deep2.dr4.v2.LFcatalogTC.Planck15.fits", calibration = False)
 
 zok=(survey.catalog['ZQUALITY']>0.9)
 sel1=(survey.catalog['DEC']>50)&(zok)
