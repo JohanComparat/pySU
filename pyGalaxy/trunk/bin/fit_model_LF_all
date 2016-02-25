@@ -25,12 +25,441 @@ from scipy.optimize import curve_fit
 import cPickle
 from os.path import join
 from scipy.optimize import minimize
+import cPickle
+import glob
+Ns = 3
 
-#saundersFct=lambda v, A, logv0,alpha,sig : 10**A * ( v /10**logv0)**(alpha) * n.e**( -n.log10( 1 + v /10**logv0)/(2*sig**2.))
-#schechterFct=lambda v, A, logv0,alpha, sig : 10**A * ( v /10**logv0)**(alpha) * n.e**( - v / 10**logv0 /(2*sig**2.) )
-#ps * (10**logl/10**logls)**(a+1) * n.e**(-10**logl/10**logls)
-#doublePL=lambda v,A,logv0 ,a,b: 10**A * 10**( (1+a)*( v - 10**logv0) + b )
 
+
+
+dataDir = join("..", "data","O3_5007")
+plotDir = join("..", "plots")
+lineDict = {'O2_3728' : r'$[O^{3728}_{II}]$', 'O3_5007' : r'$[O^{5007}_{III}]$', 'H1_4862' : r'$H^{4861}_{\beta}$', 'H1_6564': r'$H^{6564}_{\alpha}$'}
+
+dataList = glob.glob(join(dataDir,"O3_5007*.txt"))
+dataList.sort()
+
+f = open(join("..", "data" , "O3_5007-data-luminosity-limits-Planck15.txt"),'r')
+lines = f.readlines()
+lmins, lmaxs, fileNames = [], [], []
+for line in lines[1:] :
+	lmins.append( float(line.split()[0]) )
+	lmaxs.append( float(line.split()[1]) )
+	fileNames.append(line.split()[2])
+	
+f.close()
+
+dictLmin = { fileNames[ii]: lmins[ii] for ii in range(len(fileNames)) }
+dictLmax = { fileNames[ii]: lmaxs[ii] for ii in range(len(fileNames)) }
+
+
+data=[]
+for el in dataList:
+	dat = n.loadtxt(el,unpack=True)
+	sl = (n.log10(dat[3]) > dictLmin[el.split('\\')[-1]] )&(n.log10(dat[3]) < dictLmax[el.split('\\')[-1]]) & (dat[6]>0)&(dat[7]>0)
+	data.append(dat.T[sl].T)
+	
+data = n.hstack(data)
+
+head= "z_mean z_min z_max L_mean L_min L_max phi_mean phi_min phi_max  Ngalaxy"
+f=open(join("..", "data" , "O3_5007-data-summary-Planck15.txt"),'w')
+n.savetxt(f, data.T, header= head)
+f.close()
+
+
+z_mean, z_min, z_max, L_mean, L_min, L_max, phi_mean, phi_min, phi_max,  Ngalaxy = n.loadtxt(join("..", "data" , "O3_5007-data-summary-Planck15.txt"), unpack = True)
+
+p.figure(0,(6,6))
+p.axes([0.17,0.17,0.75,0.75])
+sc1=p.scatter(L_mean, phi_mean, c=z_mean,s=10, marker='o',label="data", rasterized=True,vmin=0,vmax=1.)
+sc1.set_edgecolor('face')
+cb = p.colorbar(shrink=0.8)
+cb.set_label("redshift")
+p.xlabel(r'$log_{10}(L$'+lineDict['O3_5007']+'$)$ [erg s$^{-1}$]')
+p.ylabel(r'$\Phi$ [Mpc$^{-3}/$dlog L]')
+p.yscale('log')
+p.xscale('log')
+p.xlim((1e39,1e44))
+p.ylim((1e-7,1e-1))
+p.grid()
+gl = p.legend(loc=3,fontsize=10)
+gl.set_frame_on(False)
+p.savefig(join(plotDir, "O3_5007_data_LF.pdf"))
+p.clf()
+
+from scipy.optimize import minimize
+
+zs=n.arange(0,1.,0.05)
+ls= n.arange(39,44.1,0.25)
+
+zArr, lArr = n.meshgrid(zs,ls)
+
+zPl= n.hstack(zArr)
+lPl = n.hstack(lArr)
+
+
+logls = lambda z, l0, l1 : l0 +l1 * z 
+ps = lambda z,  p0, p1 : p0+ p1 *z
+alpha = lambda z, a0, a1 : a0 + a1*z
+LF_Fun=lambda logl, z, l0, l1, p0, p1,a0, a1, s0 : 10**(p0+ p1 *z) * (10**logl/10**( l0 +l1 * z ))**(a0 + a1*z+1) * n.e**( -n.log10( 1 +10**logl/10**(l0 +l1 * z ))**2./(2*(s0 )**2.))
+
+LFbis = lambda logl, z, prm : LF_Fun(logl, z, prm[0], prm[1], prm[2], prm[3], prm[4], prm[5], prm[6])
+
+chi2Fun = lambda prm : n.sum( (LFbis(n.log10(L_mean),z_mean,prm) - phi_mean)**2. / ((phi_max-phi_min))**2. )/(len(phi_mean)-7)
+
+
+prm0= n.array([ 40.6, 0.695, -2.22, 0.017, -1.43, -0.125, 0.462])
+res = minimize(chi2Fun, prm0, method='Powell',options={'xtol': 1e-6, 'disp': True, 'maxiter' : 5000000000, 'nfev': 180000000})
+
+
+zs=n.arange(0,1.,0.05)
+ls= n.arange(39,44.1,0.055)
+
+zArr, lArr = n.meshgrid(zs,ls)
+
+zPl= n.hstack(zArr)
+lPl = n.hstack(lArr)
+phiPl = LFbis(lPl,zPl,res.x)
+
+
+p.figure(0,(6,6))
+p.axes([0.17,0.17,0.75,0.75])
+sc1=p.scatter(10**lPl, phiPl, c=zPl,s=5, marker='o',label="model", rasterized=True,vmin=0,vmax=1.)
+sc1.set_edgecolor('face')
+cb = p.colorbar(shrink=0.8)
+cb.set_label("redshift")
+p.xlabel(r'$log_{10}(L$'+lineDict['O3_5007']+'$)$ [erg s$^{-1}$]')
+p.ylabel(r'$\Phi$ [Mpc$^{-3}/$dlog L]')
+p.yscale('log')
+p.xscale('log')
+p.xlim((1e39,1e44))
+p.ylim((1e-7,1e-1))
+p.grid()
+gl = p.legend(loc=3,fontsize=10)
+gl.set_frame_on(False)
+p.savefig(join(plotDir, "O3_5007_model_LF.pdf"))
+p.clf()
+
+
+chi2 = (LFbis(n.log10(L_mean), z_mean, res.x) - phi_mean)**2. / (2.*(phi_max-phi_min))**2.
+
+p.figure(0,(6,6))
+p.axes([0.17,0.17,0.75,0.75])
+sc1=p.scatter(L_mean, z_mean, c=chi2,s=20, marker='o', rasterized=True,vmin=0,vmax=5)
+sc1.set_edgecolor('face')
+cb = p.colorbar(shrink=0.8)
+cb.set_label(r"$\chi^2$ per point")
+p.xlabel(r'$log_{10}(L$'+lineDict['O3_5007']+'$)$ [erg s$^{-1}$]')
+p.ylabel('redshift')
+p.xscale('log')
+p.xlim((1e39,1e44))
+p.ylim((0,1.7))
+p.grid()
+p.savefig(join(plotDir, "O3_5007_model_chi2_LF.pdf"))
+p.clf()
+
+f=open("fitResult_O3_5007.txt",'w')
+cPickle.dump(res,f)
+f.close()
+
+cov = abs(res.direc)
+
+f=open("fitResultEqn_O3_5007.txt",'w')
+line1 = r"log_{10}(L_*) & =("+ str(n.round(res.x[0],Ns))+ r"\pm "+ str(n.round(cov[0][0]**0.5,Ns))+ ") + z ("+ str(n.round(res.x[1],Ns))+ r"\pm "+ str(n.round(cov[1][1]**0.5,Ns))+") \\\\"
+line2 = r"log_{10}(\Phi_*) & =("+ str(n.round(res.x[2],Ns))+ r"\pm "+ str(n.round(cov[2][2]**0.5,Ns))+ ") + z ("+ str(n.round(res.x[3],Ns))+ r"\pm "+ str(n.round(cov[3][3]**0.5,Ns))+") \\\\"
+line3 = r"\alpha & =("+ str(n.round(res.x[4],Ns))+ r"\pm "+ str(n.round(cov[4][4]**0.5,Ns))+ ") + z ("+ str(n.round(res.x[5],Ns))+ r"\pm "+ str(n.round(cov[5][5]**0.5,Ns))+") \\\\"
+line4 = r"\sigma & =("+ str(n.round(res.x[6],Ns))+ r"\pm "+ str(n.round(cov[6][6]**0.5,Ns))+ ")"
+f.write(line1 + "\n")
+f.write(line2 + "\n")
+f.write(line3 + "\n")
+f.write(line4 + "\n")
+f.close()
+
+
+sys.exit()
+
+
+
+
+
+
+
+
+
+
+
+dataDir = join("..", "data","O2_3728")
+plotDir = join("..", "plots")
+lineDict = {'O2_3728' : r'$[O^{3728}_{II}]$', 'O3_5007' : r'$[O^{5007}_{III}]$', 'H1_4862' : r'$H^{4861}_{\beta}$', 'H1_6564': r'$H^{6564}_{\alpha}$'}
+
+
+
+dataList = glob.glob(join(dataDir,"O2_3728*.txt"))
+dataList.sort()
+
+f = open(join("..", "data" , "O2_3728-data-luminosity-limits-Planck15.txt"),'r')
+lines = f.readlines()
+lmins, lmaxs, fileNames = [], [], []
+for line in lines[1:] :
+	lmins.append( float(line.split()[0]) )
+	lmaxs.append( float(line.split()[1]) )
+	fileNames.append(line.split()[2])
+	
+f.close()
+
+dictLmin = { fileNames[ii]: lmins[ii] for ii in range(len(fileNames)) }
+dictLmax = { fileNames[ii]: lmaxs[ii] for ii in range(len(fileNames)) }
+
+
+data=[]
+for el in dataList:
+	dat = n.loadtxt(el,unpack=True)
+	sl = (n.log10(dat[3]) > dictLmin[el.split('\\')[-1]] )&(n.log10(dat[3]) < dictLmax[el.split('\\')[-1]]) & (dat[6]>0)&(dat[7]>0)
+	data.append(dat.T[sl].T)
+	
+data = n.hstack(data)
+
+head= "z_mean z_min z_max L_mean L_min L_max phi_mean phi_min phi_max  Ngalaxy"
+f=open(join("..", "data" , "O2_3728-data-summary-Planck15.txt"),'w')
+n.savetxt(f, data.T, header= head)
+f.close()
+
+
+z_mean, z_min, z_max, L_mean, L_min, L_max, phi_mean, phi_min, phi_max,  Ngalaxy = n.loadtxt(join("..", "data" , "O2_3728-data-summary-Planck15.txt"), unpack = True)
+
+p.figure(0,(6,6))
+p.axes([0.17,0.17,0.75,0.75])
+sc1=p.scatter(L_mean, phi_mean, c=z_mean,s=10, marker='o',label="data", rasterized=True,vmin=0,vmax=1.8)
+sc1.set_edgecolor('face')
+cb = p.colorbar(shrink=0.8)
+cb.set_label("redshift")
+p.xlabel(r'$log_{10}(L$'+lineDict['O2_3728']+'$)$ [erg s$^{-1}$]')
+p.ylabel(r'$\Phi$ [Mpc$^{-3}/$dlog L]')
+p.yscale('log')
+p.xscale('log')
+p.xlim((1e39,1e44))
+p.ylim((1e-7,1e-1))
+p.grid()
+gl = p.legend(loc=3,fontsize=10)
+gl.set_frame_on(False)
+p.savefig(join(plotDir, "O2_3728_data_LF.pdf"))
+p.clf()
+
+from scipy.optimize import minimize
+logls = lambda z:  -0.182 * z + 41.272
+ps = lambda z:   0.741 * z + -2.78 
+alpha = -1.8
+sig = 0.53
+
+saundersFctFit=lambda logl, z, : 10**ps(z) * (10**logl/10**logls(z))**(alpha+1) * n.e**( -n.log10( 1 +10**logl/10**logls(z))**2./(2*sig**2.))
+
+zs=n.arange(0,1.8,0.05)
+ls= n.arange(39,44.1,0.25)
+
+zArr, lArr = n.meshgrid(zs,ls)
+
+zPl= n.hstack(zArr)
+lPl = n.hstack(lArr)
+phiPl = saundersFctFit(lPl,zPl)
+
+
+logls = lambda z, l0, l1 : l0 +l1 * z 
+ps = lambda z,  p0, p1 : p0+ p1 *z
+alpha = lambda z, a0, a1 : a0 + a1*z
+
+LF_Fun=lambda logl, z, l0, l1, p0, p1,a0, a1, s0 : 10**(p0+ p1 *z) * (10**logl/10**( l0 +l1 * z ))**(a0 + a1*z+1) * n.e**( -n.log10( 1 +10**logl/10**(l0 +l1 * z ))**2./(2*(s0 )**2.))
+
+LFbis = lambda logl, z, prm : LF_Fun(logl, z, prm[0], prm[1], prm[2], prm[3], prm[4], prm[5], prm[6])
+
+chi2Fun = lambda prm : n.sum( (LFbis(n.log10(L_mean),z_mean,prm) - phi_mean)**2. / (2*(phi_max-phi_min))**2. )/(len(phi_mean)-7)
+
+
+prm0= n.array([ 42., 0., -3., 0., -1.8, 0., 0.5])
+res = minimize(chi2Fun, prm0, method='Powell',options={'xtol': 1e-6, 'disp': True, 'maxiter' : 5000000000, 'nfev': 180000000})
+
+
+zs=n.arange(0,1.8,0.05)
+ls= n.arange(39,44.1,0.055)
+
+zArr, lArr = n.meshgrid(zs,ls)
+
+zPl= n.hstack(zArr)
+lPl = n.hstack(lArr)
+phiPl = LFbis(lPl,zPl,res.x)
+
+
+p.figure(0,(6,6))
+p.axes([0.17,0.17,0.75,0.75])
+sc1=p.scatter(10**lPl, phiPl, c=zPl,s=5, marker='o',label="model", rasterized=True,vmin=0,vmax=1.8)
+sc1.set_edgecolor('face')
+cb = p.colorbar(shrink=0.8)
+cb.set_label("redshift")
+p.xlabel(r'$log_{10}(L$'+lineDict['O2_3728']+'$)$ [erg s$^{-1}$]')
+p.ylabel(r'$\Phi$ [Mpc$^{-3}/$dlog L]')
+p.yscale('log')
+p.xscale('log')
+p.xlim((1e39,1e44))
+p.ylim((1e-7,1e-1))
+p.grid()
+gl = p.legend(loc=3,fontsize=10)
+gl.set_frame_on(False)
+p.savefig(join(plotDir, "O2_3728_model_LF.pdf"))
+p.clf()
+
+z_mean, z_min, z_max, L_mean, L_min, L_max, phi_mean, phi_min, phi_max,  Ngalaxy = n.loadtxt(join("..", "data" , "O2_3728-data-summary-Planck15.txt"), unpack = True)
+
+chi2 = (LFbis(n.log10(L_mean), z_mean, res.x) - phi_mean)**2. / (2.*(phi_max-phi_min))**2.
+
+p.figure(0,(6,6))
+p.axes([0.17,0.17,0.75,0.75])
+sc1=p.scatter(L_mean, z_mean, c=chi2,s=20, marker='o', rasterized=True,vmin=0,vmax=5)
+sc1.set_edgecolor('face')
+cb = p.colorbar(shrink=0.8)
+cb.set_label(r"$\chi^2$ per point")
+p.xlabel(r'$log_{10}(L$'+lineDict['O2_3728']+'$)$ [erg s$^{-1}$]')
+p.ylabel('redshift')
+p.xscale('log')
+p.xlim((1e39,1e44))
+p.ylim((0,1.7))
+p.grid()
+p.savefig(join(plotDir, "O2_3728_model_chi2_LF.pdf"))
+p.clf()
+
+f=open("fitResult.txt",'w')
+cPickle.dump(res,f)
+f.close()
+
+cov = abs(res.direc)
+
+f=open("fitResultEqn.txt",'w')
+line1 = r"log_{10}(L_*) & =("+ str(n.round(res.x[0],Ns))+ r"\pm "+ str(n.round(cov[0][0]**0.5,Ns))+ ") + z ("+ str(n.round(res.x[1],Ns))+ r"\pm "+ str(n.round(cov[1][1]**0.5,Ns))+") \\\\"
+line2 = r"log_{10}(\Phi_*) & =("+ str(n.round(res.x[2],Ns))+ r"\pm "+ str(n.round(cov[2][2]**0.5,Ns))+ ") + z ("+ str(n.round(res.x[3],Ns))+ r"\pm "+ str(n.round(cov[3][3]**0.5,Ns))+") \\\\"
+line3 = r"\alpha & =("+ str(n.round(res.x[4],Ns))+ r"\pm "+ str(n.round(cov[4][4]**0.5,Ns))+ ") + z ("+ str(n.round(res.x[5],Ns))+ r"\pm "+ str(n.round(cov[5][5]**0.5,Ns))+") \\\\"
+line4 = r"\sigma & =("+ str(n.round(res.x[6],Ns))+ r"\pm "+ str(n.round(cov[6][6]**0.5,Ns))+ ")"
+f.write(line1 + "\n")
+f.write(line2 + "\n")
+f.write(line3 + "\n")
+f.write(line4 + "\n")
+f.close()
+
+
+sys.exit()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+p.figure(0,(6,6))
+p.axes([0.17,0.17,0.75,0.75])
+sc1=p.scatter(10**lPl, phiPl, c=zPl,s=10, marker='o',label="model", rasterized=True)
+sc1.set_edgecolor('face')
+cb = p.colorbar(shrink=0.8)
+cb.set_label("redshift")
+p.xlabel(r'$log_{10}(L$'+lineDict['O2_3728']+'$)$ [erg s$^{-1}$]')
+p.ylabel(r'$\Phi$ [Mpc$^{-3}/$dlog L]')
+p.yscale('log')
+p.xscale('log')
+p.xlim((1e39,1e44))
+p.ylim((1e-7,1e-1))
+p.grid()
+gl = p.legend(loc=3,fontsize=10)
+gl.set_frame_on(False)
+p.savefig(join(plotDir, "O2_3728_model_LF.pdf"))
+p.show()
+p.clf()
+
+
+
+
+
+vfG = lambda v, z, A1, vcut1, a1, b1 : n.log10( 10**(A0 + A1 * z) * (1+ (10**v/10**(vcut0 + vcut1 * z))**(b0 + b1 * z) )* n.e**(- (10**v/10**(vcut0 + vcut1 * z))**(a0 +a1*z) ))
+vfGbis = lambda v, z, ps : vfG(v,z,ps[0],ps[1],ps[2],ps[3])
+chi2fun = lambda ps : n.sum( (vfGbis(M200c,redshift,ps) - yData)**2. / (n.ones_like(yData)*0.05)**2. )/len(yData)
+p1 = n.array([ 0., 0., 0., 0.])
+print "looks for the optimum parameters"
+res = minimize(chi2fun, p1, method='Powell',options={'xtol': 1e-6, 'disp': True, 'maxiter' : 50000000, 'nfev': 1800000})
+
+print "ndof=",len(yData)
+print res
+A1, vcut1, a1, b1 = n.round(res.x,4)
+
+print "A(z) & = "+str(A0)+" + "+str(A1)+r'\times z \\'
+print r" M_{cut}(z) & = "+str(vcut0)+" + "+str(vcut1)+r'\times z \\'
+print r" \alpha(z) & = "+str(a0)+" + "+str(a1)+r'\times z \\' #+ '+str(a2)+r'\times z^2 \\'
+print r" \beta(z) & = "+str(b0)+" + "+str(b1)+r'\times z \\'
+
+
+p.figure(0,(6,6))
+p.axes([0.17,0.17,0.75,0.75])
+sc1=p.scatter(L_mean, phi_mean, c=z_mean,s=10, marker='o',label="model", rasterized=True)
+sc1.set_edgecolor('face')
+cb = p.colorbar(shrink=0.8)
+cb.set_label("redshift")
+p.xlabel(r'$log_{10}(L$'+lineDict['O2_3728']+'$)$ [erg s$^{-1}$]')
+p.ylabel(r'$\Phi$ [Mpc$^{-3}/$dlog L]')
+p.yscale('log')
+p.xscale('log')
+p.xlim((1e39,1e44))
+p.ylim((1e-7,1e-1))
+p.grid()
+gl = p.legend(loc=3,fontsize=10)
+gl.set_frame_on(False)
+p.savefig(join(plotDir, "O2_3728_data_LF.pdf"))
+p.show()
+p.clf()
+
+
+
+
+
+p.xlabel(r'log$_{10}[M_{200c}/(h^{-1}M_\odot)]$')
+p.ylabel(r' n(>M)') # log$_{10}[ n(>M)]')
+p.legend(loc=3)
+p.ylim((-9,0))
+p.grid()
+p.show()
+
+p.savefig("M200c-cumulative-function-model.pdf")
+p.clf()
+
+
+
+sys.exit()
+
+"""
+
+modelDict = {'Saunders2P':self.saundersFct2P, 'Saunders3P':self.saundersFct3P, 'Saunders': self.saundersFct, 'Schechter': self.schecterFct, 'DoublePL' : self.doublePL }
+self.model = model
+self.model_to_fit = modelDict[self.model]
+
+lmins = n.array([])
+lmaxs = n.array([])
+"""
+self.saundersFct=lambda logl,logls,ps,a,sig : ps * (10**logl/10**logls)**(a+1) * n.e**( -n.log10( 1 +10**logl/10**logls)**2./(2*sig**2.))
+self.saundersFct3P=lambda logl,logls,ps,a : self.saundersFct(logl, logls, ps, a, self.fixedSigma)
+self.saundersFct2P=lambda logl,logls,ps : self.saundersFct(logl, logls, ps, self.fixedAlpha, self.fixedSigma)
+ 
 mf = lambda v, A, v0, alpha, beta : 10**A * (v/10**v0)**beta * n.e**(- (v/10**v0)**alpha )
 
 # limits at z0
