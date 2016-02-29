@@ -16,15 +16,18 @@ cd $PYSU_DIR/pyGalaxies/trunk/bin
 ./plotSurveys
 
 ./estimate_line_LF
-# here : 
-# convert Biblio Points to Planck 2015
 ./fit_model_LF_single
 ./fit_model_LF_all
 ./plotLFs
 
+# here : 
+# convert Biblio Points to Planck 2015
+# crashes at some point with deep2 ...
 ./stack_spectra
+
 # fit firefly continuum models
-# ./fit_lines_stacks # with continuum sutracted
+# ./fit_lines_stacks # with continuum subtracted
+
 ./model_stacked_spectra
 ./model_stacked_spectra_VVDS
 #./model_stacked_spectra_plotOnly
