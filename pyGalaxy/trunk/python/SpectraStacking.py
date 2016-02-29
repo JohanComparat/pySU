@@ -23,62 +23,62 @@ from MiscellanousFunctionsLibrary import *
 #SpectraStacking("/home/comparat/database/DEEP2/products/emissionLineLuminosityFunctions/O2_3728/O2_3728-DEEP2-z0.925.fits")
 
 class SpectraStacking:
-    """
-    The model luminosity function class
-    :param LF_file: fits file generated with a LF.
-    :param Resolution: Resolution
-    :param Nspec: Initial guess of the parameters
-    :param outputDirectory: where to output the fits
-    :param fileName: file name where things are saved.
-    """
-    def __init__(self, LF_file,Nspec= 400, dLambda = 0.0001, dV=-9999.99):
-        self.LF_file = LF_file
-        self.dLambda = dLambda
-        self.wave= 10**n.arange(3.1760912590556813, 4.0211892990699383, dLambda) # 1500,10500
-        self.R = int(1/n.mean((self.wave[1:] -self.wave[:-1])/ self.wave[1:]))
-        self.dV = dV
-        self.Nspec = Nspec
-        self.survey=LF_file.split('/')[-1].split('-')[1]
-        self.line=LF_file.split('/')[-1].split('-')[0]
-        self.catalog_entries=fits.open(self.LF_file)[1].data
-        print len(self.catalog_entries)
+	"""
+	The model luminosity function class
+	:param LF_file: fits file generated with a LF.
+	:param Resolution: Resolution
+	:param Nspec: Initial guess of the parameters
+	:param outputDirectory: where to output the fits
+	:param fileName: file name where things are saved.
+	"""
+	def __init__(self, LF_file,Nspec= 400, dLambda = 0.0001, dV=-9999.99):
+		self.LF_file = LF_file
+		self.dLambda = dLambda
+		self.wave= 10**n.arange(3.1760912590556813, 4.0211892990699383, dLambda) # 1500,10500
+		self.R = int(1/n.mean((self.wave[1:] -self.wave[:-1])/ self.wave[1:]))
+		self.dV = dV
+		self.Nspec = Nspec
+		self.survey=LF_file.split('/')[-1].split('-')[1]
+		self.line=LF_file.split('/')[-1].split('-')[0]
+		self.catalog_entries=fits.open(self.LF_file)[1].data
+		print len(self.catalog_entries)
 
-    def stack_function(self,specMatrix,specMatrixWeight):
-        """Creates the stack.
-        :param specMatrix: matrix of observed spectra
-        :param specMatrixWeight: matrix of the statistical weights used in the LF.
-        """
-        stackMed = n.ones_like(n.empty(len(self.wave)))*self.dV
-        stackMean = n.ones_like(n.empty(len(self.wave)))*self.dV
-        stackMeanWeighted = n.ones_like(n.empty(len(self.wave)))*self.dV
-        stackVar = n.ones_like(n.empty(len(self.wave)))*self.dV
-        stackN = n.ones_like(n.empty(len(self.wave)))*self.dV
-        jackknifes = n.ones_like(n.empty((len(self.wave),10)))*self.dV
-        for i in range(len(specMatrix.T)):
-                pt=specMatrix.T[i]
-                wt=specMatrixWeight.T[i]
-                sel=(pt!=self.dV)
-                # jackknife sub-sampling
-                rd=n.random.random(len(pt))
-                aim=n.arange(0,1.01,0.1)
-                jks=n.array([ (rd>aim[jj])&(rd<aim[jj+1]) for jj in range(len(aim)-1) ])
-                if len(pt[sel])>1:
-                        stackMed[i] = n.median(pt[sel])
-                        stackMean[i] = n.mean(pt[sel])
-                        stackMeanWeighted[i] = n.average(pt[sel],weights=wt[sel])
-                        stackN[i] = len(pt[sel])
-                        inter = n.array([ n.median( pt[sel & (seK==False)] ) for seK in jks ])
-                        jackknifes[i] = inter
-                        stackVar[i] = n.std(inter)
+	def stack_function(self,specMatrix,specMatrixWeight):
+		"""Creates the stack.
+		:param specMatrix: matrix of observed spectra
+		:param specMatrixWeight: matrix of the statistical weights used in the LF.
+		"""
+		stackMed = n.ones_like(n.empty(len(self.wave)))*self.dV
+		stackMean = n.ones_like(n.empty(len(self.wave)))*self.dV
+		stackMeanWeighted = n.ones_like(n.empty(len(self.wave)))*self.dV
+		stackVar = n.ones_like(n.empty(len(self.wave)))*self.dV
+		stackN = n.ones_like(n.empty(len(self.wave)))*self.dV
+		jackknifes = n.ones_like(n.empty((len(self.wave),10)))*self.dV
+		for i in range(len(specMatrix.T)):
+				pt=specMatrix.T[i]
+				wt=specMatrixWeight.T[i]
+				sel=(pt!=self.dV)
+				# jackknife sub-sampling
+				rd=n.random.random(len(pt))
+				aim=n.arange(0,1.01,0.1)
+				jks=n.array([ (rd>aim[jj])&(rd<aim[jj+1]) for jj in range(len(aim)-1) ])
+				if len(pt[sel])>1:
+						stackMed[i] = n.median(pt[sel])
+						stackMean[i] = n.mean(pt[sel])
+						stackMeanWeighted[i] = n.average(pt[sel],weights=wt[sel])
+						stackN[i] = len(pt[sel])
+						inter = n.array([ n.median( pt[sel & (seK==False)] ) for seK in jks ])
+						jackknifes[i] = inter
+						stackVar[i] = n.std(inter)
 
-        wavelength = fits.Column(name="wavelength",format="D", unit="Angstorm", array= self.wave)
-        medianStack=fits.Column(name="medianStack",format="D", unit="erg/s/cm2/Angstorm", array= n.array(stackMed))
-        meanStack=fits.Column(name="meanStack",format="D", unit="erg/s/cm2/Angstorm", array= n.array(stackMean))
-        meanWeightedStack=fits.Column(name="meanWeightedStack",format="D", unit= "erg/s/cm2/Angstorm", array= n.array(stackMeanWeighted))
-        jackknifeSpectra=fits.Column(name="jackknifeSpectra",format="10D", unit="erg/s/cm2/Angstorm", array= n.array(jackknifes))
-        jackknifStackErrors=fits.Column(name="jackknifStackErrors",format="D", unit="erg/s/cm2/Angstorm", array= n.array(stackVar))
-        NspectraPerPixel=fits.Column(name="NspectraPerPixel",format="D", unit="", array= n.array(stackN))
-        return  wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel
+		wavelength = fits.Column(name="wavelength",format="D", unit="Angstorm", array= self.wave)
+		medianStack=fits.Column(name="medianStack",format="D", unit="erg/s/cm2/Angstorm", array= n.array(stackMed))
+		meanStack=fits.Column(name="meanStack",format="D", unit="erg/s/cm2/Angstorm", array= n.array(stackMean))
+		meanWeightedStack=fits.Column(name="meanWeightedStack",format="D", unit= "erg/s/cm2/Angstorm", array= n.array(stackMeanWeighted))
+		jackknifeSpectra=fits.Column(name="jackknifeSpectra",format="10D", unit="erg/s/cm2/Angstorm", array= n.array(jackknifes))
+		jackknifStackErrors=fits.Column(name="jackknifStackErrors",format="D", unit="erg/s/cm2/Angstorm", array= n.array(stackVar))
+		NspectraPerPixel=fits.Column(name="NspectraPerPixel",format="D", unit="", array= n.array(stackN))
+		return  wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel
 
 	def convertSpectrum(self,redshift):
 		"""
