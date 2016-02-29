@@ -153,23 +153,23 @@ class SpectraStacking:
 					specMatrixWeight.append(n.ones_like(pts)*weight)
 					count+=1
 
-				specMatrixWeight=n.array(specMatrixWeight)
-				specMatrix=n.array(specMatrix)
-				specMatrixErr=n.array(specMatrixErr)
-				print "now stacks"
-				wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel = self.stack_function( specMatrix ,specMatrixWeight)
-				cols = fits.ColDefs([wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel])
-				tbhdu = fits.BinTableHDU.from_columns(cols)
-				prihdr = fits.Header()
-				prihdr['LF_FILE_NAME'] = self.LF_file.split('/')[-1][:-5]
-				prihdr['L_min'] = Ldistrib[0]
-				prihdr['L_mean'] = Ldistrib[2]
-				prihdr['L_max'] = Ldistrib[-1]
-				prihdu = fits.PrimaryHDU(header=prihdr)
-				thdulist = fits.HDUList([prihdu, tbhdu])
-				outPutFileName_inter = self.LF_file[:-5] +"_stack_N_"+ str(count) +"_R_"+ str(self.R) +"_L_"+ str( n.round( Ldistrib[2],3)) + ".fits"
-				outPutFileName = outPutFileName_inter.replace("emissionLineLuminosityFunctions","spectraStacks")
-				os.system('rm '+outPutFileName)
-				thdulist.writeto(outPutFileName)
-				#n.savetxt(,n.transpose([ self.wave,stackMed, stackMean, stackVar, stackN ]),header=" lambda fluxMedian fluxMean fluxMeanWeighted stackVar Nspectra ")
+			specMatrixWeight=n.array(specMatrixWeight)
+			specMatrix=n.array(specMatrix)
+			specMatrixErr=n.array(specMatrixErr)
+			print "now stacks"
+			wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel = self.stack_function( specMatrix ,specMatrixWeight)
+			cols = fits.ColDefs([wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel])
+			tbhdu = fits.BinTableHDU.from_columns(cols)
+			prihdr = fits.Header()
+			prihdr['LF_FILE_NAME'] = self.LF_file.split('/')[-1][:-5]
+			prihdr['L_min'] = Ldistrib[0]
+			prihdr['L_mean'] = Ldistrib[2]
+			prihdr['L_max'] = Ldistrib[-1]
+			prihdu = fits.PrimaryHDU(header=prihdr)
+			thdulist = fits.HDUList([prihdu, tbhdu])
+			outPutFileName_inter = self.LF_file[:-5] +"_stack_N_"+ str(count) +"_R_"+ str(self.R) +"_L_"+ str( n.round( Ldistrib[2],3)) + ".fits"
+			outPutFileName = outPutFileName_inter.replace("emissionLineLuminosityFunctions","spectraStacks")
+			os.system('rm '+outPutFileName)
+			thdulist.writeto(outPutFileName)
+			#n.savetxt(,n.transpose([ self.wave,stackMed, stackMean, stackVar, stackN ]),header=" lambda fluxMedian fluxMean fluxMeanWeighted stackVar Nspectra ")
 
