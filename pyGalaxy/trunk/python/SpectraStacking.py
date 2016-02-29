@@ -117,58 +117,59 @@ class SpectraStacking:
             Ldistrib = scoreatpercentile( self.catalog_entries[ids][self.line+ '_luminosity' ] , [0,25,50,75,100])
             print "stacks ",len(self.catalog_entries[ids]), "galaxies from " +self.survey + " with "+ self.line +" luminosities (min, Q25, median, Q75, max)", Ldistrib
             for entry in self.catalog_entries[ids] :
-                if self.survey[:4]=="DEEP":
-                    spec=GalaxySpectrumDEEP2(entry,calibration=False,lineFits=True)
-                    spec.openObservedSpectrumFC()
-                    correction = calzettiLaw(spec.wavelength)**spec.catalog_entry['SFD_EBV']
-                    self.wavelength,self.fluxl,self.fluxlErr = spec.wavelength,spec.fluxl*correction, spec.fluxlErr*correction
-                    pts,ptsErr = self.convertSpectrum(spec.catalog_entry['ZBEST'])
-                    specMatrix.append(pts)
-                    specMatrixErr.append(ptsErr)
-                    weight=1/(spec.catalog_entry['TSR']*spec.catalog_entry['SSR'])
-                    specMatrixWeight.append(n.ones_like(pts)*weight)
-                    count+=1
+				if self.survey[:4]=="DEEP":
+					spec=GalaxySpectrumDEEP2(entry,calibration=False,lineFits=True)
+					spec.openObservedSpectrumFC()
+					correction = calzettiLaw(spec.wavelength)**spec.catalog_entry['SFD_EBV']
+					self.wavelength,self.fluxl,self.fluxlErr = spec.wavelength,spec.fluxl*correction, spec.fluxlErr*correction
+					pts,ptsErr = self.convertSpectrum(spec.catalog_entry['ZBEST'])
+					specMatrix.append(pts)
+					specMatrixErr.append(ptsErr)
+					weight=1/(spec.catalog_entry['TSR']*spec.catalog_entry['SSR'])
+					specMatrixWeight.append(n.ones_like(pts)*weight)
+					count+=1
 
-                if self.survey[:4]=="VVDS":
-                    spec=GalaxySpectrumVVDS(entry)
-                    spec.openObservedSpectrum()
-                    correction = calzettiLaw(spec.wavelength)**spec.catalog_entry['EBV_MW']
-                    self.wavelength,self.fluxl,self.fluxlErr = spec.wavelength,spec.fluxl*correction, spec.fluxlErr*correction
-                    pts,ptsErr = self.convertSpectrum(spec.catalog_entry['Z'])
-                    specMatrix.append(pts)
-                    specMatrixErr.append(ptsErr)
-                    weight=1/(spec.catalog_entry['TSR']*spec.catalog_entry['SSR'])
-                    specMatrixWeight.append(n.ones_like(pts)*weight)
-                    count+=1
+				if self.survey[:4]=="VVDS":
+					spec=GalaxySpectrumVVDS(entry)
+					spec.openObservedSpectrum()
+					correction = calzettiLaw(spec.wavelength)**spec.catalog_entry['EBV_MW']
+					self.wavelength,self.fluxl,self.fluxlErr = spec.wavelength,spec.fluxl*correction, spec.fluxlErr*correction
+					pts,ptsErr = self.convertSpectrum(spec.catalog_entry['Z'])
+					specMatrix.append(pts)
+					specMatrixErr.append(ptsErr)
+					weight=1/(spec.catalog_entry['TSR']*spec.catalog_entry['SSR'])
+					specMatrixWeight.append(n.ones_like(pts)*weight)
+					count+=1
 
-                if self.survey[:4]=="VIPE":
-                    spec=GalaxySpectrumVIPERS(entry)
-                    spec.openObservedSpectrum()
-                    correction = calzettiLaw(spec.wavelength)**spec.catalog_entry['EBV_MW']
-                    self.wavelength,self.fluxl,self.fluxlErr = spec.wavelength,spec.fluxl*correction, spec.fluxlErr*correction
-                    pts,ptsErr = self.convertSpectrum(spec.catalog_entry['zspec'])
-                    specMatrix.append(pts)
-                    specMatrixErr.append(ptsErr)
-                    weight=1/(spec.catalog_entry['TSR']*spec.catalog_entry['SSR'])
-                    specMatrixWeight.append(n.ones_like(pts)*weight)
-                    count+=1
+				if self.survey[:4]=="VIPE":
+					spec=GalaxySpectrumVIPERS(entry)
+					spec.openObservedSpectrum()
+					correction = calzettiLaw(spec.wavelength)**spec.catalog_entry['EBV_MW']
+					self.wavelength,self.fluxl,self.fluxlErr = spec.wavelength,spec.fluxl*correction, spec.fluxlErr*correction
+					pts,ptsErr = self.convertSpectrum(spec.catalog_entry['zspec'])
+					specMatrix.append(pts)
+					specMatrixErr.append(ptsErr)
+					weight=1/(spec.catalog_entry['TSR']*spec.catalog_entry['SSR'])
+					specMatrixWeight.append(n.ones_like(pts)*weight)
+					count+=1
 
-            specMatrixWeight=n.array(specMatrixWeight)
-            specMatrix=n.array(specMatrix)
-            specMatrixErr=n.array(specMatrixErr)
-            print "now stacks"
-            wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel = self.stack_function( specMatrix ,specMatrixWeight)
-            cols = fits.ColDefs([wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel])
-            tbhdu = fits.BinTableHDU.from_columns(cols)
-            prihdr = fits.Header()
-            prihdr['LF_FILE_NAME'] = self.LF_file.split('/')[-1][:-5]
-            prihdr['L_min'] = Ldistrib[0]
-            prihdr['L_mean'] = Ldistrib[2]
-            prihdr['L_max'] = Ldistrib[-1]
-            prihdu = fits.PrimaryHDU(header=prihdr)
-            thdulist = fits.HDUList([prihdu, tbhdu])
-            outPutFileName = self.LF_file[:-5] +"_stack_N_"+ str(count) +"_R_"+ str(self.R) +"_L_"+ str( n.round( Ldistrib[2],3)) + ".fits"
-            os.system('rm '+outPutFileName)
-            thdulist.writeto(outPutFileName)
-            #n.savetxt(,n.transpose([ self.wave,stackMed, stackMean, stackVar, stackN ]),header=" lambda fluxMedian fluxMean fluxMeanWeighted stackVar Nspectra ")
+				specMatrixWeight=n.array(specMatrixWeight)
+				specMatrix=n.array(specMatrix)
+				specMatrixErr=n.array(specMatrixErr)
+				print "now stacks"
+				wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel = self.stack_function( specMatrix ,specMatrixWeight)
+				cols = fits.ColDefs([wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel])
+				tbhdu = fits.BinTableHDU.from_columns(cols)
+				prihdr = fits.Header()
+				prihdr['LF_FILE_NAME'] = self.LF_file.split('/')[-1][:-5]
+				prihdr['L_min'] = Ldistrib[0]
+				prihdr['L_mean'] = Ldistrib[2]
+				prihdr['L_max'] = Ldistrib[-1]
+				prihdu = fits.PrimaryHDU(header=prihdr)
+				thdulist = fits.HDUList([prihdu, tbhdu])
+				outPutFileName_inter = self.LF_file[:-5] +"_stack_N_"+ str(count) +"_R_"+ str(self.R) +"_L_"+ str( n.round( Ldistrib[2],3)) + ".fits"
+				outPutFileName = outPutFileName_inter.replace("emissionLineLuminosityFunctions","spectraStacks")
+				os.system('rm '+outPutFileName)
+				thdulist.writeto(outPutFileName)
+				#n.savetxt(,n.transpose([ self.wave,stackMed, stackMean, stackVar, stackN ]),header=" lambda fluxMedian fluxMean fluxMeanWeighted stackVar Nspectra ")
 
