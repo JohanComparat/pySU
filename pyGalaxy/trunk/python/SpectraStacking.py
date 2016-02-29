@@ -80,43 +80,44 @@ class SpectraStacking:
         NspectraPerPixel=fits.Column(name="NspectraPerPixel",format="D", unit="", array= n.array(stackN))
         return  wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel
 
-    def convertSpectrum(self,redshift):
-        """
-        Shifts the spectrum in the rest-frame and creates a spectrum with the sampling desired.
-        :param redshift: redshift of the spectrum
-        """	
-        nwave=self.wavelength/(1+redshift)
+	def convertSpectrum(self,redshift):
+		"""
+		Shifts the spectrum in the rest-frame and creates a spectrum with the sampling desired.
+		:param redshift: redshift of the spectrum
+		"""	
+		nwave=self.wavelength/(1+redshift)
 
-        inL=(self.wave>nwave.min())&(self.wave<nwave.max())
-        outL=(inL==False)
+		inL=(self.wave>nwave.min())&(self.wave<nwave.max())
+		outL=(inL==False)
 
-        points=interp1d(nwave,self.fluxl)
-        pts=points(self.wave[inL])
-        res=n.ones_like(self.wave)*self.dV
-        res[inL]=pts
+		points=interp1d(nwave,self.fluxl)
+		pts=points(self.wave[inL])
+		res=n.ones_like(self.wave)*self.dV
+		res[inL]=pts
 
-        pointsErr=interp1d(nwave,self.fluxlErr)
-        ptsErr=pointsErr(self.wave[inL])
-        resErr=n.ones_like(self.wave)**self.dV
-        resErr[inL]=ptsErr
+		pointsErr=interp1d(nwave,self.fluxlErr)
+		ptsErr=pointsErr(self.wave[inL])
+		resErr=n.ones_like(self.wave)**self.dV
+		resErr[inL]=ptsErr
 
-        return res, resErr
+		return res, resErr
 
 
-    def stackSpectra(self):
-        """
-        Function that constructs the stacks for a luminosity function. It loops over the list of spectra given in the catalog of the LF. First it sorts the catalog by the line luminosity. And then stacks the first Nspec, then the next Nspec together.
-        """
-        # loop over the file with N sorted with luminosity
-        indexes = n.argsort(-self.catalog_entries[self.line+'_luminosity'])
-        jumps = n.arange(0, len(self.catalog_entries[self.line+'_luminosity']), self.Nspec)
-        for ii in range(len(jumps)-1):
-            ids = indexes[jumps[ii]:jumps[ii+1]]
-            specMatrix,specMatrixErr,specMatrixWeight=[],[],[]
-            count=0
-            Ldistrib = scoreatpercentile( self.catalog_entries[ids][self.line+ '_luminosity' ] , [0,25,50,75,100])
-            print "stacks ",len(self.catalog_entries[ids]), "galaxies from " +self.survey + " with "+ self.line +" luminosities (min, Q25, median, Q75, max)", Ldistrib
-            for entry in self.catalog_entries[ids] :
+	def stackSpectra(self):
+		"""
+		Function that constructs the stacks for a luminosity function. It loops over the list of spectra given in the catalog of the LF. First it sorts the catalog by the line luminosity. And then stacks the first Nspec, then the next Nspec together.
+		"""
+		# loop over the file with N sorted with luminosity
+		indexes = n.argsort(-self.catalog_entries[self.line+'_luminosity'])
+		jumps = n.arange(0, len(self.catalog_entries[self.line+'_luminosity']), self.Nspec)
+		for ii in range(len(jumps)-1):
+			ids = indexes[jumps[ii]:jumps[ii+1]]
+			specMatrix,specMatrixErr,specMatrixWeight=[],[],[]
+			count=0
+			Ldistrib = scoreatpercentile( self.catalog_entries[ids][self.line+ '_luminosity' ] , [0,25,50,75,100])
+			print "stacks ",len(self.catalog_entries[ids]), "galaxies from " +self.survey + " with "+ self.line +" luminosities (min, Q25, median, Q75, max)", Ldistrib
+			for entry in self.catalog_entries[ids] :
+				# loops over the spectra to be stacked and arranges them into a matrix.
 				if self.survey[:4]=="DEEP":
 					spec=GalaxySpectrumDEEP2(entry,calibration=False,lineFits=True)
 					spec.openObservedSpectrumFC()
