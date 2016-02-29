@@ -40,7 +40,7 @@ class GalaxySpectrumDEEP2:
             self.path_to_spectrum = glob.glob(join(self.deep2_spectra_dir , self.mask ,'*', '*' + self.objno + '*.fits'))
 
         if lineFits :
-            self.path_to_spectrum = glob.glob(join(self.deep2_spectra_dir , self.mask +'*', '*' + self.objno + '*_fc_tc.dat'))
+            self.path_to_spectrum = glob.glob(join(self.deep2_spectra_dir , self.mask, '*', '*' + self.objno + '*_fc_tc.dat'))
 
         print "path to spectrum", self.path_to_spectrum, self.mask, self.objno
 
