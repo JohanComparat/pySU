@@ -171,5 +171,4 @@ class SpectraStacking:
 			outPutFileName = outPutFileName_inter.replace("emissionLineLuminosityFunctions","spectraStacks")
 			os.system('rm '+outPutFileName)
 			thdulist.writeto(outPutFileName)
-			#n.savetxt(,n.transpose([ self.wave,stackMed, stackMean, stackVar, stackN ]),header=" lambda fluxMedian fluxMean fluxMeanWeighted stackVar Nspectra ")
 
