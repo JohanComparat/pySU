@@ -34,15 +34,13 @@ for el in tobestacked:
 	st=SpectraStacking(el, Nspec = 100)
 	st.stackSpectra()
 
-sys.exit()
-vipers_dir = os.environ['VIPES_DIR']
-
+	
+vipers_dir = os.environ['VIPERS_DIR']
 tobestacked = glob.glob( join(vipers_dir, "products", "emissionLineLuminosityFunctions", "*", "*.fits"))
 
 for el in tobestacked:
 		st=SpectraStacking(el)
 		st.stackSpectra()
-
 
 sys.exit()
 
