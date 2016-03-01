@@ -17,8 +17,29 @@ for el in tobestacked:
 	print "--------------------------------------"
 	print el, glob.glob(el[:-5]+"*stack*"),len(n.array(glob.glob(el[:-5]+"*stack*")))
 	print el, "stacks !"
-	st=SpectraStacking(el, Nspec = 400, dLambda = 0.0019)
+	st=SpectraStacking(el, Nspec = 400, dLambda = 0.0013)
 	st.stackSpectra()
+
+	
+
+deep2_dir = os.environ['DEEP2_DIR']
+tobestacked = glob.glob( join(deep2_dir, "products", "emissionLineLuminosityFunctions", "*", "*.fits"))
+
+for el in tobestacked:
+	print el, "stacks !"
+	st=SpectraStacking(el, Nspec = 400, dLambda = 0.00005)
+	st.stackSpectra()
+
+	print "--------------------------------------"
+	print el, glob.glob(el[:-5]+"*stack*"),len(n.array(glob.glob(el[:-5]+"*stack*")))
+	if el.find('stack') > 0 :
+		continue
+	elif len(n.array(glob.glob(el[:-5]+"*stack*"))) > 0:
+		continue
+	else :
+		print el, "stacks !"
+		st=SpectraStacking(el, Nspec = 400, dLambda = 0.00005)
+		st.stackSpectra()
 
 sys.exit()
 
@@ -30,22 +51,6 @@ for el in tobestacked:
 		st.stackSpectra()
 
 sys.exit()
-
-deep2_dir = os.environ['DEEP2_DIR']
-tobestacked = glob.glob( join(deep2_dir, "products", "emissionLineLuminosityFunctions", "*", "*.fits"))
-
-for el in tobestacked:
-	print "--------------------------------------"
-	print el, glob.glob(el[:-5]+"*stack*"),len(n.array(glob.glob(el[:-5]+"*stack*")))
-	if el.find('stack') > 0 :
-		continue
-	elif len(n.array(glob.glob(el[:-5]+"*stack*"))) > 0:
-		continue
-	else :
-		print el, "stacks !"
-		st=SpectraStacking(el, Nspec = 400)
-		st.stackSpectra()
-
 	
 tobestacked = glob.glob( join(data_dir,"VVDS", "products", "emissionLineLuminosityFunctions", "*", "*.fits"))
 

@@ -90,13 +90,13 @@ class SpectraStacking:
 		inL=(self.wave>nwave.min())&(self.wave<nwave.max())
 		outL=(inL==False)
 
-		points=interp1d(nwave,self.fluxl)
-		pts=points(self.wave[inL])
+		points=interp1d(nwave,nwave * self.fluxl)
+		pts=points(self.wave[inL]) / self.wave[inL]
 		res=n.ones_like(self.wave)*self.dV
 		res[inL]=pts
 
-		pointsErr=interp1d(nwave,self.fluxlErr)
-		ptsErr=pointsErr(self.wave[inL])
+		pointsErr=interp1d(nwave,nwave * self.fluxlErr)
+		ptsErr=pointsErr(self.wave[inL]) / self.wave[inL]
 		resErr=n.ones_like(self.wave)*self.dV
 		resErr[inL]=ptsErr
 
@@ -105,7 +105,10 @@ class SpectraStacking:
 
 	def stackSpectra(self):
 		"""
-		Function that constructs the stacks for a luminosity function. It loops over the list of spectra given in the catalog of the LF. First it sorts the catalog by the line luminosity. And then stacks the first Nspec, then the next Nspec together.
+		Function that constructs the stacks for a luminosity function. 
+		It loops over the list of spectra given in the catalog of the LF. 
+		First it sorts the catalog by the line luminosity. 
+		And then stacks the first Nspec, then the next Nspec together.
 		"""
 		# loop over the file with N sorted with luminosity
 		indexes = n.argsort(-self.catalog_entries[self.line+'_luminosity'])
