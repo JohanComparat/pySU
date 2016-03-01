@@ -42,7 +42,7 @@ class GalaxySpectrumDEEP2:
         if lineFits :
             self.path_to_spectrum = glob.glob(join(self.deep2_spectra_dir , self.mask, '*', '*' + self.objno + '*_fc_tc.dat'))
 
-        print "path to spectrum", self.path_to_spectrum, self.mask, self.objno
+        #print "path to spectrum", self.path_to_spectrum, self.mask, self.objno
 
         
     def openObservedSpectrum(self):

@@ -17,7 +17,7 @@ for el in tobestacked:
 	print "--------------------------------------"
 	print el, glob.glob(el[:-5]+"*stack*"),len(n.array(glob.glob(el[:-5]+"*stack*")))
 	print el, "stacks !"
-	st=SpectraStacking(el, Nspec = 400, dLambda = 0.0019))
+	st=SpectraStacking(el, Nspec = 400, dLambda = 0.0019)
 	st.stackSpectra()
 
 sys.exit()
