@@ -1,0 +1,74 @@
+#! /usr/bin/env python
+
+"""
+This script produces the stacks for emission line luminosity limited samples.
+"""
+import sys
+import os 
+from os.path import join
+data_dir = os.environ['DATA_DIR']
+from SpectraStacking import *
+	
+f = open(join(os.environ['LFMODELS_DIR'], "data" , "O2_3728-data-luminosity-limits-Planck15.txt"),'r')
+lines = f.readlines()
+lmins, lmaxs, fileNames = [], [], []
+for line in lines[1:] :
+	lmins.append( float(line.split()[0]) )
+	lmaxs.append( float(line.split()[1]) )
+	fileNames.append(line.split()[2])
+	
+f.close()
+
+
+f = open(join(os.environ['LFMODELS_DIR'], "data" , "O3_5007-data-luminosity-limits-Planck15.txt"),'r')
+lines = f.readlines()
+for line in lines[1:] :
+	lmins.append( float(line.split()[0]) )
+	lmaxs.append( float(line.split()[1]) )
+	fileNames.append(line.split()[2])
+	
+f.close()
+
+f = open(join(os.environ['LFMODELS_DIR'], "data" , "H1_4862-data-luminosity-limits-Planck15.txt"),'r')
+lines = f.readlines()
+for line in lines[1:] :
+	lmins.append( float(line.split()[0]) )
+	lmaxs.append( float(line.split()[1]) )
+	fileNames.append(line.split()[2])
+	
+f.close()
+
+dictLmin = { fileNames[ii]: lmins[ii] for ii in range(len(fileNames)) }
+dictLmax = { fileNames[ii]: lmaxs[ii] for ii in range(len(fileNames)) }
+
+vvds_dir = os.environ['VVDS_DIR']
+dataList = glob.glob( join(vvds_dir, "products", "emissionLineLuminosityFunctions", "??_????", "*.fits"))
+
+
+# construct meta data matrix
+
+survey, line, LFname = n.empty(len(dataList), dtype = 'S20'), n.empty(len(dataList), dtype = 'S8'),  n.empty(len(dataList), dtype = 'S50')
+lcomp = n.empty(len(dataList), dtype = float)
+
+
+for ii, el in enumerate(dataList):
+	line[ii] = el.split('/')[-2]
+	LFname[ii] = el.split('/')[-1][:-5]+".txt"
+	survey[ii] = el.split('-')[-2]
+	hd = fits.open(el)
+	lcomp[ii] = n.log10(hd[0].header['COMPLETENESS'])
+
+selection = ((survey =="VVDSDEEPI24") ) #| (survey =="DEEP2R24.2") )
+
+for ii in n.arange(len(dataList))[selection]:
+		el = dataList[ii]
+		#if lcomp[ii] > dictLmin[LFname[ii]] :
+		print el, "stacks !"
+		st=SpectraStacking(el, Nspec = 200, dLambda = 0.00005)
+		st.stackSpectra()
+		st=SpectraStacking(el, Nspec = 100, dLambda = 0.00005)
+		st.stackSpectra()
+		st=SpectraStacking(el, Nspec = 50, dLambda = 0.00005)
+		st.stackSpectra()
+
+

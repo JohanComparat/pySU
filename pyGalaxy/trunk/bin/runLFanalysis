@@ -20,10 +20,9 @@ cd $PYSU_DIR/pyGalaxies/trunk/bin
 ./fit_model_LF_all
 ./plotLFs
 
-# here : 
-# convert Biblio Points to Planck 2015
-# crashes at some point with deep2 ...
-./stack_spectra
+# here :
+./stack_spectra_DEEP2
+./stack_spectra_VVDSDEEP
 
 # fit firefly continuum models
 # ./fit_lines_stacks # with continuum subtracted
