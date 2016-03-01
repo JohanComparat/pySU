@@ -10,11 +10,23 @@ data_dir = os.environ['DATA_DIR']
 from SpectraStacking import *
 
 
+vvds_dir = os.environ['VVDS_DIR']
+tobestacked = glob.glob( join(vvds_dir, "products", "emissionLineLuminosityFunctions", "*", "*.fits"))
+
+for el in tobestacked:
+	print "--------------------------------------"
+	print el, glob.glob(el[:-5]+"*stack*"),len(n.array(glob.glob(el[:-5]+"*stack*")))
+	print el, "stacks !"
+	st=SpectraStacking(el, Nspec = 400, dLambda = 0.0019))
+	st.stackSpectra()
+
+sys.exit()
+
 vipers_dir = os.environ['VIPERS_DIR']
 tobestacked = glob.glob( join(vipers_dir, "products", "emissionLineLuminosityFunctions", "*", "*.fits"))
 
 for el in tobestacked:
-		st=SpectraStacking(el)
+		st=SpectraStacking(el, Nspec= 400, dLambda = 0.0019)
 		st.stackSpectra()
 
 sys.exit()
@@ -33,16 +45,6 @@ for el in tobestacked:
 		print el, "stacks !"
 		st=SpectraStacking(el, Nspec = 400)
 		st.stackSpectra()
-
-vvds_dir = os.environ['VVDS_DIR']
-tobestacked = glob.glob( join(vvds_dir, "products", "emissionLineLuminosityFunctions", "*", "*.fits"))
-
-for el in tobestacked:
-	print "--------------------------------------"
-	print el, glob.glob(el[:-5]+"*stack*"),len(n.array(glob.glob(el[:-5]+"*stack*")))
-	print el, "stacks !"
-	st=SpectraStacking(el, Nspec = 100)
-	st.stackSpectra()
 
 	
 tobestacked = glob.glob( join(data_dir,"VVDS", "products", "emissionLineLuminosityFunctions", "*", "*.fits"))

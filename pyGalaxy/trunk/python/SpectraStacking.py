@@ -7,8 +7,8 @@ The class SpectraStacking is dedicated to stacking spectra
 
 """
 import os 
-import astropy.cosmology as co
-cosmo=co.Planck15 # co.FlatLambdaCDM(H0=70,Om0=0.3)
+#import astropy.cosmology as co
+#cosmo=co.Planck15 # co.FlatLambdaCDM(H0=70,Om0=0.3)
 import astropy.io.fits as fits
 import numpy as n
 from scipy.optimize import curve_fit
@@ -71,12 +71,12 @@ class SpectraStacking:
 						jackknifes[i] = inter
 						stackVar[i] = n.std(inter)
 
-		wavelength = fits.Column(name="wavelength",format="D", unit="Angstorm", array= self.wave)
-		medianStack=fits.Column(name="medianStack",format="D", unit="erg/s/cm2/Angstorm", array= n.array(stackMed))
-		meanStack=fits.Column(name="meanStack",format="D", unit="erg/s/cm2/Angstorm", array= n.array(stackMean))
-		meanWeightedStack=fits.Column(name="meanWeightedStack",format="D", unit= "erg/s/cm2/Angstorm", array= n.array(stackMeanWeighted))
-		jackknifeSpectra=fits.Column(name="jackknifeSpectra",format="10D", unit="erg/s/cm2/Angstorm", array= n.array(jackknifes))
-		jackknifStackErrors=fits.Column(name="jackknifStackErrors",format="D", unit="erg/s/cm2/Angstorm", array= n.array(stackVar))
+		wavelength = fits.Column(name="wavelength",format="D", unit="Angstrom", array= self.wave)
+		medianStack=fits.Column(name="medianStack",format="D", unit="erg/s/cm2/Angstrom", array= n.array(stackMed))
+		meanStack=fits.Column(name="meanStack",format="D", unit="erg/s/cm2/Angstrom", array= n.array(stackMean))
+		meanWeightedStack=fits.Column(name="meanWeightedStack",format="D", unit= "erg/s/cm2/Angstrom", array= n.array(stackMeanWeighted))
+		jackknifeSpectra=fits.Column(name="jackknifeSpectra",format="10D", unit="erg/s/cm2/Angstrom", array= n.array(jackknifes))
+		jackknifStackErrors=fits.Column(name="jackknifStackErrors",format="D", unit="erg/s/cm2/Angstrom", array= n.array(stackVar))
 		NspectraPerPixel=fits.Column(name="NspectraPerPixel",format="D", unit="", array= n.array(stackN))
 		return  wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel
 
@@ -97,7 +97,7 @@ class SpectraStacking:
 
 		pointsErr=interp1d(nwave,self.fluxlErr)
 		ptsErr=pointsErr(self.wave[inL])
-		resErr=n.ones_like(self.wave)**self.dV
+		resErr=n.ones_like(self.wave)*self.dV
 		resErr[inL]=ptsErr
 
 		return res, resErr
