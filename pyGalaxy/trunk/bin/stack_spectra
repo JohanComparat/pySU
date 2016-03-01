@@ -9,6 +9,16 @@ from os.path import join
 data_dir = os.environ['DATA_DIR']
 from SpectraStacking import *
 
+
+vipers_dir = os.environ['VIPERS_DIR']
+tobestacked = glob.glob( join(vipers_dir, "products", "emissionLineLuminosityFunctions", "*", "*.fits"))
+
+for el in tobestacked:
+		st=SpectraStacking(el)
+		st.stackSpectra()
+
+sys.exit()
+
 deep2_dir = os.environ['DEEP2_DIR']
 tobestacked = glob.glob( join(deep2_dir, "products", "emissionLineLuminosityFunctions", "*", "*.fits"))
 
@@ -35,15 +45,6 @@ for el in tobestacked:
 	st.stackSpectra()
 
 	
-vipers_dir = os.environ['VIPERS_DIR']
-tobestacked = glob.glob( join(vipers_dir, "products", "emissionLineLuminosityFunctions", "*", "*.fits"))
-
-for el in tobestacked:
-		st=SpectraStacking(el)
-		st.stackSpectra()
-
-sys.exit()
-
 tobestacked = glob.glob( join(data_dir,"VVDS", "products", "emissionLineLuminosityFunctions", "*", "*.fits"))
 
 for el in tobestacked:
