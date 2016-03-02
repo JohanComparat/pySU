@@ -27,7 +27,7 @@ spec.openObservedStack()
 outFile = np.core.defchararray.replace(specFile[:-5], "data", "fits")
 print outFile
 # gets the model for MILES, fits and writes
-model = spm.StellarPopulationModel(spec, outFile, cosmo, models = 'm11', model_libs = ['MILES'], imfs = ['ss'], age_limits = [6,10], downgrade_models = True, data_wave_medium = 'vacuum', Z_limits = [-3.,1.],suffix="-SPM-MILES.fits", use_downgraded_models = False)
+model = spm.StellarPopulationModel(spec, outFile, cosmo, models = 'm11', model_libs = ['MILES'], imfs = ['ss'], age_limits = [6,10], downgrade_models = True, data_wave_medium = 'air', Z_limits = [-3.,1.],suffix="-SPM-MILES.fits", use_downgraded_models = False)
 model.fit_models_to_data()
 
 # gets the model for Stelib, fits and writes
