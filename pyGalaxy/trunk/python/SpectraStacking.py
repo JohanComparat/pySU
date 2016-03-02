@@ -141,7 +141,7 @@ class SpectraStacking:
 					pts,ptsErr = self.convertSpectrum(spec.catalog_entry['Z'])
 					specMatrix.append(pts)
 					specMatrixErr.append(ptsErr)
-					weight=1/(spec.catalog_entry['TSR']*spec.catalog_entry['SSR'])
+					weight=1/(spec.catalog_entry['TSR']*spec.catalog_entry['SSR']*catalog['fo'])
 					specMatrixWeight.append(n.ones_like(pts)*weight)
 					count+=1
 
@@ -153,7 +153,7 @@ class SpectraStacking:
 					pts,ptsErr = self.convertSpectrum(spec.catalog_entry['zspec'])
 					specMatrix.append(pts)
 					specMatrixErr.append(ptsErr)
-					weight=1/(spec.catalog_entry['TSR']*spec.catalog_entry['SSR'])
+					weight=1/(spec.catalog_entry['TSR']*spec.catalog_entry['SSR']*catalog['fo'])
 					specMatrixWeight.append(n.ones_like(pts)*weight)
 					count+=1
 
