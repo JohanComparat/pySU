@@ -1,6 +1,6 @@
 #!/bin/bash/
 
-cd $PYSU_DIR/pyGalaxies/trunk/bin
+cd $PYSU_DIR/pyGalaxy/trunk/bin
 
 #handle the surveys
 ./calibrate_DEEP2_spectra
@@ -34,7 +34,7 @@ python  fits_OII_LFs.py
 
 # DATA
 # stacks after the luminosity function
-cd $PYSU_DIR/pyGalaxies/trunk/bin
+cd $PYSU_DIR/pyGalaxy/trunk/bin
 ./stack_spectra_DEEP2
 ./stack_spectra_VVDSDEEP
 
@@ -49,12 +49,13 @@ python plotStacks.py
 cd $PYSU_DIR/pySPM/trunk/bin
 python setup_run_for_stacks_DEEP2
 python setup_run_for_stacks_VVDSDEEP
+# writes to to $SPECTRASTACKS_DIR/fits/
 
 cd $PYSU_DIR/pyGalaxies/trunk/bin
 # relink things correclty :
-./model_stacked_spectra
+./model_stacked_spectra_DEEP2
 ./model_stacked_spectra_VVDS
-
+# writes to to $SPECTRASTACKS_DIR/model/
 
 ./plot_firefly_model
 

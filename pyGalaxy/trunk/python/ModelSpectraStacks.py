@@ -495,8 +495,9 @@ class ModelSpectraStacks:
 		prihdu = fits.PrimaryHDU(header=self.hdR)
 		thdulist = fits.HDUList([prihdu, self.hdu1, self.hdu2, tbhdu])
 		outPutFileName = self.stack_model_file[:-5] + "-modeled.fits"
-		os.system('rm '+outPutFileName)
-		thdulist.writeto(outPutFileName)
+		outFile = np.core.defchararray.replace(outPutFileName, "fits", "model").item()
+		os.system('rm '+outFile)
+		thdulist.writeto(outFile)
 
 	def plot_fit(self):
 		"""

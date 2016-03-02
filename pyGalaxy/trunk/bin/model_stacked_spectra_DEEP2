@@ -4,7 +4,7 @@ from os.path import join
 
 from ModelSpectraStacks import *
 import glob
-stack_files=n.array(glob.glob( join( os.environ['DATA_DIR'], "*", "products", "emissionLineLuminosityFunctions", "??_????", "*stack*e+??.fits" ) ) )
+stack_files=n.array(glob.glob( join( os.environ['SPECTRASTACKS_DIR'], "fits", "??_????", "*.fits" ) ) )
 
 stack_files.sort()
 
