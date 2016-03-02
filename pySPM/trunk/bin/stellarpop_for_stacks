@@ -10,8 +10,8 @@ import time
 import glob
 import numpy as np
 import astropy.cosmology as co
-#cosmo = co.Planck13
-cosmo=co.FlatLambdaCDM(H0=70,Om0=0.3)
+cosmo = co.Planck15
+#cosmo=co.FlatLambdaCDM(H0=70,Om0=0.3)
 
 # for one galaxy spectrum
 import GalaxySpectrumFIREFLY as gs
@@ -31,8 +31,8 @@ model = spm.StellarPopulationModel(spec, outFile, cosmo, models = 'm11', model_l
 model.fit_models_to_data()
 
 # gets the model for Stelib, fits and writes
-model = spm.StellarPopulationModel(spec, outFile, cosmo, models = 'm11', model_libs = ['STELIB'], imfs = ['ss'], age_limits = [6,10], downgrade_models = False, data_wave_medium = 'air', Z_limits = [-3.,1.],suffix="-SPM-STELIB.fits", use_downgraded_models = False)
-model.fit_models_to_data()
+# model = spm.StellarPopulationModel(spec, outFile, cosmo, models = 'm11', model_libs = ['STELIB'], imfs = ['ss'], age_limits = [6,10], downgrade_models = False, data_wave_medium = 'air', Z_limits = [-3.,1.],suffix="-SPM-STELIB.fits", use_downgraded_models = False)
+# model.fit_models_to_data()
 
 print "time used =", time.time()-t0 ,"seconds"
 
