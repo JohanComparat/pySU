@@ -4,7 +4,7 @@ from os.path import join
 
 from ModelSpectraStacks import *
 import glob
-stack_files=n.array(glob.glob( join( os.environ['SPECTRASTACKS_DIR'], "data", "O2_????", "*DEEP2*.fits" ) ) )
+stack_files=n.array(glob.glob( join( os.environ['SPECTRASTACKS_DIR'], "data", "??_????", "*DEEP2*.fits" ) ) )
 stack_files.sort()
 
 #print stack_files
@@ -21,4 +21,12 @@ for file in stack_files:
 	mm.compute_derived_quantities()
 	mm.save_spectrum()
 	#mm.plot_spectrum()
+"""
+file="/users/jcomparat/skies_universes_production/spectraStacks/data/O2_3728/O2_3728-DEEP2R24.2-z0.925_stack_N_400_R_8686_L_4.09036870021e+41.fits"
+mm=ModelSpectraStacks(file,mode="MILES")
+#mm.plot_fit()
 
+mm.fit_lines_to_lineSpectrum()
+mm.compute_derived_quantities()
+mm.save_spectrum()
+"""

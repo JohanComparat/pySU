@@ -40,6 +40,17 @@ cd $PYSU_DIR/pyGalaxy/trunk/bin
 
 # MODEL
 # copy the stacks of interest to $SPECTRASTACKS_DIR/data/
+cp $VVDS_DIR/products/spectraStacks/O2_3728  $SPECTRASTACKS_DIR/data/
+cp $VVDS_DIR/products/spectraStacks/O3_5007  $SPECTRASTACKS_DIR/data/
+cp $DEEP2_DIR/products/spectraStacks/H1_4862  $SPECTRASTACKS_DIR/data/
+cp $DEEP2_DIR/products/spectraStacks/O2_3728/*.fits  $SPECTRASTACKS_DIR/data/O2_3728/
+cp $DEEP2_DIR/products/spectraStacks/O3_5007/*.fits  $SPECTRASTACKS_DIR/data/O3_5007/
+# remove the ones that are not from a complete LF TBD
+rm  $SPECTRASTACKS_DIR/data/O2_3728/O2_3728-DEEP2R24.2-z0.778*
+rm  $SPECTRASTACKS_DIR/data/O3_5007/O3_5007-DEEP2R24.2-z0.451*
+rm  $SPECTRASTACKS_DIR/data/O3_5007/O3_5007-DEEP2R24.2-z0.767*
+
+
 # plot the stacks, present the results
 cd $SPECTRASTACKS_DIR/scripts/
 python presentationPlot.py
