@@ -2,6 +2,7 @@
 
 cd $PYSU_DIR/pyGalaxies/trunk/bin
 
+#handle the surveys
 ./calibrate_DEEP2_spectra
 
 ./fit_lines_DEEP2_fc_spectra
@@ -15,21 +16,45 @@ cd $PYSU_DIR/pyGalaxies/trunk/bin
 ./compute_line_luminosities_VVDS
 ./plotSurveys
 
+# DATA
+# compute luminosity functions
 ./estimate_line_LF
 ./fit_model_LF_single
 ./fit_model_LF_all
 ./plotLFs
 
-# here :
+# MODEL
+# models the LFs
+# copy the LFs of interest to $LFMODELS_DIR/data/
+cd $LFMODELS_DIR/script
+python  convert_biblioPoints_toPlanck15.py
+python  fits_H1_4862_LFs.py
+python  fits_O3_5007_LFs.py
+python  fits_OII_LFs.py
+
+# DATA
+# stacks after the luminosity function
+cd $PYSU_DIR/pyGalaxies/trunk/bin
 ./stack_spectra_DEEP2
 ./stack_spectra_VVDSDEEP
 
-# fit firefly continuum models
-# ./fit_lines_stacks # with continuum subtracted
+# MODEL
+# copy the stacks of interest to $SPECTRASTACKS_DIR/data/
+# plot the stacks, present the results
+cd $SPECTRASTACKS_DIR/scripts/
+python presentationPlot.py
+python plotStacks.py
 
+# fit firefly stellar population continuum models
+cd $PYSU_DIR/pySPM/trunk/bin
+python setup_run_for_stacks_DEEP2
+python setup_run_for_stacks_VVDSDEEP
+
+cd $PYSU_DIR/pyGalaxies/trunk/bin
+# relink things correclty :
 ./model_stacked_spectra
 ./model_stacked_spectra_VVDS
-#./model_stacked_spectra_plotOnly
+
 
 ./plot_firefly_model
 
