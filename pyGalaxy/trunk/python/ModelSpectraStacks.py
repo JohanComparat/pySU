@@ -120,7 +120,8 @@ class ModelSpectraStacks:
 		hdus = fits.open(self.stack_file)
 		self.hdR = hdus[0].header
 		self.hdu1 = hdus[1] # .data
-		# loads the data :
+		print " loads the data :"
+		print self.hdu1.data.dtype
 		wlA,flA,flErrA = self.hdu1.data['wavelength'], self.hdu1.data['meanWeightedStack'], self.hdu1.data['jackknifStackErrors']
 		self.selection = (flA>0) & (self.hdu1.data['NspectraPerPixel']  > float( self.stack_file.split('_')[-5]) * self.N_spectra_limitFraction )
 		self.wl,self.fl,self.flErr = wlA[self.selection], flA[self.selection], flErrA[self.selection] 
