@@ -158,7 +158,7 @@ class StellarPopulationModel:
 
 			# Constructs the metallicity array of models :
 			all_metal_files = glob.glob(model_path+'*')
-			print all_metal_files
+			#print all_metal_files
 			metal_files 	= []
 			metal 	    = []
 			for z in range(len(all_metal_files)):
