@@ -21,7 +21,7 @@ specFile = sys.argv[1] # stack file
 # specFile ="/home/comparat/database/DEEP2/products/emissionLineLuminosityFunctions/O3_5007/O3_5007-DEEP2-z0.451_stack_N_400_R_4343_L_2.68632605763e+40.fits"
 t0=time.time()
 # initiates the spectrum and gets the data
-spec=gs.GalaxySpectrumFIREFLY(specFile, milky_way_reddening=False, resolution = 8686. )
+spec=gs.GalaxySpectrumFIREFLY(specFile, milky_way_reddening=False, stack_resolution = 8686. )
 spec.openObservedStack()
 
 outFile = n.replace(specFile[:-5], "data", "fits")
