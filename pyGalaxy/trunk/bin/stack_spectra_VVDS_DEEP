@@ -64,14 +64,13 @@ for ii in n.arange(len(dataList))[selection]:
 		el = dataList[ii]
 		#if lcomp[ii] > dictLmin[LFname[ii]] :
 		print el, "stacks !"
-		st=SpectraStacking(el, Nspec = 400, dLambda = 0.0013)
+
+		st=SpectraStacking(el, Nspec = 100, dLambda = 0.00005)
 		st.stackSpectra()
-		st=SpectraStacking(el, Nspec = 400, dLambda = 0.0019)
+
+		st=SpectraStacking(el, Nspec = 200, dLambda = 0.00005)
 		st.stackSpectra()
-		st=SpectraStacking(el, Nspec = 400, dLambda = 0.0005)
-		st.stackSpectra()
-		st=SpectraStacking(el, Nspec = 400, dLambda = 0.0001)
-		st.stackSpectra()	
+
 		st=SpectraStacking(el, Nspec = 400, dLambda = 0.00005)
 		st.stackSpectra()
 

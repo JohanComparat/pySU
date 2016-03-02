@@ -139,9 +139,9 @@ class SpectraStacking:
 					correction = calzettiLaw(spec.wavelength)**spec.catalog_entry['EBV_MW']
 					self.wavelength,self.fluxl,self.fluxlErr = spec.wavelength,spec.fluxl*correction, spec.fluxlErr*correction
 					pts,ptsErr = self.convertSpectrum(spec.catalog_entry['Z'])
-					specMatrix.append(pts)
-					specMatrixErr.append(ptsErr)
-					weight=1/(spec.catalog_entry['TSR']*spec.catalog_entry['SSR']*spec.catalog_entry['fo'])
+					specMatrix.append(pts/spec.catalog_entry['fo'])
+					specMatrixErr.append(ptsErr/spec.catalog_entry['fo'])
+					weight=1/(spec.catalog_entry['TSR']*spec.catalog_entry['SSR'])
 					specMatrixWeight.append(n.ones_like(pts)*weight)
 					count+=1
 
@@ -151,9 +151,9 @@ class SpectraStacking:
 					correction = calzettiLaw(spec.wavelength)**spec.catalog_entry['EBV_MW']
 					self.wavelength,self.fluxl,self.fluxlErr = spec.wavelength,spec.fluxl*correction, spec.fluxlErr*correction
 					pts,ptsErr = self.convertSpectrum(spec.catalog_entry['zspec'])
-					specMatrix.append(pts)
-					specMatrixErr.append(ptsErr)
-					weight=1/(spec.catalog_entry['TSR']*spec.catalog_entry['SSR']*spec.catalog_entry['fo'])
+					specMatrix.append(pts/spec.catalog_entry['fo'])
+					specMatrixErr.append(ptsErr/spec.catalog_entry['fo'])
+					weight=1/(spec.catalog_entry['TSR']*spec.catalog_entry['SSR'])
 					specMatrixWeight.append(n.ones_like(pts)*weight)
 					count+=1
 
