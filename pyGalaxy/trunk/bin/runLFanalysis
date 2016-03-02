@@ -50,7 +50,6 @@ rm  $SPECTRASTACKS_DIR/data/O2_3728/O2_3728-DEEP2R24.2-z0.778*
 rm  $SPECTRASTACKS_DIR/data/O3_5007/O3_5007-DEEP2R24.2-z0.451*
 rm  $SPECTRASTACKS_DIR/data/O3_5007/O3_5007-DEEP2R24.2-z0.767*
 
-
 # plot the stacks, present the results
 cd $SPECTRASTACKS_DIR/scripts/
 python presentationPlot.py
@@ -62,10 +61,10 @@ python setup_run_for_stacks_DEEP2
 python setup_run_for_stacks_VVDSDEEP
 # writes to to $SPECTRASTACKS_DIR/fits/
 
-cd $PYSU_DIR/pyGalaxies/trunk/bin
+cd $PYSU_DIR/pyGalaxy/trunk/bin
 # relink things correclty :
-./model_stacked_spectra_DEEP2
-./model_stacked_spectra_VVDS
+python model_stacked_spectra_DEEP2
+python model_stacked_spectra_VVDS
 # writes to to $SPECTRASTACKS_DIR/model/
 
 ./plot_firefly_model
