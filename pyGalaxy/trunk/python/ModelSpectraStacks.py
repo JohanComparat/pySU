@@ -27,7 +27,7 @@ The class ModelSpectraStacks is dedicated to modelling and extracting informatio
 
 """
 import matplotlib
-matplotlib.use('pdf')
+matplotlib.use('png')
 import matplotlib.pyplot as p
 import os 
 import astropy.cosmology as co
@@ -103,9 +103,9 @@ class ModelSpectraStacks:
 		self.stack_file = stack_file
 		self.mode = mode
 		if self.mode=="MILES":
-			self.stack_model_file = np.core.defchararray.replace(self.stack_file[:-5], "data", "fits").item() + "-SPM-MILES.fits"
+			self.stack_model_file = n.core.defchararray.replace(self.stack_file[:-5], "data", "fits").item() + "-SPM-MILES.fits"
 		if self.mode=="STELIB":
-			self.stack_model_file = np.core.defchararray.replace(self.stack_file[:-5], "data", "fits").item() + "-SPM-STELIB.fits"
+			self.stack_model_file = n.core.defchararray.replace(self.stack_file[:-5], "data", "fits").item() + "-SPM-STELIB.fits"
 
 		self.cosmo = cosmo
 		self.firefly_max_wavelength	= firefly_max_wavelength
@@ -553,7 +553,7 @@ class ModelSpectraStacks:
 		p.text(0,0.4,mass)
 		p.tick_params(axis='both', which='both', left='off', right='off', bottom='off', top='off', labelbottom='off', labelleft='off')
 
-		p.savefig(self.stack_file[:-5] + "-fit.pdf")
+		p.savefig(self.stack_file[:-5] + "-fit.png")
 		p.clf()
 
 	def plot_spectrum(self):
@@ -597,5 +597,5 @@ class ModelSpectraStacks:
 		tx="BD_4862_4102 = "+ str(n.round(self.hdR["BD_4862_4102"],4))+" pm"+ str(n.round(self.hdR["BD_4862_4102_err"],4))
 		p.text(0,0.8,tx)
 
-		p.savefig(self.stack_file[:-5] + "modeled.pdf")
+		p.savefig(self.stack_file[:-5] + "modeled.png")
 		p.clf()
