@@ -382,22 +382,22 @@ class StellarPopulationModel:
 			cols = pyfits.ColDefs([ waveCol, best_fitCol]) 
 			tbhdu = pyfits.BinTableHDU.from_columns(cols)
 
-			tbhdu.header['light_age'] = averages['light_age'] # log(Gyrs)
-			tbhdu.header['light_age_up'] = averages['light_age_1_sig_plus'] # log(Gyrs)
-			tbhdu.header['light_age_low'] = averages['light_age_1_sig_minus'] # log(Gyrs)
-			tbhdu.header['light_metallicity'] = averages['light_metal']
-			tbhdu.header['light_metallicity_up'] = averages['light_metal_1_sig_plus']
-			tbhdu.header['light_metallicity_low'] = averages['light_metal_1_sig_minus']
-			tbhdu.header['mass_age'] = averages['mass_age'] # log(Gyrs)
-			tbhdu.header['mass_age_up'] = averages['mass_age_1_sig_plus'] # log(Gyrs)
-			tbhdu.header['mass_age_low'] = averages['mass_age_1_sig_minus'] # log(Gyrs)
-			tbhdu.header['mass_metallicity'] = averages['mass_metal']
-			tbhdu.header['mass_metallicity_up'] = averages['mass_metal_1_sig_plus']
-			tbhdu.header['mass_metallicity_low'] = averages['mass_metal_1_sig_minus']
-			tbhdu.header['EBV'] = best_ebv
-			tbhdu.header['stellar_mass'] = averages['stellar_mass']
-			tbhdu.header['stellar_mass_up'] = averages['stellar_mass_1_sig_plus']
-			tbhdu.header['stellar_mass_low'] = averages['stellar_mass_1_sig_minus']
+			tbhdu.header['HIERARCH light_age'] = averages['light_age'] # log(Gyrs)
+			tbhdu.header['HIERARCH light_age_up'] = averages['light_age_1_sig_plus'] # log(Gyrs)
+			tbhdu.header['HIERARCH light_age_low'] = averages['light_age_1_sig_minus'] # log(Gyrs)
+			tbhdu.header['HIERARCH light_metallicity'] = averages['light_metal']
+			tbhdu.header['HIERARCH light_metallicity_up'] = averages['light_metal_1_sig_plus']
+			tbhdu.header['HIERARCH light_metallicity_low'] = averages['light_metal_1_sig_minus']
+			tbhdu.header['HIERARCH mass_age'] = averages['mass_age'] # log(Gyrs)
+			tbhdu.header['HIERARCH mass_age_up'] = averages['mass_age_1_sig_plus'] # log(Gyrs)
+			tbhdu.header['HIERARCH mass_age_low'] = averages['mass_age_1_sig_minus'] # log(Gyrs)
+			tbhdu.header['HIERARCH mass_metallicity'] = averages['mass_metal']
+			tbhdu.header['HIERARCH mass_metallicity_up'] = averages['mass_metal_1_sig_plus']
+			tbhdu.header['HIERARCH mass_metallicity_low'] = averages['mass_metal_1_sig_minus']
+			tbhdu.header['HIERARCH EBV'] = best_ebv
+			tbhdu.header['HIERARCH stellar_mass'] = averages['stellar_mass']
+			tbhdu.header['HIERARCH stellar_mass_up'] = averages['stellar_mass_1_sig_plus']
+			tbhdu.header['HIERARCH stellar_mass_low'] = averages['stellar_mass_1_sig_minus']
 
 			prihdr = pyfits.Header()
 			prihdr['file'] = self.specObs.path_to_spectrum
@@ -410,4 +410,5 @@ class StellarPopulationModel:
 
 			thdulist = pyfits.HDUList([prihdu, tbhdu])
 			#os.system('rm '+self.outputFile + self.suffix )
+			print self.outputFile + self.suffix , thdulist, thdulist[1].data, thdulist[0].header
 			thdulist.writeto(self.outputFile + self.suffix )
