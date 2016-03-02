@@ -5,11 +5,9 @@ import glob
 from os.path import join
 import os
 
-data_dir = os.environ['DATA_DIR']
+data_dir = os.environ['VVDS_DIR']
 
-stack_files=n.hstack(( n.array(glob.glob(join(data_dir,"VVDS","products","emissionLineLuminosityFunctions","*", "SPM-MILES.fits"))), 
-n.array(glob.glob(join(data_dir,"VVDS","products","emissionLineLuminosityFunctions","*", "SPM-STELIB.fits"))) ))
-
+stack_files=n.hstack(( n.array( glob.glob(join( data_dir, "products", "spectraStacks", "*", "*.fits")))))
 stack_files.sort()
 
 #print stack_files
