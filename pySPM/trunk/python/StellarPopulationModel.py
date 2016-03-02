@@ -409,6 +409,6 @@ class StellarPopulationModel:
 			prihdu = pyfits.PrimaryHDU(header=prihdr)
 
 			thdulist = pyfits.HDUList([prihdu, tbhdu])
-			#os.system('rm '+self.outputFile + self.suffix )
-			print self.outputFile + self.suffix , thdulist, thdulist[1].data, thdulist[0].header
+			os.system('rm '+self.outputFile + self.suffix )
+			#print self.outputFile + self.suffix , thdulist, thdulist[1].data, thdulist[0].header
 			thdulist.writeto(self.outputFile + self.suffix )
