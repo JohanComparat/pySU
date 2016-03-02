@@ -157,7 +157,7 @@ class StellarPopulationModel:
 					model_path 		= join(os.environ['STELLARPOPMODELS_DIR'],'data','SSP_M11_'+model_used ,'ssp_M11_' +model_used +'.' + imf_used)
 
 			# Constructs the metallicity array of models :
-			all_metal_files = glob.glob(join(model_path,'*'))
+			all_metal_files = glob.glob(model_path,+'*')
 			print all_metal_files
 			metal_files 	= []
 			metal 	    = []
@@ -235,7 +235,7 @@ class StellarPopulationModel:
 			else:
 				model_path 		= join(os.environ['STELLARPOPMODELS_DIR'],'data', 'UVmodels_Marastonetal08b_downgraded')
 			# Gathers the list of models with metallicities and ages of interest:
-			all_metal_files = glob.glob(join(model_path,'*'))
+			all_metal_files = glob.glob(model_path+'*')
 			metal_files 	= []
 			metal 			= []
 			for z in range(len(all_metal_files)):
