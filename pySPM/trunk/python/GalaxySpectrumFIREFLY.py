@@ -38,10 +38,10 @@ class GalaxySpectrumFIREFLY:
 	:param milky_way_reddening: True if you want to correct from the Milky way redenning using the Schlegel 98 dust maps.
 	:param stack_type: Optional. If you are fitting stack, choose the origins of the stacks : "DEEP2" or "VVDS"
 	"""
-	def __init__(self,path_to_spectrum, milky_way_reddening=True , hpf_mode = 'on', stack_type = "DEEP2"):
+	def __init__(self,path_to_spectrum, milky_way_reddening=True , hpf_mode = 'on', stack_resolution = 8686.):
 		self.path_to_spectrum=path_to_spectrum
 		self.milky_way_reddening = milky_way_reddening
-		self.stack_type = stack_type 
+		self.stack_resolution = stack_resolution 
 
 	def openObservedSDSSSpectrum(self):
 		"""
@@ -147,10 +147,7 @@ class GalaxySpectrumFIREFLY:
 		self.error[bad_data] 	= np.max(self.flux) * 99999999999.9
 		self.bad_flags[bad_data] = 0
 
-		if self.stack_type == "DEEP":
-			self.r_instrument = np.ones_like(np.arange(len(self.restframe_wavelength))) * 6000.*2
-		if self.stack_type == "VVDS":
-			self.r_instrument = np.ones_like(np.arange(len(self.restframe_wavelength))) * 250.*2
+		self.r_instrument = np.ones_like(np.arange(len(self.restframe_wavelength))) * self.stack_resolution * 2.
 
 		self.vdisp = 70. # km/s
 
