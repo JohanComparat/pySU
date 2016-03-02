@@ -157,7 +157,7 @@ class StellarPopulationModel:
 					model_path 		= join(os.environ['STELLARPOPMODELS_DIR'],'data','SSP_M11_'+model_used ,'ssp_M11_' +model_used +'.' + imf_used)
 
 			# Constructs the metallicity array of models :
-			all_metal_files = glob.glob(model_path,+'*')
+			all_metal_files = glob.glob(model_path+'*')
 			print all_metal_files
 			metal_files 	= []
 			metal 	    = []
