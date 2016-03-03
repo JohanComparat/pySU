@@ -79,7 +79,7 @@ screen python model_stacked_spectra_VVDS
 #write routine to compile table 
 #science plots
 python create_master_table
-python plor_results
+python plot_results
 ./plot_firefly_model
 
 ./compute_intrinsic_LFs
