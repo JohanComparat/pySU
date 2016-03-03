@@ -271,7 +271,7 @@ class ModelSpectraStacks:
 		#cols = fits.ColDefs([col0, col1])
 		#print colNames
 		for ll in range(len(colNames)):
-			self.hdR[colNames[ll]+"_nc"] = out.T[ll]
+			self.hdR["HIERARCH "+[ll]+"_nc"] = out.T[ll]
 			#cols += fits.Column(name=colNames[ll],format='D', array= output.T[ll] )
 
 
