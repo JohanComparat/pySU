@@ -17,7 +17,7 @@ for ii, tab in enumerate(table):
 	obj = InterpretSpectraStacks(stackList[ii])
 	arr, head = obj.get_table_entry()
 	print arr
-	tab = arr
+	tab[ii] = arr
 
 n.savetxt(path_to_output_table, table.T, header = head)	
 
