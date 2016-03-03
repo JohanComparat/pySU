@@ -22,7 +22,7 @@ ok = (gp_EBV_4862_4341!=-9999.99) &  (gp_EBV_4862_4341_err!=-9999.99)
 
 p.figure(0,(6,6))
 p.axes([0.17,0.17,0.8,0.8])
-p.errorbar(spm_EBV[ok], gp_EBV_4862_4341[ok], y_err=gp_EBV_4862_4341_err[ok],fmt='o',elinewidth=2, mfc='none')
+p.errorbar(spm_EBV[ok], gp_EBV_4862_4341[ok], yerr=gp_EBV_4862_4341_err[ok],fmt='o',elinewidth=2, mfc='none')
 p.plot([-1,2],[-1,2],'k--')
 p.legend(loc=2)
 p.xlabel('E(B-V) SPM')
@@ -40,7 +40,7 @@ ok = (gp_EBV_4862_4102!=-9999.99) &  (gp_EBV_4862_4102_err!=-9999.99)
 
 p.figure(0,(6,6))
 p.axes([0.17,0.17,0.8,0.8])
-p.errorbar(spm_EBV[ok], gp_EBV_4862_4102[ok], y_err=gp_EBV_4862_4102_err[ok],fmt='o',elinewidth=2, mfc='none')
+p.errorbar(spm_EBV[ok], gp_EBV_4862_4102[ok], yerr=gp_EBV_4862_4102_err[ok],fmt='o',elinewidth=2, mfc='none')
 p.plot([-1,2],[-1,2],'k--')
 p.legend(loc=2)
 p.xlabel('E(B-V) SPM')
@@ -59,7 +59,7 @@ ok = (gp_12logOH_tremonti04!=-9999.99) &  (gp_12logOH_tremonti04_err!=-9999.99)
 
 p.figure(0,(6,6))
 p.axes([0.17,0.17,0.8,0.8])
-p.errorbar(spm_light_metallicity[ok], xerr=[spm_light_metallicity_err_plus[ok], spm_light_metallicity_err_minus[ok]], gp_12logOH_tremonti04[ok], y_err=gp_12logOH_tremonti04_err[ok],fmt='o',elinewidth=2, mfc='none')
+p.errorbar(x=spm_light_metallicity[ok], xerr=[spm_light_metallicity_err_plus[ok], spm_light_metallicity_err_minus[ok]], y=gp_12logOH_tremonti04[ok], yerr=gp_12logOH_tremonti04_err[ok],fmt='o',elinewidth=2, mfc='none')
 p.plot([-1,2],[-1,2],'k--')
 p.legend(loc=2)
 p.xlabel('log(Z/Zsun) SPM')
@@ -77,7 +77,7 @@ ok = (gp_12logOH_tremonti04_intrinsic!=-9999.99) &  (gp_12logOH_tremonti04_intri
 
 p.figure(0,(6,6))
 p.axes([0.17,0.17,0.8,0.8])
-p.errorbar(spm_light_metallicity[ok], xerr=[spm_light_metallicity_err_plus[ok], spm_light_metallicity_err_minus[ok]], gp_12logOH_tremonti04_intrinsic[ok], y_err=gp_12logOH_tremonti04_intrinsic_err[ok],fmt='o',elinewidth=2, mfc='none')
+p.errorbar(x=spm_light_metallicity[ok], xerr=[spm_light_metallicity_err_plus[ok], spm_light_metallicity_err_minus[ok]], y=gp_12logOH_tremonti04_intrinsic[ok], yerr=gp_12logOH_tremonti04_intrinsic_err[ok],fmt='o',elinewidth=2, mfc='none')
 p.plot([-1,2],[-1,2],'k--')
 p.legend(loc=2)
 p.xlabel('log(Z/Zsun) SPM')
@@ -94,7 +94,7 @@ ok = (gp_SFR_O2_3728!=-9999.99) &  (gp_SFR_O2_3728_err!=-9999.99)&(gp_SFR_H1_486
 
 p.figure(0,(6,6))
 p.axes([0.17,0.17,0.8,0.8])
-p.errorbar(gp_SFR_O2_3728[ok], xerr = gp_SFR_O2_3728_err[ok], gp_SFR_H1_4862[ok], y_err=gp_SFR_H1_4862_err[ok],fmt='o',elinewidth=2, mfc='none')
+p.errorbar(x=gp_SFR_O2_3728[ok], xerr = gp_SFR_O2_3728_err[ok], y=gp_SFR_H1_4862[ok], yerr=gp_SFR_H1_4862_err[ok],fmt='o',elinewidth=2, mfc='none')
 p.plot([-1,2],[-1,2],'k--')
 p.legend(loc=2)
 p.xlabel('SFR GP [OII]')
@@ -107,7 +107,7 @@ p.clf()
 
 # mass metallicity relation
 # Mannucci et al. 2010 :
-y_rel = lambda x_rel : 8.90 + 0.39*x_rel − 0.20*x_rel*x_rel − 0.077*x_rel*x_rel*x_rel + 0.064*x_rel*x_rel*x_rel*x_rel
+y_rel = lambda x_rel : 8.90 + 0.39*x_rel - 0.20*x_rel*x_rel - 0.077*x_rel*x_rel*x_rel + 0.064*x_rel*x_rel*x_rel*x_rel
 
 x_obs_1 = spm_stellar_mass - 0.32 * gp_SFR_O2_3728 - 10
 x_obs_2 = spm_stellar_mass - 0.32 * gp_SFR_H1_4862 - 10
@@ -126,5 +126,5 @@ p.plot(x_rel, y_pr, 'k--')
 p.ylabel(r'$12 \log(O/H)$')
 p.xlabel('$\log(M_*)-0.32 \log(SFR)-10$')
 p.xlim((9,11.5))
-p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "sfr-comparison-2.png"))
+p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "sfr-mass-z.png"))
 p.clf()
