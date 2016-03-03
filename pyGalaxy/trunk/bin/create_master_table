@@ -7,13 +7,20 @@ import glob
 import os
 from os.path import join
 from InterpretSpectraStacks import *
-stackList = glob.glob(join(os.environ['SPECTRASTACKS_DIR'], "data", "??_????", "??_????-*.fits"))
+stackList = n.array( glob.glob(join(os.environ['SPECTRASTACKS_DIR'], "data", "??_????", "??_????-*.fits")) )
 
-file = "/users/jcomparat/skies_universes_production/spectraStacks/data/H1_4862/H1_4862-DEEP2R24.2-z0.397_stack_N_100_R_8686_L_1.05765745222e+41.fits"
-obj = InterpretSpectraStacks(file)
+path_to_output_table = join(os.environ['SPECTRASTACKS_DIR'], "results", "table_v0.data")
+
+table = n.empty((len(stackList), 32))
+
+for ii, tab in enumerate(table):
+	obj = InterpretSpectraStacks(stackList[ii])
+	arr, head = obj.get_table_entry()
+	tab = arr
+
+n.savetxt(path_to_output_table, table.T, header = head)	
 
 
-table = 
 
 obj.hduStack
 obj.hduSPM
