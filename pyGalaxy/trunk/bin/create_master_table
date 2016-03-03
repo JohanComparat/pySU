@@ -3,10 +3,17 @@
 """
 This script produces the stacks for emission line luminosity limited samples.
 """
-
+import glob
+import os
+from os.path import join
 from InterpretSpectraStacks import *
+stackList = glob.glob(join(os.environ['SPECTRASTACKS_DIR'], "data", "??_????", "??_????-*.fits"))
+
 file = "/users/jcomparat/skies_universes_production/spectraStacks/data/H1_4862/H1_4862-DEEP2R24.2-z0.397_stack_N_100_R_8686_L_1.05765745222e+41.fits"
 obj = InterpretSpectraStacks(file)
+
+
+table = 
 
 obj.hduStack
 obj.hduSPM
