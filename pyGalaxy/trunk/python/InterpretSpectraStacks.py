@@ -104,43 +104,41 @@ class InterpretSpectraStacks:
 		self.mode = mode
 		if self.mode=="MILES":
 			self.stack_spm_file = n.core.defchararray.replace(self.stack_file[:-5], "data", "fits").item() + "-SPM-MILES.fits"
-			self.stack_lintFits_file = n.core.defchararray.replace(self.stack_file[:-5], "data", "model").item() + "-SPM-MILES.fits"
+			self.stack_lintFits_file = n.core.defchararray.replace(self.stack_file[:-5], "data", "model").item() + "-SPM-MILES-modeled.model"
 		if self.mode=="STELIB":
 			self.stack_spm_file = n.core.defchararray.replace(self.stack_file[:-5], "data", "fits").item() + "-SPM-STELIB.fits"
-		
+			self.stack_lintFits_file = n.core.defchararray.replace(self.stack_file[:-5], "data", "model").item() + "-SPM-STELIB-modeled.model"
 		
 		
 		self.cosmo = cosmo
-		self.firefly_max_wavelength	= firefly_max_wavelength
-		self.firefly_min_wavelength	= firefly_min_wavelength
 		self.dV = dV
-		self.side = ''
-		self.N_spectra_limitFraction = N_spectra_limitFraction
 		# define self.sphereCM, find redshift ...
 		self.redshift = float(self.stack_file.split('-')[2].split('_')[0][1:])
 		sphere=4*n.pi*( self.cosmo.luminosity_distance(self.redshift) )**2.
 		self.sphereCM=sphere.to(u.cm**2)
-		hdus = fits.open(self.stack_file)
-		self.hdR = hdus[0].header
-		self.hdu1 = hdus[1] # .data
-		print " loads the data :"
-		print self.hdu1.data.dtype
-		wlA,flA,flErrA = self.hdu1.data['wavelength'], self.hdu1.data['meanWeightedStack'], self.hdu1.data['jackknifStackErrors']
-		self.selection = (flA>0) & (self.hdu1.data['NspectraPerPixel']  > float( self.stack_file.split('_')[-5]) * self.N_spectra_limitFraction )
-		self.wl,self.fl,self.flErr = wlA[self.selection], flA[self.selection], flErrA[self.selection] 
-		self.stack=interp1d(self.wl,self.fl)
-		self.stackErr=interp1d(self.wl,self.flErr)
-		# loads model :
-		hdus = fits.open(self.stack_model_file)
-		self.hdu2 = hdus[1] # .data
-		self.wlModel,self.flModel = self.hdu2.data['wavelength'], self.hdu2.data['firefly_model']*10**(-17)
-		self.model=interp1d(n.hstack((self.wlModel,[n.max(self.wlModel)+10,11000])), n.hstack(( self.flModel, [n.median(self.flModel[:-20]),n.median(self.flModel[:-20])] )) )
-		# wavelength range common to the stack and the model :
-		self.wlLineSpectrum  = n.arange(n.max([self.stack.x.min(),self.model.x.min()]), n.min([self.stack.x.max(),self.model.x.max()]), 0.5)[2:-1]
-		self.flLineSpectrum=n.array([self.stack(xx)-self.model(xx) for xx in self.wlLineSpectrum])
-		self.fl_frac_LineSpectrum=n.array([self.stack(xx)/self.model(xx) for xx in self.wlLineSpectrum])
-		self.flErrLineSpectrum=self.stackErr(self.wlLineSpectrum)
+
+		# opens the stack
+		print " loads the stack :"
+		hduStack = fits.open(self.stack_file)
+		self.hdR = hduStack[0].header
+		self.hdu1 = hduStack[1] # .data
+		#wlA,flA,flErrA = self.hdu1.data['wavelength'], self.hdu1.data['meanWeightedStack'], self.hdu1.data['jackknifStackErrors']
+		#self.selection = (flA>0) & (self.hdu1.data['NspectraPerPixel']  > float( self.stack_file.split('_')[-5]) * self.N_spectra_limitFraction )
+		#self.wl,self.fl,self.flErr = wlA[self.selection], flA[self.selection], flErrA[self.selection] 
+		#self.stack=interp1d(self.wl,self.fl)
+		#self.stackErr=interp1d(self.wl,self.flErr)
+		# opens the spm model
+		print " loads the spm model :"
+		hduSPM = fits.open(self.stack_spm_file)
+		self.hdu2 = hduSPM[1] # .data
+		#self.wlModel,self.flModel = self.hdu2.data['wavelength'], self.hdu2.data['firefly_model']*10**(-17)
+		#self.model=interp1d(n.hstack((self.wlModel,[n.max(self.wlModel)+10,11000])), n.hstack(( self.flModel, [n.median(self.flModel[:-20]),n.median(self.flModel[:-20])] )) )
+
+		# opens the line model
+		print " loads the line model :"
+		hduLine = fits.open(self.stack_model_file)
 		
+		"""
 		wavelength = fits.Column(name="wavelength",format="D", unit="Angstorm", array= 			self.wlLineSpectrum)
 		flux = fits.Column(name="flux",format="D", unit="Angstorm", array= 			self.flLineSpectrum)
 		fluxErr = fits.Column(name="fluxErr",format="D", unit="Angstorm", array= 			self.flErrLineSpectrum)
@@ -154,7 +152,7 @@ class InterpretSpectraStacks:
 		outFile = n.core.defchararray.replace(outPutFileName, "fits", "model").item()
 		os.system('rm '+outFile)
 		thdulist.writeto(outFile)
-
+		
 		#ADD line model read
 		
 		#functions :
@@ -162,7 +160,7 @@ class InterpretSpectraStacks:
 		#combine multiple stack headers in a single table
 		
 		#summary plot
-		
+		"""
 		
 
 		
