@@ -99,15 +99,15 @@ class InterpretSpectraStacks:
 	:param dV: default value that hold the place (default : -9999.99) 
 	:param N_spectra_limitFraction: If the stack was made with N spectra. N_spectra_limitFraction selects the points that have were computed using more thant N_spectra_limitFraction * N spectra. (default : 0.8)
 	"""
-	def __init__(self, stack_file, mode="MILES", cosmo=cosmo, firefly_min_wavelength= 1000., firefly_max_wavelength=7500., dV=-9999.99, N_spectra_limitFraction=0.8):
+	def __init__(self, stack_file, mode="MILES", cosmo=cosmo, dV=-9999.99, N_spectra_limitFraction=0.8):
 		self.stack_file = stack_file
 		self.mode = mode
 		if self.mode=="MILES":
 			self.stack_spm_file = n.core.defchararray.replace(self.stack_file[:-5], "data", "fits").item() + "-SPM-MILES.fits"
-			self.stack_lintFits_file = n.core.defchararray.replace(self.stack_file[:-5], "data", "model").item() + "-SPM-MILES-modeled.model"
+			self.stack_lineFits_file = n.core.defchararray.replace(self.stack_file[:-5], "data", "model").item() + "-SPM-MILES-modeled.model"
 		if self.mode=="STELIB":
 			self.stack_spm_file = n.core.defchararray.replace(self.stack_file[:-5], "data", "fits").item() + "-SPM-STELIB.fits"
-			self.stack_lintFits_file = n.core.defchararray.replace(self.stack_file[:-5], "data", "model").item() + "-SPM-STELIB-modeled.model"
+			self.stack_lineFits_file = n.core.defchararray.replace(self.stack_file[:-5], "data", "model").item() + "-SPM-STELIB-modeled.model"
 		
 		
 		self.cosmo = cosmo
@@ -136,7 +136,7 @@ class InterpretSpectraStacks:
 
 		# opens the line model
 		print " loads the line model :"
-		hduLine = fits.open(self.stack_model_file)
+		hduLine = fits.open(self.stack_lineFits_file)
 		
 		"""
 		wavelength = fits.Column(name="wavelength",format="D", unit="Angstorm", array= 			self.wlLineSpectrum)

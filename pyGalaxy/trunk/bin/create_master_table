@@ -4,8 +4,8 @@
 This script produces the stacks for emission line luminosity limited samples.
 """
 
-from InterpretSpectraStack import *
-file = "/users/jcomparat/skies_universes_production/spectraStacks/model/H1_4862/H1_4862-DEEP2R24.2-z0.397_stack_N_100_R_8686_L_1.05765745222e+41.fits"
+from InterpretSpectraStacks import *
+file = "/users/jcomparat/skies_universes_production/spectraStacks/data/H1_4862/H1_4862-DEEP2R24.2-z0.397_stack_N_100_R_8686_L_1.05765745222e+41.fits"
 obj = InterpretSpectraStacks(file)
 
 import sys
