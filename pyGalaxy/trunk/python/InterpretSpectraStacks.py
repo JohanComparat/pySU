@@ -119,9 +119,9 @@ class InterpretSpectraStacks:
 
 		# opens the stack
 		print " loads the stack :"
-		hduStack = fits.open(self.stack_file)
-		self.hdR = hduStack[0].header
-		self.hdu1 = hduStack[1] # .data
+		self.hduStack = fits.open(self.stack_file)
+		#self.hdR = hduStack[0].header
+		#self.hdu1 = hduStack[1] # .data
 		#wlA,flA,flErrA = self.hdu1.data['wavelength'], self.hdu1.data['meanWeightedStack'], self.hdu1.data['jackknifStackErrors']
 		#self.selection = (flA>0) & (self.hdu1.data['NspectraPerPixel']  > float( self.stack_file.split('_')[-5]) * self.N_spectra_limitFraction )
 		#self.wl,self.fl,self.flErr = wlA[self.selection], flA[self.selection], flErrA[self.selection] 
@@ -129,14 +129,14 @@ class InterpretSpectraStacks:
 		#self.stackErr=interp1d(self.wl,self.flErr)
 		# opens the spm model
 		print " loads the spm model :"
-		hduSPM = fits.open(self.stack_spm_file)
-		self.hdu2 = hduSPM[1] # .data
+		self.hduSPM = fits.open(self.stack_spm_file)
+		#self.hdu2 = hduSPM[1] # .data
 		#self.wlModel,self.flModel = self.hdu2.data['wavelength'], self.hdu2.data['firefly_model']*10**(-17)
 		#self.model=interp1d(n.hstack((self.wlModel,[n.max(self.wlModel)+10,11000])), n.hstack(( self.flModel, [n.median(self.flModel[:-20]),n.median(self.flModel[:-20])] )) )
 
 		# opens the line model
 		print " loads the line model :"
-		hduLine = fits.open(self.stack_lineFits_file)
+		self.hduLine = fits.open(self.stack_lineFits_file)
 		
 		"""
 		wavelength = fits.Column(name="wavelength",format="D", unit="Angstorm", array= 			self.wlLineSpectrum)

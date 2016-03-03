@@ -8,6 +8,11 @@ from InterpretSpectraStacks import *
 file = "/users/jcomparat/skies_universes_production/spectraStacks/data/H1_4862/H1_4862-DEEP2R24.2-z0.397_stack_N_100_R_8686_L_1.05765745222e+41.fits"
 obj = InterpretSpectraStacks(file)
 
+obj.hduStack
+obj.hduSPM
+obj.hduLine
+
+
 import sys
 import os 
 from os.path import join
