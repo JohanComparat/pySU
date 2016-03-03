@@ -13,6 +13,68 @@ obj.hduSPM
 obj.hduLine
 
 
+age_spm_t ='age = ' +  str(n.round( 10**obj.hduSPM[1].header['light_age'] ,3))+ '+('+ str(n.round( 10**obj.hduSPM[1].header['light_age_up']-10**obj.hduSPM[1].header['light_age'] ,3)) +')-('+str(n.round( 10**obj.hduSPM[1].header['light_age']-10**obj.hduSPM[1].header['light_age_low'] ,3))+') Gyr'
+metallicity_spm_t = 'log(Z/Zsun) = ' + str(n.round( obj.hduSPM[1].header['light_metallicity'] ,3))+ '+('+ str(n.round( obj.hduSPM[1].header['light_metallicity_up'] - obj.hduSPM[1].header['light_metallicity'] ,3)) +')-('+str(n.round( obj.hduSPM[1].header['light_metallicity'] - obj.hduSPM[1].header['light_metallicity_low'] ,3))+')'
+mass_spm_t = 'log(M/Msun) = ' + str(n.round( obj.hduSPM[1].header['stellar_mass'] ,3))+ '+('+ str(n.round( obj.hduSPM[1].header['stellar_mass_up'] - obj.hduSPM[1].header['stellar_mass'] ,3)) +')-('+str(n.round( obj.hduSPM[1].header['stellar_mass'] - obj.hduSPM[1].header['stellar_mass_low'] ,3))+')'
+ebv_spm_t =   'E(B-V) = ' +str(n.round( obj.hduSPM[1].header['EBV'], 3))
+
+header = lineWavelength Survey Redshift L_MIN L_MAX L_MEAN N_in_stack R_stack 
+	spm_light_age spm_light_age_err_plus spm_light_age_err_minus 
+	spm_light_metallicity spm_light_metallicity_err_plus spm_light_metallicity_err_minus 
+	spm_stellar_mass spm_stellar_mass_err_plus spm_stellar_mass_err_minus 
+	spm_EBV 
+	gp_EBV_4862_4341 
+	gp_EBV_4862_4341_err 
+	gp_EBV_4862_4102 
+	gp_EBV_4862_4102_err 
+	gp_BD_4102_4341 
+	gp_BD_4102_4341_err 
+	gp_SFR_O2_3728 
+	gp_SFR_O2_3728_err 
+	gp_SFR_H1_4862 
+	gp_SFR_H1_4862_err 
+	gp_12logOH_tremonti04 
+	gp_12logOH_tremonti04_err 
+	gp_12logOH_tremonti04_intrinsic 
+	gp_12logOH_tremonti04_intrinsic_err 
+
+
+table_entry = n.array([
+	obj.lineWave, 
+	self.survey, 
+	obj.redshift, 
+	obj.hduLine[0].header['L_MIN'], 
+	obj.hduLine[0].header['L_MAX'], 
+	obj.hduLine[0].header['L_MEAN'], 
+	self.N_in_stack, 
+	self.R_stack, 
+	10**obj.hduSPM[1].header['light_age'], 
+	10**obj.hduSPM[1].header['light_age_up']-10**obj.hduSPM[1].header['light_age'], 
+	10**obj.hduSPM[1].header['light_age']-10**obj.hduSPM[1].header['light_age_low'],
+	obj.hduSPM[1].header['light_metallicity'], 
+	obj.hduSPM[1].header['light_metallicity_up'] - obj.hduSPM[1].header['light_metallicity'], 
+	obj.hduSPM[1].header['light_metallicity'] - obj.hduSPM[1].header['light_metallicity_low'], 
+	obj.hduSPM[1].header['stellar_mass'], 
+	obj.hduSPM[1].header['stellar_mass_up'] - obj.hduSPM[1].header['stellar_mass'], 
+	obj.hduSPM[1].header['stellar_mass'] - obj.hduSPM[1].header['stellar_mass_low'], 
+	obj.hduSPM[1].header['EBV'], 
+	obj.hduLine[0].header['EBV_4862_4341'], 
+	obj.hduLine[0].header['EBV_4862_4341_err'], 
+	obj.hduLine[0].header['EBV_4862_4102'], 
+	obj.hduLine[0].header['EBV_4862_4102_err'], 
+	obj.hduLine[0].header['BD_4102_4341'], 
+	obj.hduLine[0].header['BD_4102_4341_err'], 
+	obj.hduLine[0].header['SFR_O2_3728'], 
+	obj.hduLine[0].header['SFR_O2_3728_err'], 
+	obj.hduLine[0].header['SFR_H1_4862'], 
+	obj.hduLine[0].header['SFR_H1_4862_err'], 
+	obj.hduLine[0].header['12logOH_tremonti04'], 
+	obj.hduLine[0].header['12logOH_tremonti04_err'], 
+	obj.hduLine[0].header['12logOH_tremonti04_intrinsic'], 
+	obj.hduLine[0].header['12logOH_tremonti04_intrinsic_err'], 
+	])
+
+	
 import sys
 import os 
 from os.path import join
