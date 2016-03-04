@@ -25,6 +25,8 @@ def plotStack( modeledStackFile ):
     element = modeledStackFile.split('/')[-1].split('-')[0]
     lineDict = {'O2_3728' : r'$[O^{3728}_{II}]$', 'O3_5007' : r'$[O^{5007}_{III}]$', 'H1_4862' : r'$H^{4861}_{\beta}$', 'H1_6564': r'$H^{6564}_{\alpha}$'}
     line = lineDict[element]
+	print  hdus[0].header
+	#redshift = hdus[0].header['LF_FILE_name']
     Lmean = n.round( n.log10(hdus[0].header['L_mean']) ,2)
     Lmax  = n.round( n.log10(hdus[0].header['L_max'])  ,2)
     Lmin  = n.round( n.log10(hdus[0].header['L_min'])  ,2)
@@ -36,17 +38,19 @@ def plotStack( modeledStackFile ):
     fl_fir = hdus[2].data['firefly_model'] * 1e-17
     Ms = n.round(hdus[2].header['stellar_mass'],2)
     age = n.round( n.log10( 10**( hdus[2].header['MASS_AGE'] )*10**9 ), 3)
-    hdus[2].header['stellar_mass']
+    # hdus[2].header['stellar_mass']
+	
     p.figure(1,(12,4))
     p.axes([0.1,0.2,0.85,0.75])
-    p.errorbar(wl,flObs,yerr = flObsErr,label= str(Lmin) +"< log(L"+line+")<"+ str(Lmax),linewidth=1)
+    p.errorbar(wl,flObs,yerr = flObsErr,label= str(Lmin) +"< log(L"+line+")<"+ str(Lmax),linewidth=1, alpha = 0.5)
     p.plot(wl_fir, fl_fir,label = 'log(age)='+ str(age)+ ', log(M*)='+ str(Ms))
     p.xlabel('wavelength [A]')
     p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
     p.yscale('log')
     p.legend(fontsize=12) 
-    p.savefig( join( os.environ['SPECTRASTACKS_DIR'], "plots", "models",  modeledStackFile.split('/')[-1]  + "-all.pdf"))
+    p.savefig( join( os.environ['SPECTRASTACKS_DIR'], "plots", "models",  modeledStackFile.split('/')[-1]  + "-all.png"))
     p.clf()
+	
     p.figure(2,(12,4))
     p.axes([0.1,0.2,0.85,0.75])
     p.errorbar(wl,flObs,yerr = flObsErr,label= str(Lmin) +"< log(L"+line+")<"+ str(Lmax),linewidth=1)
@@ -56,8 +60,9 @@ def plotStack( modeledStackFile ):
     p.yscale('log')
     p.ylim(( n.min(fl_fir)*0.8, n.max(fl_fir)*1.2 ))
     p.legend(fontsize=12, loc=4) 
-    p.savefig( join( os.environ['SPECTRASTACKS_DIR'], "plots", "models",  modeledStackFile.split('/')[-1] + "-cont.pdf"))
+    p.savefig( join( os.environ['SPECTRASTACKS_DIR'], "plots", "models",  modeledStackFile.split('/')[-1] + "-cont.png"))
     p.clf()
+	
     p.figure(2,(12,4))
     p.axes([0.1,0.2,0.85,0.75])
     p.errorbar(wl,flObs,yerr = flObsErr,label= str(Lmin) +"< log(L"+line+")<"+ str(Lmax),linewidth=1)
