@@ -222,13 +222,13 @@ class ModelSpectraStacks:
 		#self.subtract_continuum_model()
 		data,h=[],[]
 
-		dat_mean,mI,hI=lfit.fit_Line_OIIdoublet(self.wlLineSpectrum, self.flLineSpectrum, self.flErrLineSpectrum, a0= n.array([O2_3727,O2_3729]) , lineName="O2_3728", p0_sigma=1,model="gaussian")
+		dat_mean,mI,hI=lfit.fit_Line_OIIdoublet(self.wlLineSpectrum, self.flLineSpectrum, self.flErrLineSpectrum, a0= n.array([O2_3727,O2_3729]) , lineName="O2_3728", p0_sigma=10,model="gaussian")
 
 		d_out=[]
 		for kk in range(10):
 			fluxRR = interp1d(self.wl, self.hdu1.data['jackknifeSpectra'].T[kk][self.selection])
 			flLineSpectrumRR=n.array([fluxRR(xx)-self.model(xx) for xx in self.wlLineSpectrum])
-			d1,mI,hI=lfit.fit_Line_OIIdoublet(self.wlLineSpectrum, flLineSpectrumRR, self.flErrLineSpectrum, a0= n.array([O2_3727,O2_3729]) , lineName="O2_3728", p0_sigma=1,model="gaussian")
+			d1,mI,hI=lfit.fit_Line_OIIdoublet(self.wlLineSpectrum, flLineSpectrumRR, self.flErrLineSpectrum, a0= n.array([O2_3727,O2_3729]) , lineName="O2_3728", p0_sigma=10,model="gaussian")
 			d_out.append(d1)
 
 		d_out = n.array(d_out)
@@ -242,13 +242,13 @@ class ModelSpectraStacks:
 
 		for li in allLinesList :
 			# measure line properties from the mean weighted stack
-			dat_mean,mI,hI=lfit.fit_Line(self.wl,self.fl,self.flErr, li[1], lineName=li[2], continuumSide=li[3], model="gaussian",p0_sigma=1)
+			dat_mean,mI,hI=lfit.fit_Line(self.wl,self.fl,self.flErr, li[1], lineName=li[2], continuumSide=li[3], model="gaussian",p0_sigma=10)
 			# measure its dispersion using the stacks
 			d_out=[]
 			for kk in range(len(self.hdu1.data['jackknifeSpectra'].T)):
 				fluxRR = interp1d(self.wl, self.hdu1.data['jackknifeSpectra'].T[kk][self.selection])
 				flLineSpectrumRR=n.array([fluxRR(xx)-self.model(xx) for xx in self.wlLineSpectrum])
-				d1,mI,hI=lfit.fit_Line(self.wlLineSpectrum, flLineSpectrumRR, self.flErrLineSpectrum, li[1], lineName=li[2], continuumSide=li[3], model="gaussian",p0_sigma=1)
+				d1,mI,hI=lfit.fit_Line(self.wlLineSpectrum, flLineSpectrumRR, self.flErrLineSpectrum, li[1], lineName=li[2], continuumSide=li[3], model="gaussian",p0_sigma=10)
 				d_out.append(d1)
 
 			d_out = n.array(d_out)
