@@ -10,6 +10,7 @@ import numpy as n
 import os
 from os.path import join
 
+G05 = n.loadtxt( join(os.environ['SPECTRASTACKS_DIR'], "biblioPoints", "gallazzi-2005.data"), unpack= True)
 path_to_summary_table = join(os.environ['SPECTRASTACKS_DIR'], "results", "table_v0.data")
 
 data = n.loadtxt(path_to_summary_table)	
@@ -126,6 +127,10 @@ y_pr = y_rel(x_rel)
 
 p.figure(0,(6,6))
 p.axes([0.17,0.17,0.8,0.75])
+p.plot(G05[0],G05[1], 'k',label ="G05")
+p.plot(G05[0],G05[2], 'k--')
+p.plot(G05[0],G05[3], 'k--')
+
 #p.plot(x_obs_1, y_obs_1, )
 ok = (lineWavelength==4862.)
 ttt = p.scatter(spm_stellar_mass[ok], spm_light_metallicity[ok], marker='s', s=30, c=n.log10(L_MEAN[ok]*10**(0.58) * 10**(-41) ),label='Hb')
