@@ -1,4 +1,4 @@
-Library of functions to fit lines
+Miscellanous functions
 #################################
 
 This class is dedicated to fitting lines on observed spectra.

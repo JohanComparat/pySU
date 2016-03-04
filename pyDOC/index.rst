@@ -10,6 +10,20 @@ Please add these folders to your pythonpath to be able to use it.
 Galaxy surveys
 ==========
 
+Modules and classes to handle the data
+---------------------------------------------
+
+.. toctree::
+   :maxdepth: 2 
+
+   GalaxySurveyDEEP2
+   GalaxySpectrumDEEP2
+   GalaxySurveyVIPERS
+   GalaxySpectrumVIPERS
+   GalaxySurveyVVDS
+   GalaxySpectrumVVDS
+   SpectraStacking
+
 Modules and classes to fit models to data
 -----------------------------------------------
 
@@ -19,22 +33,6 @@ Modules and classes to fit models to data
    LineFittingLibrary
    LineLuminosityFunction
    ModelSpectraStacks
-
-Modules and classes to handle the data
----------------------------------------------
-
-.. toctree::
-   :maxdepth: 2 
-
-   GalaxySurveyDEEP2
-   GalaxySpectrumDEEP2
-
-   GalaxySurveyVIPERS
-   GalaxySpectrumVIPERS
-
-   GalaxySurveyVVDS
-   GalaxySpectrumVVDS
-   SpectraStacking
 
 Support libraries
 -----------------
@@ -47,25 +45,33 @@ Support libraries
    lineListAir
    MiscellanousFunctionsLibrary
 
-Scripts available
-------------------
- * calibrate_DEEP2_spectra.py : performs the flux calibration of DEEP2 spectra
- * fit_lines_DEEP2_fc_spectra.py : fits emission lines on the DEEP2 spectra
- * fit_lines_VIPERS_spectra.py : fits emission lines on the VIPERS spectra
- * fit_lines_VVDSWIDE_spectra.py : fits emission lines on the VVDS WIDE spectra
- * fit_lines_VVDSDEEP_spectra.py : fits emission lines on the VVDS DEEP spectra
- * fit_lines_VVDSUDEEP_spectra.py : fits emission lines on the VVDS UDEEP spectra
- * plotSurveys.py : does quality plots to check everything is fine in the survey
+Scripts to construct catalogs
+---------------------------------
 
-Luminosity functions
------------------------
-Scripts that work around the luminosity function
+ * calibrate_DEEP2_spectra : performs the flux calibration of DEEP2 spectra
+ * fit_lines_DEEP2_fc_spectra : fits emission lines on the DEEP2 spectra
+ * fit_lines_VIPERS_spectra : fits emission lines on the VIPERS spectra
+ * fit_lines_VVDSWIDE_spectra : fits emission lines on the VVDS WIDE spectra
+ * fit_lines_VVDSDEEP_spectra : fits emission lines on the VVDS DEEP spectra
+ * fit_lines_VVDSUDEEP_spectra : fits emission lines on the VVDS UDEEP spectra
+ * compute_line_luminosities_DEEP2 : adds line luminosities in a given cosmology
+ * compute_line_luminosities_VIPERS : adds line luminosities in a given cosmology + aperture correction
+ * compute_line_luminosities_VVDS : idem
+ * plotSurveys : produces summary plots related to the surveys
 
- * estimate_line_LF.py : estimates the emission line luminosity function of the DEEP2, VVDS, and VIPERS surevy
- * stack_spectra.py : stacks the spectra issued from the luminosity function
- * fit_model_LF.py : fits models to the LFs
- * plotLFs.py : plots the LFs 
+Scripts to measure luminosity functions
+----------------------------------------------
 
+ * estimate_line_LF : estimates the emission line luminosity function of the DEEP2, VVDS, and VIPERS surevy
+ * fit_model_LF_single : fits models to a the data sets separately
+ * fit_model_LF_all : fits themodels on all the data sets at once
+ * plotLFs : plots fits and the LFs 
+
+ Scripts to stack spectra
+ ---------------------------
+ 
+ * stack_spectra_DEEP2 or _VVDSDEEP : stacks the spectra issued from the luminosity function
+ 
 MultiDark N body simulations :
 ===================
 
