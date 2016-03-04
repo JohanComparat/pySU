@@ -420,7 +420,12 @@ class ModelSpectraStacks:
 			self.hdR['HIERARCH O32'] = (self.hdR['O3_4960_flux_nc']+ self.hdR['O3_5007_flux_nc'])/ self.hdR['O2_3728_flux_nc']
 			O32ErrFrac =  ( ((self.hdR['O3_4960_fluxErr_nc']+ self.hdR['O3_5007_fluxErr_nc'])/ (self.hdR['O3_4960_flux_nc'] +self.hdR['O3_5007_flux_nc']))**2. + (self.hdR['O2_3728_fluxErr_nc'] /self.hdR['O2_3728_flux_nc'] ) **2.)**0.5  
 			self.hdR['HIERARCH O32_err'] = self.hdR['O32'] * O32ErrFrac
-			# compute R23
+		else :
+			self.hdR['HIERARCH O32'] = self.dV
+			self.hdR['HIERARCH O32_err'] = self.dV
+
+		# compute R23 and 12 log(O/H) with Tremonti 04 estimator
+		if self.hdR['O3_4960_flux_nc']>0 and self.hdR['O3_5007_flux_nc']>0 and self.hdR['O2_3728_flux_nc']>0 and self.hdR['H1_4862_flux_nc']>0 and self.hdR['O3_4960_fluxErr_nc']>0 and self.hdR['O3_5007_fluxErr_nc']>0 and self.hdR['O2_3728_fluxErr_nc'] >0 and self.hdR['H1_4862_fluxErr_nc']>0 :
 			self.hdR['HIERARCH R23'] = (self.hdR['O3_4960_flux_nc']+self.hdR['O3_5007_flux_nc']+ self.hdR['O2_3728_flux_nc'])/self.hdR['H1_4862_flux_nc']
 			R23ErrFrac=( ((self.hdR['O3_4960_fluxErr_nc']+ self.hdR['O3_5007_fluxErr_nc']+ self.hdR['O2_3728_fluxErr_nc']) / (self.hdR['O3_4960_flux_nc']+ self.hdR['O3_5007_flux_nc']+ self.hdR['O2_3728_flux_nc']))**2. + (self.hdR['H1_4862_fluxErr_nc']/ self.hdR['H1_4862_flux_nc'])**2.)**0.5  
 			self.hdR['HIERARCH R23_err'] = self.hdR['R23'] * R23ErrFrac
@@ -428,15 +433,17 @@ class ModelSpectraStacks:
 			if self.hdR['R23']>0:
 				self.hdR['HIERARCH 12logOH_tremonti04'] = 9.185-0.313*n.log10(self.hdR['R23']) - 0.264 *n.log10(self.hdR['R23'])**2 - 0.321 *n.log10(self.hdR['R23'])**3
 				self.hdR['HIERARCH 12logOH_tremonti04_err'] = -0.313* R23ErrFrac / n.log(10) - 0.264 *2 * R23ErrFrac / n.log(10) * n.log10(self.hdR['R23']) - 0.321 * 3* R23ErrFrac / n.log(10) * n.log10(self.hdR['R23'])**2
-
+			else :
+				self.hdR['HIERARCH 12logOH_tremonti04'] = self.dV
+				self.hdR['HIERARCH 12logOH_tremonti04_err'] = self.dV
+				
 		else :
-			self.hdR['HIERARCH O32'] = self.dV
-			self.hdR['HIERARCH O32_err'] = self.dV
 			self.hdR['HIERARCH R23'] = self.dV
 			self.hdR['HIERARCH R23_err'] = self.dV
 			self.hdR['HIERARCH 12logOH_tremonti04'] = self.dV
 			self.hdR['HIERARCH 12logOH_tremonti04_err'] = self.dV
-
+		
+		"""
 		if self.hdR['flux_O3_4960_intrinsic']>0 and self.hdR['flux_O3_5007_intrinsic']>0 and self.hdR['flux_O2_3728_intrinsic']>0 and self.hdR['flux_H1_4862_intrinsic']>0 and self.hdR['flux_O2_3728_intrinsic_err']>0 and self.hdR['flux_O3_5007_intrinsic_err'] >0 :
 			# compute R23 intrinsic
 			self.hdR['HIERARCH R23_intrinsic'] = (self.hdR['flux_O3_4960_intrinsic']+ self.hdR['flux_O3_5007_intrinsic']+ self.hdR['flux_O2_3728_intrinsic']) /self.hdR['flux_H1_4862_intrinsic']
@@ -445,40 +452,55 @@ class ModelSpectraStacks:
 			if self.hdR['R23_intrinsic']>0:
 				self.hdR['HIERARCH 12logOH_tremonti04_intrinsic'] = 9.185-0.313* n.log10(self.hdR['R23_intrinsic']) - 0.264 *n.log10(self.hdR['R23_intrinsic'])**2 - 0.321 *n.log10(self.hdR['R23_intrinsic'])**3
 				self.hdR['HIERARCH 12logOH_tremonti04_intrinsic_err'] = -0.313* R23ErrFrac_intrinsic / n.log(10) - 0.264 *2 * R23ErrFrac_intrinsic / n.log(10) * n.log10(self.hdR['R23_intrinsic']) - 0.321 * 3* R23ErrFrac_intrinsic / n.log(10) * n.log10(self.hdR['R23_intrinsic'])**2
-
-			# 12 log OH with O2(3728)/Hbeta
+		else :
+			self.hdR['HIERARCH R23_intrinsic'] = self.dV
+			self.hdR['HIERARCH R23_intrinsic_err'] = self.dV
+			self.hdR['HIERARCH 12logOH_tremonti04_intrinsic'] = self.dV
+			self.hdR['HIERARCH 12logOH_tremonti04_intrinsic_err'] = self.dV
+		"""
+		
+		# 12 log OH with O2(3728)/Hbeta
+		if  self.hdR['O2_3728_flux_nc']>0 and self.hdR['H1_4862_flux_nc']>0 and self.hdR['O2_3728_fluxErr_nc']>0 and self.hdR['H1_4862_fluxErr_nc']>0:
 			OpH = self.hdR['O2_3728_flux_nc']/self.hdR['H1_4862_flux_nc']
 			OpHErrFrac = ( (self.hdR['O2_3728_fluxErr_nc']/self.hdR['O2_3728_flux_nc'])**2. + (self.hdR['H1_4862_fluxErr_nc']/self.hdR['H1_4862_flux_nc'])**2.)**0.5  
 			OpHErr = OpH * OpHErrFrac
 			if OpH>0:
 				self.hdR['HIERARCH 12logO2H'] = n.log10(OpH) + 7.637
 				self.hdR['HIERARCH 12logO2H_err'] = OpHErrFrac/n.log(10.)
+			else :
+				self.hdR['HIERARCH 12logO2H'] = self.dV
+				self.hdR['HIERARCH 12logO2H_err'] = self.dV
+		else :
+			self.hdR['HIERARCH 12logO2H'] = self.dV
+			self.hdR['HIERARCH 12logO2H_err'] = self.dV
 
-			# 12 log OH with O3(4960+5007)/Hbeta
+		# 12 log OH with O3(4960+5007)/Hbeta
+		if self.hdR['O3_4960_flux_nc']>0 and self.hdR['O3_5007_flux_nc']>0 and self.hdR['H1_4862_flux_nc']>0 and self.hdR['O3_5007_fluxErr_nc'] >0 and self.hdR['O3_4960_fluxErr_nc']>0 and self.hdR['H1_4862_fluxErr_nc']>0:
 			O3H = (self.hdR['O3_4960_flux_nc']+ self.hdR['O3_5007_flux_nc'])/ self.hdR['H1_4862_flux_nc']
 			O3HErrFrac =  ( ((self.hdR['O3_4960_fluxErr_nc']+self.hdR['O3_5007_fluxErr_nc'])/ (self.hdR['O3_4960_flux_nc']+ self.hdR['O3_5007_flux_nc']))**2. + (self.hdR['H1_4862_fluxErr_nc']/ self.hdR['H1_4862_flux_nc'])**2.)**0.5  
 			O3HErr = O3H* O3HErrFrac
 			if O3H>0:
 				self.hdR['HIERARCH 12logO3H'] = n.log10( O3H )+7.437
 				self.hdR['HIERARCH 12logO3H_err'] = O3HErrFrac / n.log(10.)
+			else :
+				self.hdR['HIERARCH 12logO3H'] = self.dV
+				self.hdR['HIERARCH 12logO3H_err'] = self.dV
+		else :
+			self.hdR['HIERARCH 12logO3H'] = self.dV
+			self.hdR['HIERARCH 12logO3H_err'] = self.dV
 
-			# 12 log OH with O3(5007)/Hbeta
+		# 12 log OH with O3(5007)/Hbeta
+		if self.hdR['O3_5007_flux_nc']>0 and self.hdR['H1_4862_flux_nc']>0 and self.hdR['O3_5007_fluxErr_nc'] >0  and self.hdR['H1_4862_fluxErr_nc']>0:
 			O35H = (self.hdR['O3_5007_flux_nc'])/self.hdR['H1_4862_flux_nc']
 			O35HErrFrac =  ( (self.hdR['O3_5007_fluxErr_nc']/self.hdR['O3_5007_flux_nc'])**2. + (self.hdR['H1_4862_fluxErr_nc']/self.hdR['H1_4862_flux_nc'])**2.)**0.5  
 			O35HErr = O35H* O35HErrFrac
 			if O35H>0:
 				self.hdR['HIERARCH 12logO3_5007_H'] = n.log10( O35H )
 				self.hdR['HIERARCH 12logO3_5007_H_err'] = O35HErrFrac / n.log(10.)
-
+			else :
+				self.hdR['HIERARCH 12logO3_5007_H'] = self.dV
+				self.hdR['HIERARCH 12logO3_5007_H_err'] = self.dV
 		else :
-			self.hdR['HIERARCH R23_intrinsic'] = self.dV
-			self.hdR['HIERARCH R23_intrinsic_err'] = self.dV
-			self.hdR['HIERARCH 12logOH_tremonti04_intrinsic'] = self.dV
-			self.hdR['HIERARCH 12logOH_tremonti04_intrinsic_err'] = self.dV
-			self.hdR['HIERARCH 12logO2H'] = self.dV
-			self.hdR['HIERARCH 12logO2H_err'] = self.dV
-			self.hdR['HIERARCH 12logO3H'] = self.dV
-			self.hdR['HIERARCH 12logO3H_err'] = self.dV
 			self.hdR['HIERARCH 12logO3_5007_H'] = self.dV
 			self.hdR['HIERARCH 12logO3_5007_H_err'] = self.dV
 
