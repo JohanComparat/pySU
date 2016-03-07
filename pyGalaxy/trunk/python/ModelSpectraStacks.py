@@ -327,7 +327,6 @@ class ModelSpectraStacks:
 		col0 = fits.Column(name=colNames[0],format='D', array= n.array([out.T[0]]))
 		col1 = fits.Column(name=colNames[1],format='D', array= n.array([out.T[1]]))
 		self.fullSpec_cols  = fits.ColDefs([col0, col1])
-		print self.lineSpec_cols
 		#print colNames
 		for ll in range(2,len(colNames),1):
 			#self.hdR["HIERARCH "+colNames[ll]+"_nc"] = out.T[ll]
