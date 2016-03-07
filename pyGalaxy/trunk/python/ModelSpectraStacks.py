@@ -220,7 +220,7 @@ class ModelSpectraStacks:
 		if self.stack_file.find('DEEP2')>0 :
 			lfit  =  lineFit.LineFittingLibrary(fitWidth = 40.)
 		
-		PRINT "START FITTING LINES"
+		print "START FITTING LINES"
 		#self.subtract_continuum_model()
 		data,h=[],[]
 
