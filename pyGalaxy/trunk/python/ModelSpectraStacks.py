@@ -42,7 +42,9 @@ from scipy.stats import scoreatpercentile
 import astropy.io.fits as fits
 
 from lineListAir import *
-allLinesList = n.array([ [Ne3,Ne3_3869,"Ne3_3869","left"], [O3,O3_4363,"O3_4363","right"], [O3,O3_4960,"O3_4960","left"], [O3,O3_5007,"O3_5007","right"], [N2,N2_6549,"N2_6549","left"], [N2,N2_6585,"N2_6585","right"], [S2,S2_6718,"S2_6718","left"], [S2,S2_6732,"S2_6732","right"], [Ar3,Ar3_7137,"Ar3_7137","left"], [H1,H1_1216,"H1_1216","right"], [H1,H1_3970,"H1_3970","right"], [H1,H1_4102,"H1_4102","right"], [H1,H1_4341,"H1_4341","right"], [H1,H1_4862,"H1_4862","left"], [H1,H1_6564,"H1_6564","left"]])
+allLinesList = n.array([ [Ne3,Ne3_3869,"Ne3_3869","left"], [O3,O3_4363,"O3_4363","right"], [O3,O3_4960,"O3_4960","left"], [O3,O3_5007,"O3_5007","right"], [N2,N2_6549,"N2_6549","left"], [N2,N2_6585,"N2_6585","right"], [H1,H1_3970,"H1_3970","right"], [H1,H1_4102,"H1_4102","right"], [H1,H1_4341,"H1_4341","right"], [H1,H1_4862,"H1_4862","left"], [H1,H1_6564,"H1_6564","left"]]) 
+# other lines that are optional
+# , [S2,S2_6718,"S2_6718","left"], [S2,S2_6732,"S2_6732","right"], [Ar3,Ar3_7137,"Ar3_7137","left"], [H1,H1_1216,"H1_1216","right"]
 
 doubletList = n.array([[O2_3727,"O2_3727",O2_3729,"O2_3729",O2_mean]])
 
@@ -71,22 +73,6 @@ def kl(ll):
 		return klb(ll)
 	if ll<=6300:
 		return kla(ll)
-
-klO2=kl(O2)
-klO3=kl(O3b)
-klHb=kl(Hb)
-
-H1=pn.RecAtom('H',1) # Hydrogen Balmer series
-
-bdc0_ref=H1.getEmissivity(1e4, 1e2, lev_i = 4, lev_j = 2) / H1.getEmissivity(1e4, 1e2, lev_i = 3, lev_j = 2)
-bdc1_ref=H1.getEmissivity(1e4, 1e2, lev_i = 4, lev_j = 2) / H1.getEmissivity(1e4, 1e2, lev_i = 5, lev_j = 2)
-bdc2_ref=H1.getEmissivity(1e4, 1e2, lev_i = 4, lev_j = 2) / H1.getEmissivity(1e4, 1e2, lev_i = 6, lev_j = 2)
-bdc3_ref=H1.getEmissivity(1e4, 1e2, lev_i = 4, lev_j = 2) / H1.getEmissivity(1e4, 1e2, lev_i = 7, lev_j = 2)
-bdc4_ref=H1.getEmissivity(1e4, 1e2, lev_i = 4, lev_j = 2) / H1.getEmissivity(1e4, 1e2, lev_i = 8, lev_j = 2)
-bdc5_ref=H1.getEmissivity(1e4, 1e2, lev_i = 4, lev_j = 2) / H1.getEmissivity(1e4, 1e2, lev_i = 9, lev_j = 2)
-
-bdc23_ref=H1.getEmissivity(1e4, 1e2, lev_i = 5, lev_j = 2)/H1.getEmissivity(1e4, 1e2, lev_i = 6, lev_j = 2)
-
 
 class ModelSpectraStacks:
 	"""
@@ -120,7 +106,7 @@ class ModelSpectraStacks:
 		hdus = fits.open(self.stack_file)
 		self.hdR = hdus[0].header
 		self.hdu1 = hdus[1] # .data
-		print " loads the data :"
+		print "Loads the data."
 		#print self.hdu1.data.dtype
 		wlA,flA,flErrA = self.hdu1.data['wavelength'], self.hdu1.data['meanWeightedStack'], self.hdu1.data['jackknifStackErrors']
 		self.selection = (flA>0) & (self.hdu1.data['NspectraPerPixel']  > float( self.stack_file.split('_')[-5]) * self.N_spectra_limitFraction )
@@ -244,6 +230,7 @@ class ModelSpectraStacks:
 
 		for li in allLinesList :
 			# measure line properties from the mean weighted stack
+			print li[2]
 			dat_mean,mI,hI=lfit.fit_Line(self.wlLineSpectrum, self.flLineSpectrum, self.flErrLineSpectrum, li[1], lineName=li[2], continuumSide=li[3], model="gaussian",p0_sigma=10)
 			# measure its dispersion using the stacks
 			d_out=[]
@@ -277,10 +264,10 @@ class ModelSpectraStacks:
 		#print colNames
 		for ll in range(2,len(colNames),1):
 			#self.hdR["HIERARCH "+colNames[ll]+"_nc"] = out.T[ll]
-			cols += fits.Column(name=colNames[ll], format='D', array= out.T[ll] )
+			self.lineSpec_cols += fits.Column(name=colNames[ll], format='D', array= out.T[ll] )
 		
 		print cols
-		self.lineSpec_tb_hdu = fits.BinTableHDU.from_columns(cols)
+		self.lineSpec_tb_hdu = fits.BinTableHDU.from_columns(self.lineSpec_cols)
 
 			
 	def fit_lines_to_fullSpectrum(self):

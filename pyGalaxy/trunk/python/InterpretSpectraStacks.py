@@ -41,6 +41,58 @@ from scipy.stats import scoreatpercentile
 
 import astropy.io.fits as fits
 
+
+from lineListAir import *
+allLinesList = n.array([ [Ne3,Ne3_3869,"Ne3_3869","left"], [O3,O3_4363,"O3_4363","right"], [O3,O3_4960,"O3_4960","left"], [O3,O3_5007,"O3_5007","right"], [N2,N2_6549,"N2_6549","left"], [N2,N2_6585,"N2_6585","right"], [H1,H1_3970,"H1_3970","right"], [H1,H1_4102,"H1_4102","right"], [H1,H1_4341,"H1_4341","right"], [H1,H1_4862,"H1_4862","left"], [H1,H1_6564,"H1_6564","left"]]) 
+# other lines that are optional
+# , [S2,S2_6718,"S2_6718","left"], [S2,S2_6732,"S2_6732","right"], [Ar3,Ar3_7137,"Ar3_7137","left"], [H1,H1_1216,"H1_1216","right"]
+
+doubletList = n.array([[O2_3727,"O2_3727",O2_3729,"O2_3729",O2_mean]])
+
+# import the fitting routines
+import LineFittingLibrary as lineFit
+
+O2a=3727.092 
+O2b=3729.875 
+O2=(O2a+O2b)/2.
+Hg=4102.892
+Hd=4341.684
+Hb=4862.683
+O3a=4960.295
+O3b=5008.240
+Ha=6564.61
+
+
+fnu = lambda mAB : 10**(-(mAB+48.6)/2.5) # erg/cm2/s/Hz
+flambda= lambda mAB, ll : 10**10 * c*1000 * fnu(mAB) / ll**2. # erg/cm2/s/A
+
+kla=lambda ll :2.659 *(-2.156+1.509/ll-0.198/ll**2+0.011/ll**3 ) + 4.05
+klb=lambda ll :2.659 *(-1.857+1.040/ll)+4.05
+
+def kl(ll):
+	"""Calzetti extinction law"""
+	if ll>6300:
+		return klb(ll)
+	if ll<=6300:
+		return kla(ll)
+
+klO2=kl(O2)
+klO3=kl(O3b)
+klHb=kl(Hb)
+
+H1=pn.RecAtom('H',1) # Hydrogen Balmer series
+
+bdc0_ref=H1.getEmissivity(1e4, 1e2, lev_i = 4, lev_j = 2) / H1.getEmissivity(1e4, 1e2, lev_i = 3, lev_j = 2)
+bdc1_ref=H1.getEmissivity(1e4, 1e2, lev_i = 4, lev_j = 2) / H1.getEmissivity(1e4, 1e2, lev_i = 5, lev_j = 2)
+bdc2_ref=H1.getEmissivity(1e4, 1e2, lev_i = 4, lev_j = 2) / H1.getEmissivity(1e4, 1e2, lev_i = 6, lev_j = 2)
+bdc3_ref=H1.getEmissivity(1e4, 1e2, lev_i = 4, lev_j = 2) / H1.getEmissivity(1e4, 1e2, lev_i = 7, lev_j = 2)
+bdc4_ref=H1.getEmissivity(1e4, 1e2, lev_i = 4, lev_j = 2) / H1.getEmissivity(1e4, 1e2, lev_i = 8, lev_j = 2)
+bdc5_ref=H1.getEmissivity(1e4, 1e2, lev_i = 4, lev_j = 2) / H1.getEmissivity(1e4, 1e2, lev_i = 9, lev_j = 2)
+
+bdc23_ref=H1.getEmissivity(1e4, 1e2, lev_i = 5, lev_j = 2)/H1.getEmissivity(1e4, 1e2, lev_i = 6, lev_j = 2)
+
+
+
 class InterpretSpectraStacks:
 	"""
 	This class helps interpret the combination of the fits of the SPM and line fits.
