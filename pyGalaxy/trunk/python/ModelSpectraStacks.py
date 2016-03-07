@@ -332,7 +332,6 @@ class ModelSpectraStacks:
 			#self.hdR["HIERARCH "+colNames[ll]+"_nc"] = out.T[ll]
 			self.fullSpec_cols += fits.Column(name=colNames[ll], format='D', array= n.array([out.T[ll]]) )
 		
-		print self.lineSpec_cols
 		self.fullSpec_tb_hdu = fits.BinTableHDU.from_columns(self.fullSpec_cols)
 
 
