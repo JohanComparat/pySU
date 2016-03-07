@@ -18,8 +18,8 @@ for file in stack_files:
 
 	mm=ModelSpectraStacks(file)
 	#mm.plot_fit()
-	mm.fit_lines_to_lineSpectrum()
 	mm.fit_lines_to_fullSpectrum()
+	mm.fit_lines_to_lineSpectrum()
 	#mm.compute_derived_quantities()
 	mm.save_spectrum()
 	#mm.plot_spectrum()
