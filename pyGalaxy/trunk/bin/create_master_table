@@ -15,7 +15,7 @@ path_to_output_table_line = join(os.environ['SPECTRASTACKS_DIR'], "results", "ta
 tableFull = n.empty((len(stackList), 179 ))
 tablePG = n.empty((len(stackList), 179 ))
 
-for ii, tab in enumerate(table):
+for ii, tab in enumerate(tableFull):
 	obj = InterpretSpectraStacks(stackList[ii])
 	arrFull = obj.get_table_entry_full()
 	arrLine = obj.get_table_entry_line()
@@ -23,7 +23,7 @@ for ii, tab in enumerate(table):
 	tableFull[ii] = arrFull
 	tablePG[ii] = arrLine
 
-n.savetxt(path_to_output_table_full, table.T, header = head)	
+n.savetxt(path_to_output_table_full, tableFull.T)#, header = head)	
 
-n.savetxt(path_to_output_table_line, table.T, header = head)	
+n.savetxt(path_to_output_table_line, tablePG.T)#, header = head)	
 

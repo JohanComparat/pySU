@@ -119,7 +119,6 @@ class InterpretSpectraStacks:
 		print " loads the stack :"
 		hduList = fits.open(self.stack_file)
 		self.hduStack = hduList[1]
-		self.hduLine[1].data['wavelength']
 		wl= self.hduStack.data['wavelength'][(self.hduStack.data['NspectraPerPixel']>0.8 * self.N_in_stack)]
 		self.wlmin = n.min(wl)
 		self.wlmax = n.max(wl)
