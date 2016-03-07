@@ -287,9 +287,7 @@ class ModelSpectraStacks:
 
 		d_out=[]
 		for kk in range(10):
-			fluxRR = interp1d(self.wl, self.hdu1.data['jackknifeSpectra'].T[kk][self.selection])
-			print self.wl, fluxRR, self.flErr 
-			d1,mI,hI=lfit.fit_Line_OIIdoublet(self.wl, fluxRR, self.flErr , a0= n.array([O2_3727,O2_3729]) , lineName="O2_3728", p0_sigma=10,model="gaussian")
+			d1,mI,hI=lfit.fit_Line_OIIdoublet(self.wl, self.hdu1.data['jackknifeSpectra'].T[kk][self.selection], self.flErr , a0= n.array([O2_3727,O2_3729]) , lineName="O2_3728", p0_sigma=10,model="gaussian")
 			d_out.append(d1)
 
 		d_out = n.array(d_out)
@@ -307,8 +305,7 @@ class ModelSpectraStacks:
 			# measure its dispersion using the stacks
 			d_out=[]
 			for kk in range(len(self.hdu1.data['jackknifeSpectra'].T)):
-				fluxRR = interp1d(self.wl, self.hdu1.data['jackknifeSpectra'].T[kk][self.selection])
-				d1,mI,hI=lfit.fit_Line(self.wl, fluxRR, self.flErr, li[1], lineName=li[2], continuumSide=li[3], model="gaussian",p0_sigma=10)
+				d1,mI,hI=lfit.fit_Line(self.wl,  self.hdu1.data['jackknifeSpectra'].T[kk][self.selection], self.flErr, li[1], lineName=li[2], continuumSide=li[3], model="gaussian",p0_sigma=10)
 				d_out.append(d1)
 
 			d_out = n.array(d_out)
