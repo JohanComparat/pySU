@@ -121,7 +121,7 @@ class ModelSpectraStacks:
 		self.hdR = hdus[0].header
 		self.hdu1 = hdus[1] # .data
 		print " loads the data :"
-		print self.hdu1.data.dtype
+		#♠print self.hdu1.data.dtype
 		wlA,flA,flErrA = self.hdu1.data['wavelength'], self.hdu1.data['meanWeightedStack'], self.hdu1.data['jackknifStackErrors']
 		self.selection = (flA>0) & (self.hdu1.data['NspectraPerPixel']  > float( self.stack_file.split('_')[-5]) * self.N_spectra_limitFraction )
 		self.wl,self.fl,self.flErr = wlA[self.selection], flA[self.selection], flErrA[self.selection] 
@@ -172,6 +172,7 @@ class ModelSpectraStacks:
 		Interpolates the model to an array with the same coverage as the stack.
 		"""
 		# overlap region with stack
+		print "interpolate model"
 		self.mdOK =(self.wlModel>n.min(self.wl))&(self.wlModel<n.max(self.wl)) 
 
 		mdBlue=(self.wlModel<=n.min(self.wl)) # bluer part than data
@@ -218,7 +219,8 @@ class ModelSpectraStacks:
 			lfit  =  lineFit.LineFittingLibrary(fitWidth = 70.)
 		if self.stack_file.find('DEEP2')>0 :
 			lfit  =  lineFit.LineFittingLibrary(fitWidth = 40.)
-
+		
+		PRINT "START FITTING LINES"
 		#self.subtract_continuum_model()
 		data,h=[],[]
 
@@ -262,18 +264,22 @@ class ModelSpectraStacks:
 
 		heading="".join(h)
 		out=n.hstack((data))
+		print "out", out
 		out[n.isnan(out)]=n.ones_like(out[n.isnan(out)])*self.dV
 		#output = n.array([ out ])
 		#print "----------------", output.T[0], output.T[1], output
 		colNames = heading.split()
+		print colNames
 		col0 = fits.Column(name=colNames[0],format='D', array= out.T[0])
 		col1 = fits.Column(name=colNames[1],format='D', array= out.T[1])
 		cols = fits.ColDefs([col0, col1])
+		print cols
 		#print colNames
 		for ll in range(2,len(colNames),1):
 			#self.hdR["HIERARCH "+colNames[ll]+"_nc"] = out.T[ll]
 			cols += fits.Column(name=colNames[ll], format='D', array= out.T[ll] )
 		
+		print cols
 		self.lineSpec_tb_hdu = fits.BinTableHDU.from_columns(cols)
 
 			
