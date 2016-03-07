@@ -266,13 +266,13 @@ class ModelSpectraStacks:
 		#output = n.array([ out ])
 		#print "----------------", output.T[0], output.T[1], output
 		colNames = heading.split()
-		col0 = fits.Column(name=colNames[0],format='D', array= output.T[0])
-		col1 = fits.Column(name=colNames[1],format='D', array= output.T[1])
+		col0 = fits.Column(name=colNames[0],format='D', array= out.T[0])
+		col1 = fits.Column(name=colNames[1],format='D', array= out.T[1])
 		cols = fits.ColDefs([col0, col1])
 		#print colNames
 		for ll in range(2,len(colNames),1):
 			#self.hdR["HIERARCH "+colNames[ll]+"_nc"] = out.T[ll]
-			cols += fits.Column(name=colNames[ll], format='D', array= output.T[ll] )
+			cols += fits.Column(name=colNames[ll], format='D', array= out.T[ll] )
 		
 		self.lineSpec_tb_hdu = fits.BinTableHDU.from_columns(cols)
 
@@ -333,13 +333,13 @@ class ModelSpectraStacks:
 		#output = n.array([ out ])
 		#print "----------------", output.T[0], output.T[1], output
 		colNames = heading.split()
-		col0 = fits.Column(name=colNames[0],format='D', array= output.T[0])
-		col1 = fits.Column(name=colNames[1],format='D', array= output.T[1])
+		col0 = fits.Column(name=colNames[0],format='D', array= out.T[0])
+		col1 = fits.Column(name=colNames[1],format='D', array= out.T[1])
 		cols = fits.ColDefs([col0, col1])
 		#print colNames
 		for ll in range(2,len(colNames),1):
 			#self.hdR["HIERARCH "+colNames[ll]+"_nc"] = out.T[ll]
-			cols += fits.Column(name=colNames[ll], format='D', array= output.T[ll] )
+			cols += fits.Column(name=colNames[ll], format='D', array= out.T[ll] )
 		
 		self.fullSpec_tb_hdu = fits.BinTableHDU.from_columns(cols)
 
