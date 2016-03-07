@@ -242,7 +242,7 @@ class ModelSpectraStacks:
 
 		for li in allLinesList :
 			# measure line properties from the mean weighted stack
-			dat_mean,mI,hI=lfit.fit_Line(self.wl,self.fl,self.flErr, li[1], lineName=li[2], continuumSide=li[3], model="gaussian",p0_sigma=10)
+			dat_mean,mI,hI=lfit.fit_Line(self.wlLineSpectrum, self.flLineSpectrum, self.flErrLineSpectrum, li[1], lineName=li[2], continuumSide=li[3], model="gaussian",p0_sigma=10)
 			# measure its dispersion using the stacks
 			d_out=[]
 			for kk in range(len(self.hdu1.data['jackknifeSpectra'].T)):
@@ -266,13 +266,82 @@ class ModelSpectraStacks:
 		#output = n.array([ out ])
 		#print "----------------", output.T[0], output.T[1], output
 		colNames = heading.split()
-		#col0 = fits.Column(name=colNames[0],format='D', array= output.T[0])
-		#col1 = fits.Column(name=colNames[1],format='D', array= output.T[1])
-		#cols = fits.ColDefs([col0, col1])
+		col0 = fits.Column(name=colNames[0],format='D', array= output.T[0])
+		col1 = fits.Column(name=colNames[1],format='D', array= output.T[1])
+		cols = fits.ColDefs([col0, col1])
 		#print colNames
-		for ll in range(len(colNames)):
-			self.hdR["HIERARCH "+colNames[ll]+"_nc"] = out.T[ll]
-			#cols += fits.Column(name=colNames[ll],format='D', array= output.T[ll] )
+		for ll in range(2,len(colNames),1):
+			#self.hdR["HIERARCH "+colNames[ll]+"_nc"] = out.T[ll]
+			cols += fits.Column(name=colNames[ll], format='D', array= output.T[ll] )
+		
+		self.lineSpec_tb_hdu = fits.BinTableHDU.from_columns(cols)
+
+			
+	def fit_lines_to_fullSpectrum(self):
+		"""
+		Fits the emission lines on the line spectrum.
+		"""
+		# interpolates the mean spectra.
+		if self.stack_file.find('VVDS')>0 or self.stack_file.find('VIPERS')>0 :
+			lfit  =  lineFit.LineFittingLibrary(fitWidth = 70.)
+		if self.stack_file.find('DEEP2')>0 :
+			lfit  =  lineFit.LineFittingLibrary(fitWidth = 40.)
+
+		data,h=[],[]
+
+		dat_mean,mI,hI=lfit.fit_Line_OIIdoublet(self.wl, self.stack, self.stackErr, a0= n.array([O2_3727,O2_3729]) , lineName="O2_3728", p0_sigma=10,model="gaussian")
+
+		d_out=[]
+		for kk in range(10):
+			fluxRR = interp1d(self.wl, self.hdu1.data['jackknifeSpectra'].T[kk][self.selection])
+			flLineSpectrumRR=n.array([fluxRR(xx)-self.model(xx) for xx in self.wlLineSpectrum])
+			d1,mI,hI=lfit.fit_Line_OIIdoublet(self.wl, self.stack, self.stackErr, a0= n.array([O2_3727,O2_3729]) , lineName="O2_3728", p0_sigma=10,model="gaussian")
+			d_out.append(d1)
+
+		d_out = n.array(d_out)
+		err_out = n.std(d_out,axis=0)
+		# assign error values :
+		dat_mean[2] = err_out[2-1]
+		dat_mean[4] = err_out[4-1]
+		dat_mean[6] = err_out[6-1]
+		data.append(dat_mean)
+		h.append(hI)
+
+		for li in allLinesList :
+			# measure line properties from the mean weighted stack
+			dat_mean,mI,hI=lfit.fit_Line(self.wl, self.stack, self.stackErr, li[1], lineName=li[2], continuumSide=li[3], model="gaussian",p0_sigma=10)
+			# measure its dispersion using the stacks
+			d_out=[]
+			for kk in range(len(self.hdu1.data['jackknifeSpectra'].T)):
+				fluxRR = interp1d(self.wl, self.hdu1.data['jackknifeSpectra'].T[kk][self.selection])
+				flLineSpectrumRR=n.array([fluxRR(xx)-self.model(xx) for xx in self.wlLineSpectrum])
+				d1,mI,hI=lfit.fit_Line(sself.wl, self.stack, self.stackErr, li[1], lineName=li[2], continuumSide=li[3], model="gaussian",p0_sigma=10)
+				d_out.append(d1)
+
+			d_out = n.array(d_out)
+			err_out = n.std(d_out,axis=0)
+			# assign error values :
+			dat_mean[2] = err_out[2-1]
+			dat_mean[4] = err_out[4-1]
+			dat_mean[6] = err_out[6-1]
+			data.append(dat_mean)
+			h.append(hI)
+
+		heading="".join(h)
+		out=n.hstack((data))
+		out[n.isnan(out)]=n.ones_like(out[n.isnan(out)])*self.dV
+		#output = n.array([ out ])
+		#print "----------------", output.T[0], output.T[1], output
+		colNames = heading.split()
+		col0 = fits.Column(name=colNames[0],format='D', array= output.T[0])
+		col1 = fits.Column(name=colNames[1],format='D', array= output.T[1])
+		cols = fits.ColDefs([col0, col1])
+		#print colNames
+		for ll in range(2,len(colNames),1):
+			#self.hdR["HIERARCH "+colNames[ll]+"_nc"] = out.T[ll]
+			cols += fits.Column(name=colNames[ll], format='D', array= output.T[ll] )
+		
+		self.fullSpec_tb_hdu = fits.BinTableHDU.from_columns(cols)
 
 
 	def compute_derived_quantities(self):
@@ -508,15 +577,15 @@ class ModelSpectraStacks:
 		"""
 		Saves the stack spectrum, the model and derived quantities in a single fits file with different hdus.
 		"""
-		wavelength = fits.Column(name="wavelength",format="D", unit="Angstorm", array= 			self.wlLineSpectrum)
-		flux = fits.Column(name="flux",format="D", unit="Angstorm", array= 			self.flLineSpectrum)
-		fluxErr = fits.Column(name="fluxErr",format="D", unit="Angstorm", array= 			self.flErrLineSpectrum)
+		wavelength = fits.Column(name="wavelength",format="D", unit="Angstrom", array= 			self.wlLineSpectrum)
+		flux = fits.Column(name="flux",format="D", unit="Angstrom", array= 			self.flLineSpectrum)
+		fluxErr = fits.Column(name="fluxErr",format="D", unit="Angstrom", array= 			self.flErrLineSpectrum)
 		# new columns
 		cols = fits.ColDefs([wavelength, flux, fluxErr])
-		tbhdu = fits.BinTableHDU.from_columns(cols)
+		lineSptbhdu = fits.BinTableHDU.from_columns(cols)
 		# previous file
 		prihdu = fits.PrimaryHDU(header=self.hdR)
-		thdulist = fits.HDUList([prihdu, self.hdu1, self.hdu2, tbhdu])
+		thdulist = fits.HDUList([prihdu, self.hdu1, self.hdu2, lineSptbhdu, self.lineSpec_tb_hdu, self.fullSpec_tb_hdu])
 		outPutFileName = self.stack_model_file[:-5] + "-modeled.fits"
 		outFile = n.core.defchararray.replace(outPutFileName, "fits", "model").item()
 		os.system('rm '+outFile)
