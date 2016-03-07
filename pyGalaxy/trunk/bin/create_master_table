@@ -7,18 +7,23 @@ import glob
 import os
 from os.path import join
 from InterpretSpectraStacks import *
-stackList = n.array( glob.glob(join(os.environ['SPECTRASTACKS_DIR'], "data", "??_????", "??_????-*.fits")) )
+stackList = n.array( glob.glob(join(os.environ['SPECTRASTACKS_DIR'], "model", "??_????", "??_????-*.model")) )
 
-path_to_output_table = join(os.environ['SPECTRASTACKS_DIR'], "results", "table_v0.data")
+path_to_output_table_full = join(os.environ['SPECTRASTACKS_DIR'], "results", "table_fullSpecFit_v0.data")
+path_to_output_table_line = join(os.environ['SPECTRASTACKS_DIR'], "results", "table_lineSpecFit_v0.data")
 
-table = n.empty((len(stackList), 32))
+tableFull = n.empty((len(stackList), 179 ))
+tablePG = n.empty((len(stackList), 179 ))
 
 for ii, tab in enumerate(table):
 	obj = InterpretSpectraStacks(stackList[ii])
-	arr, head = obj.get_table_entry()
-	print arr
-	table[ii] = arr
+	arrFull = obj.get_table_entry_full()
+	arrLine = obj.get_table_entry_line()
+	print arrFull, arrLine
+	tableFull[ii] = arrFull
+	tablePG[ii] = arrLine
 
-n.savetxt(path_to_output_table, table.T, header = head)	
+n.savetxt(path_to_output_table_full, table.T, header = head)	
 
+n.savetxt(path_to_output_table_line, table.T, header = head)	
 
