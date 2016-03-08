@@ -65,7 +65,7 @@ bdc5_ref=H1.getEmissivity(1e4, 1e2, lev_i = 4, lev_j = 2) / H1.getEmissivity(1e4
 bdc23_ref=H1.getEmissivity(1e4, 1e2, lev_i = 5, lev_j = 2)/H1.getEmissivity(1e4, 1e2, lev_i = 6, lev_j = 2)
 
 
-def compute_derived_quantities(table, dV = -9999.99):
+def compute_derived_quantities(dat, dV = -9999.99):
 	"""
 	Computes the different line ratios and converts to extinction :
 	 * Balmer decrement and E(B-V) Correction using 4862 / 4341
