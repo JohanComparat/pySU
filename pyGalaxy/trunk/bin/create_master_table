@@ -31,6 +31,12 @@ headerB = "O2_3728_a0a  O2_3728_a0b  O2_3728_flux  O2_3728_fluxErr  O2_3728_sigm
 head = headerA + headerB
 
 n.savetxt(path_to_output_table_full, tableFull, header = head)	
+conv_fits = """java -jar ~/stilts.jar tpipe in=$SPECTRASTACKS_DIR/results/table_fullSpecFit_v0.data ifmt=ascii out=$SPECTRASTACKS_DIR/results/table_fullSpecFit_v0.fits omode=out ofmt=fits""")
+os.system(conv_fits)
 
 n.savetxt(path_to_output_table_line, tablePG, header = head)	
+conv_fits = """java -jar ~/stilts.jar tpipe in=$SPECTRASTACKS_DIR/results/table_lineSpecFit_v0.data ifmt=ascii out=$SPECTRASTACKS_DIR/results/table_lineSpecFit_v0.fits omode=out ofmt=fits""")
+os.system(conv_fits)
+
+
 
