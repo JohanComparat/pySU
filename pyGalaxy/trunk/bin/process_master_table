@@ -108,11 +108,11 @@ def compute_derived_quantities(table, dV = -9999.99):
 	EBV_4862_4341[bad] = dV * n.ones_like(BD_4862_4341[bad])
 	EBV_4862_4341_err[bad] = dV * n.ones_like(BD_4862_4341[bad])
 	EBV_4862_4341_CORRO2[bad] = dV * n.ones_like(BD_4862_4341[bad])
-	EBV_4862_4341_CORRO2_err[bad] = dV * n.ones_like(BD_4862_4341[bad])
+	#EBV_4862_4341_CORRO2_err[bad] = dV * n.ones_like(BD_4862_4341[bad])
 	EBV_4862_4341_CORRO3[bad] = dV * n.ones_like(BD_4862_4341[bad])
-	EBV_4862_4341_CORRO3_err[bad] = dV * n.ones_like(BD_4862_4341[bad])
+	#EBV_4862_4341_CORRO3_err[bad] = dV * n.ones_like(BD_4862_4341[bad])
 	EBV_4862_4341_CORRHb[bad] = dV * n.ones_like(BD_4862_4341[bad])
-	EBV_4862_4341_CORRHb_err[bad] = dV * n.ones_like(BD_4862_4341[bad])
+	#EBV_4862_4341_CORRHb_err[bad] = dV * n.ones_like(BD_4862_4341[bad])
 
 	
 	# Balmer decrement : 4862 / 4102
