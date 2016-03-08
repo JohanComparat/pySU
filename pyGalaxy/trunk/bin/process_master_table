@@ -148,7 +148,7 @@ def compute_derived_quantities(table, dV = -9999.99):
 	bdc23ErrFrac = ( (tab['H1_4102_fluxErr']/ tab['H1_4102_flux'] )**2 + (tab['H1_4341_fluxErr']/tab['H1_4341_flux'])**2. ) **0.5
 	BD_4102_4341_err = tab['BD_4102_4341'] * bdc23ErrFrac
 	# E(B-V) Correction using 4341 / 4102
-	EBV_4102_4341 = -5*n.log10( tab['BD_4102_4341'] * bdc23_ref )/( 2*(5.39 - 5.12))
+	EBV_4102_4341 = -5*n.log10( BD_4102_4341 * bdc23_ref )/( 2*(5.39 - 5.12))
 	EBV_4102_4341_err = -5 * bdc23ErrFrac * bdc23_ref /( 2*(5.39 - 5.12)*n.log(10))
 	# applied to lines using Calzetti's law
 	EBV_4102_4341_CORRO2 = 10**(0.4 *EBV_4102_4341 *klO2)
