@@ -30,7 +30,7 @@ headerB = "O2_3728_a0a  O2_3728_a0b  O2_3728_flux  O2_3728_fluxErr  O2_3728_sigm
 
 head = headerA + headerB
 
-n.savetxt(path_to_output_table_full, tableFull.T, header = head)	
+n.savetxt(path_to_output_table_full, tableFull, header = head)	
 
-n.savetxt(path_to_output_table_line, tablePG.T, header = head)	
+n.savetxt(path_to_output_table_line, tablePG, header = head)	
 
