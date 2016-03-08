@@ -24,7 +24,7 @@ O2 = pn.Atom('O', 2)
 O2_3727=1/(O2.getEnergy(O2.getTransition(3727)[0])-O2.getEnergy(O2.getTransition(3727)[1]))
 O2_3729=1/(O2.getEnergy(O2.getTransition(3729)[0])-O2.getEnergy(O2.getTransition(3729)[1]))
 #O2=AIR((O2_3727+O2_3729)/2.)
-O2=(O2_3727*3.326568+O2_3729*3.324086)/(3.326568 + 3.324086)
+O2_mean=(O2_3727*3.326568+O2_3729*3.324086)/(3.326568 + 3.324086)
 
 Ne3 = pn.Atom('Ne',3)
 #Ne3.printIonic()
