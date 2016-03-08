@@ -179,8 +179,8 @@ def compute_derived_quantities(table, dV = -9999.99):
 		flux_O2_3728_intrinsic =  tab['O2_3728_flux']/ tab[name+'O2']
 		flux_O2_3728_intrinsic_err = tab['flux_O2_3728_intrinsic'] * ((tab['O2_3728_fluxErr']/ tab['O2_3728_flux'] )**2.+ (tab[name+'O2_err']/ tab[name+'O2'] )**2.)**0.5
 		# intrinsic fluxes Hb
-		flux_H1_4862_intrinsic'] =tab['H1_4862_flux'] / tab[name+'Hb']
-		flux_H1_4862_intrinsic_err'] =tab['flux_H1_4862_intrinsic'] * ((tab['H1_4862_fluxErr']/ tab['H1_4862_flux'])**2.+ (tab[name+'Hb_err'] /tab[name+'Hb'] )**2.)**0.5
+		flux_H1_4862_intrinsic = tab['H1_4862_flux'] / tab[name+'Hb']
+		flux_H1_4862_intrinsic_err = tab['flux_H1_4862_intrinsic'] * ((tab['H1_4862_fluxErr']/ tab['H1_4862_flux'])**2.+ (tab[name+'Hb_err'] /tab[name+'Hb'] )**2.)**0.5
 		# deduce SFR from [OII] 
 		SFR_O2_3728 = 10**(0.27) * 10**(-41) * tab['flux_O2_3728_intrinsic'] * self.sphereCM.value
 		SFR_O2_3728_err = tab['SFR_O2_3728'] * tab['flux_O2_3728_intrinsic_err'] / tab['flux_O2_3728_intrinsic']
