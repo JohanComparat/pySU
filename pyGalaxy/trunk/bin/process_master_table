@@ -9,6 +9,8 @@ from os.path import join
 #from InterpretSpectraStacks import *
 import astropy.io.fits as fits
 
+import astropy.cosmology as co
+cosmo=co.Planck15 #co.FlatLambdaCDM(H0=70,Om0=0.3)
 
 
 from lineListAir import *
@@ -80,9 +82,11 @@ def compute_derived_quantities(table, dV = -9999.99):
 	 * 12 log OH with O3(4960+5007)/Hbeta
 	 * 12 log OH with O3(5007)/Hbeta
 	"""
-	self.BDarray=n.array([0,0,0])
+	dL=cosmo.luminosity_distance( tab['Redshift'] ).to(u.cm**2)
+
+	BDarray=n.array([0,0,0])
 	if tab['H1_4341_flux']>0 and tab['H1_4862_flux']>0 and tab['H1_4341_fluxErr']>0 and tab['H1_4862_fluxErr']>0 :
-		self.BDarray[0]=1
+		BDarray[0]=1
 		# Balmer decrement : 4862 / 4341
 		BD_4862_4341 = tab['H1_4341_flux']/ tab['H1_4862_flux']
 		bdc1ErrFrac = ( (tab['H1_4862_fluxErr']/ tab['H1_4862_flux'])**2 + (tab['H1_4341_fluxErr']/ tab['H1_4341_flux'])**2. ) **0.5
@@ -110,7 +114,7 @@ def compute_derived_quantities(table, dV = -9999.99):
 		EBV_4862_4341_CORRHb_err = dV
 
 	if tab['H1_4102_flux']>0 and tab['H1_4862_flux']>0 and tab['H1_4102_fluxErr']>0 and tab['H1_4862_fluxErr']>0 :
-		self.BDarray[1]=1
+		BDarray[1]=1
 		# Balmer decrement : 4862 / 4102
 		BD_4862_4102 = tab['H1_4102_flux']/ tab['H1_4862_flux']
 		bdc2ErrFrac = ( (tab['H1_4862_fluxErr']/ tab['H1_4862_flux'] )**2 + (tab['H1_4102_fluxErr']/tab['H1_4102_flux'])**2. ) **0.5
@@ -138,7 +142,7 @@ def compute_derived_quantities(table, dV = -9999.99):
 		EBV_4862_4102_CORRHb_err = dV
 
 	if tab['H1_4102_flux']>0 and tab['H1_4341_flux']>0 and tab['H1_4102_fluxErr']>0 and tab['H1_4341_fluxErr']>0 :
-		self.BDarray[2]=1
+		BDarray[2]=1
 		# Balmer decrement : 4341 / 4102
 		BD_4102_4341 =  tab['H1_4102_flux']/ tab['H1_4341_flux']
 		bdc23ErrFrac = ( (tab['H1_4102_fluxErr']/ tab['H1_4102_flux'] )**2 + (tab['H1_4341_fluxErr']/tab['H1_4341_flux'])**2. ) **0.5
@@ -167,8 +171,8 @@ def compute_derived_quantities(table, dV = -9999.99):
 
 	# if BD computation succeeded, we can compute instrinsic quantities
 	cor_names = n.array(['EBV_4862_4341_CORR','EBV_4862_4102_CORR', 'EBV_4102_4341_CORR'])
-	if len((self.BDarray==1).nonzero()[0]>=1):
-		name = cor_names[(self.BDarray==1)][0]
+	if len((BDarray==1).nonzero()[0]>=1):
+		name = cor_names[(BDarray==1)][0]
 		# intrinsic fluxes O3 4960
 		flux_O3_4960_intrinsic = tab['O3_4960_flux']/ tab[name+'O3']
 		flux_O3_4960_intrinsic_err =  tab['flux_O3_4960_intrinsic'] * ((tab['O3_4960_fluxErr']/ tab['O3_4960_flux'] )**2.+ (tab[name+'O3_err']/ tab[name+'O3'] )**2.)**0.5
@@ -182,11 +186,11 @@ def compute_derived_quantities(table, dV = -9999.99):
 		flux_H1_4862_intrinsic = tab['H1_4862_flux'] / tab[name+'Hb']
 		flux_H1_4862_intrinsic_err = tab['flux_H1_4862_intrinsic'] * ((tab['H1_4862_fluxErr']/ tab['H1_4862_flux'])**2.+ (tab[name+'Hb_err'] /tab[name+'Hb'] )**2.)**0.5
 		# deduce SFR from [OII] 
-		SFR_O2_3728 = 10**(0.27) * 10**(-41) * tab['flux_O2_3728_intrinsic'] * self.sphereCM.value
-		SFR_O2_3728_err = tab['SFR_O2_3728'] * tab['flux_O2_3728_intrinsic_err'] / tab['flux_O2_3728_intrinsic']
+		#SFR_O2_3728 = 10**(0.27) * 10**(-41) * tab['flux_O2_3728_intrinsic'] * sphereCM.value
+		#SFR_O2_3728_err = tab['SFR_O2_3728'] * tab['flux_O2_3728_intrinsic_err'] / tab['flux_O2_3728_intrinsic']
 		# deduce SFR from Hbeta
-		SFR_H1_4862 = 10**(0.58) * 10**(-41) * tab['flux_H1_4862_intrinsic'] * self.sphereCM.value
-		SFR_H1_4862_err = tab['SFR_H1_4862'] * tab['flux_H1_4862_intrinsic_err'] / tab['flux_H1_4862_intrinsic']
+		#SFR_H1_4862 = 10**(0.58) * 10**(-41) * tab['flux_H1_4862_intrinsic'] * sphereCM.value
+		#SFR_H1_4862_err = tab['SFR_H1_4862'] * tab['flux_H1_4862_intrinsic_err'] / tab['flux_H1_4862_intrinsic']
 	else :
 		flux_O3_4960_intrinsic = dV
 		flux_O3_4960_intrinsic_err = dV
@@ -196,10 +200,10 @@ def compute_derived_quantities(table, dV = -9999.99):
 		flux_O2_3728_intrinsic_err = dV
 		flux_H1_4862_intrinsic = dV
 		flux_H1_4862_intrinsic_err = dV
-		SFR_O2_3728 = dV
-		SFR_O2_3728_err = dV
-		SFR_H1_4862 = dV
-		SFR_H1_4862_err = dV
+		#SFR_O2_3728 = dV
+		#SFR_O2_3728_err = dV
+		#SFR_H1_4862 = dV
+		#SFR_H1_4862_err = dV
 
 	# computes O32
 	if tab['O3_4960_flux']>0 and tab['O3_5007_flux']>0 and tab['O2_3728_flux']>0 and tab['O3_4960_fluxErr']>0 and tab['O3_5007_fluxErr']>0 and tab['O2_3728_fluxErr'] >0 :
@@ -290,8 +294,8 @@ def compute_derived_quantities(table, dV = -9999.99):
 		logO3_5007_H = dV
 		logO3_5007_H_err = dV
 
-	arrs = n.array([BD_4862_4341, BD_4862_4341_err, EBV_4862_4341, EBV_4862_4341_err, EBV_4862_4341_CORRO2, EBV_4862_4341_CORRO3, EBV_4862_4341_CORRHb, BD_4862_4102, BD_4862_4102_err, EBV_4862_4102, EBV_4862_4102_err, EBV_4862_4102_CORRO2, EBV_4862_4102_CORRO3, EBV_4862_4102_CORRHb, BD_4102_4341, BD_4102_4341_err, EBV_4102_4341, EBV_4102_4341_err, EBV_4102_4341_CORRO2, EBV_4102_4341_CORRO3, EBV_4102_4341_CORRHb, O32, O32_err, R23, R23_err, logOH_tremonti04, logOH_tremonti04_err, OpH, OpHErr, logO2H, logO2H_err, O3H, O3HErr, logO3H, logO3H_err, O35H, O35HErr, logO3_5007_H, logO3_5007_H_err ])
-	colNames = n.array(["BD_4862_4341", "BD_4862_4341_err", "EBV_4862_4341", "EBV_4862_4341_err", "EBV_4862_4341_CORRO2", "EBV_4862_4341_CORRO3", "EBV_4862_4341_CORRHb", "BD_4862_4102", "BD_4862_4102_err", "EBV_4862_4102", "EBV_4862_4102_err", "EBV_4862_4102_CORRO2", "EBV_4862_4102_CORRO3", "EBV_4862_4102_CORRHb", "BD_4102_4341", "BD_4102_4341_err", "EBV_4102_4341", "EBV_4102_4341_err", "EBV_4102_4341_CORRO2", "EBV_4102_4341_CORRO3", "EBV_4102_4341_CORRHb", "O32", "O32_err", "R23", "R23_err", "logOH_tremonti04", "logOH_tremonti04_err", "OpH", "OpHErr", "logO2H", "logO2H_err", "O3H", "O3HErr", "logO3H", "logO3H_err", "O35H", "O35HErr", "logO3_5007_H", "logO3_5007_H_err"])
+	arrs = n.array([dL, BD_4862_4341, BD_4862_4341_err, EBV_4862_4341, EBV_4862_4341_err, EBV_4862_4341_CORRO2, EBV_4862_4341_CORRO3, EBV_4862_4341_CORRHb, BD_4862_4102, BD_4862_4102_err, EBV_4862_4102, EBV_4862_4102_err, EBV_4862_4102_CORRO2, EBV_4862_4102_CORRO3, EBV_4862_4102_CORRHb, BD_4102_4341, BD_4102_4341_err, EBV_4102_4341, EBV_4102_4341_err, EBV_4102_4341_CORRO2, EBV_4102_4341_CORRO3, EBV_4102_4341_CORRHb, O32, O32_err, R23, R23_err, logOH_tremonti04, logOH_tremonti04_err, OpH, OpHErr, logO2H, logO2H_err, O3H, O3HErr, logO3H, logO3H_err, O35H, O35HErr, logO3_5007_H, logO3_5007_H_err ])
+	colNames = n.array(["dL", "BD_4862_4341", "BD_4862_4341_err", "EBV_4862_4341", "EBV_4862_4341_err", "EBV_4862_4341_CORRO2", "EBV_4862_4341_CORRO3", "EBV_4862_4341_CORRHb", "BD_4862_4102", "BD_4862_4102_err", "EBV_4862_4102", "EBV_4862_4102_err", "EBV_4862_4102_CORRO2", "EBV_4862_4102_CORRO3", "EBV_4862_4102_CORRHb", "BD_4102_4341", "BD_4102_4341_err", "EBV_4102_4341", "EBV_4102_4341_err", "EBV_4102_4341_CORRO2", "EBV_4102_4341_CORRO3", "EBV_4102_4341_CORRHb", "O32", "O32_err", "R23", "R23_err", "logOH_tremonti04", "logOH_tremonti04_err", "OpH", "OpHErr", "logO2H", "logO2H_err", "O3H", "O3HErr", "logO3H", "logO3H_err", "O35H", "O35HErr", "logO3_5007_H", "logO3_5007_H_err"])
 	
 	for ll in range(len(arrs)):
 		dat.columns += fits.Column(name=colNames[ll], format='D', array= arrs[ll] )
