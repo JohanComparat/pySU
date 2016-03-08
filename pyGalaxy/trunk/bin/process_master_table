@@ -246,15 +246,17 @@ hdu = fits.open(path_to_input_table_full)
 tab = hdu[1].data
 arrs, cols = compute_derived_quantities(tab)
 
-sys.exit()
-
+new_cols = tab.columns 
 for ll in range(len(arrs)):
-	dat.columns += fits.Column(name=colNames[ll], format='D', array= arrs[ll] )
+	#print cols[0], arrs[ll]
+	c0 = fits.Column(name=cols[ll], format='D', array= arrs[ll] )
+	new_cols  += c0
 
-write(path_to_output_table_full)
+new_tb_hdu = fits.BinTableHDU.from_columns( new_cols )
 
-tbhdu = fits.BinTableHDU.from_columns(tab2)
-tbhdu.writeto(path_to_output_table_full)
+thdulist = fits.HDUList([hdu[0], new_tb_hdu])
+thdulist.writeto(path_to_output_table_full)
+
 
 dat= 0
 
@@ -263,9 +265,16 @@ path_to_output_table_full = join(os.environ['SPECTRASTACKS_DIR'], "results", "ta
 
 hdu = fits.open(path_to_input_table_full)
 tab = hdu[1].data
-tab2 = compute_derived_quantities(tab)
-write(path_to_output_table_full)
+arrs, cols = compute_derived_quantities(tab)
 
-tbhdu = fits.BinTableHDU.from_columns(tab2)
-tbhdu.writeto(path_to_output_table_full)
+new_cols = tab.columns 
+for ll in range(len(arrs)):
+	#print cols[0], arrs[ll]
+	c0 = fits.Column(name=cols[ll], format='D', array= arrs[ll] )
+	new_cols  += c0
+
+new_tb_hdu = fits.BinTableHDU.from_columns( new_cols )
+
+thdulist = fits.HDUList([hdu[0], new_tb_hdu])
+thdulist.writeto(path_to_output_table_full)
 

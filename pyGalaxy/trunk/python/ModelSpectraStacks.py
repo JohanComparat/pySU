@@ -210,7 +210,7 @@ class ModelSpectraStacks:
 		print "START FITTING LINES"
 		#self.subtract_continuum_model()
 		data,h=[],[]
-
+		print n.array([O2_3727,O2_3729])
 		dat_mean,mI,hI=lfit.fit_Line_OIIdoublet(self.wlLineSpectrum, self.flLineSpectrum, self.flErrLineSpectrum, a0= n.array([O2_3727,O2_3729]) , lineName="O2_3728", p0_sigma=10,model="gaussian")
 
 		d_out=[]
@@ -226,6 +226,7 @@ class ModelSpectraStacks:
 		dat_mean[2] = err_out[2-1]
 		dat_mean[4] = err_out[4-1]
 		dat_mean[6] = err_out[6-1]
+		print dat_mean
 		data.append(dat_mean)
 		h.append(hI)
 
@@ -282,7 +283,7 @@ class ModelSpectraStacks:
 			lfit  =  lineFit.LineFittingLibrary(fitWidth = 40.)
 
 		data,h=[],[]
-
+		print n.array([O2_3727,O2_3729])
 		dat_mean,mI,hI=lfit.fit_Line_OIIdoublet(self.wl, self.fl, self.flErr, a0= n.array([O2_3727,O2_3729]) , lineName="O2_3728", p0_sigma=10,model="gaussian")
 
 		d_out=[]
@@ -296,6 +297,7 @@ class ModelSpectraStacks:
 		dat_mean[2] = err_out[2-1]
 		dat_mean[4] = err_out[4-1]
 		dat_mean[6] = err_out[6-1]
+		print dat_mean
 		data.append(dat_mean)
 		h.append(hI)
 

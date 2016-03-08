@@ -4,32 +4,40 @@
 This script produces the stacks for emission line luminosity limited samples.
 """
 import matplotlib
-matplotlib.use('pdf')
+#matplotlib.use('pdf')
 import matplotlib.pyplot as p
 import numpy as n
 import os
 from os.path import join
+import astropy.io.fits as fits
 
 G05 = n.loadtxt( join(os.environ['SPECTRASTACKS_DIR'], "biblioPoints", "gallazzi-2005.data"), unpack= True)
-path_to_summary_table = join(os.environ['SPECTRASTACKS_DIR'], "results", "table_v0.data")
+path_to_summary_table = join(os.environ['SPECTRASTACKS_DIR'], "results", "table_fullSpecFit_v0.VA.fits")
 
-data = n.loadtxt(path_to_summary_table)	
+G05 = n.loadtxt( join("..", "biblioPoints", "gallazzi-2005.data"), unpack= True)
+path_to_summary_table = join("..", "results", "table_fullSpecFit_v0.VA.fits")
+data =fits.open(path_to_summary_table)[1].data
+path_to_summary_table = join("..", "results", "table_lineSpecFit_v0.VA.fits")
+datL =fits.open(path_to_summary_table)[1].data
 
+"""
 ok = (data[2]<5)&(data[2]>0.)
 
 lineWavelength,Survey,Redshift,L_MIN,L_MAX,L_MEAN,N_in_stack,R_stack,spm_light_age,spm_light_age_err_plus,spm_light_age_err_minus,spm_light_metallicity,spm_light_metallicity_err_plus,spm_light_metallicity_err_minus,spm_stellar_mass,spm_stellar_mass_err_plus,spm_stellar_mass_err_minus,spm_EBV,gp_EBV_4862_4341,gp_EBV_4862_4341_err,gp_EBV_4862_4102,gp_EBV_4862_4102_err,gp_BD_4102_4341,gp_BD_4102_4341_err,gp_SFR_O2_3728,gp_SFR_O2_3728_err,gp_SFR_H1_4862,gp_SFR_H1_4862_err,gp_12logOH_tremonti04,gp_12logOH_tremonti04_err,gp_12logOH_tremonti04_intrinsic,gp_12logOH_tremonti04_intrinsic_err = data.T[ok].T
 
 n.savetxt(join(os.environ['SPECTRASTACKS_DIR'], "results", "table_firefly.tex"), n.transpose([Survey, lineWavelength, Redshift, N_in_stack, n.log10(n.round(L_MEAN,2)), n.round(spm_light_age,3), n.round(spm_stellar_mass,2), n.round(spm_light_metallicity,3) ]) ,delimiter = " & " ,fmt='%2.3f', newline="\\\\ ")
-
+"""
 # EBV comparison
 #spm_EBV
 #gp_EBV_4862_4341,gp_EBV_4862_4341_err,
 
-ok = (gp_EBV_4862_4341!=-9999.99) &  (gp_EBV_4862_4341_err!=-9999.99)
 
 p.figure(0,(6,6))
 p.axes([0.17,0.17,0.8,0.8])
-p.errorbar(spm_EBV[ok], gp_EBV_4862_4341[ok], yerr=gp_EBV_4862_4341_err[ok],fmt='o',elinewidth=2, mfc='none')
+ok = (datL['H1_4862_flux']>3*datL['H1_4862_fluxErr'])  & (datL['H1_4862_flux']>0) & (datL['H1_4862_fluxErr']>0)  & (datL['H1_4341_flux']>3*datL['H1_4341_fluxErr'])& (datL['H1_4341_flux']>0)&(datL['H1_4341_fluxErr']>0)& (datL['EBV_4862_4341']!=-9999.99) &  (datL['EBV_4862_4341_err']!=-9999.99)
+p.errorbar(datL['spm_EBV'][ok], datL['EBV_4862_4341'][ok], yerr=datL['EBV_4862_4341_err'][ok],fmt='o',elinewidth=2, mfc='none',label='resi')
+ok = (data['H1_4862_flux']>3*data['H1_4862_fluxErr'])  & (data['H1_4862_flux']>0) & (data['H1_4862_fluxErr']>0)  & (data['H1_4341_flux']>3*data['H1_4341_fluxErr'])& (data['H1_4341_flux']>0)&(data['H1_4341_fluxErr']>0)& (data['EBV_4862_4341']!=-9999.99) &  (data['EBV_4862_4341_err']!=-9999.99)
+p.errorbar(data['spm_EBV'][ok], data['EBV_4862_4341'][ok], yerr=data['EBV_4862_4341_err'][ok],fmt='o',elinewidth=1, mfc='none',label='full')
 p.plot([-1,2],[-1,2],'k--')
 p.legend(loc=2)
 p.xlabel('E(B-V) SPM')
@@ -37,6 +45,8 @@ p.ylabel(r'E(B-V) GP $H\beta -H\delta$')
 p.xlim((-1,2))
 p.ylim((-1,2))
 p.grid()
+p.show()
+
 p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "ebv-comparison-1.png"))
 p.clf()
 
