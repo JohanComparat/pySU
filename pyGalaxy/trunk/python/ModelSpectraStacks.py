@@ -52,15 +52,15 @@ doubletList = n.array([[O2_3727,"O2_3727",O2_3729,"O2_3729",O2_mean]])
 # import the fitting routines
 import LineFittingLibrary as lineFit
 
-O2a=3727.092 
-O2b=3729.875 
-O2=(O2a+O2b)/2.
-Hg=4102.892
-Hd=4341.684
-Hb=4862.683
-O3a=4960.295
-O3b=5008.240
-Ha=6564.61
+#O2a=3727.092 
+#O2b=3729.875 
+#O2=(O2a+O2b)/2.
+#Hg=4102.892
+#Hd=4341.684
+#Hb=4862.683
+#O3a=4960.295
+#O3b=5008.240
+#Ha=6564.61
 
 fnu = lambda mAB : 10**(-(mAB+48.6)/2.5) # erg/cm2/s/Hz
 flambda= lambda mAB, ll : 10**10 * c*1000 * fnu(mAB) / ll**2. # erg/cm2/s/A
@@ -221,12 +221,14 @@ class ModelSpectraStacks:
 			d_out.append(d1)
 
 		d_out = n.array(d_out)
+		print "jk out", d_out
 		err_out = n.std(d_out,axis=0)
+		print "before", err_out, dat_mean
 		# assign error values :
-		dat_mean[2] = err_out[2-1]
-		dat_mean[4] = err_out[4-1]
-		dat_mean[6] = err_out[6-1]
-		print dat_mean
+		dat_mean[3] = err_out[3-1]
+		dat_mean[5] = err_out[5-1]
+		dat_mean[7] = err_out[7-1]
+		print "after", dat_mean
 		data.append(dat_mean)
 		h.append(hI)
 
@@ -292,12 +294,14 @@ class ModelSpectraStacks:
 			d_out.append(d1)
 
 		d_out = n.array(d_out)
+		print "jk out", d_out
 		err_out = n.std(d_out,axis=0)
+		print "before", err_out, dat_mean
 		# assign error values :
-		dat_mean[2] = err_out[2-1]
-		dat_mean[4] = err_out[4-1]
-		dat_mean[6] = err_out[6-1]
-		print dat_mean
+		dat_mean[3] = err_out[3-1]
+		dat_mean[5] = err_out[5-1]
+		dat_mean[7] = err_out[7-1]
+		print "after", dat_mean
 		data.append(dat_mean)
 		h.append(hI)
 
@@ -317,6 +321,7 @@ class ModelSpectraStacks:
 			dat_mean[4] = err_out[4-1]
 			dat_mean[6] = err_out[6-1]
 			data.append(dat_mean)
+			print li[2], dat_mean
 			h.append(hI)
 
 		heading="".join(h)

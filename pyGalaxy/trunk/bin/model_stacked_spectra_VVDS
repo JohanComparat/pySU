@@ -5,7 +5,7 @@ import glob
 from os.path import join
 import os
 
-stack_files=n.array(glob.glob( join( os.environ['SPECTRASTACKS_DIR'], "data", "??_????", "*VVDSDEEP*.fits" ) ) )
+stack_files=n.array(glob.glob( join( os.environ['SPECTRASTACKS_DIR'], "data", "O3_????", "*VVDSDEEP*.fits" ) ) )
 stack_files.sort()
 
 #print stack_files
