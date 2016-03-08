@@ -227,7 +227,7 @@ def compute_derived_quantities(table, dV = -9999.99):
 	logO3_5007_H = n.log10( O35H )
 	logO3_5007_H_err = O35HErrFrac / n.log(10.)
 
-	bad = (['O3_5007_flux']<=0 )|( tab['H1_4862_flux']<=0 )|( tab['O3_5007_fluxErr'] <=0  and tab['H1_4862_fluxErr']<=0)
+	bad = (['O3_5007_flux']<=0 )|( tab['H1_4862_flux']<=0 )|( tab['O3_5007_fluxErr'] <=0  )|( tab['H1_4862_fluxErr']<=0)
 	O35H[bad] = dV *n.ones_like(O35H[bad] )
 	O35HErr[bad] = dV *n.ones_like(O35H[bad] )
 	logO3_5007_H[bad] = dV *n.ones_like(O35H[bad] )
