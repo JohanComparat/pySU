@@ -10,7 +10,7 @@ from os.path import join
 import astropy.io.fits as fits
 import astropy.units as u
 import pyneb as pn
-
+import numpy as n
 import astropy.cosmology as co
 cosmo=co.Planck15 #co.FlatLambdaCDM(H0=70,Om0=0.3)
 
@@ -85,7 +85,7 @@ def compute_derived_quantities(table, dV = -9999.99):
 	 * 12 log OH with O3(5007)/Hbeta
 	"""
 	dL=cosmo.luminosity_distance( tab['Redshift'] ).to(u.cm)
-	print dL
+	#print dL
 	BDarray=n.array([0,0,0])
 	if tab['H1_4341_flux']>0 and tab['H1_4862_flux']>0 and tab['H1_4341_fluxErr']>0 and tab['H1_4862_fluxErr']>0 :
 		BDarray[0]=1
