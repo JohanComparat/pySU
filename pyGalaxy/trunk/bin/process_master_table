@@ -293,7 +293,7 @@ def compute_derived_quantities(table, dV = -9999.99):
 	arrs = n.array([BD_4862_4341, BD_4862_4341_err, EBV_4862_4341, EBV_4862_4341_err, EBV_4862_4341_CORRO2, EBV_4862_4341_CORRO3, EBV_4862_4341_CORRHb, BD_4862_4102, BD_4862_4102_err, EBV_4862_4102, EBV_4862_4102_err, EBV_4862_4102_CORRO2, EBV_4862_4102_CORRO·, EBV_4862_4102_CORRHb, BD_4102_4341, BD_4102_4341_err, EBV_4102_4341, EBV_4102_4341_err, EBV_4102_4341_CORRO2, EBV_4102_4341_CORRO3, EBV_4102_4341_CORRHb, O32, O32_err, R23, R23_err, logOH_tremonti04, logOH_tremonti04_err, OpH, OpHErr, logO2H, logO2H_err, O3H, O3HErr, logO3H, logO3H_err, O35H, O35HErr, logO3_5007_H, logO3_5007_H_err ])
 	colNames = n.array(["BD_4862_4341", "BD_4862_4341_err", "EBV_4862_4341", "EBV_4862_4341_err", "EBV_4862_4341_CORRO2", "EBV_4862_4341_CORRO3", "EBV_4862_4341_CORRHb", "BD_4862_4102", "BD_4862_4102_err", "EBV_4862_4102", "EBV_4862_4102_err", "EBV_4862_4102_CORRO2", "EBV_4862_4102_CORRO·", "EBV_4862_4102_CORRHb", "BD_4102_4341", "BD_4102_4341_err", "EBV_4102_4341", "EBV_4102_4341_err", "EBV_4102_4341_CORRO2", "EBV_4102_4341_CORRO3", "EBV_4102_4341_CORRHb", "O32", "O32_err", "R23", "R23_err", "logOH_tremonti04", "logOH_tremonti04_err", "OpH", "OpHErr", "logO2H", "logO2H_err", "O3H", "O3HErr", "logO3H", "logO3H_err", "O35H", "O35HErr", "logO3_5007_H", "logO3_5007_H_err"])
 	
-	for ll in range(len(arrs-99:)
+	for ll in range(len(arrs)):
 		dat.columns += fits.Column(name=colNames[ll], format='D', array= arrs[ll] )
 	
 	return dat
