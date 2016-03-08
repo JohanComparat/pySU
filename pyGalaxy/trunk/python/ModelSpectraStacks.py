@@ -221,14 +221,14 @@ class ModelSpectraStacks:
 			d_out.append(d1)
 
 		d_out = n.array(d_out)
-		print "jk out", d_out
+		#print "jk out", d_out
 		err_out = n.std(d_out,axis=0)
-		print "before", err_out, dat_mean
+		#print "before", err_out, dat_mean
 		# assign error values :
 		dat_mean[3] = err_out[3-1]
 		dat_mean[5] = err_out[5-1]
 		dat_mean[7] = err_out[7-1]
-		print "after", dat_mean
+		#print "after", dat_mean
 		data.append(dat_mean)
 		h.append(hI)
 
@@ -255,22 +255,22 @@ class ModelSpectraStacks:
 
 		heading="".join(h)
 		out=n.hstack((data))
-		print "out", out
+		#print "out", out
 		out[n.isnan(out)]=n.ones_like(out[n.isnan(out)])*self.dV
 		#output = n.array([ out ])
 		#print "----------------", output.T[0], output.T[1], output
 		colNames = heading.split()
-		print colNames
+		#print colNames
 		col0 = fits.Column(name=colNames[0],format='D', array= n.array([out.T[0]]))
 		col1 = fits.Column(name=colNames[1],format='D', array= n.array([out.T[1]]))
 		self.lineSpec_cols  = fits.ColDefs([col0, col1])
-		print self.lineSpec_cols
+		#print self.lineSpec_cols
 		#print colNames
 		for ll in range(2,len(colNames),1):
 			#self.hdR["HIERARCH "+colNames[ll]+"_nc"] = out.T[ll]
 			self.lineSpec_cols += fits.Column(name=colNames[ll], format='D', array= n.array([out.T[ll]]) )
 		
-		print self.lineSpec_cols
+		#print self.lineSpec_cols
 		self.lineSpec_tb_hdu = fits.BinTableHDU.from_columns(self.lineSpec_cols)
 
 			
@@ -294,18 +294,19 @@ class ModelSpectraStacks:
 			d_out.append(d1)
 
 		d_out = n.array(d_out)
-		print "jk out", d_out
+		#print "jk out", d_out
 		err_out = n.std(d_out,axis=0)
-		print "before", err_out, dat_mean
+		#print "before", err_out, dat_mean
 		# assign error values :
 		dat_mean[3] = err_out[3-1]
 		dat_mean[5] = err_out[5-1]
 		dat_mean[7] = err_out[7-1]
-		print "after", dat_mean
+		#print "after", dat_mean
 		data.append(dat_mean)
 		h.append(hI)
 
 		for li in allLinesList :
+			print li[2]
 			# measure line properties from the mean weighted stack
 			dat_mean,mI,hI=lfit.fit_Line(self.wl, self.fl, self.flErr, li[1], lineName=li[2], continuumSide=li[3], model="gaussian",p0_sigma=10)
 			# measure its dispersion using the stacks
@@ -321,7 +322,7 @@ class ModelSpectraStacks:
 			dat_mean[4] = err_out[4-1]
 			dat_mean[6] = err_out[6-1]
 			data.append(dat_mean)
-			print li[2], dat_mean
+			#print li[2], dat_mean
 			h.append(hI)
 
 		heading="".join(h)
@@ -330,7 +331,7 @@ class ModelSpectraStacks:
 		#output = n.array([ out ])
 		#print "----------------", output.T[0], output.T[1], output
 		colNames = heading.split()
-		print colNames
+		#print colNames
 		col0 = fits.Column(name=colNames[0],format='D', array= n.array([out.T[0]]))
 		col1 = fits.Column(name=colNames[1],format='D', array= n.array([out.T[1]]))
 		self.fullSpec_cols  = fits.ColDefs([col0, col1])
