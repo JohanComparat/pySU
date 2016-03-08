@@ -84,7 +84,7 @@ def compute_derived_quantities(table, dV = -9999.99):
 	 * 12 log OH with O3(4960+5007)/Hbeta
 	 * 12 log OH with O3(5007)/Hbeta
 	"""
-	dL=cosmo.luminosity_distance( tab['Redshift'] ).to(u.cm**2)
+	dL=cosmo.luminosity_distance( tab['Redshift'] ).to(u.cm)
 	print dL
 	BDarray=n.array([0,0,0])
 	if tab['H1_4341_flux']>0 and tab['H1_4862_flux']>0 and tab['H1_4341_fluxErr']>0 and tab['H1_4862_fluxErr']>0 :
