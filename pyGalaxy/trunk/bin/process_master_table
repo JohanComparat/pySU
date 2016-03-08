@@ -90,17 +90,17 @@ def compute_derived_quantities(table, dV = -9999.99):
 	# Balmer decrement : 4862 / 4341
 	BD_4862_4341 = tab['H1_4341_flux']/ tab['H1_4862_flux']
 	bdc1ErrFrac = ( (tab['H1_4862_fluxErr']/ tab['H1_4862_flux'])**2 + (tab['H1_4341_fluxErr']/ tab['H1_4341_flux'])**2. ) **0.5
-	BD_4862_4341_err =  tab['BD_4862_4341'] * bdc1ErrFrac
+	BD_4862_4341_err =  BD_4862_4341* bdc1ErrFrac
 	# E(B-V) Correction using 4862 / 4341
-	EBV_4862_4341 = -5*n.log10(tab['BD_4862_4341'] * bdc1_ref) / (2* (5.12 - 4.6))
+	EBV_4862_4341 = -5*n.log10(BD_4862_4341* bdc1_ref) / (2* (5.12 - 4.6))
 	EBV_4862_4341_err =  -5 * bdc1ErrFrac * bdc1_ref/(2*(5.12-4.6)*n.log(10))
 	# applied to emission lines using Calzetti's law
-	EBV_4862_4341_CORRO2 = 10**(0.4 * tab['EBV_4862_4341'] *klO2)
-	EBV_4862_4341_CORRO2_err =  tab['EBV_4862_4341_err'] * n.log(10) * 0.4 * klO2 * tab['EBV_4862_4341_CORRO2']
-	EBV_4862_4341_CORRO3 =  10**(0.4 *tab['EBV_4862_4341'] *klO3)
-	EBV_4862_4341_CORRO3_err =  tab['EBV_4862_4341_err'] * n.log(10) * 0.4 * klO3 * tab['EBV_4862_4341_CORRO3']
-	EBV_4862_4341_CORRHb = 10**(0.4 *klHb *tab['EBV_4862_4341'] )
-	EBV_4862_4341_CORRHb_err =  tab['EBV_4862_4341_err'] * n.log(10) * 0.4 * klHb * tab['EBV_4862_4341_CORRHb']
+	EBV_4862_4341_CORRO2 = 10**(0.4 *EBV_4862_4341 *klO2)
+	#EBV_4862_4341_CORRO2_err =  EBV_4862_4341_err * n.log(10) * 0.4 * klO2 * tab['EBV_4862_4341_CORRO2']
+	EBV_4862_4341_CORRO3 =  10**(0.4 *EBV_4862_4341 *klO3)
+	#EBV_4862_4341_CORRO3_err =  EBV_4862_4341_err * n.log(10) * 0.4 * klO3 * tab['EBV_4862_4341_CORRO3']
+	EBV_4862_4341_CORRHb = 10**(0.4 *klHb *EBV_4862_4341 )
+	#EBV_4862_4341_CORRHb_err =  EBV_4862_4341_err * n.log(10) * 0.4 * klHb * tab['EBV_4862_4341_CORRHb']
 
 	bad = (tab['H1_4341_flux']<=0 )|( tab['H1_4862_flux']<=0 )|( tab['H1_4341_fluxErr']<=0 )|( tab['H1_4862_fluxErr']<=0 )
 	BD_4862_4341[bad] = dV * n.ones_like(BD_4862_4341[bad])
@@ -118,17 +118,17 @@ def compute_derived_quantities(table, dV = -9999.99):
 	# Balmer decrement : 4862 / 4102
 	BD_4862_4102 = tab['H1_4102_flux']/ tab['H1_4862_flux']
 	bdc2ErrFrac = ( (tab['H1_4862_fluxErr']/ tab['H1_4862_flux'] )**2 + (tab['H1_4102_fluxErr']/tab['H1_4102_flux'])**2. ) **0.5
-	BD_4862_4102_err = tab['BD_4862_4102']* bdc2ErrFrac
+	BD_4862_4102_err = BD_4862_4102* bdc2ErrFrac
 	# E(B-V) Correction using 4862 / 4341
-	EBV_4862_4102 = -5*n.log10( tab['BD_4862_4102'] * bdc2_ref )/( 2*(5.39-4.6))
+	EBV_4862_4102 = -5*n.log10( BD_4862_4102* bdc2_ref )/( 2*(5.39-4.6))
 	EBV_4862_4102_err = -5 * bdc2ErrFrac * bdc2_ref /(2*( 5.39 - 4.6)*n.log(10))
 	# applied to emission lines using Calzetti's law
-	EBV_4862_4102_CORRO2 = 10**(0.4 *tab['EBV_4862_4102'] *klO2)
-	EBV_4862_4102_CORRO2_err =  tab['EBV_4862_4102_err'] * n.log(10) * 0.4 * klO2 * tab['EBV_4862_4102_CORRO2']
-	EBV_4862_4102_CORRO3 =  10**(0.4 *tab['EBV_4862_4102'] *klO3)
-	EBV_4862_4102_CORRO3_err =  tab['EBV_4862_4102_err'] * n.log(10) * 0.4 * klO3 * tab['EBV_4862_4102_CORRO3']
-	EBV_4862_4102_CORRHb = 10**(0.4 *klHb *tab['EBV_4862_4102'] )
-	EBV_4862_4102_CORRHb_err =  tab['EBV_4862_4102_err'] * n.log(10) * 0.4 * klHb * tab['EBV_4862_4102_CORRHb']
+	EBV_4862_4102_CORRO2 = 10**(0.4 *EBV_4862_4102 *klO2)
+	#EBV_4862_4102_CORRO2_err =  EBV_4862_4102_err * n.log(10) * 0.4 * klO2 * tab['EBV_4862_4102_CORRO2']
+	EBV_4862_4102_CORRO3 =  10**(0.4 *EBV_4862_4102 *klO3)
+	#EBV_4862_4102_CORRO3_err =  EBV_4862_4102_err * n.log(10) * 0.4 * klO3 * tab['EBV_4862_4102_CORRO3']
+	EBV_4862_4102_CORRHb = 10**(0.4 *klHb *EBV_4862_4102 )
+	#EBV_4862_4102_CORRHb_err =  EBV_4862_4102_err * n.log(10) * 0.4 * klHb * tab['EBV_4862_4102_CORRHb']
 	
 	bad = ( tab['H1_4102_flux']<=0 )|( tab['H1_4862_flux']<=0)|(tab['H1_4102_fluxErr']<=0 )|( tab['H1_4862_fluxErr']<=0)
 	BD_4862_4102[bad] = dV * n.ones_like(BD_4862_4102[bad])
@@ -136,11 +136,11 @@ def compute_derived_quantities(table, dV = -9999.99):
 	EBV_4862_4102[bad] = dV * n.ones_like(BD_4862_4102[bad])
 	EBV_4862_4102_err[bad] = dV * n.ones_like(BD_4862_4102[bad])
 	EBV_4862_4102_CORRO2[bad] = dV * n.ones_like(BD_4862_4102[bad])
-	EBV_4862_4102_CORRO2_err[bad] = dV * n.ones_like(BD_4862_4102[bad])
+	#EBV_4862_4102_CORRO2_err[bad] = dV * n.ones_like(BD_4862_4102[bad])
 	EBV_4862_4102_CORRO3[bad] = dV * n.ones_like(BD_4862_4102[bad])
-	EBV_4862_4102_CORRO3_err[bad] = dV * n.ones_like(BD_4862_4102[bad])
+	#EBV_4862_4102_CORRO3_err[bad] = dV * n.ones_like(BD_4862_4102[bad])
 	EBV_4862_4102_CORRHb[bad] = dV * n.ones_like(BD_4862_4102[bad])
-	EBV_4862_4102_CORRHb_err[bad] = dV * n.ones_like(BD_4862_4102[bad])
+	#EBV_4862_4102_CORRHb_err[bad] = dV * n.ones_like(BD_4862_4102[bad])
 
 	
 	# Balmer decrement : 4341 / 4102
@@ -151,12 +151,12 @@ def compute_derived_quantities(table, dV = -9999.99):
 	EBV_4102_4341 = -5*n.log10( tab['BD_4102_4341'] * bdc23_ref )/( 2*(5.39 - 5.12))
 	EBV_4102_4341_err = -5 * bdc23ErrFrac * bdc23_ref /( 2*(5.39 - 5.12)*n.log(10))
 	# applied to lines using Calzetti's law
-	EBV_4102_4341_CORRO2 = 10**(0.4 *tab['EBV_4102_4341'] *klO2)
-	EBV_4102_4341_CORRO2_err =  tab['EBV_4102_4341_err'] * n.log(10) * 0.4 * klO2 * tab['EBV_4102_4341_CORRO2']
-	EBV_4102_4341_CORRO3 = 10**(0.4 *tab['EBV_4102_4341'] *klO3)
-	EBV_4102_4341_CORRO3_err =  tab['EBV_4102_4341_err'] * n.log(10) * 0.4 * klO3 * tab['EBV_4102_4341_CORRO3']
-	EBV_4102_4341_CORRHb = 10**(0.4 *klHb *tab['EBV_4102_4341'] )
-	EBV_4102_4341_CORRHb_err =  tab['EBV_4102_4341_err'] * n.log(10) * 0.4 * klHb * tab['EBV_4102_4341_CORRHb']
+	EBV_4102_4341_CORRO2 = 10**(0.4 *EBV_4102_4341 *klO2)
+	#EBV_4102_4341_CORRO2_err =  EBV_4102_4341_err * n.log(10) * 0.4 * klO2 * tab['EBV_4102_4341_CORRO2']
+	EBV_4102_4341_CORRO3 = 10**(0.4 *EBV_4102_4341 *klO3)
+	#EBV_4102_4341_CORRO3_err =  EBV_4102_4341_err * n.log(10) * 0.4 * klO3 * tab['EBV_4102_4341_CORRO3']
+	EBV_4102_4341_CORRHb = 10**(0.4 *klHb *EBV_4102_4341 )
+	#EBV_4102_4341_CORRHb_err =  EBV_4102_4341_err * n.log(10) * 0.4 * klHb * tab['EBV_4102_4341_CORRHb']
 
 	bad = (['H1_4102_flux']<=0 )|( tab['H1_4341_flux']<=0 )|( tab['H1_4102_fluxErr']<=0 )|( tab['H1_4341_fluxErr']<=0)
 	BD_4102_4341[bad] = dV * n.ones_like(BD_4102_4341[bad])
@@ -164,17 +164,17 @@ def compute_derived_quantities(table, dV = -9999.99):
 	EBV_4102_4341[bad] = dV * n.ones_like(BD_4102_4341[bad])
 	EBV_4102_4341_err[bad] = dV * n.ones_like(BD_4102_4341[bad])
 	EBV_4102_4341_CORRO2[bad] = dV * n.ones_like(BD_4102_4341[bad])
-	EBV_4102_4341_CORRO2_err[bad] = dV * n.ones_like(BD_4102_4341[bad])
+	#EBV_4102_4341_CORRO2_err[bad] = dV * n.ones_like(BD_4102_4341[bad])
 	EBV_4102_4341_CORRO3[bad] = dV * n.ones_like(BD_4102_4341[bad])
-	EBV_4102_4341_CORRO3_err[bad] = dV * n.ones_like(BD_4102_4341[bad])
+	#EBV_4102_4341_CORRO3_err[bad] = dV * n.ones_like(BD_4102_4341[bad])
 	EBV_4102_4341_CORRHb[bad] = dV * n.ones_like(BD_4102_4341[bad])
-	EBV_4102_4341_CORRHb_err[bad] = dV * n.ones_like(BD_4102_4341[bad])
+	#EBV_4102_4341_CORRHb_err[bad] = dV * n.ones_like(BD_4102_4341[bad])
 
 
 	# computes O32
 	O32 = (tab['O3_4960_flux']+ tab['O3_5007_flux'])/ tab['O2_3728_flux']
 	O32ErrFrac =  ( ((tab['O3_4960_fluxErr']+ tab['O3_5007_fluxErr'])/ (tab['O3_4960_flux'] +tab['O3_5007_flux']))**2. + (tab['O2_3728_fluxErr'] /tab['O2_3728_flux'] ) **2.)**0.5  
-	O32_err = tab['O32'] * O32ErrFrac
+	O32_err = O32 * O32ErrFrac
 	
 	bad = (['O3_4960_flux']<=0 )|( tab['O3_5007_flux']<=0 )|( tab['O2_3728_flux']<=0 )|( tab['O3_4960_fluxErr']<=0 )|( tab['O3_5007_fluxErr']<=0 )|( tab['O2_3728_fluxErr'] <=0 )
 	O32[bad] = dV * n.ones_like(O32[bad])
