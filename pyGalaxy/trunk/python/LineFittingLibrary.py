@@ -137,6 +137,176 @@ class LineFittingLibrary:
 		p.savefig(path_to_fig)
 		p.clf()
 
+
+	def fit_Line_position(self,wl,spec1d,err1d,a0=5007.,lineName="AL",DLC=20, p0_sigma=15.,p0_flux=8e-17,p0_share=0.5,continuumSide="left",model="gaussian"):
+		"""
+		fits a line profile to a spectrum around a fixed line position
+
+		:param wl: wavelength (array, Angstrom)
+		:param spec1d: flux observed in the broad band (array, f lambda)
+		:param err1d: error on the flux observed in the broad band (array, f lambda)
+		:param a0: expected position of the peak of the line in the observed frame (redshifted). a0 is not fitted, it is given.
+		:param lineName: suffix characterizing the line in the headers of the output
+		:param DLC: wavelength extent to fit the continuum around the line. (def: 230 Angstrom)
+		:param p0_sigma: prior on the line width in A (def: 15 A)
+		:param p0_flux: prior on the line flux in erg/cm2/s/A (def: 8e-17)
+		:param p0_share: prior on the share of Gaussian and Lorentzian model. Only used if the line is fitted with a pseudoVoigt profile width (def: 0.5 no units)
+		:param continuumSide: "left" = bluewards of the line or "right" = redwards of the line
+		:param model: line model to be fitted : "gaussian", "lorentz" or "pseudoVoigt".
+
+		Returns :
+		 * array 1 with the parameters of the model
+		 * array 2 with the model (wavelength, flux model)
+		 * header corresponding to the array 1
+		"""
+		header=" "+lineName+"_a0 "+lineName+"_flux "+lineName+"_fluxErr "+lineName+"_sigma "+lineName+"_sigmaErr "+lineName+"_continu "+lineName+"_continuErr "+lineName+"_EW "+lineName+"_fd_a0_l "+lineName+"_fd_a0_r "+lineName+"_chi2 "+lineName+"_ndof"
+		headerPV=" "+lineName+"_a0 "+lineName+"_flux "+lineName+"_fluxErr "+lineName+"_sigma "+lineName+"_sigmaErr "+lineName+"_continu "+lineName+"_continuErr "+lineName+"_EW "+lineName+"_share "+lineName+"_shareErr "+lineName+"_fd_a0_l "+lineName+"_fd_a0_r "+lineName+"_chi2 "+lineName+"_ndof"
+		outPutNF=n.array([a0, self.dV,self.dV,self.dV, self.dV,self.dV,self.dV,self.dV,self.dV,self.dV,self.dV,self.dV])
+		outPutNF_PV=n.array([a0, self.dV,self.dV,self.dV, self.dV,self.dV,self.dV,self.dV,self.dV,self.dV,self.dV,self.dV,self.dV,self.dV])
+		modNF=n.array([self.dV,self.dV])
+		if continuumSide=="left":
+			domainLine=(wl>a0-self.fitWidth)&(wl<a0+self.fitWidth)
+			domainCont=(wl>a0-DLC)&(wl<a0-self.fitWidth)
+			if a0<wl.max()-DLC and a0>wl.min()+self.fitWidth and a0<wl.max()-self.fitWidth and len(domainLine.nonzero()[0])>2 and len(domainCont.nonzero()[0])>2 :
+				continu=n.median(spec1d[domainCont])
+				continuErr=n.median(err1d[domainCont])
+				if model=="gaussian":
+					flMod=lambda aa,sigma,F0,a0,continu : self.gaussianLine(aa,sigma,F0,a0,continu)
+					p0=n.array([p0_sigma,p0_flux,a0,continu])
+				if model=="lorentz":
+					flMod=lambda aa,sigma,F0,a0,continu : self.lorentzLine(aa,sigma,F0,a0,continu)
+					p0=n.array([p0_sigma,p0_flux, a0,continu])
+				if model=="pseudoVoigt":
+					flMod=lambda aa,sigma,F0,sh,a0,continu : self.pseudoVoigtLine(aa,sigma,F0,a0,continu,sh)
+					p0=n.array([p0_sigma,p0_flux,p0_share,a0,continu])
+				interp=interp1d(wl,spec1d)
+				fd_a0_r=interp(a0+0.2)
+				fd_a0_l=interp(a0-0.2)
+				if fd_a0_r>continu and fd_a0_l>continu :
+					out = curve_fit(flMod, wl[domainLine], spec1d[domainLine], p0=p0,sigma=err1d[domainLine],maxfev=1000000000, gtol=1.49012e-8)
+					if out[1].__class__==n.ndarray and ( model=="gaussian" or model=="lorentz") : 
+						model1=flMod(wl[domainLine],out[0][0],out[0][1],out[0][2],out[0][3])
+						var=err1d[domainLine]
+						chi2=n.sum(abs(model1-spec1d[domainLine])**2./var**2.)
+						ndof=len(var)
+						sigma=out[0][0]
+						sigmaErr=out[1][0][0]**0.5
+						flux=out[0][1]
+						fluxErr=out[1][1][1]**0.5
+						a0=out[0][2]
+						a0_err=out[1][2][2]**0.5
+						continu=out[0][3]
+						continuErr=out[1][3][3]**0.5
+						EW=flux/continu
+						outPut=n.array([a0,flux,fluxErr,sigma,sigmaErr,continu,continuErr,EW,fd_a0_l,fd_a0_r,chi2,ndof ])
+						mod=n.array([wl[domainLine],model1])
+						return outPut,mod,header
+					elif model=="gaussian" or model=="lorentz" :
+						return n.array([a0,self.dV,self.dV,self.dV, self.dV,continu,continuErr,self.dV,fd_a0_l,fd_a0_r,self.dV,self.dV ]),modNF,header
+					elif out[1].__class__==n.ndarray and model=="pseudoVoigt" : 
+						model1=flMod(wl[domainLine],out[0][0],out[0][1],out[0][2],out[0][3],out[0][4])
+						var=err1d[domainLine]
+						chi2=n.sum(abs(model1-spec1d[domainLine])**2./var**2.)
+						ndof=len(var)
+						sigma=out[0][0]
+						sigmaErr=out[1][0][0]**0.5
+						flux=out[0][1]
+						fluxErr=out[1][1][1]**0.5
+						share=out[0][2]
+						shareErr=out[1][2][2]**0.5
+						a0=out[0][3]
+						a0_err=out[1][3][3]**0.5
+						continu=out[0][4]
+						continuErr=out[1][4][4]**0.5
+						EW=flux/continu
+						outPut=n.array([a0,flux,fluxErr,sigma,sigmaErr,continu,continuErr,EW,share,shareErr,fd_a0_l,fd_a0_r,chi2,ndof])
+						mod=n.array([wl[domainLine],model1])
+						return outPut,mod,headerPV
+					else :
+						return n.array([a0,self.dV,self.dV,self.dV,self.dV,continu,continuErr,self.dV,self.dV,self.dV,fd_a0_l,fd_a0_r,self.dV,self.dV]),modNF,headerPV
+				else :
+					if  model=="gaussian" or model=="lorentz" :
+						return n.array([a0,self.dV,self.dV,self.dV, self.dV,continu,continuErr,self.dV,fd_a0_l,fd_a0_r,self.dV,self.dV ]),modNF,header
+					if model=="pseudoVoigt" :
+						return n.array([a0,self.dV,self.dV,self.dV,self.dV,continu,continuErr,self.dV,self.dV,self.dV,fd_a0_l,fd_a0_r,self.dV,self.dV]),modNF,headerPV
+			else :
+				if  model=="gaussian" or model=="lorentz" :
+					return outPutNF,modNF,header
+				if model=="pseudoVoigt" :
+					return outPutNF_PV,modNF,headerPV
+
+		elif continuumSide=="right" :
+			domainLine=(wl>a0-self.fitWidth)&(wl<a0+self.fitWidth)
+			domainCont=(wl>a0+self.fitWidth)&(wl<a0+DLC)
+			if a0<wl.max()-DLC and a0>wl.min()+self.fitWidth and a0<wl.max()-self.fitWidth and len(domainLine.nonzero()[0])>2 and len(domainCont.nonzero()[0])>2 :
+				continu=n.median(spec1d[domainCont])
+				continuErr=n.median(err1d[domainCont])
+				if model=="gaussian":
+					flMod=lambda aa,sigma,F0,a0,continu : self.gaussianLine(aa,sigma,F0,a0,continu)
+					p0=n.array([p0_sigma,p0_flux,a0,continu])
+				if model=="lorentz":
+					flMod=lambda aa,sigma,F0,a0,continu : self.lorentzLine(aa,sigma,F0,a0,continu)
+					p0=n.array([p0_sigma,p0_flux, a0,continu])
+				if model=="pseudoVoigt":
+					flMod=lambda aa,sigma,F0,sh,a0,continu : self.pseudoVoigtLine(aa,sigma,F0,a0,continu,sh)
+					p0=n.array([p0_sigma,p0_flux,p0_share,a0,continu])
+				interp=interp1d(wl,spec1d)
+				fd_a0_r=interp(a0+0.2)
+				fd_a0_l=interp(a0-0.2)
+				if fd_a0_r>continu and fd_a0_l>continu :
+					out = curve_fit(flMod, wl[domainLine], spec1d[domainLine], p0=p0,sigma=err1d[domainLine],maxfev=1000000000, gtol=1.49012e-8)
+					if out[1].__class__==n.ndarray and ( model=="gaussian" or model=="lorentz") : 
+						model1=flMod(wl[domainLine],out[0][0],out[0][1],out[0][2],out[0][3])
+						var=err1d[domainLine]
+						chi2=n.sum(abs(model1-spec1d[domainLine])**2./var**2.)
+						ndof=len(var)
+						sigma=out[0][0]
+						sigmaErr=out[1][0][0]**0.5
+						flux=out[0][1]
+						fluxErr=out[1][1][1]**0.5
+						a0=out[0][2]
+						a0_err=out[1][2][2]**0.5
+						continu=out[0][3]
+						continuErr=out[1][3][3]**0.5
+						EW=flux/continu
+						outPut=n.array([a0,flux,fluxErr,sigma,sigmaErr,continu,continuErr,EW,fd_a0_l,fd_a0_r,chi2,ndof ])
+						mod=n.array([wl[domainLine],model1])
+						return outPut,mod,header
+					elif model=="gaussian" or model=="lorentz" :
+						return n.array([a0,self.dV,self.dV,self.dV, self.dV,continu,continuErr,self.dV,fd_a0_l,fd_a0_r,self.dV,self.dV ]),modNF,header
+					elif out[1].__class__==n.ndarray and model=="pseudoVoigt" : 
+						model1=flMod(wl[domainLine],out[0][0],out[0][1],out[0][2],out[0][3],out[0][4])
+						var=err1d[domainLine]
+						chi2=n.sum(abs(model1-spec1d[domainLine])**2./var**2.)
+						ndof=len(var)
+						sigma=out[0][0]
+						sigmaErr=out[1][0][0]**0.5
+						flux=out[0][1]
+						fluxErr=out[1][1][1]**0.5
+						share=out[0][2]
+						shareErr=out[1][2][2]**0.5
+						a0=out[0][3]
+						a0_err=out[1][3][3]**0.5
+						continu=out[0][4]
+						continuErr=out[1][4][4]**0.5
+						EW=flux/continu
+						outPut=n.array([a0,flux,fluxErr,sigma,sigmaErr,continu,continuErr,EW,share,shareErr,fd_a0_l,fd_a0_r,chi2,ndof])
+						mod=n.array([wl[domainLine],model1])
+						return outPut,mod,headerPV
+					else :
+						return n.array([a0,self.dV,self.dV,self.dV,self.dV,continu,continuErr,self.dV,self.dV,self.dV,fd_a0_l,fd_a0_r,self.dV,self.dV]),modNF,headerPV
+				else :
+					if  model=="gaussian" or model=="lorentz" :
+						return n.array([a0,self.dV,self.dV,self.dV, self.dV,continu,continuErr,self.dV,fd_a0_l,fd_a0_r,self.dV,self.dV ]),modNF,header
+					if model=="pseudoVoigt" :
+						return n.array([a0,self.dV,self.dV,self.dV,self.dV,continu,continuErr,self.dV,self.dV,self.dV,fd_a0_l,fd_a0_r,self.dV,self.dV]),modNF,headerPV
+			else :
+				if  model=="gaussian" or model=="lorentz" :
+					return outPutNF,modNF,header
+				if model=="pseudoVoigt" :
+					return outPutNF_PV,modNF,headerPV
+
+
 	def fit_Line(self,wl,spec1d,err1d,a0,lineName="AL",DLC=20, p0_sigma=15.,p0_flux=8e-17,p0_share=0.5,continuumSide="left",model="gaussian"):
 		"""
 		fits a line profile to a spectrum around a fixed line position
@@ -348,6 +518,71 @@ class LineFittingLibrary:
 					return n.array([a0[0],a0[1],self.dV,self.dV,self.dV,self.dV,continu,continuErr,self.dV,self.dV,self.dV,fd_a0_l,fd_a0_r,self.dV,self.dV]),modNF,header
 			else :
 				return n.array([a0[0],a0[1],self.dV,self.dV,self.dV,self.dV,continu,continuErr,self.dV,self.dV,self.dV,fd_a0_l,fd_a0_r,self.dV,self.dV]),modNF,header
+		else :
+			return outPutNF,modNF,header
+
+
+	def fit_Line_OIIdoublet_position(self,wl,spec1d,err1d,a0=3726.0321,lineName="O2_3728",DLC=20,p0_sigma=4.,p0_flux=1e-16,p0_share=0.58,model="gaussian"):
+		"""
+		fits the [OII] doublet line profile
+
+		:param wl: wavelength (array, Angstrom)
+		:param spec1d: flux observed in the broad band (array, f lambda)
+		:param err1d: error on the flux observed in the broad band (array, f lambda)
+		:param a0: expected position of the peak of the line in the observed frame (redshifted). 2 positions given.
+		:param lineName: suffix characterizing the line in the headers of the output
+		:param DLC: wavelength extent to fit the continuum around the line. (def: 230 Angstrom)
+		:param p0_sigma: prior on the line width in A (def: 15 A)
+		:param p0_flux: prior on the line flux in erg/cm2/s/A (def: 8e-17)
+		:param p0_share: prior on the share between the two [OII] lines. (def: 0.58)
+		:param continuumSide: "left" = bluewards of the line or "right" = redwards of the line
+		:param model: line model to be fitted : "gaussian", "lorentz" or "pseudoVoigt"
+
+		Returns :
+		 * array 1 with the parameters of the model
+		 * array 2 with the model (wavelength, flux model)
+		 * header corresponding to the array 1
+		"""		
+		header=" "+lineName+"_a0a "+lineName+"_a0b "+lineName+"_flux "+lineName+"_fluxErr "+lineName+"_sigma "+lineName+"_sigmaErr "+lineName+"_continu "+lineName+"_continuErr "+lineName+"_EW "+lineName+"_share "+lineName+"_shareErr "+lineName+"_fd_a0_l "+lineName+"_fd_a0_r "+lineName+"_chi2 "+lineName+"_ndof" 
+		outPutNF=n.array([a0, a0[1], self.dV,self.dV, self.dV,self.dV, self.dV, self.dV,self.dV, self.dV,self.dV, self.dV,self.dV,self.dV,self.dV])
+		modNF=n.array([self.dV,self.dV])
+		domainLine=(wl>a0-self.fitWidth)&(wl<a0+2.782374+self.fitWidth)
+		domainCont=(wl>a0-DLC)&(wl<a0-self.fitWidth)
+		if a0<wl.max()-DLC and len(domainLine.nonzero()[0])>2 and len(domainCont.nonzero()[0])>2 :
+			continu=n.median(spec1d[domainCont])
+			continuErr=n.median(err1d[domainCont])
+			if model=="gaussian":
+				flMod=lambda aa,sigma,F0,sh,a0,continu :continu+ self.gaussianLineNC(aa,sigma,(1-sh)*F0,a0)+self.gaussianLineNC(aa,sigma,sh*F0,a0+2.782374)
+				p0=n.array([p0_sigma,p0_flux,p0_share,a0,continu])
+			index=n.searchsorted(wl,a0+2.782374)
+			fd_a0_r=spec1d[index]
+			index=n.searchsorted(wl,a0)
+			fd_a0_l=spec1d[index]
+			if fd_a0_r>continu or fd_a0_l>continu :
+				out = curve_fit(flMod, wl[domainLine], spec1d[domainLine], p0=n.array([p0_sigma,p0_flux,p0_share,a0,continu]),sigma=err1d[domainLine],maxfev=1000000000, gtol=1.49012e-8)
+				if out[1].__class__==n.ndarray : 
+					model1=flMod(wl[domainLine],out[0][0],out[0][1],out[0][2],out[0][3],out[0][4])
+					var=err1d[domainLine]
+					chi2=n.sum(abs(model1-spec1d[domainLine])**2./var**2.)
+					ndof=len(var)
+					sigma=out[0][0]
+					sigmaErr=out[1][0][0]**0.5
+					flux=out[0][1]
+					fluxErr=out[1][1][1]**0.5
+					share=out[0][2]
+					shareErr=out[1][2][2]**0.5
+					a0=out[0][3]
+					a0_err=out[1][3][3]**0.5
+					continu=out[0][4]
+					continuErr=out[1][4][4]**0.5
+					EW=flux/continu
+					outPut=n.array([a0,a0+2.782374,flux,fluxErr,sigma,sigmaErr,continu,continuErr,EW,share,shareErr,fd_a0_l,fd_a0_r,chi2,ndof])
+					mod=n.array([wl[domainLine],model1])
+					return outPut,mod,header
+				else :
+					return n.array([a0,a0+2.782374,self.dV,self.dV,self.dV,self.dV,continu,continuErr,self.dV,self.dV,self.dV,fd_a0_l,fd_a0_r,self.dV,self.dV]),modNF,header
+			else :
+				return n.array([a0,a0+2.782374,self.dV,self.dV,self.dV,self.dV,continu,continuErr,self.dV,self.dV,self.dV,fd_a0_l,fd_a0_r,self.dV,self.dV]),modNF,header
 		else :
 			return outPutNF,modNF,header
 
