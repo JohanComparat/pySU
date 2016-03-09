@@ -211,13 +211,13 @@ class ModelSpectraStacks:
 		#self.subtract_continuum_model()
 		data,h=[],[]
 		print n.array([O2_3727,O2_3729])
-		dat_mean,mI,hI=lfit.fit_Line_OIIdoublet_position(self.wlLineSpectrum, self.flLineSpectrum, self.flErrLineSpectrum, a0= n.array([O2_3727,O2_3729]) , lineName="O2_3728", p0_sigma=10,model="gaussian")
+		dat_mean,mI,hI=lfit.fit_Line_OIIdoublet_position(self.wlLineSpectrum, self.flLineSpectrum, self.flErrLineSpectrum, a0= O2_3727 , lineName="O2_3728", p0_sigma=10,model="gaussian")
 
 		d_out=[]
 		for kk in range(10):
 			fluxRR = interp1d(self.wl, self.hdu1.data['jackknifeSpectra'].T[kk][self.selection])
 			flLineSpectrumRR=n.array([fluxRR(xx)-self.model(xx) for xx in self.wlLineSpectrum])
-			d1,mI,hI=lfit.fit_Line_OIIdoublet_position(self.wlLineSpectrum, flLineSpectrumRR, self.flErrLineSpectrum, a0= n.array([O2_3727,O2_3729]) , lineName="O2_3728", p0_sigma=10,model="gaussian")
+			d1,mI,hI=lfit.fit_Line_OIIdoublet_position(self.wlLineSpectrum, flLineSpectrumRR, self.flErrLineSpectrum, a0= O2_3727 , lineName="O2_3728", p0_sigma=10,model="gaussian")
 			d_out.append(d1)
 
 		d_out = n.array(d_out)
@@ -286,11 +286,11 @@ class ModelSpectraStacks:
 
 		data,h=[],[]
 		print n.array([O2_3727,O2_3729])
-		dat_mean,mI,hI=lfit.fit_Line_OIIdoublet_position(self.wl, self.fl, self.flErr, a0= n.array([O2_3727,O2_3729]) , lineName="O2_3728", p0_sigma=10,model="gaussian")
+		dat_mean,mI,hI=lfit.fit_Line_OIIdoublet_position(self.wl, self.fl, self.flErr, a0= O2_3727 , lineName="O2_3728", p0_sigma=10,model="gaussian")
 		print hI, dat_mean
 		d_out=[]
 		for kk in range(10):
-			d1,mI,hI=lfit.fit_Line_OIIdoublet_position(self.wl, self.hdu1.data['jackknifeSpectra'].T[kk][self.selection], self.flErr , a0= n.array([O2_3727,O2_3729]) , lineName="O2_3728", p0_sigma=10,model="gaussian")
+			d1,mI,hI=lfit.fit_Line_OIIdoublet_position(self.wl, self.hdu1.data['jackknifeSpectra'].T[kk][self.selection], self.flErr , a0= O2_3727 , lineName="O2_3728", p0_sigma=10,model="gaussian")
 			d_out.append(d1)
 
 		d_out = n.array(d_out)
