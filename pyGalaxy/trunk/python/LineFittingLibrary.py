@@ -544,7 +544,7 @@ class LineFittingLibrary:
 		 * header corresponding to the array 1
 		"""		
 		header=" "+lineName+"_a0a "+lineName+"_a0b "+lineName+"_flux "+lineName+"_fluxErr "+lineName+"_sigma "+lineName+"_sigmaErr "+lineName+"_continu "+lineName+"_continuErr "+lineName+"_EW "+lineName+"_share "+lineName+"_shareErr "+lineName+"_fd_a0_l "+lineName+"_fd_a0_r "+lineName+"_chi2 "+lineName+"_ndof" 
-		outPutNF=n.array([a0, a0[1], self.dV,self.dV, self.dV,self.dV, self.dV, self.dV,self.dV, self.dV,self.dV, self.dV,self.dV,self.dV,self.dV])
+		outPutNF=n.array([a0, a0+2.782374, self.dV,self.dV, self.dV,self.dV, self.dV, self.dV,self.dV, self.dV,self.dV, self.dV,self.dV,self.dV,self.dV])
 		modNF=n.array([self.dV,self.dV])
 		domainLine=(wl>a0-self.fitWidth)&(wl<a0+2.782374+self.fitWidth)
 		domainCont=(wl>a0-DLC)&(wl<a0-self.fitWidth)
