@@ -352,7 +352,7 @@ class LineFittingLibrary:
 			return outPutNF,modNF,header
 
 
-	def fit_recLine(self,wl,spec1d,err1d,a0,lineName="AL",DLC=230,p0_sigma=5.,p0_flux=5e-17,continuumSide="left"):
+	def fit_recLine(self,wl,spec1d,err1d,a0,lineName="AL",DLC=20,p0_sigma=5.,p0_flux=5e-17,continuumSide="left"):
 		"""
 		fits a recombination line profile : emission and absorption modeled by Gaussians. Only for high SNR spectra.
 
