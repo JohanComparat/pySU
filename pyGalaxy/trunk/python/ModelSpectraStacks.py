@@ -203,9 +203,9 @@ class ModelSpectraStacks:
 		"""
 		# interpolates the mean spectra.
 		if self.stack_file.find('VVDS')>0 or self.stack_file.find('VIPERS')>0 :
-			lfit  =  lineFit.LineFittingLibrary(fitWidth = 70.)
+			lfit  =  lineFit.LineFittingLibrary(fitWidth = 20.)
 		if self.stack_file.find('DEEP2')>0 :
-			lfit  =  lineFit.LineFittingLibrary(fitWidth = 40.)
+			lfit  =  lineFit.LineFittingLibrary(fitWidth = 10.)
 		
 		print "START FITTING LINES"
 		#self.subtract_continuum_model()

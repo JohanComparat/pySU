@@ -20,6 +20,17 @@ data =fits.open(path_to_summary_table)[1].data
 path_to_summary_table = join("..", "results", "table_lineSpecFit_v0.VA.fits")
 datL =fits.open(path_to_summary_table)[1].data
 
+
+#first check that lline fits are compatible with the luminosity bin
+
+fl = data['L_mean']/(4*n.pi*data['dL']**2.)
+
+O2 = (data['lineWavelength']== 3728.)
+O3  = (data['lineWavelength']== 5007.)
+Hb = (data['lineWavelength']== 4862.) & (data['H1_4862_flux']>0)
+
+chi2 = (data['H1_4862_flux'][Hb] - fl[Hb])/data['H1_4862_fluxErr'][Hb]
+
 """
 ok = (data[2]<5)&(data[2]>0.)
 
@@ -45,9 +56,9 @@ p.ylabel(r'E(B-V) GP $H\beta -H\delta$')
 p.xlim((-1,2))
 p.ylim((-1,2))
 p.grid()
+p.savefig( join("..", "plots", "ebv-comparison-1.png"))
 p.show()
 
-p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "ebv-comparison-1.png"))
 p.clf()
 
 #spm_EBV

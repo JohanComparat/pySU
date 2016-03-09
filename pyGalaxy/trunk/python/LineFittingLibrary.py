@@ -137,7 +137,7 @@ class LineFittingLibrary:
 		p.savefig(path_to_fig)
 		p.clf()
 
-	def fit_Line(self,wl,spec1d,err1d,a0,lineName="AL",DLC=230, p0_sigma=15.,p0_flux=8e-17,p0_share=0.5,continuumSide="left",model="gaussian"):
+	def fit_Line(self,wl,spec1d,err1d,a0,lineName="AL",DLC=20, p0_sigma=15.,p0_flux=8e-17,p0_share=0.5,continuumSide="left",model="gaussian"):
 		"""
 		fits a line profile to a spectrum around a fixed line position
 
@@ -290,7 +290,7 @@ class LineFittingLibrary:
 					return outPutNF_PV,modNF,headerPV
 
 
-	def fit_Line_OIIdoublet(self,wl,spec1d,err1d,a0=n.array([3726.0321735398957,3728.8145484321249]),lineName="OII",DLC=230,p0_sigma=4.,p0_flux=1e-16,p0_share=0.58,model="gaussian"):
+	def fit_Line_OIIdoublet(self,wl,spec1d,err1d,a0=n.array([3726.0321735398957,3728.8145484321249]),lineName="OII",DLC=20,p0_sigma=4.,p0_flux=1e-16,p0_share=0.58,model="gaussian"):
 		"""
 		fits the [OII] doublet line profile
 
