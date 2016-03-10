@@ -29,10 +29,8 @@ class LineFittingLibrary:
 	:param dV: the default value  (def: -9999.99)
 	:param fitWidth: width in Angstrom around the line where the fit is performed, default 35 Angstrom 
 	"""
-	def __init__(self,dV=-9999.99,fitWidth=35):
+	def __init__(self,dV=-9999.99:
 		self.dV=dV # default value put in the catalogs
-		self.fitWidth=fitWidth
-
 		# Line models
 		self.gaussianLine=lambda aa,sigma,F0,a0,continu : continu + F0*(n.e**( -(aa-a0)**2. / (2.*sigma**2.)))/ (sigma*(2.*n.pi)**0.5)
 		self.gaussianLineNC=lambda aa,sigma,F0,a0 : F0*(n.e**(-(aa-a0)**2./ (2.*sigma**2.) ))/(sigma*(2.*n.pi)**0.5)
@@ -138,7 +136,7 @@ class LineFittingLibrary:
 		p.clf()
 
 
-	def fit_Line_position(self,wl,spec1d,err1d,a0=5007.,lineName="AL",DLC=40, p0_sigma=15.,p0_flux=8e-17,p0_share=0.5,continuumSide="left",model="gaussian"):
+	def fit_Line_position(self,wl,spec1d,err1d,a0=5007.,lineName="AL",fitWidth=20,DLC=20, p0_sigma=15.,p0_flux=8e-17,p0_share=0.5,continuumSide="left",model="gaussian"):
 		"""
 		fits a line profile to a spectrum around a fixed line position
 
@@ -165,9 +163,9 @@ class LineFittingLibrary:
 		outPutNF_PV=n.array([a0, self.dV,self.dV,self.dV, self.dV,self.dV,self.dV,self.dV,self.dV,self.dV,self.dV,self.dV,self.dV,self.dV])
 		modNF=n.array([self.dV,self.dV])
 		if continuumSide=="left":
-			domainLine=(wl>a0-self.fitWidth)&(wl<a0+self.fitWidth)
-			domainCont=(wl>a0-DLC)&(wl<a0-self.fitWidth)
-			if a0<wl.max()-DLC and a0>wl.min()+self.fitWidth and a0<wl.max()-self.fitWidth and len(domainLine.nonzero()[0])>2 and len(domainCont.nonzero()[0])>2 :
+			domainLine=(wl>a0-fitWidth)&(wl<a0+fitWidth)
+			domainCont=(wl>a0-DLC-fitWidth)&(wl<a0-fitWidth)
+			if a0<wl.max()-DLC and a0>wl.min()+fitWidth and a0<wl.max()-fitWidth and len(domainLine.nonzero()[0])>2 and len(domainCont.nonzero()[0])>2 :
 				continu=n.median(spec1d[domainCont])
 				continuErr=n.median(err1d[domainCont])
 				if model=="gaussian":
@@ -230,15 +228,16 @@ class LineFittingLibrary:
 					if model=="pseudoVoigt" :
 						return n.array([a0,self.dV,self.dV,self.dV,self.dV,continu,continuErr,self.dV,self.dV,self.dV,fd_a0_l,fd_a0_r,self.dV,self.dV]),modNF,headerPV
 			else :
+				print "not enough space to fit the line"
 				if  model=="gaussian" or model=="lorentz" :
 					return outPutNF,modNF,header
 				if model=="pseudoVoigt" :
 					return outPutNF_PV,modNF,headerPV
 
 		elif continuumSide=="right" :
-			domainLine=(wl>a0-self.fitWidth)&(wl<a0+self.fitWidth)
-			domainCont=(wl>a0+self.fitWidth)&(wl<a0+DLC)
-			if a0<wl.max()-DLC and a0>wl.min()+self.fitWidth and a0<wl.max()-self.fitWidth and len(domainLine.nonzero()[0])>2 and len(domainCont.nonzero()[0])>2 :
+			domainLine=(wl>a0-fitWidth)&(wl<a0+fitWidth)
+			domainCont=(wl>a0+fitWidth)&(wl<a0+DLC+fitWidth)
+			if a0<wl.max()-DLC and a0>wl.min()+fitWidth and a0<wl.max()-fitWidth and len(domainLine.nonzero()[0])>2 and len(domainCont.nonzero()[0])>2 :
 				continu=n.median(spec1d[domainCont])
 				continuErr=n.median(err1d[domainCont])
 				if model=="gaussian":
@@ -301,13 +300,14 @@ class LineFittingLibrary:
 					if model=="pseudoVoigt" :
 						return n.array([a0,self.dV,self.dV,self.dV,self.dV,continu,continuErr,self.dV,self.dV,self.dV,fd_a0_l,fd_a0_r,self.dV,self.dV]),modNF,headerPV
 			else :
+				print "not enough space to fit the line"
 				if  model=="gaussian" or model=="lorentz" :
 					return outPutNF,modNF,header
 				if model=="pseudoVoigt" :
 					return outPutNF_PV,modNF,headerPV
 
 
-	def fit_Line(self,wl,spec1d,err1d,a0,lineName="AL",DLC=40, p0_sigma=15.,p0_flux=8e-17,p0_share=0.5,continuumSide="left",model="gaussian"):
+	def fit_Line(self,wl,spec1d,err1d,a0,lineName="AL",fitWidth=20,DLC=20, p0_sigma=15.,p0_flux=8e-17,p0_share=0.5,continuumSide="left",model="gaussian"):
 		"""
 		fits a line profile to a spectrum around a fixed line position
 
@@ -334,9 +334,9 @@ class LineFittingLibrary:
 		outPutNF_PV=n.array([a0, self.dV,self.dV,self.dV, self.dV,self.dV,self.dV,self.dV,self.dV,self.dV,self.dV,self.dV,self.dV,self.dV])
 		modNF=n.array([self.dV,self.dV])
 		if continuumSide=="left":
-			domainLine=(wl>a0-self.fitWidth)&(wl<a0+self.fitWidth)
-			domainCont=(wl>a0-DLC)&(wl<a0-self.fitWidth)
-			if a0<wl.max()-DLC and a0>wl.min()+self.fitWidth and a0<wl.max()-self.fitWidth and len(domainLine.nonzero()[0])>2 and len(domainCont.nonzero()[0])>2 :
+			domainLine=(wl>a0-fitWidth)&(wl<a0+fitWidth)
+			domainCont=(wl>a0-DLC-fitWidth)&(wl<a0-fitWidth)
+			if a0<wl.max()-DLC and a0>wl.min()+fitWidth and a0<wl.max()-fitWidth and len(domainLine.nonzero()[0])>2 and len(domainCont.nonzero()[0])>2 :
 				continu=n.median(spec1d[domainCont])
 				continuErr=n.median(err1d[domainCont])
 				if model=="gaussian":
@@ -391,15 +391,16 @@ class LineFittingLibrary:
 					if model=="pseudoVoigt" :
 						return n.array([a0,self.dV,self.dV,self.dV,self.dV,continu,continuErr,self.dV,self.dV,self.dV,fd_a0_l,fd_a0_r,self.dV,self.dV]),modNF,headerPV
 			else :
+				print "not enough space to fit the line"
 				if  model=="gaussian" or model=="lorentz" :
 					return outPutNF,modNF,header
 				if model=="pseudoVoigt" :
 					return outPutNF_PV,modNF,headerPV
 
 		elif continuumSide=="right" :
-			domainLine=(wl>a0-self.fitWidth)&(wl<a0+self.fitWidth)
-			domainCont=(wl>a0+self.fitWidth)&(wl<a0+DLC)
-			if a0<wl.max()-DLC and a0>wl.min()+self.fitWidth and a0<wl.max()-self.fitWidth and len(domainLine.nonzero()[0])>2 and len(domainCont.nonzero()[0])>2 :
+			domainLine=(wl>a0-fitWidth)&(wl<a0+fitWidth)
+			domainCont=(wl>a0+fitWidth)&(wl<a0+DLC+fitWidth)
+			if a0<wl.max()-DLC and a0>wl.min()+fitWidth and a0<wl.max()-fitWidth and len(domainLine.nonzero()[0])>2 and len(domainCont.nonzero()[0])>2 :
 				continu=n.median(spec1d[domainCont])
 				continuErr=n.median(err1d[domainCont])
 				if model=="gaussian":
@@ -454,13 +455,14 @@ class LineFittingLibrary:
 					if model=="pseudoVoigt" :
 						return n.array([a0,self.dV,self.dV,self.dV,self.dV,continu,continuErr,self.dV,self.dV,self.dV,fd_a0_l,fd_a0_r,self.dV,self.dV]),modNF,headerPV
 			else :
+				print "not enough space to fit the line"
 				if  model=="gaussian" or model=="lorentz" :
 					return outPutNF,modNF,header
 				if model=="pseudoVoigt" :
 					return outPutNF_PV,modNF,headerPV
 
 
-	def fit_Line_OIIdoublet(self,wl,spec1d,err1d,a0=3726.0321735398957,lineName="OII",DLC=40,p0_sigma=4.,p0_flux=1e-16,p0_share=0.58,model="gaussian"):
+	def fit_Line_OIIdoublet(self,wl,spec1d,err1d,a0=3726.0321735398957,lineName="OII",fitWidth=20,DLC=20,p0_sigma=4.,p0_flux=1e-16,p0_share=0.58,model="gaussian"):
 		"""
 		fits the [OII] doublet line profile
 
@@ -484,8 +486,8 @@ class LineFittingLibrary:
 		header=" "+lineName+"_a0a "+lineName+"_a0b "+lineName+"_flux "+lineName+"_fluxErr "+lineName+"_sigma "+lineName+"_sigmaErr "+lineName+"_continu "+lineName+"_continuErr "+lineName+"_EW "+lineName+"_share "+lineName+"_shareErr "+lineName+"_fd_a0_l "+lineName+"_fd_a0_r "+lineName+"_chi2 "+lineName+"_ndof" 
 		outPutNF=n.array([a0[0], a0[1], self.dV,self.dV, self.dV,self.dV, self.dV, self.dV,self.dV, self.dV,self.dV, self.dV,self.dV,self.dV,self.dV])
 		modNF=n.array([self.dV,self.dV])
-		domainLine=(wl>a0[0]-self.fitWidth)&(wl<a0[1]+self.fitWidth)
-		domainCont=(wl>a0[0]-DLC)&(wl<a0[0]-self.fitWidth)
+		domainLine=(wl>a0[0]-fitWidth)&(wl<a0[1]+fitWidth)
+		domainCont=(wl>a0[0]-DLC-fitWidth)&(wl<a0[0]-fitWidth)
 		if a0[0]<wl.max()-DLC and len(domainLine.nonzero()[0])>2 and len(domainCont.nonzero()[0])>2 :
 			continu=n.median(spec1d[domainCont])
 			continuErr=n.median(err1d[domainCont])
@@ -519,10 +521,11 @@ class LineFittingLibrary:
 			else :
 				return n.array([a0[0],a0[1],self.dV,self.dV,self.dV,self.dV,continu,continuErr,self.dV,self.dV,self.dV,fd_a0_l,fd_a0_r,self.dV,self.dV]),modNF,header
 		else :
+			print "not enough space to fit the line"
 			return outPutNF,modNF,header
 
 
-	def fit_Line_OIIdoublet_position(self,wl,spec1d,err1d,a0=3726.0321,lineName="O2_3728",DLC=40,p0_sigma=4.,p0_flux=1e-16,p0_share=0.58,model="gaussian"):
+	def fit_Line_OIIdoublet_position(self,wl,spec1d,err1d,a0=3726.0321,lineName="O2_3728",fitWidth=20,DLC=20,p0_sigma=4.,p0_flux=1e-16,p0_share=0.58,model="gaussian"):
 		"""
 		fits the [OII] doublet line profile
 
@@ -546,8 +549,8 @@ class LineFittingLibrary:
 		header=" "+lineName+"_a0a "+lineName+"_a0b "+lineName+"_flux "+lineName+"_fluxErr "+lineName+"_sigma "+lineName+"_sigmaErr "+lineName+"_continu "+lineName+"_continuErr "+lineName+"_EW "+lineName+"_share "+lineName+"_shareErr "+lineName+"_fd_a0_l "+lineName+"_fd_a0_r "+lineName+"_chi2 "+lineName+"_ndof" 
 		outPutNF=n.array([a0, a0+2.782374, self.dV,self.dV, self.dV,self.dV, self.dV, self.dV,self.dV, self.dV,self.dV, self.dV,self.dV,self.dV,self.dV])
 		modNF=n.array([self.dV,self.dV])
-		domainLine=(wl>a0-self.fitWidth)&(wl<a0+2.782374+self.fitWidth)
-		domainCont=(wl>a0-DLC)&(wl<a0-self.fitWidth)
+		domainLine=(wl>a0-fitWidth)&(wl<a0+2.782374+fitWidth/2.)
+		domainCont=(wl>a0-fitWidth-DLC)&(wl<a0-fitWidth)
 		if a0<wl.max()-DLC and len(domainLine.nonzero()[0])>2 and len(domainCont.nonzero()[0])>2 :
 			continu=n.median(spec1d[domainCont])
 			continuErr=n.median(err1d[domainCont])
@@ -584,10 +587,11 @@ class LineFittingLibrary:
 			else :
 				return n.array([a0,a0+2.782374,self.dV,self.dV,self.dV,self.dV,continu,continuErr,self.dV,self.dV,self.dV,fd_a0_l,fd_a0_r,self.dV,self.dV]),modNF,header
 		else :
+			print "not enough space to fit the line"
 			return outPutNF,modNF,header
 
 
-	def fit_recLine(self,wl,spec1d,err1d,a0,lineName="AL",DLC=20,p0_sigma=5.,p0_flux=5e-17,continuumSide="left"):
+	def fit_recLine(self,wl,spec1d,err1d,a0,lineName="AL",fitWidth=20,DLC=20,p0_sigma=5.,p0_flux=5e-17,continuumSide="left"):
 		"""
 		fits a recombination line profile : emission and absorption modeled by Gaussians. Only for high SNR spectra.
 
@@ -611,9 +615,9 @@ class LineFittingLibrary:
 		outPutNF=n.array([a0, self.dV,self.dV,self.dV, self.dV,self.dV,self.dV,self.dV,self.dV,self.dV,self.dV,self.dV])
 		modNF=n.array([self.dV,self.dV])
 		if continuumSide=="left":
-			domainLine=(wl>a0-self.fitWidth)&(wl<a0+self.fitWidth)
-			domainCont=(wl>a0-DLC)&(wl<a0-self.fitWidth)
-			if a0<wl.max()-DLC and a0>wl.min()+self.fitWidth and a0<wl.max()-self.fitWidth and len(domainLine.nonzero()[0])>2 and len(domainCont.nonzero()[0])>2 :
+			domainLine=(wl>a0-fitWidth)&(wl<a0+fitWidth)
+			domainCont=(wl>a0-DLC)&(wl<a0-fitWidth)
+			if a0<wl.max()-DLC and a0>wl.min()+fitWidth and a0<wl.max()-fitWidth and len(domainLine.nonzero()[0])>2 and len(domainCont.nonzero()[0])>2 :
 				continu=n.median(spec1d[domainCont])
 				continuErr=n.median(err1d[domainCont])
 				# model with absorption
@@ -642,12 +646,13 @@ class LineFittingLibrary:
 				else :
 					return n.array([a0,self.dV,self.dV,self.dV, self.dV,continu,continuErr,self.dV,fd_a0_l,fd_a0_r,self.dV,self.dV ]),modNF,header
 			else :
+				print "not enough space to fit the line"
 				return outPutNF,modNF,header
 
 		elif continuumSide=="right" :
-			domainLine=(wl>a0-self.fitWidth)&(wl<a0+self.fitWidth)
-			domainCont=(wl>a0+self.fitWidth)&(wl<a0+DLC)
-			if a0<wl.max()-DLC and a0>wl.min()+self.fitWidth and a0<wl.max()-self.fitWidth and len(domainLine.nonzero()[0])>2 and len(domainCont.nonzero()[0])>2 :
+			domainLine=(wl>a0-fitWidth)&(wl<a0+fitWidth)
+			domainCont=(wl>a0+fitWidth)&(wl<a0+DLC)
+			if a0<wl.max()-DLC and a0>wl.min()+fitWidth and a0<wl.max()-fitWidth and len(domainLine.nonzero()[0])>2 and len(domainCont.nonzero()[0])>2 :
 				continu=n.median(spec1d[domainCont])
 				continuErr=n.median(err1d[domainCont])
 				# model with absorption
@@ -676,5 +681,6 @@ class LineFittingLibrary:
 				else :
 					return n.array([a0,self.dV,self.dV,self.dV, self.dV,continu,continuErr,self.dV,fd_a0_l,fd_a0_r,self.dV,self.dV ]),modNF,header
 			else :
+				print "not enough space to fit the line"
 				return outPutNF,modNF,header
 
