@@ -495,8 +495,8 @@ class LineFittingLibrary:
 				flMod=lambda aa,sigma,F0,sh : self.lorentzLine(aa,sigma,(1-sh)*F0,a0[0],continu/2.)+self.lorentzLine(aa,sigma,sh*F0,a0[1],continu/2.)
 			index=n.searchsorted(wl,a0[1])
 			fd_a0_r=spec1d[index]
-			index=n.searchsorted(wl,a0[0])
 			fd_a0_l=spec1d[index]
+			index=n.searchsorted(wl,a0[0])
 			if fd_a0_r>continu or fd_a0_l>continu :
 				out = curve_fit(flMod, wl[domainLine], spec1d[domainLine], p0=n.array([p0_sigma,p0_flux,p0_share]),sigma=err1d[domainLine],maxfev=1000000000, gtol=1.49012e-8)
 				if out[1].__class__==n.ndarray : 

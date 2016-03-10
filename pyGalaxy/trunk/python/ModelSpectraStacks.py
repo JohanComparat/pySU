@@ -202,17 +202,18 @@ class ModelSpectraStacks:
 		Fits the emission lines on the line spectrum.
 		"""
 		# interpolates the mean spectra.
+		print "fits to the line spectrum"
 		if self.stack_file.find('VVDS')>0 or self.stack_file.find('VIPERS')>0 :
 			lfit  =  lineFit.LineFittingLibrary(fitWidth = 20.)
 		if self.stack_file.find('DEEP2')>0 :
 			lfit  =  lineFit.LineFittingLibrary(fitWidth = 20.)
 		
-		print "START FITTING LINES"
+		
 		#self.subtract_continuum_model()
 		data,h=[],[]
 		print n.array([O2_3727,O2_3729])
 		dat_mean,mI,hI=lfit.fit_Line_OIIdoublet_position(self.wlLineSpectrum, self.flLineSpectrum, self.flErrLineSpectrum, a0= O2_3727 , lineName="O2_3728", p0_sigma=10,model="gaussian")
-
+		print hI, dat_mean
 		d_out=[]
 		for kk in range(10):
 			fluxRR = interp1d(self.wl, self.hdu1.data['jackknifeSpectra'].T[kk][self.selection])
@@ -236,6 +237,7 @@ class ModelSpectraStacks:
 			# measure line properties from the mean weighted stack
 			print li[2]
 			dat_mean,mI,hI=lfit.fit_Line_position(self.wlLineSpectrum, self.flLineSpectrum, self.flErrLineSpectrum, li[1], lineName=li[2], continuumSide=li[3], model="gaussian",p0_sigma=10)
+			print hI, dat_mean
 			# measure its dispersion using the stacks
 			d_out=[]
 			for kk in range(len(self.hdu1.data['jackknifeSpectra'].T)):
@@ -279,10 +281,11 @@ class ModelSpectraStacks:
 		Fits the emission lines on the line spectrum.
 		"""
 		# interpolates the mean spectra.
+		print "fits to full spectrum"
 		if self.stack_file.find('VVDS')>0 or self.stack_file.find('VIPERS')>0 :
-			lfit  =  lineFit.LineFittingLibrary(fitWidth = 70.)
+			lfit  =  lineFit.LineFittingLibrary(fitWidth = 20.)
 		if self.stack_file.find('DEEP2')>0 :
-			lfit  =  lineFit.LineFittingLibrary(fitWidth = 40.)
+			lfit  =  lineFit.LineFittingLibrary(fitWidth = 20.)
 
 		data,h=[],[]
 		print n.array([O2_3727,O2_3729])
