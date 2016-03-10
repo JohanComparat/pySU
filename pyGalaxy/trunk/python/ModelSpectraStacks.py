@@ -203,11 +203,11 @@ class ModelSpectraStacks:
 		"""
 		# interpolates the mean spectra.
 		print "fits to the line spectrum"
-		lfit  =  lineFit.LineFittingLibrary(
+		lfit  =  lineFit.LineFittingLibrary()
 		
 		#self.subtract_continuum_model()
 		data,h=[],[]
-		print n.array([O2_3727,O2_3729])
+		print O2_3727
 		dat_mean,mI,hI=lfit.fit_Line_OIIdoublet_position(self.wlLineSpectrum, self.flLineSpectrum, self.flErrLineSpectrum, a0= O2_3727 , lineName="O2_3728", p0_sigma=7,model="gaussian",fitWidth = 20.,DLC=10.)
 		print hI, dat_mean
 		d_out=[]
@@ -278,13 +278,10 @@ class ModelSpectraStacks:
 		"""
 		# interpolates the mean spectra.
 		print "fits to full spectrum"
-		if self.stack_file.find('VVDS')>0 or self.stack_file.find('VIPERS')>0 :
-			lfit  =  lineFit.LineFittingLibrary(fitWidth = 20.)
-		if self.stack_file.find('DEEP2')>0 :
-			lfit  =  lineFit.LineFittingLibrary(fitWidth = 20.)
+		lfit  =  lineFit.LineFittingLibrary()
 
 		data,h=[],[]
-		print n.array([O2_3727,O2_3729])
+		print O2_3727
 		dat_mean,mI,hI=lfit.fit_Line_OIIdoublet_position(self.wl, self.fl, self.flErr, a0= O2_3727 , lineName="O2_3728", p0_sigma=7,model="gaussian",fitWidth = 20.,DLC=10.)
 		print hI, dat_mean
 		d_out=[]
