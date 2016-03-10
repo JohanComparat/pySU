@@ -29,7 +29,7 @@ class LineFittingLibrary:
 	:param dV: the default value  (def: -9999.99)
 	:param fitWidth: width in Angstrom around the line where the fit is performed, default 35 Angstrom 
 	"""
-	def __init__(self,dV=-9999.99:
+	def __init__(self,dV=-9999.99):
 		self.dV=dV # default value put in the catalogs
 		# Line models
 		self.gaussianLine=lambda aa,sigma,F0,a0,continu : continu + F0*(n.e**( -(aa-a0)**2. / (2.*sigma**2.)))/ (sigma*(2.*n.pi)**0.5)
