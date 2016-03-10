@@ -205,7 +205,7 @@ class ModelSpectraStacks:
 		if self.stack_file.find('VVDS')>0 or self.stack_file.find('VIPERS')>0 :
 			lfit  =  lineFit.LineFittingLibrary(fitWidth = 20.)
 		if self.stack_file.find('DEEP2')>0 :
-			lfit  =  lineFit.LineFittingLibrary(fitWidth = 10.)
+			lfit  =  lineFit.LineFittingLibrary(fitWidth = 20.)
 		
 		print "START FITTING LINES"
 		#self.subtract_continuum_model()
