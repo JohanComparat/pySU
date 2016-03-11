@@ -28,9 +28,12 @@ cd $PYSU_DIR/pyGalaxy/trunk/bin
 # copy the LFs of interest to $LFMODELS_DIR/data/
 cd $LFMODELS_DIR/script
 python  convert_biblioPoints_toPlanck15.py
-python  fits_H1_4862_LFs.py
-python  fits_O3_5007_LFs.py
-python  fits_OII_LFs.py
+python  fits_H1_4862_LFs_schechter.py
+python  fits_O3_5007_LFs_schechter.py
+python  fits_OII_LFs_schechter.py
+python  fits_H1_4862_LFs_saunders.py
+python  fits_O3_5007_LFs_saunders.py
+python  fits_OII_LFs_saunders.py
 
 # DATA
 # stacks after the luminosity function
