@@ -5,60 +5,226 @@ This script produces quality plots to check that the LFs are fine compared to si
 """
 
 import sys
-from lib_plot import *
-from lineListAir import *
+import os
+from os.path import join
+data_dir = os.environ['DATA_DIR']
 import glob
 
+from lib_plot import *
+#from lineListAir import *
+SNlim = 5
+
 
 plotDir="/home/comparat/database/Simulations/galform-lightcone/products/emissionLineLuminosityFunctions/plots/"
 
-dir="/home/comparat/database/Simulations/galform-lightcone/products/emissionLineLuminosityFunctions/*/"
+dir="/home/comparat/database/Simulations/galform-lightcone/products/emissionLineLuminosityFunctions/O2_3728/"
 
-"rz_gt_"
-"rz_lt_"
-"gr_gt_"
-"gr_lt_"
-"VVDSDEEP-MagLimI-"
+"VVDSDEEP-MagLimI-22.5"
 "DEEP2-MagLimR-"
 
-lf_measurement_files=n.array(glob.glob(dir+"*DEEP2-z*.txt"))
+
+
+lf_measurement_files=n.array(glob.glob(dir+"*MagLimI-*.txt"))
 lf_measurement_files.sort()
-lf_measurement_files_next=n.hstack((n.array(glob.glob(dir+"*DEEP2*NEXT-z?????.txt")),n.array(glob.glob(dir+"*DEEP2*NEXT-z????.txt")) ))
-lf_measurement_files_next.sort()
-lf_measurement_files_next_correction=n.sort(n.array(glob.glob(dir+"*DEEP2*NEXT-z*Rcorrection*.txt")))
-lf_measurement_files_next_correction.sort()
-
-dir="/home/comparat/database/DEEP2/products/emissionLineLuminosityFunctions/*/"
-lf_measurement_files_deep2=n.array(glob.glob(dir+"*.txt"))
-lf_measurement_files_deep2.sort()
-#dir="/home/comparat/database/VVDS/products/emissionLineLuminosityFunctions/*/"
-#lf_measurement_files_vvds=glob.glob(dir+"*.txt")
 
 
-for jj in range(len(lf_measurement_files)):
-	mCorr,error = n.loadtxt(lf_measurement_files_next_correction[jj] ,unpack=True)
-	plot_EW_LF_measurement_simulation(lf_measurement_files[jj][:-4]+ ".fits", lf_measurement_files[jj],plotDir, n.array([[lf_measurement_files_deep2[jj],"deep2", mCorr, error],[lf_measurement_files_next[jj], "noExt"] ] ) )
-	print lf_measurement_files[jj].split('/')[-1] , lf_measurement_files_next_correction[jj].split('/')[-1], lf_measurement_files_next[jj].split('/')[-1], lf_measurement_files_deep2[jj].split('/')[-1]
+lf_ref=lf_measurement_files[-1]
+dataRef = n.loadtxt( lf_ref, unpack=True)
+phiRatio = n.empty([ len(lf_measurement_files[:-1]), len(dataRef[0]) ])
+label = n.array(["I<22.0", "I<22.5", "I<23.0","I<23.5"])
+for jj in range(len(lf_measurement_files[:-1])):
+	lf_obs=lf_measurement_files[jj]
+	data= n.loadtxt( lf_obs, unpack=True)
+	phiRatio[jj] = data[3] / dataRef[3]	
+	print lf_obs
+	
+
+p.figure(0,(6,6))
+for jj in range(len(label)):
+	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+
+p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
+p.ylabel(r'$\Phi/\Phi_{ref}$')
+p.xscale('log')
+p.xlim((1e40,1e43))
+p.ylim((-0.05,1.05))
+p.grid()
+p.legend(loc=2)
+p.savefig(join(plotDir,"O2_3728_VVDSDEEP_trendMag-z0.7.jpg"))
+p.clf()
 
 
-plotDir="/home/comparat/database/Simulations/galform-lightcone/products/emissionLineLuminosityFunctions/plots/"
 
-dir="/home/comparat/database/Simulations/galform-lightcone/products/emissionLineLuminosityFunctions/*/"
-lf_measurement_files=n.array(glob.glob(dir+"*VVDS-z*.txt"))
+#####################################3
+#####################################3
+# R-Z
+#####################################3
+#####################################3
+
+lf_measurement_files_ref=n.array(glob.glob(dir+"*VVDSrz_gt_0.0-z0.7*.txt"))
+lf_measurement_files=n.array(glob.glob(dir+"*VVDSrz_?t_*z0.7*.txt"))
 lf_measurement_files.sort()
-lf_measurement_files_next=n.hstack((n.array(glob.glob(dir+"*VVDS*NEXT-z?????.txt")),n.array(glob.glob(dir+"*VVDS*NEXT-z????.txt")) ))
-lf_measurement_files_next.sort()
-lf_measurement_files_next_correction=n.sort(n.array(glob.glob(dir+"*VVDS*NEXT-z*Rcorrection*.txt")))
-lf_measurement_files_next_correction.sort()
 
-dir="/home/comparat/database/VVDS/products/emissionLineLuminosityFunctions/*/"
-lf_measurement_files_VVDS=n.hstack((n.array(glob.glob(dir+"H1_4862*.txt")), n.array(glob.glob(dir+"O2_3728*.txt")), n.array(glob.glob(dir+"O3_5007*.txt"))))
-lf_measurement_files_VVDS.sort()
-#dir="/home/comparat/database/VVDS/products/emissionLineLuminosityFunctions/*/"
-#lf_measurement_files_vvds=glob.glob(dir+"*.txt")
+dataRef = n.loadtxt( lf_measurement_files_ref[0], unpack=True)
+
+label = n.array(["r-z>0", "r-z>0.5", "r-z>1", "r-z>1.5", "r-z<1", "r-z<1.5", "r-z<2"])
+phiRatio = n.empty([ 7, len(dataRef[0]) ])
+for ii, el in enumerate(lf_measurement_files):
+	data= n.loadtxt( el, unpack=True)
+	phiRatio[ii] = data[3] / dataRef[3]	
+
+p.figure(0,(6,6))
+for jj in range(len(label)):
+	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+
+p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
+p.ylabel(r'$\Phi/\Phi_{ref}$')
+p.xscale('log')
+p.xlim((7e40,5e43))
+p.ylim((-0.05,1.05))
+p.grid()
+p.legend(loc=4)
+p.savefig(join(plotDir,"trends_O2_3728_I22.5_RZ-z0.75.pdf"))
+p.clf()
 
 
-for jj in range(len(lf_measurement_files)):
-	mCorr,error = n.loadtxt(lf_measurement_files_next_correction[jj] ,unpack=True)
-	plot_EW_LF_measurement_simulation(lf_measurement_files[jj][:-4]+ ".fits", lf_measurement_files[jj],plotDir, n.array([[lf_measurement_files_VVDS[jj],"VVDS", mCorr, error],[lf_measurement_files_next[jj], "noExt"] ] ) )
-	print lf_measurement_files[jj].split('/')[-1] , lf_measurement_files_next_correction[jj].split('/')[-1], lf_measurement_files_next[jj].split('/')[-1], lf_measurement_files_VVDS[jj].split('/')[-1]
+lf_measurement_files_ref=n.array(glob.glob(dir+"*VVDSrz_gt_0.0-z0.9*.txt"))
+lf_measurement_files=n.array(glob.glob(dir+"*VVDSrz_?t_*z0.9*.txt"))
+lf_measurement_files.sort()
+
+dataRef = n.loadtxt( lf_measurement_files_ref[0], unpack=True)
+
+phiRatio = n.empty([ 7, len(dataRef[0]) ])
+for ii, el in enumerate(lf_measurement_files):
+	data= n.loadtxt( el, unpack=True)
+	phiRatio[ii] = data[3] / dataRef[3]	
+
+p.figure(0,(6,6))
+for jj in range(len(label)):
+	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+
+p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
+p.ylabel(r'$\Phi/\Phi_{ref}$')
+p.xscale('log')
+p.xlim((7e40,5e43))
+p.ylim((-0.05,1.05))
+p.grid()
+p.legend(loc=4)
+p.savefig(join(plotDir,"trends_O2_3728_I22.5_RZ-z0.9.pdf"))
+p.clf()
+
+
+lf_measurement_files_ref=n.array(glob.glob(dir+"*VVDSrz_gt_0.0-z1.*.txt"))
+lf_measurement_files=n.array(glob.glob(dir+"*VVDSrz_?t_*z1.*.txt"))
+lf_measurement_files.sort()
+
+dataRef = n.loadtxt( lf_measurement_files_ref[0], unpack=True)
+
+phiRatio = n.empty([ 7, len(dataRef[0]) ])
+for ii, el in enumerate(lf_measurement_files):
+	data= n.loadtxt( el, unpack=True)
+	phiRatio[ii] = data[3] / dataRef[3]	
+
+p.figure(0,(6,6))
+for jj in range(len(label)):
+	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+
+p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
+p.ylabel(r'$\Phi/\Phi_{ref}$')
+p.xscale('log')
+p.xlim((7e40,5e43))
+p.ylim((-0.05,1.05))
+p.grid()
+p.legend(loc=4)
+p.savefig(join(plotDir,"trends_O2_3728_I22.5_RZ-z1.2.pdf"))
+p.clf()
+
+
+
+#####################################3
+#####################################3
+# G-R
+#####################################3
+#####################################3
+
+
+lf_measurement_files_ref=n.array(glob.glob(dir+"*VVDSgr_gt_0.0-z0.7*.txt"))
+lf_measurement_files=n.array(glob.glob(dir+"*VVDSgr_?t_*z0.7*.txt"))
+lf_measurement_files.sort()
+
+dataRef = n.loadtxt( lf_measurement_files_ref[0], unpack=True)
+
+label = n.array(["g-r>0", "g-r>0.5", "g-r>1", "g-r>1.5", "g-r<1", "g-r<1.5", "g-r<2"])
+phiRatio = n.empty([ 7, len(dataRef[0]) ])
+for ii, el in enumerate(lf_measurement_files):
+	data= n.loadtxt( el, unpack=True)
+	phiRatio[ii] = data[3] / dataRef[3]	
+
+p.figure(0,(6,6))
+for jj in range(len(label)):
+	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+
+p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
+p.ylabel(r'$\Phi/\Phi_{ref}$')
+p.xscale('log')
+p.xlim((7e40,5e43))
+p.ylim((-0.05,1.05))
+p.grid()
+p.legend(loc=4)
+p.savefig(join(plotDir,"trends_O2_3728_I22.5_GR-z0.75.pdf"))
+p.clf()
+
+
+lf_measurement_files_ref=n.array(glob.glob(dir+"*VVDSgr_gt_0.0-z0.9*.txt"))
+lf_measurement_files=n.array(glob.glob(dir+"*VVDSgr_?t_*z0.9*.txt"))
+lf_measurement_files.sort()
+
+dataRef = n.loadtxt( lf_measurement_files_ref[0], unpack=True)
+
+label = n.array(["g-r>0", "g-r>0.5", "g-r>1", "g-r>1.5", "g-r<1", "g-r<1.5", "g-r<2"])
+phiRatio = n.empty([ 7, len(dataRef[0]) ])
+for ii, el in enumerate(lf_measurement_files):
+	data= n.loadtxt( el, unpack=True)
+	phiRatio[ii] = data[3] / dataRef[3]	
+
+p.figure(0,(6,6))
+for jj in range(len(label)):
+	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+
+p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
+p.ylabel(r'$\Phi/\Phi_{ref}$')
+p.xscale('log')
+p.xlim((7e40,5e43))
+p.ylim((-0.05,1.05))
+p.grid()
+p.legend(loc=4)
+p.savefig(join(plotDir,"trends_O2_3728_I22.5_GR-z0.9.pdf"))
+p.clf()
+
+
+lf_measurement_files_ref=n.array(glob.glob(dir+"*VVDSgr_gt_0.0-z1.*.txt"))
+lf_measurement_files=n.array(glob.glob(dir+"*VVDSgr_?t_*z1.*.txt"))
+lf_measurement_files.sort()
+
+dataRef = n.loadtxt( lf_measurement_files_ref[0], unpack=True)
+
+label = n.array(["g-r>0", "g-r>0.5", "g-r>1", "g-r>1.5", "g-r<1", "g-r<1.5", "g-r<2"])
+phiRatio = n.empty([ 7, len(dataRef[0]) ])
+for ii, el in enumerate(lf_measurement_files):
+	data= n.loadtxt( el, unpack=True)
+	phiRatio[ii] = data[3] / dataRef[3]	
+
+p.figure(0,(6,6))
+for jj in range(len(label)):
+	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+
+p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
+p.ylabel(r'$\Phi/\Phi_{ref}$')
+p.xscale('log')
+p.xlim((7e40,5e43))
+p.ylim((-0.05,1.05))
+p.grid()
+p.legend(loc=4)
+p.savefig(join(plotDir,"trends_O2_3728_I22.5_GR-z1.2.pdf"))
+p.clf()
+

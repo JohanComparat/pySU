@@ -41,7 +41,7 @@ for ColorLim in ColorLimS :
 			lf.get_completness_limit(selection)
 			lf.writeLF(selection,surveyNameSuffix="gr_lt_"+str(n.round(ColorLim,1)))
 
-"""
+
 for ColorLim in ColorLimS :
 	print "color limit=", ColorLim
 	for ii in range(len(zsVIMOSmin)):
@@ -103,6 +103,7 @@ for ColorLim in ColorLimS :
 			lf.get_completness_limit(selection)
 			lf.writeLF(selection,surveyNameSuffix="rz_gt_"+str(n.round(ColorLim,1)))
 
+"""
 
 print "VVDS DEEP"
 zsVIMOSmin=n.array([0.18,0.41,0.51,0.56,0.65,0.84, 1.1])
