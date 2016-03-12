@@ -31,10 +31,10 @@ for ii,el in  enumerate(lf_measurement_files) :
 	data= n.loadtxt( el, unpack=True)
 	phiRatio[ii] = data[3] / dataRef[3]	
 	
-
+imin = n.argmax(dataRef[6])-1
 p.figure(0,(6,6))
 for jj in range(len(label)):
-	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+	p.plot(dataRef[2][imin:],phiRatio[jj][imin:],label=label[jj])
 
 p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi/\Phi_{ref}$')
@@ -60,9 +60,10 @@ for ii,el in  enumerate(lf_measurement_files) :
 	phiRatio[ii] = data[3] / dataRef[3]	
 	
 
+imin = n.argmax(dataRef[6])-1
 p.figure(0,(6,6))
 for jj in range(len(label)):
-	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+	p.plot(dataRef[2][imin:],phiRatio[jj][imin:],label=label[jj])
 
 p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi/\Phi_{ref}$')
@@ -89,9 +90,10 @@ for ii,el in  enumerate(lf_measurement_files) :
 	phiRatio[ii] = data[3] / dataRef[3]	
 	
 
+imin = n.argmax(dataRef[6])-1
 p.figure(0,(6,6))
 for jj in range(len(label)):
-	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+	p.plot(dataRef[2][imin:],phiRatio[jj][imin:],label=label[jj])
 
 p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi/\Phi_{ref}$')
@@ -124,9 +126,10 @@ for jj,el in  enumerate(lf_measurement_files) :
 	phiRatio[jj] = data[3] / dataRef[3]	
 	
 
+imin = n.argmax(dataRef[6])-1
 p.figure(0,(6,6))
 for jj in range(len(label)):
-	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+	p.plot(dataRef[2][imin:],phiRatio[jj][imin:],label=label[jj])
 
 p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi/\Phi_{ref}$')
@@ -153,9 +156,10 @@ for jj,el in  enumerate(lf_measurement_files) :
 	phiRatio[jj] = data[3] / dataRef[3]	
 	
 
+imin = n.argmax(dataRef[6])-1
 p.figure(0,(6,6))
 for jj in range(len(label)):
-	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+	p.plot(dataRef[2][imin:],phiRatio[jj][imin:],label=label[jj])
 
 p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi/\Phi_{ref}$')
@@ -182,9 +186,10 @@ for jj,el in  enumerate(lf_measurement_files):
 	phiRatio[jj] = data[3] / dataRef[3]	
 	
 
+imin = n.argmax(dataRef[6])-1
 p.figure(0,(6,6))
 for jj in range(len(label)):
-	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+	p.plot(dataRef[2][imin:],phiRatio[jj][imin:],label=label[jj])
 
 p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi/\Phi_{ref}$')
@@ -216,9 +221,10 @@ for ii, el in enumerate(lf_measurement_files):
 	data= n.loadtxt( el, unpack=True)
 	phiRatio[ii] = data[3] / dataRef[3]	
 
+imin = n.argmax(dataRef[6])-1
 p.figure(0,(6,6))
 for jj in range(len(label)):
-	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+	p.plot(dataRef[2][imin:],phiRatio[jj][imin:],label=label[jj])
 
 p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi/\Phi_{ref}$')
@@ -242,9 +248,10 @@ for ii, el in enumerate(lf_measurement_files):
 	data= n.loadtxt( el, unpack=True)
 	phiRatio[ii] = data[3] / dataRef[3]	
 
+imin = n.argmax(dataRef[6])-1
 p.figure(0,(6,6))
 for jj in range(len(label)):
-	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+	p.plot(dataRef[2][imin:],phiRatio[jj][imin:],label=label[jj])
 
 p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi/\Phi_{ref}$')
@@ -268,9 +275,10 @@ for ii, el in enumerate(lf_measurement_files):
 	data= n.loadtxt( el, unpack=True)
 	phiRatio[ii] = data[3] / dataRef[3]	
 
+imin = n.argmax(dataRef[6])-1
 p.figure(0,(6,6))
 for jj in range(len(label)):
-	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+	p.plot(dataRef[2][imin:],phiRatio[jj][imin:],label=label[jj])
 
 p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi/\Phi_{ref}$')
@@ -303,9 +311,10 @@ for ii, el in enumerate(lf_measurement_files):
 	data= n.loadtxt( el, unpack=True)
 	phiRatio[ii] = data[3] / dataRef[3]	
 
+imin = n.argmax(dataRef[6])-1
 p.figure(0,(6,6))
 for jj in range(len(label)):
-	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+	p.plot(dataRef[2][imin:],phiRatio[jj][imin:],label=label[jj])
 
 p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi/\Phi_{ref}$')
@@ -330,9 +339,10 @@ for ii, el in enumerate(lf_measurement_files):
 	data= n.loadtxt( el, unpack=True)
 	phiRatio[ii] = data[3] / dataRef[3]	
 
+imin = n.argmax(dataRef[6])-1
 p.figure(0,(6,6))
 for jj in range(len(label)):
-	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+	p.plot(dataRef[2][imin:],phiRatio[jj][imin:],label=label[jj])
 
 p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi/\Phi_{ref}$')
@@ -357,9 +367,10 @@ for ii, el in enumerate(lf_measurement_files):
 	data= n.loadtxt( el, unpack=True)
 	phiRatio[ii] = data[3] / dataRef[3]	
 
+imin = n.argmax(dataRef[6])-1
 p.figure(0,(6,6))
 for jj in range(len(label)):
-	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+	p.plot(dataRef[2][imin:],phiRatio[jj][imin:],label=label[jj])
 
 p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
 p.ylabel(r'$\Phi/\Phi_{ref}$')
