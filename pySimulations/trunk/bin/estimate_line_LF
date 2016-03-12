@@ -20,7 +20,7 @@ linesFittedVIMOS=n.array([ [[H1_4862,"H1_4862"],[O3_5007,"O3_5007"]], [[O3_5007,
 areaDeep=0.61
 area = 4*4*n.pi
 ColorLimS = n.arange(1.,2.1,0.5)
-
+"""
 for ColorLim in ColorLimS :
 	print "color limit=", ColorLim
 	for ii in range(len(zsVIMOSmin)):
@@ -41,6 +41,7 @@ for ColorLim in ColorLimS :
 			lf.get_completness_limit(selection)
 			lf.writeLF(selection,surveyNameSuffix="gr_lt_"+str(n.round(ColorLim,1)))
 
+"""
 for ColorLim in ColorLimS :
 	print "color limit=", ColorLim
 	for ii in range(len(zsVIMOSmin)):
@@ -61,7 +62,7 @@ for ColorLim in ColorLimS :
 			lf.get_completness_limit(selection)
 			lf.writeLF(selection,surveyNameSuffix="rz_lt_"+str(n.round(ColorLim,1)))
 
-
+ColorLimS = n.arange(0,1.6,0.5)
 for ColorLim in ColorLimS :
 	print "color limit=", ColorLim
 	for ii in range(len(zsVIMOSmin)):
@@ -93,7 +94,7 @@ for ColorLim in ColorLimS :
 			lf.setRedshiftArray( redshiftColumn='zObs' )
 			lf.setRedshiftSelection()
 			lf.setWeightArray( 1./(area) )
-			selection = (lf.catalog['i'] < 22.5)& (lf.catalog['']-lf.catalog['z']>ColorLim)
+			selection = (lf.catalog['i'] < 22.5)& (lf.catalog['r']-lf.catalog['z']>ColorLim)
 			lf.computeHistogramLF(selection)
 			print "---------------------------------------------------"
 			print line, zmin, zmax, lf.ngals
