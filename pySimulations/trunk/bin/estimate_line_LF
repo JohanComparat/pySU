@@ -124,7 +124,7 @@ for MagLim in MagLimS :
 			lf.setRedshiftArray( redshiftColumn='zObs' )
 			lf.setRedshiftSelection()
 			lf.setWeightArray( 1./(area) )
-			selection = (lf.catalog['i'] < magLimS)
+			selection = (lf.catalog['i'] < MagLim)
 			lf.computeHistogramLF(selection)
 			print "---------------------------------------------------"
 			print line, zmin, zmax, lf.ngals

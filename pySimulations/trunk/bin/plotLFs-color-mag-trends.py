@@ -19,24 +19,17 @@ plotDir="/home/comparat/database/Simulations/galform-lightcone/products/emission
 
 dir="/home/comparat/database/Simulations/galform-lightcone/products/emissionLineLuminosityFunctions/O2_3728/"
 
-"VVDSDEEP-MagLimI-22.5"
-"DEEP2-MagLimR-"
-
-
-
-lf_measurement_files=n.array(glob.glob(dir+"*MagLimI-*.txt"))
+lf_measurement_files_ref=n.array(glob.glob(dir+"*MagLimR-24.2-z0.7*.txt"))
+lf_measurement_files=n.array(glob.glob(dir+"*MagLimR-*z0.7*.txt"))
 lf_measurement_files.sort()
 
 
-lf_ref=lf_measurement_files[-1]
-dataRef = n.loadtxt( lf_ref, unpack=True)
-phiRatio = n.empty([ len(lf_measurement_files[:-1]), len(dataRef[0]) ])
-label = n.array(["I<22.0", "I<22.5", "I<23.0","I<23.5"])
-for jj in range(len(lf_measurement_files[:-1])):
-	lf_obs=lf_measurement_files[jj]
-	data= n.loadtxt( lf_obs, unpack=True)
-	phiRatio[jj] = data[3] / dataRef[3]	
-	print lf_obs
+dataRef = n.loadtxt( lf_measurement_files_ref[0], unpack=True)
+phiRatio = n.empty([ len(lf_measurement_files), len(dataRef[0]) ])
+label = n.array([ "R<23.0","R<23.5", "R<24.2"])
+for ii,el in  enumerate(lf_measurement_files) :
+	data= n.loadtxt( el, unpack=True)
+	phiRatio[ii] = data[3] / dataRef[3]	
 	
 
 p.figure(0,(6,6))
@@ -50,7 +43,157 @@ p.xlim((1e40,1e43))
 p.ylim((-0.05,1.05))
 p.grid()
 p.legend(loc=2)
-p.savefig(join(plotDir,"O2_3728_VVDSDEEP_trendMag-z0.7.jpg"))
+p.savefig(join(plotDir,"trends_O2_3728_Rmag-z0.7.pdf"))
+p.clf()
+
+
+lf_measurement_files_ref=n.array(glob.glob(dir+"*MagLimR-24.2-z0.9*.txt"))
+lf_measurement_files=n.array(glob.glob(dir+"*MagLimR-*z0.9*.txt"))
+lf_measurement_files.sort()
+
+
+dataRef = n.loadtxt( lf_measurement_files_ref[0], unpack=True)
+phiRatio = n.empty([ len(lf_measurement_files), len(dataRef[0]) ])
+label = n.array([ "R<23.0","R<23.5", "R<24.2"])
+for ii,el in  enumerate(lf_measurement_files) :
+	data= n.loadtxt( el, unpack=True)
+	phiRatio[ii] = data[3] / dataRef[3]	
+	
+
+p.figure(0,(6,6))
+for jj in range(len(label)):
+	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+
+p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
+p.ylabel(r'$\Phi/\Phi_{ref}$')
+p.xscale('log')
+p.xlim((1e40,1e43))
+p.ylim((-0.05,1.05))
+p.grid()
+p.legend(loc=2)
+p.savefig(join(plotDir,"trends_O2_3728_Rmag-z0.9.pdf"))
+p.clf()
+
+
+
+lf_measurement_files_ref=n.array(glob.glob(dir+"*MagLimR-24.2-z1.*.txt"))
+lf_measurement_files=n.array(glob.glob(dir+"*MagLimR-*z1.*.txt"))
+lf_measurement_files.sort()
+
+
+dataRef = n.loadtxt( lf_measurement_files_ref[0], unpack=True)
+phiRatio = n.empty([ len(lf_measurement_files), len(dataRef[0]) ])
+label = n.array([ "R<23.0","R<23.5", "R<24.2"])
+for ii,el in  enumerate(lf_measurement_files) :
+	data= n.loadtxt( el, unpack=True)
+	phiRatio[ii] = data[3] / dataRef[3]	
+	
+
+p.figure(0,(6,6))
+for jj in range(len(label)):
+	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+
+p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
+p.ylabel(r'$\Phi/\Phi_{ref}$')
+p.xscale('log')
+p.xlim((1e40,1e43))
+p.ylim((-0.05,1.05))
+p.grid()
+p.legend(loc=2)
+p.savefig(join(plotDir,"trends_O2_3728_Rmag-z1.2.pdf"))
+p.clf()
+
+
+
+
+
+
+########################################33
+
+
+lf_measurement_files_ref=n.array(glob.glob(dir+"*MagLimI-24-z1.*.txt"))
+lf_measurement_files=n.array(glob.glob(dir+"*MagLimI-*z1.*.txt"))
+lf_measurement_files.sort()
+
+
+dataRef = n.loadtxt( lf_measurement_files_ref[0], unpack=True)
+phiRatio = n.empty([ len(lf_measurement_files), len(dataRef[0]) ])
+label = n.array([ "I<22.5", "I<23.0","I<23.5","I<24.0"])
+for jj,el in  enumerate(lf_measurement_files) :
+	data= n.loadtxt( el, unpack=True)
+	phiRatio[jj] = data[3] / dataRef[3]	
+	
+
+p.figure(0,(6,6))
+for jj in range(len(label)):
+	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+
+p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
+p.ylabel(r'$\Phi/\Phi_{ref}$')
+p.xscale('log')
+p.xlim((1e40,1e43))
+p.ylim((-0.05,1.05))
+p.grid()
+p.legend(loc=2)
+p.savefig(join(plotDir,"trends_O2_3728_Imag-z1.2.pdf"))
+p.clf()
+
+
+
+lf_measurement_files_ref=n.array(glob.glob(dir+"*MagLimI-24-z0.9*.txt"))
+lf_measurement_files=n.array(glob.glob(dir+"*MagLimI-*z0.9*.txt"))
+lf_measurement_files.sort()
+
+
+dataRef = n.loadtxt( lf_measurement_files_ref[0], unpack=True)
+phiRatio = n.empty([ len(lf_measurement_files), len(dataRef[0]) ])
+label = n.array([ "I<22.5", "I<23.0","I<23.5","I<24.0"])
+for jj,el in  enumerate(lf_measurement_files) :
+	data= n.loadtxt( el, unpack=True)
+	phiRatio[jj] = data[3] / dataRef[3]	
+	
+
+p.figure(0,(6,6))
+for jj in range(len(label)):
+	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+
+p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
+p.ylabel(r'$\Phi/\Phi_{ref}$')
+p.xscale('log')
+p.xlim((1e40,1e43))
+p.ylim((-0.05,1.05))
+p.grid()
+p.legend(loc=2)
+p.savefig(join(plotDir,"trends_O2_3728_Imag-z0.9.pdf"))
+p.clf()
+
+
+
+lf_measurement_files_ref=n.array(glob.glob(dir+"*MagLimI-24-z0.7*.txt"))
+lf_measurement_files=n.array(glob.glob(dir+"*MagLimI-*z0.7*.txt"))
+lf_measurement_files.sort()
+
+
+dataRef = n.loadtxt( lf_measurement_files_ref[0], unpack=True)
+phiRatio = n.empty([ len(lf_measurement_files), len(dataRef[0]) ])
+label = n.array([ "I<22.5", "I<23.0","I<23.5","I<24.0"])
+for jj,el in  enumerate(lf_measurement_files):
+	data= n.loadtxt( el, unpack=True)
+	phiRatio[jj] = data[3] / dataRef[3]	
+	
+
+p.figure(0,(6,6))
+for jj in range(len(label)):
+	p.plot(dataRef[2],phiRatio[jj],label=label[jj])
+
+p.xlabel(r'$log_{10}(L[O_{II}])$ [erg s$^{-1}$]')
+p.ylabel(r'$\Phi/\Phi_{ref}$')
+p.xscale('log')
+p.xlim((1e40,1e43))
+p.ylim((-0.05,1.05))
+p.grid()
+p.legend(loc=2)
+p.savefig(join(plotDir,"trends_O2_3728_Imag-z0.75.pdf"))
 p.clf()
 
 
