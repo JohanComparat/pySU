@@ -53,7 +53,7 @@ for ColorLim in ColorLimS :
 			lf.setRedshiftArray( redshiftColumn='zObs' )
 			lf.setRedshiftSelection()
 			lf.setWeightArray( 1./(area) )
-			selection = (lf.catalog['i'] < 22.5)& (lf.catalog['']-lf.catalog['z']<ColorLim)
+			selection = (lf.catalog['i'] < 22.5)& (lf.catalog['r']-lf.catalog['z']<ColorLim)
 			lf.computeHistogramLF(selection)
 			print "---------------------------------------------------"
 			print line, zmin, zmax, lf.ngals
