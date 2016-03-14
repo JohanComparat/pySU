@@ -10,6 +10,8 @@ import matplotlib.pyplot as p
 from os.path import join
 import astropy.cosmology as co
 aa = co.Planck15
+import astropy.units as uu
+import astropy.constants as ac
 
 #convert into a luminosity
 zrr = n.arange(0.01,4,0.05)
