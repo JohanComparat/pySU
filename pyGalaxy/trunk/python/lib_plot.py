@@ -8,7 +8,14 @@ matplotlib.use('pdf')
 matplotlib.rcParams['font.size']=14
 import matplotlib.pyplot as p
 from os.path import join
+import astropy.cosmology as co
+aa = co.Planck15
 
+#convert into a luminosity
+zrr = n.arange(0.01,4,0.05)
+dl= aa.luminosity_distance(zrr).to(uu.cm)**2.*4.*n.pi
+flux_limit = 3e-17 # erg/cm2/s
+l_limit = lambda flux_limit : n.log10( dl * flux_limit / uu.cm**2)
 
 def plotRaDecEBV(ra,dec,ebv,name,pDir):
 	"""
@@ -73,7 +80,7 @@ def plot_I_TSR(mag,tsr,name,ylab,pDir):
 
 
 
-def plotZ_Flux(zz,ff,name,ylab,pDir):
+def plotZ_Flux(zz,ff,name,ylab,pDir,flux_limit = 3e-17):
 	"""
 	creates a figure with redshift, line flux.
 	:param zz: column redshift
@@ -86,6 +93,7 @@ def plotZ_Flux(zz,ff,name,ylab,pDir):
 	fig=p.figure(1,(6,5))
 	p.axes([0.25,0.15,0.65,0.7])
 	p.hist2d(zz,n.log10(ff),rasterized=True,bins=bins,cmin=2)
+	p.axhline(n.log10(flux_limit),color='k',ls='dashed',lw='2')
 	p.xlabel('redshift')
 	p.ylabel(ylab)
 	cb=p.colorbar(shrink=0.8)
@@ -119,7 +127,7 @@ def plotZ_EW(zz,ew,name,ylab,pDir):
 	p.savefig(join(pDir, name))
 	p.clf()
 
-def plotZ_Luminosity(zz,lum,name,ylab,pDir):
+def plotZ_Luminosity(zz,lum,name,ylab,pDir,flux_limit = 3e-17):
 	"""
 	creates a figure with redshift, luminosity.
 	:param zz: column redshift
@@ -132,6 +140,7 @@ def plotZ_Luminosity(zz,lum,name,ylab,pDir):
 	fig=p.figure(1,(6,5))
 	p.axes([0.25,0.15,0.65,0.7])
 	p.hist2d(zz,n.log10(lum),rasterized=True,bins=bins,cmin=2)
+	p.plot(zrr,l_limit(flux_limit),color='k',ls='dashed',lw='2')
 	p.xlabel('redshift')
 	p.ylabel(ylab)
 	cb=p.colorbar(shrink=0.8)
