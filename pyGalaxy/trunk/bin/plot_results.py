@@ -4,7 +4,7 @@
 This script produces the stacks for emission line luminosity limited samples.
 """
 import matplotlib
-#matplotlib.use('pdf')
+matplotlib.use('pdf')
 import matplotlib.pyplot as p
 import numpy as n
 import os
