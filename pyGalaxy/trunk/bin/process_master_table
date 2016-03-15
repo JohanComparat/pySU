@@ -89,8 +89,8 @@ def compute_derived_quantities(dat, dV = -9999.99):
 	bdc1ErrFrac = ( (tab['H1_4862_fluxErr']/ tab['H1_4862_flux'])**2 + (tab['H1_4341_fluxErr']/ tab['H1_4341_flux'])**2. ) **0.5
 	BD_4862_4341_err =  BD_4862_4341* bdc1ErrFrac
 	# E(B-V) Correction using 4862 / 4341
-	EBV_4862_4341 = 5.*n.log10(BD_4862_4341* bdc1_ref) / (2.)#* (5.12 - 4.6))
-	EBV_4862_4341_err =  5 * bdc1ErrFrac * bdc1_ref/(2*n.log(10))#*(5.12-4.6)
+	EBV_4862_4341 = -2.5*n.log10(BD_4862_4341* bdc1_ref) #* (5.12 - 4.6))
+	EBV_4862_4341_err =  -2.5 * bdc1ErrFrac * bdc1_ref/(n.log(10))#*(5.12-4.6)
 	# applied to emission lines using Calzetti's law
 	EBV_4862_4341_CORRO2 = 10**(0.4 *EBV_4862_4341 *klO2)
 	#EBV_4862_4341_CORRO2_err =  EBV_4862_4341_err * n.log(10) * 0.4 * klO2 * tab['EBV_4862_4341_CORRO2']
@@ -117,8 +117,8 @@ def compute_derived_quantities(dat, dV = -9999.99):
 	bdc2ErrFrac = ( (tab['H1_4862_fluxErr']/ tab['H1_4862_flux'] )**2 + (tab['H1_4102_fluxErr']/tab['H1_4102_flux'])**2. ) **0.5
 	BD_4862_4102_err = BD_4862_4102* bdc2ErrFrac
 	# E(B-V) Correction using 4862 / 4341
-	EBV_4862_4102 = 5*n.log10( BD_4862_4102* bdc2_ref )/( 2)#*(5.39-4.6)
-	EBV_4862_4102_err = 5 * bdc2ErrFrac * bdc2_ref /(2*n.log(10))#*( 5.39 - 4.6)
+	EBV_4862_4102 = -2.5*n.log10( BD_4862_4102* bdc2_ref )#*(5.39-4.6)
+	EBV_4862_4102_err = -2.5 * bdc2ErrFrac * bdc2_ref /(n.log(10))#*( 5.39 - 4.6)
 	# applied to emission lines using Calzetti's law
 	EBV_4862_4102_CORRO2 = 10**(0.4 *EBV_4862_4102 *klO2)
 	#EBV_4862_4102_CORRO2_err =  EBV_4862_4102_err * n.log(10) * 0.4 * klO2 * tab['EBV_4862_4102_CORRO2']
@@ -145,8 +145,8 @@ def compute_derived_quantities(dat, dV = -9999.99):
 	bdc23ErrFrac = ( (tab['H1_4102_fluxErr']/ tab['H1_4102_flux'] )**2 + (tab['H1_4341_fluxErr']/tab['H1_4341_flux'])**2. ) **0.5
 	BD_4102_4341_err = BD_4102_4341 * bdc23ErrFrac
 	# E(B-V) Correction using 4341 / 4102
-	EBV_4102_4341 = 5*n.log10( BD_4102_4341 * bdc23_ref )/( 2)#*(5.39 - 5.12)
-	EBV_4102_4341_err = 5 * bdc23ErrFrac * bdc23_ref /( 2*n.log(10))#*(5.39 - 5.12)
+	EBV_4102_4341 = -2.5*n.log10( BD_4102_4341 * bdc23_ref )#*(5.39 - 5.12)
+	EBV_4102_4341_err = -2.5 * bdc23ErrFrac * bdc23_ref /n.log(10)#*(5.39 - 5.12)
 	# applied to lines using Calzetti's law
 	EBV_4102_4341_CORRO2 = 10**(0.4 *EBV_4102_4341 *klO2)
 	#EBV_4102_4341_CORRO2_err =  EBV_4102_4341_err * n.log(10) * 0.4 * klO2 * tab['EBV_4102_4341_CORRO2']

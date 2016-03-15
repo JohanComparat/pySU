@@ -72,7 +72,7 @@ class StellarPopulationModel:
 		 #. Finally, it writes the output files
 
 	"""
-	def __init__(self, specObs, outputFile, cosmo, models = 'm11', model_libs = ['MILES_UVextended'], imfs = ['ss','kr'], hpf_mode = 'on', age_limits = [6,10.1], downgrade_models = True, dust_law = 'calzetti', max_ebv = 1.0, num_dust_vals = 100, dust_smoothing_length = 200, max_iterations = 10, fit_per_iteration_cap = 1000, pdf_sampling = 300, data_wave_medium = 'vacuum', Z_limits = [-0.1,0.1], wave_limits = [0,99999990], suffix = "-fireflyFits.fits",use_downgraded_models = True):
+	def __init__(self, specObs, outputFile, cosmo, models = 'm11', model_libs = ['MILES_UVextended'], imfs = ['ss','kr'], hpf_mode = 'on', age_limits = [6,10.1], downgrade_models = True, dust_law = 'calzetti', max_ebv = 1.5, num_dust_vals = 200, dust_smoothing_length = 200, max_iterations = 10, fit_per_iteration_cap = 1000, pdf_sampling = 300, data_wave_medium = 'vacuum', Z_limits = [-0.1,0.1], wave_limits = [0,99999990], suffix = "-fireflyFits.fits",use_downgraded_models = False):
 		self.cosmo = cosmo
 		self.specObs = specObs
 		self.outputFile = outputFile
