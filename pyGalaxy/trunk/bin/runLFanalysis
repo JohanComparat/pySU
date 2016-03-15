@@ -70,19 +70,17 @@ screen python setup_run_for_stacks_VVDSDEEP
 screen python setup_run_for_stacks_DEEP2
 # writes to to $SPECTRASTACKS_DIR/fits/
 
+# RUN CODE FROM HERE ON :
+
 cd $PYSU_DIR/pyGalaxy/trunk/bin
 # relink things correclty :
 screen python model_stacked_spectra_DEEP2
 screen python model_stacked_spectra_VVDS
 # writes to to $SPECTRASTACKS_DIR/model/
-
-# RUN CODE FROM HERE ON :
-
-#redo plot to illustrate fits
-#write routine to compile table 
-#science plots
+# concatenates results
 python create_master_table
 python process_master_table
+
 python plot_results
 
 

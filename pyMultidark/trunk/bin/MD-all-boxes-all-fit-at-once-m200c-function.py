@@ -51,8 +51,6 @@ print "in the redshift range",zmin,zmax
 print "within the following limits for each box",qty_limits
 print "each box has a volume of",volume_boxes, "Mpc3/h3"
 
-
-
 xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir,"hist-Central-M200c_ALL_cumulative_MD_0.4Gpc.dat"),unpack=True)
 xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir,"hist-Central-M200c_ALL_cumulative_MD_1Gpc.dat"),unpack=True)
 xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir,"hist-Central-M200c_ALL_cumulative_MD_2.5Gpc.dat"),unpack=True)
@@ -72,6 +70,8 @@ print "min and max Y available:", n.min(yData), n.max(yData)
 yDataErr = abs(n.hstack(( yDataErr_04[s_04], yDataErr_10[s_10], yDataErr_25[s_25], yDataErr_40[s_40])) / yData)
 print "min and max Y error available:", n.min(yDataErr), n.max(yDataErr)
 
+#first guess
+
 vcut0 = 13.826 # 13.8425
 vcut1 = -0.832 # -0.8762
 vcut2 =0.021 #  0.0414
@@ -89,30 +89,43 @@ A1 = 0.799 # 0.8232
 A2 = -0.06 # -0.0714
 
 
-vfG = lambda v, z : n.log10( 10**(A0 + A1 * z) * ((10**v/10**(vcut0 + vcut1 * z))**(b0 + b1 * z) )* n.e**(- (10**v/10**(vcut0 + vcut1 * z))**(a0 +a1*z) ))
+vfG = lambda v, z, A0, A1, vcut0, vcut1, a0, a1, b0, b1 : n.log10( 10**(A0 + A1 * z) * (1+ (10**v/10**(vcut0 + vcut1 * z))**(b0 + b1 * z) )* n.e**(- (10**v/10**(vcut0 + vcut1 * z))**(a0 +a1*z) ))
+vfGbis = lambda v, z, ps : vfG(v,z,ps[0],ps[1],ps[2],ps[3],ps[4],ps[5],ps[6],ps[7])
+chi2fun = lambda ps : n.sum( (vfGbis(M200c,redshift,ps) - yData)**2. / (yData*0.03)**2. )/(len(yData) - 8)
+p1 = n.array([ A0, A1, vcut0, vcut1, a0, a1, b0, b1 ])
+print "looks for the optimum parameters"
+res = minimize(chi2fun, p1, method='Powell',options={'xtol': 1e-6, 'disp': True, 'maxiter' : 50000000, 'nfev': 1800000})
 
-vfG = lambda v, z : n.log10( 10**(A0 + A1 * z + A2*z*z) * ((10**v/10**(vcut0 + vcut1 * z + vcut2*z*z))**(b0 + b1 * z + b2*z*z) )* n.e**(- (10**v/10**(vcut0 + vcut1 * z+ vcut2*z*z))**(a0 +a1*z+ a2*z*z) ))
+pOpt = res.x
+
+
+print "A(z) & = "+str(pOpt[0])+" + "+str(pOpt[1])+r'\times z \\'
+print r" M_{cut}(z) & = "+str(pOpt[2])+" + "+str(pOpt[3])+r'\times z \\'
+print r" \alpha(z) & = "+str(pOpt[4])+" + "+str(pOpt[5])+r'\times z \\' #+ '+str(a2)+r'\times z^2 \\'
+print r" \beta(z) & = "+str(pOpt[6])+" + "+str(pOpt[7])+r'\times z \\'
+
+
+
 
 # now outputs the model
 xModel = n.arange(n.min(M200c),15,0.1)
 
 X,Y = n.meshgrid(xModel,n.arange(0,n.max(redshift)+0.025,0.025))
 
-Z = vfG(X,Y)
+Z = vfGbis(X,Y,pOpt)
 
-n.savetxt(join(dir,"M200c-cumulative-function-best_fit.txt"),n.transpose([n.hstack((X)), n.hstack((Y)), n.hstack((Z))]) )
+n.savetxt(join("outputs","M200c-cumulative-function-best_fit.txt"),n.transpose([n.hstack((X)), n.hstack((Y)), n.hstack((Z))]) )
 
 #######################################################
 # now plots the results of the fit
 print "now plots the results of the fit"
 
-vmax_mod, z_mod, n_mod = n.loadtxt(join(dir,"M200c-cumulative-function-best_fit.txt"), unpack=True)
+vmax_mod, z_mod, n_mod = n.loadtxt(join("outputs","M200c-cumulative-function-best_fit.txt"), unpack=True)
 
-
+tpl=(n_mod>-8)
 p.figure(0,(6,6))
 p.axes([0.17,0.17,0.75,0.75])
-
-sc1=p.scatter(vmax_mod, n_mod, c=z_mod,s=5, marker='o',label="model", rasterized=True)
+sc1=p.scatter(vmax_mod[tpl], n_mod[tpl], c=z_mod[tpl],s=5, marker='o',label="model", rasterized=True)
 sc1.set_edgecolor('face')
 cb = p.colorbar(shrink=0.8)
 cb.set_label("redshift")
@@ -121,12 +134,26 @@ p.ylabel(r' n(>M)') # log$_{10}[ n(>M)]')
 p.legend(loc=3)
 p.ylim((-9,0))
 p.grid()
-p.show()
+p.savefig(join("outputs","M200c-cumulative-function-model.png"))
+p.clf()
+
+
+p.figure(0,(6,6))
+p.axes([0.17,0.17,0.75,0.75])
+sc1=p.scatter(M200c, yData, c=redshift,s=5, marker='o',label="data", rasterized=True)
+sc1.set_edgecolor('face')
+cb = p.colorbar(shrink=0.8)
+cb.set_label("redshift")
+p.xlabel(r'log$_{10}[M_{200c}/(h^{-1}M_\odot)]$')
+p.ylabel(r' n(>M)') # log$_{10}[ n(>M)]')
+p.legend(loc=3)
+p.ylim((-9,0))
+p.grid()
+p.savefig(join("outputs","M200c-cumulative-function-data.png"))
+p.clf()
 
 sys.exit()
 
-p.savefig("M200c-cumulative-function-model.pdf")
-p.clf()
 
 
 
