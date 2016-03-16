@@ -109,9 +109,9 @@ class MultiDarkSimulation :
 			if newline[3]>vmin and newline[3]<vmax :
 				output[count] = newLine
 				count+=1
-                
-            if count == NperBatch -1 :
-                print "count",count
+				
+			if count == NperBatch -1 :
+				print "count",count
 				#define the columns
 				col0 = fits.Column(name='x',format='D', array= n.array([output.T[0]]))
 				col1 = fits.Column(name='y',format='D', array= n.array([output.T[1]]))
