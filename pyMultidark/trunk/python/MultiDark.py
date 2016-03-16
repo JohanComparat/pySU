@@ -107,7 +107,7 @@ class MultiDarkSimulation :
 			line = line.split()
 			newline =n.array([ float(line[self.columnDict['x']]), float(line[self.columnDict['y']]), float(line[self.columnDict['z']]), float(line[self.columnDict['vmax']]), float(line[self.columnDict['pid']]) ])
 			if newline[3]>vmin and newline[3]<vmax :
-				output[count] = newLine
+				output[count] = newline
 				count+=1
 				
 			if count == NperBatch -1 :
