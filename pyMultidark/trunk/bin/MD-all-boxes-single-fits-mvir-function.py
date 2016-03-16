@@ -53,9 +53,9 @@ volume_boxes =  n.array([400.**3., 1000**3., 2500**3., 4000.**3.])
 property_dir = "M200c-mvir"
 type = "hist"
 cos = "Central" #"Central" # centrak or satellite ?
-qty = "M200c"
+qty = "mvir"
 
-f=open("outputs\outputs-m200c-fits.txt",'w')
+f=open("outputs_mvir\outputs-mvir-fits.txt",'w')
 
 f.write( "we consider the "+type+" of "+qty+" of "+ cos+ "\n")
 f.write( "in the redshift range"+str(zmin)+" "+str(zmax)+ "\n")
@@ -65,10 +65,10 @@ f.write( "within the following limits for each box"+str(qty_limits) +"\n")
 f.write( "each box has a volume of"+str(volume_boxes)+ "Mpc3/h3" +"\n")
 
 
-xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_04, property_dir,"hist-Satellite-M200c_ALL_cumulative_MD_0.4Gpc.dat"),unpack=True)
-xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir_10, property_dir,"hist-Satellite-M200c_ALL_cumulative_MD_1Gpc.dat"),unpack=True)
-xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir_25, property_dir,"hist-Satellite-M200c_ALL_cumulative_MD_2.5Gpc.dat"),unpack=True)
-xData_40,z_40,yData_40,yDataErr_40 = n.loadtxt(join(dir_40, property_dir,"hist-Satellite-M200c_ALL_cumulative_MD_4Gpc.dat"),unpack=True)
+xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_04, property_dir,"hist-Satellite-mvir_ALL_cumulative_MD_0.4Gpc.dat"),unpack=True)
+xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir_10, property_dir,"hist-Satellite-mvir_ALL_cumulative_MD_1Gpc.dat"),unpack=True)
+xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir_25, property_dir,"hist-Satellite-mvir_ALL_cumulative_MD_2.5Gpc.dat"),unpack=True)
+xData_40,z_40,yData_40,yDataErr_40 = n.loadtxt(join(dir_40, property_dir,"hist-Satellite-mvir_ALL_cumulative_MD_4Gpc.dat"),unpack=True)
 
 s_04 = (z_04 >= 0.0) & (z_04 <= zmax)
 s_10 = (z_10 >= 0.0) & (z_10 <= zmax)
@@ -77,8 +77,8 @@ s_40 = (z_40 >= 0.0) & (z_40 <= zmax)
 
 redshift = n.hstack(( z_04[s_04], z_10[s_10], z_25[s_25], z_40[s_40]))
 f.write("all redshifts available:"+str(set(redshift)) + "\n")
-M200c = n.log10(n.hstack(( xData_04[s_04], xData_10[s_10], xData_25[s_25], xData_40[s_40])))
-f.write( "min and max masses available:"+str( n.min(M200c))+" "+str( n.max(M200c))+ "\n")
+mvir = n.log10(n.hstack(( xData_04[s_04], xData_10[s_10], xData_25[s_25], xData_40[s_40])))
+f.write( "min and max masses available:"+str( n.min(mvir))+" "+str( n.max(mvir))+ "\n")
 yData = n.log10(n.hstack(( yData_04[s_04], yData_10[s_10], yData_25[s_25], yData_40[s_40])))
 f.write("min and max Y available:"+str(n.min(yData))+" "+ str(n.max(yData))+ "\n")
 yDataErr = abs(n.hstack(( yDataErr_04[s_04], yDataErr_10[s_10], yDataErr_25[s_25], yDataErr_40[s_40])) / yData)
@@ -96,8 +96,8 @@ def fitSingleRedshiftM200Function(z0,z1):
 
 	redshift = n.hstack(( z_04[s_04], z_10[s_10] ))#, z_25[s_25], z_40[s_40]))
 	f.write( "all redshifts available:"+str(set(redshift))+"\n")
-	M200c = n.log10(n.hstack(( xData_04[s_04], xData_10[s_10])) )#, xData_25[s_25], xData_40[s_40])))
-	f.write( "min and max masses available:"+str(n.min(M200c))+" "+str(n.max(M200c))+"\n")
+	mvir = n.log10(n.hstack(( xData_04[s_04], xData_10[s_10])) )#, xData_25[s_25], xData_40[s_40])))
+	f.write( "min and max masses available:"+str(n.min(mvir))+" "+str(n.max(mvir))+"\n")
 	yData = n.log10(n.hstack(( yData_04[s_04], yData_10[s_10])))#, yData_25[s_25], yData_40[s_40])))
 	f.write( "min and max Y available:"+str( n.min(yData))+" "+str( n.max(yData))+"\n")
 	yDataErr = abs(n.hstack(( yDataErr_04[s_04], yDataErr_10[s_10])))#, yDataErr_25[s_25], yDataErr_40[s_40])) / yData)
@@ -109,16 +109,16 @@ def fitSingleRedshiftM200Function(z0,z1):
 
 	# with curve fit
 	f.write( "with curve fit \n")
-	popt, cov = curve_fit(vf, M200c, yData,sigma=0.025*n.ones_like(yData), p0 = p0 , maxfev = 5000000)
+	popt, cov = curve_fit(vf, mvir, yData,sigma=0.025*n.ones_like(yData), p0 = p0 , maxfev = 5000000)
 	A0, vcut0, a0, b0 = n.round(popt,NDecimal)
 
-	f.write( "redshift 0 model for the SAT M200c cumulative function :"+"\n")
+	f.write( "redshift 0 model for the SAT mvir cumulative function :"+"\n")
 	f.write( "A(z=0) & = "+str(A0)+ r"\pm "+str( n.round(cov[0][0]**0.5, NDecimal))+ r'\\'+"\n")
-	f.write( r" M_{200c}^{cut}(z=0) & = "+str(vcut0)+ r"\pm "+str( n.round(cov[1][1]**0.5, NDecimal))+ r'\\'+"\n")
+	f.write( r" M_{vir}^{cut}(z=0) & = "+str(vcut0)+ r"\pm "+str( n.round(cov[1][1]**0.5, NDecimal))+ r'\\'+"\n")
 	f.write( r" \alpha(z=0) & = "+str(a0)+ r"\pm "+str( n.round(cov[2][2]**0.5, NDecimal))+ r'\\'+"\n")
 	f.write( r" \beta(z=0) & = "+str(b0)+ r"\pm "+str( n.round(cov[3][3]**0.5, NDecimal))+ r'\\'+"\n")
 
-	gg=open("outputs\MF-sat-4params-z-"+str(n.mean(redshift))+"-fit.txt",'w')
+	gg=open("outputs_mvir\MF-sat-4params-z-"+str(n.mean(redshift))+"-fit.txt",'w')
 	n.savetxt(f,n.array([A0,cov[0][0]**0.5,vcut0,cov[1][1]**0.5, a0, cov[2][2]**0.5, b0, cov[3][3]**0.5, n.mean(redshift), n.std(redshift)]))
 	gg.close()
 
@@ -128,30 +128,30 @@ def fitSingleRedshiftM200Function(z0,z1):
 	p.plot(n.log10(xData_10[s_10][::3]), n.log10(yData_10[s_10][::3]), marker ='v', mfc='None',mec='c',ls='none', label="MDPL", rasterized=True)
 	#p.plot(n.log10(xData_25[s_25][::3]), n.log10(yData_25[s_25][::3]), marker ='s', mfc='None',mec='m',ls='none', label="BigMD", rasterized=True)
 	#p.plot(n.log10(xData_40[s_40][::3]), n.log10(yData_40[s_40][::3]), marker ='p', mfc='None',mec='b',ls='none', label="HMD", rasterized=True)
-	xModel = n.arange(n.min(M200c),n.max(M200c),0.1)
+	xModel = n.arange(n.min(mvir),n.max(mvir),0.1)
 	yModel_CF = vf(xModel, A0, vcut0, a0, b0)
 	p.plot(xModel, yModel_CF,'k--',label="model")
-	p.xlabel(r'log$_{10}[M_{200c}/(h^{-1}M_\odot)]$')
+	p.xlabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
 	p.ylabel(r' n$_{sat}$(>M)') # log$_{10}[ n(>M)]')
 	p.legend(loc=3)
 	p.title(str(n.round(n.mean(redshift),NDecimal))+" "+str(A0)+" "+str(vcut0)+" "+str(a0)+" "+str(b0))
 	p.grid()
-	p.savefig("outputs\MF-sat-4params-z-"+str(n.mean(redshift))+"-fit.png")
+	p.savefig("outputs_mvir\MF-sat-4params-z-"+str(n.mean(redshift))+"-fit.png")
 	p.clf()
 	
-	yModel_CF = vf(M200c, A0, vcut0, a0, b0)
+	yModel_CF = vf(mvir, A0, vcut0, a0, b0)
 
 	p.figure(1,(6,6))
 	p.axes([0.17,0.17,0.75,0.75])
-	p.plot(M200c,10**yData/10**yModel_CF,'bo')
+	p.plot(mvir,10**yData/10**yModel_CF,'bo')
 	p.axhline(1)
-	p.xlabel(r'log$_{10}[M_{200c}/(h^{-1}M_\odot)]$')
+	p.xlabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
 	p.ylabel(r' n$_{sat}(>M)$ data / model') # log$_{10}[ n(>M)]')
 	p.legend(loc=3)
 	p.ylim((.95,1.05))
 	p.title(str(n.round(n.mean(redshift),NDecimal))+" "+str(A0)+" "+str(vcut0)+" "+str(a0)+" "+str(b0))
 	p.grid()
-	p.savefig("outputs\MF-sat-4params-z-"+str(n.mean(redshift))+"dataovermodel.png")
+	p.savefig("outputs_mvir\MF-sat-4params-z-"+str(n.mean(redshift))+"dataovermodel.png")
 	p.clf()
 
 
@@ -165,10 +165,10 @@ fitSingleRedshiftM200Function(2.,2.2)
 fitSingleRedshiftM200Function(2.8,3.)
 
 
-xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_04, property_dir,"hist-Central-M200c_ALL_cumulative_MD_0.4Gpc.dat"),unpack=True)
-xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir_10, property_dir,"hist-Central-M200c_ALL_cumulative_MD_1Gpc.dat"),unpack=True)
-xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir_25, property_dir,"hist-Central-M200c_ALL_cumulative_MD_2.5Gpc.dat"),unpack=True)
-xData_40,z_40,yData_40,yDataErr_40 = n.loadtxt(join(dir_40, property_dir,"hist-Central-M200c_ALL_cumulative_MD_4Gpc.dat"),unpack=True)
+xData_04,z_04,yData_04,yDataErr_04 = n.loadtxt(join(dir_04, property_dir,"hist-Central-mvir_ALL_cumulative_MD_0.4Gpc.dat"),unpack=True)
+xData_10,z_10,yData_10,yDataErr_10 = n.loadtxt(join(dir_10, property_dir,"hist-Central-mvir_ALL_cumulative_MD_1Gpc.dat"),unpack=True)
+xData_25,z_25,yData_25,yDataErr_25 = n.loadtxt(join(dir_25, property_dir,"hist-Central-mvir_ALL_cumulative_MD_2.5Gpc.dat"),unpack=True)
+xData_40,z_40,yData_40,yDataErr_40 = n.loadtxt(join(dir_40, property_dir,"hist-Central-mvir_ALL_cumulative_MD_4Gpc.dat"),unpack=True)
 
 s_04 = (z_04 >= 0.0) & (z_04 <= zmax)
 s_10 = (z_10 >= 0.0) & (z_10 <= zmax)
@@ -187,8 +187,8 @@ def fitSingleRedshiftM200Function(z0,z1):
 
 	redshift = n.hstack(( z_04[s_04], z_10[s_10], z_25[s_25], z_40[s_40]))
 	f.write( "all redshifts available:"+str( set(redshift))+"\n")
-	M200c = n.log10(n.hstack(( xData_04[s_04], xData_10[s_10], xData_25[s_25], xData_40[s_40])))
-	f.write( "min and max masses available:"+str( n.min(M200c))+" "+str( n.max(M200c))+"\n")
+	mvir = n.log10(n.hstack(( xData_04[s_04], xData_10[s_10], xData_25[s_25], xData_40[s_40])))
+	f.write( "min and max masses available:"+str( n.min(mvir))+" "+str( n.max(mvir))+"\n")
 	yData = n.log10(n.hstack(( yData_04[s_04], yData_10[s_10], yData_25[s_25], yData_40[s_40])))
 	f.write( "min and max Y available:"+str( n.min(yData))+" "+str( n.max(yData))+"\n")
 	yDataErr = abs(n.hstack(( yDataErr_04[s_04], yDataErr_10[s_10], yDataErr_25[s_25], yDataErr_40[s_40])) / yData)
@@ -200,16 +200,16 @@ def fitSingleRedshiftM200Function(z0,z1):
 
 	# with curve fit
 	f.write( "with curve fit"+"\n")
-	popt, cov = curve_fit(vf, M200c, yData,sigma=0.025*n.ones_like(yData), p0 = p0 , maxfev = 5000000)
+	popt, cov = curve_fit(vf, mvir, yData,sigma=0.025*n.ones_like(yData), p0 = p0 , maxfev = 5000000)
 	A0, vcut0, a0, b0 = n.round(popt,NDecimal)
 
-	f.write( "redshift 0 model for the M200c cumulative function :"+"\n")
+	f.write( "redshift 0 model for the mvir cumulative function :"+"\n")
 	f.write( "A(z=0) & = "+str(A0)+ r"\pm "+str( n.round(cov[0][0]**0.5, NDecimal))+ r'\\'+"\n")
-	f.write( r" M_{200c}^{cut}(z=0) & = "+str(vcut0)+ r"\pm "+str( n.round(cov[1][1]**0.5, NDecimal))+ r'\\'+"\n")
+	f.write( r" M_{vir}^{cut}(z=0) & = "+str(vcut0)+ r"\pm "+str( n.round(cov[1][1]**0.5, NDecimal))+ r'\\'+"\n")
 	f.write( r" \alpha(z=0) & = "+str(a0)+ r"\pm "+str( n.round(cov[2][2]**0.5, NDecimal))+ r'\\'+"\n")
 	f.write( r" \beta(z=0) & = "+str(b0)+ r"\pm "+str( n.round(cov[3][3]**0.5, NDecimal))+ r'\\'+"\n")
 
-	gg=open("outputs\MF-cen-4params-z-"+str(n.mean(redshift))+"-fit.txt",'w')
+	gg=open("outputs_mvir\MF-cen-4params-z-"+str(n.mean(redshift))+"-fit.txt",'w')
 	n.savetxt(f,n.array([A0,cov[0][0]**0.5,vcut0,cov[1][1]**0.5, a0, cov[2][2]**0.5, b0, cov[3][3]**0.5, n.mean(redshift), n.std(redshift)]))
 	gg.close()
 
@@ -219,30 +219,30 @@ def fitSingleRedshiftM200Function(z0,z1):
 	p.plot(n.log10(xData_10[s_10][::3]), n.log10(yData_10[s_10][::3]), marker ='v', mfc='None',mec='c',ls='none', label="MDPL", rasterized=True)
 	p.plot(n.log10(xData_25[s_25][::3]), n.log10(yData_25[s_25][::3]), marker ='s', mfc='None',mec='m',ls='none', label="BigMD", rasterized=True)
 	p.plot(n.log10(xData_40[s_40][::3]), n.log10(yData_40[s_40][::3]), marker ='p', mfc='None',mec='b',ls='none', label="HMD", rasterized=True)
-	xModel = n.arange(n.min(M200c),n.max(M200c),0.1)
+	xModel = n.arange(n.min(mvir),n.max(mvir),0.1)
 	yModel_CF = vf(xModel, A0, vcut0, a0, b0)
 	p.plot(xModel, yModel_CF,'k--',label="model")
-	p.xlabel(r'log$_{10}[M_{200c}/(h^{-1}M_\odot)]$')
+	p.xlabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
 	p.ylabel(r' n$_{cen}$(>M)') # log$_{10}[ n(>M)]')
 	p.legend(loc=3)
 	p.title(str(n.round(n.mean(redshift),NDecimal))+" "+str(A0)+" "+str(vcut0)+" "+str(a0)+" "+str(b0))
-	p.savefig("outputs\MF-cen-4params-z-"+str(n.mean(redshift))+"-fit.png")
+	p.savefig("outputs_mvir\MF-cen-4params-z-"+str(n.mean(redshift))+"-fit.png")
 	p.clf()
 	
-	yModel_CF = vf(M200c, A0, vcut0, a0, b0)
+	yModel_CF = vf(mvir, A0, vcut0, a0, b0)
 
 	p.figure(1,(6,6))
 	p.axes([0.17,0.17,0.75,0.75])
-	p.plot(M200c,10**yData/10**yModel_CF,'bo')
+	p.plot(mvir,10**yData/10**yModel_CF,'bo')
 	p.axhline(1)
 
-	p.xlabel(r'log$_{10}[M_{200c}/(h^{-1}M_\odot)]$')
+	p.xlabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
 	p.ylabel(r' n$_{cen}$(>M) data / model') # log$_{10}[ n(>M)]')
 	p.legend(loc=3)
 	p.ylim((.95,1.05))
 	p.title(str(n.round(n.mean(redshift),NDecimal))+" "+str(A0)+" "+str(vcut0)+" "+str(a0)+" "+str(b0))
 	p.grid()
-	p.savefig("outputs\MF-cen-4params-z-"+str(n.mean(redshift))+"dataovermodel.png")
+	p.savefig("outputs_mvir\MF-cen-4params-z-"+str(n.mean(redshift))+"dataovermodel.png")
 	p.clf()
 
 
