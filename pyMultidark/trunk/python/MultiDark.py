@@ -128,7 +128,7 @@ class MultiDarkSimulation :
 				tb_hdu = fits.BinTableHDU.from_columns( hdu_cols )
 				#define the header
 				prihdr = fits.Header()
-				prihdr['nameSnapshot'] = nameSnapshot
+				prihdr['HIERARCH nameSnapshot'] = nameSnapshot
 				prihdr['count'] = count
 				prihdr['batchN'] = Nb
 				prihdu = fits.PrimaryHDU(header=prihdr)
@@ -150,7 +150,7 @@ class MultiDarkSimulation :
 		tb_hdu = fits.BinTableHDU.from_columns( hdu_cols )
 		#define the header
 		prihdr = fits.Header()
-		prihdr['nameSnapshot'] = nameSnapshot
+		prihdr['HIERARCH nameSnapshot'] = nameSnapshot
 		prihdr['batchN'] = Nb
 		prihdr['count'] = count
 		prihdu = fits.PrimaryHDU(header=prihdr)
