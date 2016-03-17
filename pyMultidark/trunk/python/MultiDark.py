@@ -158,43 +158,49 @@ class MultiDarkSimulation :
 		thdulist = fits.HDUList([prihdu, tb_hdu])
 		thdulist.writeto(self.snl[ii][:-5]+"_Nb_"+str(Nb)+".fits")
 	
-	def compute2PCF(self,catalog,outfile,vmin=2500,vmax=3000,rmin=4,rmax=60):
+	def compute2PCF(self, catalog, outfile, vmin=400, rmin=4, rmax=60, dlogBin=0.01):
 		"""
 		Extracts the 2PCF out of a catalog of halos        
 		:param catalog: where the catalog is
 		:param vmin: minimum circular velocity.
-		:param vmax: maximum circular velocity.
+		:param dlogBin: bin width.
 		:param rmin: minimum distance
 		:param rmax: maximum distance
-		"""
-		print time.time()
+		"""		
 		hdu = fits.open(catalog)
-		sel = (hdu[1].data['vmax']>vmin)&(hdu[1].data['vmax']<vmax)
-		xR = hdu[1].data['x'][sel]
-		yR = hdu[1].data['y'][sel]
-		zR = hdu[1].data['z'][sel]
-		insideSel=(xR>rmax)&(xR<self.Lbox.value-rmax)&(yR>rmax)&(yR<self.Lbox.value-rmax)&(zR>rmax)&(zR<self.Lbox.value-rmax)
-		volume=(self.Lbox.value-rmax*2)**3
-		# defines the trees
-		treeRandoms=t.cKDTree(n.transpose([xR,yR,zR]),100.0)
-		treeData=t.cKDTree(n.transpose([xR[insideSel],yR[insideSel],zR[insideSel]]),100.0)
-		nD=len(treeData.data)
-		nR=len(treeRandoms.data)
-		print nD, nR
-		
-		bin_xi3D=10**n.arange(n.log10(rmin), n.log10(rmax), 0.1)
-		rs=(bin_xi3D[1:] * bin_xi3D[:-1])**0.5
-		pairs=treeData.count_neighbors(treeRandoms, bin_xi3D)
+		vbins = 10**n.arange(n.log10(vmin), n.log10(n.max(hdu[1].data['vmax'])),dlogBin)
+		for jj in range(len(vbins)-1):
+			print vbins[jj]
+			outfile = catalog[:-5] + "_" +str(n.round(vbins[jj],2))+ "_" +str(n.round(vbins[jj+1],2)) + "xiR.pkl"
+			sel = (hdu[1].data['vmax']>(vbins[jj])&(hdu[1].data['vmax']<(vbins[jj+1])
+			if len(sel.nonzero()[0])>1000:
+				print time.time()
+				xR = hdu[1].data['x'][sel]
+				yR = hdu[1].data['y'][sel]
+				zR = hdu[1].data['z'][sel]
+				insideSel=(xR>rmax)&(xR<self.Lbox.value-rmax)&(yR>rmax)&(yR<self.Lbox.value-rmax)&(zR>rmax)&(zR<self.Lbox.value-rmax)
+				volume=(self.Lbox.value-rmax*2)**3
+				# defines the trees
+				print "creates trees"
+				treeRandoms=t.cKDTree(n.transpose([xR,yR,zR]),100.0)
+				treeData=t.cKDTree(n.transpose([xR[insideSel],yR[insideSel],zR[insideSel]]),100.0)
+				nD=len(treeData.data)
+				nR=len(treeRandoms.data)
+				print nD, nR
+				
+				bin_xi3D=10**n.arange(n.log10(rmin), n.log10(rmax), 0.1)
+				rs=(bin_xi3D[1:] * bin_xi3D[:-1])**0.5
+				pairs=treeData.count_neighbors(treeRandoms, bin_xi3D)
 
-		DR=pairs[1:]-pairs[:-1]
-		dV=4*n.pi*(bin_xi3D[1:]**3 - bin_xi3D[:-1]**3 )
-		pairCount=nD*nR-nD*(1+nD)/2.
-		xis = DR*volume/(dV * pairCount) -1.
-		hdu.close()
-		f=open(outfile,'w')
-		cPickle.dump([bin_xi3D,xis],f)
-		f.close()
-		print time.time()
+				DR=pairs[1:]-pairs[:-1]
+				dV=4*n.pi*(bin_xi3D[1:]**3 - bin_xi3D[:-1]**3 )
+				pairCount=nD*nR-nD*(1+nD)/2.
+				xis = DR*volume/(dV * pairCount) -1.
+				hdu.close()
+				f=open(outfile,'w')
+				cPickle.dump([bin_xi3D,xis],f)
+				f.close()
+				print time.time()
 
 	def computeSingleDistributionFunction(self, ii, name, bins, Mfactor=100. ) :
 		"""
