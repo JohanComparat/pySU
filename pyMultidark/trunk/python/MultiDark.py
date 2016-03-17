@@ -173,8 +173,8 @@ class MultiDarkSimulation :
 		xR = hdu[1].data['x'][sel]
 		yR = hdu[1].data['y'][sel]
 		zR = hdu[1].data['z'][sel]
-		insideSel=(xR>rmax)&(xR<self.Lbox-rmax)&(yR>rmax)&(yR<self.Lbox-rmax)&(zR>rmax)&(zR<self.Lbox-rmax)
-		volume=(self.Lbox-rmax*2)**3
+		insideSel=(xR>rmax)&(xR<self.Lbox.value-rmax)&(yR>rmax)&(yR<self.Lbox.value-rmax)&(zR>rmax)&(zR<self.Lbox.value-rmax)
+		volume=(self.Lbox.value-rmax*2)**3
 		# defines the trees
 		treeRandoms=t.cKDTree(n.transpose([xR,yR,zR]),100.0)
 		treeData=t.cKDTree(n.transpose([xR[insideSel],yR[insideSel],zR[insideSel]]),100.0)
