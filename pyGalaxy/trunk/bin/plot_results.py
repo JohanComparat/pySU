@@ -14,10 +14,10 @@ import astropy.io.fits as fits
 G05 = n.loadtxt( join(os.environ['SPECTRASTACKS_DIR'], "biblioPoints", "gallazzi-2005.data"), unpack= True)
 path_to_summary_table = join(os.environ['SPECTRASTACKS_DIR'], "results", "table_fullSpecFit_v0.VA.fits")
 
-G05 = n.loadtxt( join("..", "biblioPoints", "gallazzi-2005.data"), unpack= True)
-path_to_summary_table = join("..", "results", "table_fullSpecFit_v0.VA.fits")
+G05 = n.loadtxt( join(os.environ['SPECTRASTACKS_DIR'], "biblioPoints", "gallazzi-2005.data"), unpack= True)
+path_to_summary_table = join(os.environ['SPECTRASTACKS_DIR'], "results", "table_fullSpecFit_v0.VA.fits")
 data =fits.open(path_to_summary_table)[1].data
-path_to_summary_table = join("..", "results", "table_lineSpecFit_v0.VA.fits")
+path_to_summary_table = join(os.environ['SPECTRASTACKS_DIR'], "results", "table_lineSpecFit_v0.VA.fits")
 datL =fits.open(path_to_summary_table)[1].data
 
 
@@ -56,7 +56,7 @@ p.ylabel(r'E(B-V) GP $H\beta -H\delta$')
 p.xlim((-1,2))
 p.ylim((-1,2))
 p.grid()
-p.savefig( join("..", "plots", "ebv-comparison-1.png"))
+p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "ebv-comparison-1.png"))
 p.show()
 
 p.clf()

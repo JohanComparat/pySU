@@ -138,11 +138,11 @@ class MultiDarkSimulation :
 				output = n.empty((NperBatch,5))
 
 		# and for the last batch :
-		col0 = fits.Column(name='x',format='D', array= n.array([output.T[0][:count]]))
-		col1 = fits.Column(name='y',format='D', array= n.array([output.T[1][:count]]))
-		col2 = fits.Column(name='z',format='D', array= n.array([output.T[2][:count]]))
-		col3 = fits.Column(name='vmax',format='D', array= n.array([output.T[3][:count]]))
-		col4 = fits.Column(name='pid',format='D', array= n.array([output.T[4][:count]]))
+		col0 = fits.Column(name='x',format='D', array= output.T[0][:count])
+		col1 = fits.Column(name='y',format='D', array= output.T[1][:count])
+		col2 = fits.Column(name='z',format='D', array= output.T[2][:count])
+		col3 = fits.Column(name='vmax',format='D', array= output.T[3][:count])
+		col4 = fits.Column(name='pid',format='D', array= output.T[4][:count])
 		#define the table hdu 
 		hdu_cols  = fits.ColDefs([col0, col1, col2, col3, col4])
 		tb_hdu = fits.BinTableHDU.from_columns( hdu_cols )
