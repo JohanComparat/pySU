@@ -114,12 +114,13 @@ class MultiDarkSimulation :
 				print "count",count
 				print output
 				print output.shape
+				print output.T[0].shape
 				#define the columns
-				col0 = fits.Column(name='x',format='D', array= n.array([output.T[0]]))
-				col1 = fits.Column(name='y',format='D', array= n.array([output.T[1]]))
-				col2 = fits.Column(name='z',format='D', array= n.array([output.T[2]]))
-				col3 = fits.Column(name='vmax',format='D', array= n.array([output.T[3]]))
-				col4 = fits.Column(name='pid',format='D', array= n.array([output.T[4]]))
+				col0 = fits.Column(name='x',format='D', array=output.T[0] )
+				col1 = fits.Column(name='y',format='D', array= output.T[1] )
+				col2 = fits.Column(name='z',format='D', array= output.T[2] )
+				col3 = fits.Column(name='vmax',format='D', array= output.T[3] )
+				col4 = fits.Column(name='pid',format='D', array= output.T[4] )
 				#define the table hdu 
 				hdu_cols  = fits.ColDefs([col0, col1, col2, col3, col4])
 				tb_hdu = fits.BinTableHDU.from_columns( hdu_cols )
