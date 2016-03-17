@@ -114,7 +114,7 @@ class MultiDarkSimulation :
 				output[count] = newline
 				count+=1
 				
-			if count == NperBatch -1 :
+			if count == NperBatch  :
 				print "count",count
 				print output
 				print output.shape
@@ -136,6 +136,7 @@ class MultiDarkSimulation :
 				prihdu = fits.PrimaryHDU(header=prihdr)
 				#writes the file
 				thdulist = fits.HDUList([prihdu, tb_hdu])
+				os.system("rm "+self.snl[ii][:-5]+"_Nb_"+str(Nb)+".fits")
 				thdulist.writeto(self.snl[ii][:-5]+"_Nb_"+str(Nb)+".fits")
 				Nb+=1
 				count=0
@@ -158,6 +159,7 @@ class MultiDarkSimulation :
 		prihdu = fits.PrimaryHDU(header=prihdr)
 		#writes the file
 		thdulist = fits.HDUList([prihdu, tb_hdu])
+		os.system("rm "+self.snl[ii][:-5]+"_Nb_"+str(Nb)+".fits")
 		thdulist.writeto(self.snl[ii][:-5]+"_Nb_"+str(Nb)+".fits")
 	
 	def compute2PCF(self, catalog, vmin=400, rmax=60, dlogBin=0.02):
