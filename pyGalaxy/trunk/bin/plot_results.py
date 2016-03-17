@@ -43,12 +43,16 @@ n.savetxt(join(os.environ['SPECTRASTACKS_DIR'], "results", "table_firefly.tex"),
 #gp_EBV_4862_4341,gp_EBV_4862_4341_err,
 
 
+ess = n.log10(data['BD_4862_4341'][ok]* bdc1_ref)*2.5/(4.6-5.12)
+ess = n.log10(datL['BD_4862_4341'][ok]* bdc1_ref)*2.5/(4.6-5.12)
+data['EBV_4862_4341'][ok]
+
 p.figure(0,(6,6))
 p.axes([0.17,0.17,0.8,0.8])
 #ok = (datL['H1_4862_flux']>3*datL['H1_4862_fluxErr'])  & (datL['H1_4862_flux']>0) & (datL['H1_4862_fluxErr']>0)  & (datL['H1_4341_flux']>3*datL['H1_4341_fluxErr'])& (datL['H1_4341_flux']>0)&(datL['H1_4341_fluxErr']>0)& (datL['EBV_4862_4341']!=-9999.99) &  (datL['EBV_4862_4341_err']!=-9999.99)
 #p.errorbar(datL['spm_EBV'][ok], datL['EBV_4862_4341'][ok], yerr=datL['EBV_4862_4341_err'][ok],fmt='o',elinewidth=2, mfc='none',label='resi')
 ok = (data['H1_4862_flux']>3*data['H1_4862_fluxErr'])  & (data['H1_4862_flux']>0) & (data['H1_4862_fluxErr']>0)  & (data['H1_4341_flux']>3*data['H1_4341_fluxErr'])& (data['H1_4341_flux']>0)&(data['H1_4341_fluxErr']>0)& (data['EBV_4862_4341']!=-9999.99) &  (data['EBV_4862_4341_err']!=-9999.99)
-p.errorbar(data['spm_EBV'][ok], -0.74+data['EBV_4862_4341'][ok], yerr=data['EBV_4862_4341_err'][ok],fmt='o',elinewidth=1, mfc='none',label='full')
+p.errorbar(data['spm_EBV'][ok], ess, yerr=data['EBV_4862_4341_err'][ok],fmt='o',elinewidth=1, mfc='none',label='full')
 p.plot([-1,2],[-1,2],'k--')
 p.legend(loc=2)
 p.xlabel('E(B-V) SPM')
@@ -57,8 +61,6 @@ p.xlim((-1,2))
 p.ylim((-1,2))
 p.grid()
 p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "ebv-comparison-1.png"))
-p.show()
-
 p.clf()
 
 #spm_EBV

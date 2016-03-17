@@ -19,6 +19,8 @@ import os
 import astropy.units as uu
 import numpy as n
 import glob
+import scipy.spatial.ckdtree as t
+import time
 
 class MultiDarkSimulation :
 	"""
@@ -155,7 +157,44 @@ class MultiDarkSimulation :
 		#writes the file
 		thdulist = fits.HDUList([prihdu, tb_hdu])
 		thdulist.writeto(self.snl[ii][:-5]+"_Nb_"+str(Nb)+".fits")
-		
+	
+	def compute2PCF(self,catalog,outfile,vmin=2500,vmax=3000,rmin=4,rmax=60):
+		"""
+		Extracts the 2PCF out of a catalog of halos        
+		:param catalog: where the catalog is
+		:param vmin: minimum circular velocity.
+		:param vmax: maximum circular velocity.
+		:param rmin: minimum distance
+		:param rmax: maximum distance
+		"""
+		print time.time()
+		hdu = fits.open(catalog)
+		sel = (hdu[1].data['vmax']>vmin)&(hdu[1].data['vmax']<vmax)
+		xR = hdu[1].data['x'][sel]
+		yR = hdu[1].data['y'][sel]
+		zR = hdu[1].data['z'][sel]
+		insideSel=(xR>rMax)&(xR<self.Lbox-rMax)&(yR>rMax)&(yR<self.Lbox-rMax)&(zR>rMax)&(zR<self.Lbox-rMax)
+		volume=(self.Lbox-rmax*2)**3
+		# defines the trees
+		treeRandoms=t.cKDTree(n.transpose([xR,yR,zR]),100.0)
+		treeData=t.cKDTree(n.transpose([xR[insideSel],yR[insideSel],zR[insideSel]]),100.0)
+
+		bin_xi3D=10**n.arange(n.log10(rmin), n.log10(rmax), 0.1)
+		rs=(bin_xi3D[1:] * bin_xi3D[:-1])**0.5
+		pairs=treeData.count_neighbors(treeRandoms, bin_xi3D)
+
+		DR=pairs[1:]-pairs[:-1]
+		dV=4*n.pi*(bin_xi3D[1:]**3 - bin_xi3D[:-1]**3 )
+		nD=len(treeData.data)
+		nR=len(treeRandoms.data)
+		pairCount=nD*nR-nD*(1+nD)/2.
+		xis = DR*volume/(dV * pairCount) -1.
+		hdu.close()
+		f=open(outfile,'w')
+		cPickle.dump([bin_xi3D,xis],f)
+		f.close()
+		print time.time()
+
 	def computeSingleDistributionFunction(self, ii, name, bins, Mfactor=100. ) :
 		"""
 		Extracts the distribution of quantity 'name' out of all snapshots of the Multidark simulation.        
