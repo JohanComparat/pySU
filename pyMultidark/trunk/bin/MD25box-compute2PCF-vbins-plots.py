@@ -35,10 +35,12 @@ dir_40_b = join(dir,"MD_4Gpc","halo_bias","clustering")
 dir_boxes =  n.array([dir_04, dir_10, dir_25, dir_40])
 zList_files = n.array([ join(dir_box,"redshift-list.txt") for dir_box in dir_boxes])
 
-snn, redshift = n.loadtxt(zList_files[2],unpack=True)
+snn, redshift = n.loadtxt("redshift-list.txt",unpack=True)
+#zList_files[2],unpack=True)
+
 sn2z = {snn[i]: redshift[i] for i in range(len(snn))}
 
-ll = n.array( glob.glob(join(dir_25_b,"*.pkl" ) ))
+ll = n.array( glob.glob(join("halo_bias","clustering","*.pkl")))#dir_25_b,"*.pkl" ) ))
 ll.sort()
 snapNum = n.empty(len(ll),dtype=int)
 vmin = n.empty(len(ll))
@@ -50,13 +52,13 @@ for ii in range(len(ll)):
 
 
 sel = (snapNum ==9)
-xi = n.empty((len(ll[sel]),4))
+xi = n.empty((len(ll[sel]),19))
 for ii, file in enumerate(ll[sel]):
 	f=open(file,'r')
-	bin_xi3D,xi[ii] = cPickle.load(f)
+	bin_xi3D, xi[ii] = cPickle.load(f)
 	f.close()
 
-rr = (bin_xi3D[1:] * bin_xi3D[:-1])**0.5
+rr = (bin_xi3D[1:] + bin_xi3D[:-1])/2.
 	
 p.figure(0,(10,6))
 p.axes([0.17,0.17,0.6,0.8])
