@@ -178,15 +178,16 @@ class MultiDarkSimulation :
 		# defines the trees
 		treeRandoms=t.cKDTree(n.transpose([xR,yR,zR]),100.0)
 		treeData=t.cKDTree(n.transpose([xR[insideSel],yR[insideSel],zR[insideSel]]),100.0)
-
+		nD=len(treeData.data)
+		nR=len(treeRandoms.data)
+		print nD, nR
+		
 		bin_xi3D=10**n.arange(n.log10(rmin), n.log10(rmax), 0.1)
 		rs=(bin_xi3D[1:] * bin_xi3D[:-1])**0.5
 		pairs=treeData.count_neighbors(treeRandoms, bin_xi3D)
 
 		DR=pairs[1:]-pairs[:-1]
 		dV=4*n.pi*(bin_xi3D[1:]**3 - bin_xi3D[:-1]**3 )
-		nD=len(treeData.data)
-		nR=len(treeRandoms.data)
 		pairCount=nD*nR-nD*(1+nD)/2.
 		xis = DR*volume/(dV * pairCount) -1.
 		hdu.close()
