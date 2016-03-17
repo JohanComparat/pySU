@@ -158,13 +158,12 @@ class MultiDarkSimulation :
 		thdulist = fits.HDUList([prihdu, tb_hdu])
 		thdulist.writeto(self.snl[ii][:-5]+"_Nb_"+str(Nb)+".fits")
 	
-	def compute2PCF(self, catalog, vmin=400, rmin=4, rmax=60, dlogBin=0.01):
+	def compute2PCF(self, catalog, vmin=400, rmax=60, dlogBin=0.02):
 		"""
 		Extracts the 2PCF out of a catalog of halos        
 		:param catalog: where the catalog is
 		:param vmin: minimum circular velocity.
 		:param dlogBin: bin width.
-		:param rmin: minimum distance
 		:param rmax: maximum distance
 		"""		
 		hdu = fits.open(catalog)
@@ -188,7 +187,7 @@ class MultiDarkSimulation :
 				nR=len(treeRandoms.data)
 				print nD, nR
 				
-				bin_xi3D=10**n.arange(n.log10(rmin), n.log10(rmax), 0.1)
+				bin_xi3D=n.arange(0, rmax, 2.)
 				rs=(bin_xi3D[1:] * bin_xi3D[:-1])**0.5
 				pairs=treeData.count_neighbors(treeRandoms, bin_xi3D)
 

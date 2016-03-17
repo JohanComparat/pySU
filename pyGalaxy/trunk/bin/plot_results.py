@@ -84,79 +84,378 @@ p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "ebv-comparison-2.png"
 p.clf()
 
 
+Nst = (data['N_in_stack']==200)&(data['Survey']==2)
+EBvok = (Nst)&(data['H1_4862_flux']>data['H1_4862_fluxErr'])  & (data['H1_4862_flux']>0) & (data['H1_4862_fluxErr']>0)  & (data['H1_4341_flux']>data['H1_4341_fluxErr'])& (data['H1_4341_flux']>0)&(data['H1_4341_fluxErr']>0)& (data['EBV_4862_4341']!=-9999.99) &  (data['EBV_4862_4341_err']!=-9999.99)
+O2 = (data['lineWavelength']== 3728.) & (EBvok)
+O3  = (data['lineWavelength']== 5007.)& (EBvok)
+Hb = (data['lineWavelength']== 4862.) & (EBvok)
+data['Redshift'][O2]
+
+
 p.figure(0,(6,6))
 p.axes([0.17,0.17,0.8,0.8])
-#ok = (datL['H1_4862_flux']>3*datL['H1_4862_fluxErr'])  & (datL['H1_4862_flux']>0) & (datL['H1_4862_fluxErr']>0)  & (datL['H1_4341_flux']>3*datL['H1_4341_fluxErr'])& (datL['H1_4341_flux']>0)&(datL['H1_4341_fluxErr']>0)& (datL['EBV_4862_4341']!=-9999.99) &  (datL['EBV_4862_4341_err']!=-9999.99)
-#p.errorbar(datL['spm_EBV'][ok], datL['EBV_4862_4341'][ok], yerr=datL['EBV_4862_4341_err'][ok],fmt='o',elinewidth=2, mfc='none',label='resi')
-p.plot([-1,2],[-1,2],'k--')
-p.legend(loc=2)
-p.xlabel('E(B-V) SPM')
+for zz in set(data['Redshift'][O2]):
+	ok = (O2)&(data['Redshift']==zz)
+	p.errorbar(data['L_mean'][ok], data['EBV_4862_4341'][ok], xerr=[data['L_mean'][ok]-data['L_min'][ok],-data['L_mean'][ok]+data['L_max'][ok]],yerr=data['EBV_4862_4341_err'][ok],fmt='o',elinewidth=1, mfc='none',label=str(n.round(zz,3)))
+
+p.legend(loc=0)
+p.xlabel('[OII] line Luminosity')
 p.ylabel(r'E(B-V) GP $H\beta -H\delta$')
-p.xlim((-1,2))
-p.ylim((-1,2))
+p.xscale('log')
 p.grid()
-p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "ebv-comparison-1.png"))
+p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "ebv-line-o2.png"))
 p.clf()
 
 
-#spm_EBV
-#gp_EBV_4862_4102,gp_EBV_4862_4102_err
+Nst = (datL['N_in_stack']==200)&(datL['Survey']==2)
+EBvok = (Nst)&(datL['H1_4862_flux']>datL['H1_4862_fluxErr'])  & (datL['H1_4862_flux']>0) & (datL['H1_4862_fluxErr']>0)  & (datL['H1_4341_flux']>datL['H1_4341_fluxErr'])& (datL['H1_4341_flux']>0)&(datL['H1_4341_fluxErr']>0)& (datL['EBV_4862_4341']!=-9999.99) &  (datL['EBV_4862_4341_err']!=-9999.99)
+O2 = (datL['lineWavelength']== 3728.) & (EBvok)
+O3  = (datL['lineWavelength']== 5007.)& (EBvok)
+Hb = (datL['lineWavelength']== 4862.) & (EBvok)
+datL['Redshift'][O2]
 
-ok = (gp_EBV_4862_4102!=-9999.99) &  (gp_EBV_4862_4102_err!=-9999.99)
 
 p.figure(0,(6,6))
 p.axes([0.17,0.17,0.8,0.8])
-p.errorbar(spm_EBV[ok], gp_EBV_4862_4102[ok], yerr=gp_EBV_4862_4102_err[ok],fmt='o',elinewidth=2, mfc='none')
-p.plot([-1,2],[-1,2],'k--')
-p.legend(loc=2)
-p.xlabel('E(B-V) SPM')
-p.ylabel(r'E(B-V) GP $H\beta -H\gamma$')
-p.xlim((-1,2))
-p.ylim((-1,2))
+for zz in set(datL['Redshift'][O2]):
+	ok = (O2)&(datL['Redshift']==zz)
+	p.errorbar(datL['L_mean'][ok], datL['EBV_4862_4341'][ok], xerr=[datL['L_mean'][ok]-datL['L_min'][ok],-datL['L_mean'][ok]+datL['L_max'][ok]],yerr=datL['EBV_4862_4341_err'][ok],fmt='o',elinewidth=1, mfc='none',label=str(n.round(zz,3)))
+
+p.legend(loc=0)
+p.xlabel('[OII] line Luminosity')
+p.ylabel(r'E(B-V) GP $H\beta -H\delta$')
+p.xscale('log')
 p.grid()
-p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "ebv-comparison-2.png"))
+p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "ebv-line-o2-gp.png"))
 p.clf()
 
-# metallicity comparison
-#spm_light_metallicity,spm_light_metallicity_err_plus,spm_light_metallicity_err_minus
-#gp_12logOH_tremonti04,gp_12logOH_tremonti04_err,
 
-ok = (gp_12logOH_tremonti04!=-9999.99) &  (gp_12logOH_tremonti04_err!=-9999.99)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 p.figure(0,(6,6))
 p.axes([0.17,0.17,0.8,0.8])
-p.errorbar(x=spm_light_metallicity[ok], xerr=[spm_light_metallicity_err_plus[ok], spm_light_metallicity_err_minus[ok]], y=gp_12logOH_tremonti04[ok], yerr=gp_12logOH_tremonti04_err[ok],fmt='o',elinewidth=2, mfc='none')
-p.plot([-1,2],[-1,2],'k--')
+ok = (data['logOH_tremonti04']!=-9999.99) &  (data['logOH_tremonti04_err']!=-9999.99)
+p.errorbar(x=data['spm_light_metallicity'][ok], xerr=[data['spm_light_metallicity_err_plus'][ok], data['spm_light_metallicity_err_minus'][ok]], y=data['logOH_tremonti04'][ok], yerr=data['logOH_tremonti04_err'][ok],fmt='o',elinewidth=2, mfc='none',label='full')
+ok = (datL['logOH_tremonti04']!=-9999.99) &  (datL['logOH_tremonti04_err']!=-9999.99)
+p.errorbar(x=datL['spm_light_metallicity'][ok], xerr=[datL['spm_light_metallicity_err_plus'][ok], datL['spm_light_metallicity_err_minus'][ok]], y=datL['logOH_tremonti04'][ok], yerr=datL['logOH_tremonti04_err'][ok],fmt='o',elinewidth=2, mfc='none',label='GP')
+#p.plot([-1,2],[-1,2],'k--')
 p.legend(loc=2)
 p.xlabel('log(Z/Zsun) SPM')
-p.ylabel(r'12+log(O/H) GP')
+p.ylabel(r'12+log(O/H) (line ratios Tremonti 04 estimator)')
 #p.xlim((-1,2))
 #p.ylim((-1,2))
 p.grid()
 p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "metal-comparison-1.png"))
 p.clf()
 
-#spm_light_metallicity,spm_light_metallicity_err_plus,spm_light_metallicity_err_minus
-#gp_12logOH_tremonti04_intrinsic,gp_12logOH_tremonti04_intrinsic_err
+# SFR comparison
+o2_sfr_conv =  10**(0.27) * 10**(-41) 
+hb_sfr_conv = 10**(0.58) * 10**(-41)
 
-ok = (gp_12logOH_tremonti04_intrinsic!=-9999.99) &  (gp_12logOH_tremonti04_intrinsic_err!=-9999.99)
+sfrO2 = data['L_mean']*o2_sfr_conv
+sfrO2_up = data['L_max']*o2_sfr_conv
+sfrO2_low = data['L_min']*o2_sfr_conv
+
+sfrHb = data['L_mean']*hb_sfr_conv
+sfrHb_up = data['L_max']*hb_sfr_conv
+sfrHb_low = data['L_min']*hb_sfr_conv
+
+
+Nst = (data['N_in_stack']==400)
+hb = (data['lineWavelength']==4862.0) & (Nst)
+o2 = (data['lineWavelength']==3728.0) & (Nst)
+o3 = (data['lineWavelength']==5007.0) & (Nst)
 
 p.figure(0,(6,6))
-p.axes([0.17,0.17,0.8,0.8])
-p.errorbar(x=spm_light_metallicity[ok], xerr=[spm_light_metallicity_err_plus[ok], spm_light_metallicity_err_minus[ok]], y=gp_12logOH_tremonti04_intrinsic[ok], yerr=gp_12logOH_tremonti04_intrinsic_err[ok],fmt='o',elinewidth=2, mfc='none')
-p.plot([-1,2],[-1,2],'k--')
-p.legend(loc=2)
-p.xlabel('log(Z/Zsun) SPM')
-p.ylabel(r'12+log(O/H) GP intrinsic')
-#p.xlim((-1,2))
-#p.ylim((-1,2))
-p.grid()
-p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "metal-comparison-2.png"))
+p.axes([0.17,0.17,0.8,0.75])
+#p.plot(x_obs_1, y_obs_1, )
+ttt = p.scatter(data['spm_stellar_mass'][hb], data['spm_light_metallicity'][hb], marker='s', s=30, c=data['Redshift'][hb],label='Hb')
+ttt.set_edgecolor('face')
+ttt = p.scatter(data['spm_stellar_mass'][o2], data['spm_light_metallicity'][o2], marker ='o',  s=30, c=data['Redshift'][o2],label='O2')
+ttt.set_edgecolor('face')
+ttt = p.scatter(data['spm_stellar_mass'][o3], data['spm_light_metallicity'][o3], marker ='^',  s=30, c=data['Redshift'][o3],label='O3')
+ttt.set_edgecolor('face')
+cb = p.colorbar(shrink=0.8)
+cb.set_label('redshift')
+p.ylabel(r'$log([Z/H])$')
+p.xlabel('$\log(M_*)$')
+#p.title(r'$0.7<z<0.85$ ELG')
+p.legend(loc=3)
+p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "mass-metallicity-redshift-all-hb-o2-o3-400.png"))
 p.clf()
 
-# SFR comparison
 
-ok = (gp_SFR_O2_3728!=-9999.99) &  (gp_SFR_O2_3728_err!=-9999.99)&(gp_SFR_H1_4862!=-9999.99) &  (gp_SFR_H1_4862_err!=-9999.99)
+Nst = (data['N_in_stack']==100)
+hb = (data['lineWavelength']==4862.0) & (Nst)
+o2 = (data['lineWavelength']==3728.0) & (Nst)
+o3 = (data['lineWavelength']==5007.0) & (Nst)
+
+p.figure(0,(6,6))
+p.axes([0.17,0.17,0.8,0.75])
+#p.plot(x_obs_1, y_obs_1, )
+ttt = p.scatter(data['spm_stellar_mass'][hb], data['spm_light_metallicity'][hb], marker='s', s=30, c=data['Redshift'][hb],label='Hb')
+ttt.set_edgecolor('face')
+ttt = p.scatter(data['spm_stellar_mass'][o2], data['spm_light_metallicity'][o2], marker ='o',  s=30, c=data['Redshift'][o2],label='O2')
+ttt.set_edgecolor('face')
+ttt = p.scatter(data['spm_stellar_mass'][o3], data['spm_light_metallicity'][o3], marker ='^',  s=30, c=data['Redshift'][o3],label='O3')
+ttt.set_edgecolor('face')
+cb = p.colorbar(shrink=0.8)
+cb.set_label('redshift')
+p.ylabel(r'$log([Z/H])$')
+p.xlabel('$\log(M_*)$')
+#p.title(r'$0.7<z<0.85$ ELG')
+p.legend(loc=3)
+p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "mass-metallicity-redshift-all-hb-o2-o3-100.png"))
+p.clf()
+
+
+Nst = (data['N_in_stack']==200)
+hb = (data['lineWavelength']==4862.0) & (Nst)
+o2 = (data['lineWavelength']==3728.0) & (Nst)
+o3 = (data['lineWavelength']==5007.0) & (Nst)
+
+p.figure(0,(6,6))
+p.axes([0.17,0.17,0.8,0.75])
+#p.plot(x_obs_1, y_obs_1, )
+ttt = p.scatter(data['spm_stellar_mass'][hb], data['spm_light_metallicity'][hb], marker='s', s=30, c=data['Redshift'][hb],label='Hb')
+ttt.set_edgecolor('face')
+ttt = p.scatter(data['spm_stellar_mass'][o2], data['spm_light_metallicity'][o2], marker ='o',  s=30, c=data['Redshift'][o2],label='O2')
+ttt.set_edgecolor('face')
+ttt = p.scatter(data['spm_stellar_mass'][o3], data['spm_light_metallicity'][o3], marker ='^',  s=30, c=data['Redshift'][o3],label='O3')
+ttt.set_edgecolor('face')
+cb = p.colorbar(shrink=0.8)
+cb.set_label('redshift')
+p.ylabel(r'$log([Z/H])$')
+p.xlabel('$\log(M_*)$')
+#p.title(r'$0.7<z<0.85$ ELG')
+p.legend(loc=3)
+p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "mass-metallicity-redshift-all-hb-o2-o3-200.png"))
+p.clf()
+
+
+
+Nst = (data['N_in_stack']==200)
+hb = (data['lineWavelength']==4862.0) & (Nst)
+o2 = (data['lineWavelength']==3728.0) & (Nst)
+o3 = (data['lineWavelength']==5007.0) & (Nst)
+
+p.figure(0,(6,6))
+p.axes([0.17,0.17,0.8,0.75])
+#p.plot(x_obs_1, y_obs_1, )
+ttt = p.scatter(data['spm_stellar_mass'][hb], data['spm_light_metallicity'][hb], marker='s', s=30, c=n.log10(sfrHb[hb]),label='Hb')
+ttt.set_edgecolor('face')
+ttt = p.scatter(data['spm_stellar_mass'][o2], data['spm_light_metallicity'][o2], marker ='o',  s=30, c=n.log10(sfrO2[o2]),label='O2')
+ttt.set_edgecolor('face')
+cb = p.colorbar(shrink=0.8)
+cb.set_label('log(SFR)')
+p.ylabel(r'$log([Z/H])$')
+p.xlabel('$\log(M_*)$')
+#p.title(r'$0.7<z<0.85$ ELG')
+p.legend(loc=3)
+p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "mass-metallicity-sfr-all-hb-o2-200.png"))
+p.clf()
+
+
+Nst = (data['N_in_stack']==400)
+hb = (data['lineWavelength']==4862.0) & (Nst)
+o2 = (data['lineWavelength']==3728.0) & (Nst)
+o3 = (data['lineWavelength']==5007.0) & (Nst)
+
+p.figure(0,(6,6))
+p.axes([0.17,0.17,0.8,0.75])
+#p.plot(x_obs_1, y_obs_1, )
+ttt = p.scatter(data['spm_stellar_mass'][hb], data['spm_light_metallicity'][hb], marker='s', s=30, c=n.log10(sfrHb[hb]),label='Hb')
+ttt.set_edgecolor('face')
+ttt = p.scatter(data['spm_stellar_mass'][o2], data['spm_light_metallicity'][o2], marker ='o',  s=30, c=n.log10(sfrO2[o2]),label='O2')
+ttt.set_edgecolor('face')
+cb = p.colorbar(shrink=0.8)
+cb.set_label('log(SFR)')
+p.ylabel(r'$log([Z/H])$')
+p.xlabel('$\log(M_*)$')
+#p.title(r'$0.7<z<0.85$ ELG')
+p.legend(loc=3)
+p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "mass-metallicity-sfr-all-hb-o2-400.png"))
+p.clf()
+
+
+Nst = (data['N_in_stack']==100)
+hb = (data['lineWavelength']==4862.0) & (Nst)
+o2 = (data['lineWavelength']==3728.0) & (Nst)
+o3 = (data['lineWavelength']==5007.0) & (Nst)
+
+p.figure(0,(6,6))
+p.axes([0.17,0.17,0.8,0.75])
+#p.plot(x_obs_1, y_obs_1, )
+ttt = p.scatter(data['spm_stellar_mass'][hb], data['spm_light_metallicity'][hb], marker='s', s=30, c=n.log10(sfrHb[hb]),label='Hb')
+ttt.set_edgecolor('face')
+ttt = p.scatter(data['spm_stellar_mass'][o2], data['spm_light_metallicity'][o2], marker ='o',  s=30, c=n.log10(sfrO2[o2]),label='O2')
+ttt.set_edgecolor('face')
+cb = p.colorbar(shrink=0.8)
+cb.set_label('log(SFR)')
+p.ylabel(r'$log([Z/H])$')
+p.xlabel('$\log(M_*)$')
+#p.title(r'$0.7<z<0.85$ ELG')
+p.legend(loc=3)
+p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "mass-metallicity-sfr-all-hb-o2-100.png"))
+p.clf()
+
+
+
+
+
+
+Nst = (data['N_in_stack']==100)&(data['Redshift']>=0.7)&(data['Redshift']<=0.85)
+hb = (data['lineWavelength']==4862.0) & (Nst)
+o2 = (data['lineWavelength']==3728.0) & (Nst)
+o3 = (data['lineWavelength']==5007.0) & (Nst)
+
+p.figure(0,(6,6))
+p.axes([0.17,0.17,0.8,0.75])
+#p.plot(x_obs_1, y_obs_1, )
+ttt = p.scatter(data['spm_stellar_mass'][hb], data['spm_light_metallicity'][hb], marker='s', s=30, c=n.log10(sfrHb[hb]),label='Hb')
+ttt.set_edgecolor('face')
+ttt = p.scatter(data['spm_stellar_mass'][o2], data['spm_light_metallicity'][o2], marker ='o',  s=30, c=n.log10(sfrO2[o2]),label='O2')
+ttt.set_edgecolor('face')
+cb = p.colorbar(shrink=0.8)
+cb.set_label('log(SFR)')
+p.ylabel(r'$log([Z/H])$')
+p.xlabel('$\log(M_*)$')
+p.title(r'$0.7<z<0.85$ ELG')
+p.legend(loc=3)
+p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "mass-metallicity-sfr-07z085-hb-o2-100.png"))
+p.clf()
+
+
+Nst = (data['N_in_stack']==200)&(data['Redshift']>=0.7)&(data['Redshift']<=0.85)
+hb = (data['lineWavelength']==4862.0) & (Nst)
+o2 = (data['lineWavelength']==3728.0) & (Nst)
+o3 = (data['lineWavelength']==5007.0) & (Nst)
+
+p.figure(0,(6,6))
+p.axes([0.17,0.17,0.8,0.75])
+#p.plot(x_obs_1, y_obs_1, )
+ttt = p.scatter(data['spm_stellar_mass'][hb], data['spm_light_metallicity'][hb], marker='s', s=30, c=n.log10(sfrHb[hb]),label='Hb')
+ttt.set_edgecolor('face')
+ttt = p.scatter(data['spm_stellar_mass'][o2], data['spm_light_metallicity'][o2], marker ='o',  s=30, c=n.log10(sfrO2[o2]),label='O2')
+ttt.set_edgecolor('face')
+cb = p.colorbar(shrink=0.8)
+cb.set_label('log(SFR)')
+p.ylabel(r'$log([Z/H])$')
+p.xlabel('$\log(M_*)$')
+p.title(r'$0.7<z<0.85$ ELG')
+p.legend(loc=3)
+p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "mass-metallicity-sfr-07z085-hb-o2-200.png"))
+p.clf()
+
+
+
+Nst = (data['N_in_stack']==400)&(data['Redshift']>=0.7)&(data['Redshift']<=0.85)
+hb = (data['lineWavelength']==4862.0) & (Nst)
+o2 = (data['lineWavelength']==3728.0) & (Nst)
+o3 = (data['lineWavelength']==5007.0) & (Nst)
+
+p.figure(0,(6,6))
+p.axes([0.17,0.17,0.8,0.75])
+#p.plot(x_obs_1, y_obs_1, )
+ttt = p.scatter(data['spm_stellar_mass'][hb], data['spm_light_metallicity'][hb], marker='s', s=30, c=n.log10(sfrHb[hb]),label='Hb')
+ttt.set_edgecolor('face')
+ttt = p.scatter(data['spm_stellar_mass'][o2], data['spm_light_metallicity'][o2], marker ='o',  s=30, c=n.log10(sfrO2[o2]),label='O2')
+ttt.set_edgecolor('face')
+cb = p.colorbar(shrink=0.8)
+cb.set_label('log(SFR)')
+p.ylabel(r'$log([Z/H])$')
+p.xlabel('$\log(M_*)$')
+p.title(r'$0.7<z<0.85$ ELG')
+p.legend(loc=3)
+p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "mass-metallicity-sfr-07z085-hb-o2-400.png"))
+p.clf()
+
+
+
+
+# mass metallicity relation
+# Mannucci et al. 2010 :
+y_rel = lambda x_rel : 8.90 + 0.39*x_rel - 0.20*x_rel*x_rel - 0.077*x_rel*x_rel*x_rel + 0.064*x_rel*x_rel*x_rel*x_rel
+x_rel = n.arange(8.5,11.5,0.05) - 10 
+y_pr = y_rel(x_rel)
+
+Nst =  (data['logOH_tremonti04']!=-9999.99) # (data['Redshift']>=0.7)&(data['Redshift']<=0.85) &(data['N_in_stack']==400)&
+hb = (data['lineWavelength']==4862.0) & (Nst)
+o2 = (data['lineWavelength']==3728.0) & (Nst)
+o3 = (data['lineWavelength']==5007.0) & (Nst)
+
+x_obs_1 = data['spm_stellar_mass'] - 0.32 * n.log10(sfrHb) - 10
+x_obs_2 = data['spm_stellar_mass'] - 0.32 * n.log10(sfrO2) - 10
+y_obs_1 = 9.185-0.313* data['logOH_tremonti04'] - 0.264 * data['logOH_tremonti04']**2 - 0.321 * data['logOH_tremonti04']**3
+
+p.figure(0,(6,6))
+p.axes([0.17,0.17,0.8,0.75])
+#p.plot(x_obs_1, y_obs_1, )
+p.plot(x_obs_1[hb], data['logOH_tremonti04'][hb], 'bo',label='Hb')
+p.plot(x_obs_2[o2], data['logOH_tremonti04'][o2], 'r*',label='O2')
+p.plot(x_rel, y_pr, label='Manucci 2010')
+p.ylabel(r'$12+log(OH)$')
+p.xlabel('$\log(M_*)-0.32 log(SFR) - 10$')
+p.title(r'$0.7<z<0.85$ ELG')
+p.legend(loc=2)
+p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "manucci-2010-relation-all-hb-o2.png"))
+p.clf()
+
+
+Nst =  (datL['logOH_tremonti04']!=-9999.99) # (datL['Redshift']>=0.7)&(datL['Redshift']<=0.85) &(datL['N_in_stack']==400)&
+hb = (datL['lineWavelength']==4862.0) & (Nst)
+o2 = (datL['lineWavelength']==3728.0) & (Nst)
+o3 = (datL['lineWavelength']==5007.0) & (Nst)
+
+x_obs_1 = datL['spm_stellar_mass'] - 0.32 * n.log10(sfrHb) - 10
+x_obs_2 = datL['spm_stellar_mass'] - 0.32 * n.log10(sfrO2) - 10
+y_obs_1 = 9.185-0.313* datL['logOH_tremonti04'] - 0.264 * datL['logOH_tremonti04']**2 - 0.321 * datL['logOH_tremonti04']**3
+
+p.figure(0,(6,6))
+p.axes([0.17,0.17,0.8,0.75])
+#p.plot(x_obs_1, y_obs_1, )
+p.plot(x_obs_1[hb], datL['logOH_tremonti04'][hb], 'bo',label='Hb')
+p.plot(x_obs_2[o2], datL['logOH_tremonti04'][o2], 'r*',label='O2')
+p.plot(x_rel, y_pr, label='Manucci 2010')
+p.ylabel(r'$12+log(OH)$')
+p.xlabel('$\log(M_*)-0.32 log(SFR) - 10$')
+p.title(r'$0.7<z<0.85$ ELG')
+p.legend(loc=2)
+p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "manucci-2010-GP-relation-all-hb-o2.png"))
+p.clf()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 p.figure(0,(6,6))
 p.axes([0.17,0.17,0.8,0.8])
