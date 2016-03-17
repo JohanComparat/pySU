@@ -7,6 +7,6 @@ for ii in n.arange(len(ll)):
 	incat = ll[ii]
 	for jj in range(len(vbins)-1):
 		outfile = incat[:-5] + "_" +str(n.round(vbins[jj],2))+ "_" +str(n.round(vbins[jj+1],2)) + "xiR.pkl"
-		box.compute2PCF(incat,outfile,vmin=vbins[jj],vmax=vbins[jj+1],rmin=4,rmax=30)
+		box.compute2PCF(incat,outfile,vmin=vbins[jj],vmax=vbins[jj+1],rmin=10,rmax=20)
 
 
