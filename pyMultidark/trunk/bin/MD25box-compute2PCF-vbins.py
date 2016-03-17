@@ -5,6 +5,6 @@ ll = n.array( glob.glob( "/data2/DATA/eBOSS/Multidark-lightcones/MD_2.5Gpc/snaps
 
 for ii in n.arange(len(ll)):
 	incat = ll[ii]
-	box.compute2PCF(incat,outfile,vmin=400,rmin=15,rmax=40)
+	box.compute2PCF(incat,vmin=400,rmin=15,rmax=40)
 
 

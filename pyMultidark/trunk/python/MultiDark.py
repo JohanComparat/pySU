@@ -158,7 +158,7 @@ class MultiDarkSimulation :
 		thdulist = fits.HDUList([prihdu, tb_hdu])
 		thdulist.writeto(self.snl[ii][:-5]+"_Nb_"+str(Nb)+".fits")
 	
-	def compute2PCF(self, catalog, outfile, vmin=400, rmin=4, rmax=60, dlogBin=0.01):
+	def compute2PCF(self, catalog, vmin=400, rmin=4, rmax=60, dlogBin=0.01):
 		"""
 		Extracts the 2PCF out of a catalog of halos        
 		:param catalog: where the catalog is
