@@ -6,6 +6,6 @@ box = MultiDarkSimulation(Lbox=2500.0 * uu.Mpc, boxDir = "MD_1Gpc_new_rockS",snl
 
 
 for ii in n.arange(len(box.snl)):
-	box.writePositionCatalog(ii,100, 50000,1000)
+	box.writePositionCatalog(ii,100, 50000,10000000)
 
 
