@@ -21,10 +21,16 @@ from os.path import join
 from scipy.optimize import minimize
 
 dir = join("D:","data","MultiDark")
-dir_04 = join(dir,"MD_0.4Gpc","halo_bias","clustering")
-dir_10 = join(dir,"MD_1Gpc","halo_bias","clustering")
-dir_25 = join(dir,"MD_2.5Gpc","halo_bias","clustering")
-dir_40 = join(dir,"MD_4Gpc","halo_bias","clustering")
+
+dir_04 = join(dir,"MD_0.4Gpc")
+dir_10 = join(dir,"MD_1Gpc")
+dir_25 = join(dir,"MD_2.5Gpc")
+dir_40 = join(dir,"MD_4Gpc")
+
+dir_04_b = join(dir,"MD_0.4Gpc","halo_bias","clustering")
+dir_10_b = join(dir,"MD_1Gpc","halo_bias","clustering")
+dir_25_b = join(dir,"MD_2.5Gpc","halo_bias","clustering")
+dir_40_b = join(dir,"MD_4Gpc","halo_bias","clustering")
 
 dir_boxes =  n.array([dir_04, dir_10, dir_25, dir_40])
 zList_files = n.array([ join(dir_box,"redshift-list.txt") for dir_box in dir_boxes])
@@ -32,7 +38,7 @@ zList_files = n.array([ join(dir_box,"redshift-list.txt") for dir_box in dir_box
 snn, redshift = n.loadtxt(zList_files[2],unpack=True)
 sn2z = {snn[i]: redshift[i] for i in range(len(snn))}
 
-ll = n.array( glob.glob(join(dir_25,"*.pkl" ) ))
+ll = n.array( glob.glob(join(dir_25_b,"*.pkl" ) ))
 ll.sort()
 snapNum = n.empty(len(ll),dtype=int)
 vmin = n.empty(len(ll))

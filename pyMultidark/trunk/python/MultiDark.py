@@ -56,7 +56,7 @@ class MultiDarkSimulation :
 		self.Msun = 1.98892 * 10**(33.) # g
 		self.Npart = 3840
 		self.force_resolution = 5. # kpc /h
-		self.columnDict = {'id': 0, 'desc_id': 1, 'mvir': 2, 'vmax': 3, 'vrms': 4, 'rvir': 5, 'rs': 6, 'Np' : 7, 'x': 8, 'y': 9, 'z': 10, 'vx': 11, 'vy': 12, 'vz': 13, 'Jx': 14, 'Jy': 15, 'Jz': 16, 'Spin': 17, 'Rs_Klypin': 18, 'Mmvir_all': 19, 'M200b': 20, 'M200c': 21, 'M500c': 22, 'M2500c': 23,'Xoff': 24, 'Voff': 25, 'Spin_Bullock': 26, 'b_to_a': 27, 'c_to_a': 28, 'Ax': 29, 'Ay': 30, 'Az': 31, 'b_to_a_500c': 32, 'c_to_a_500c': 33, 'Ax_500c': 34, 'Ay_500c': 35, 'Az_500c': 36, 'TU': 37, 'M_pe_Behroozi': 38, 'M_pe_Diemer': 39, 'pid': 40}
+		#self.columnDict = {'id': 0, 'desc_id': 1, 'mvir': 2, 'vmax': 3, 'vrms': 4, 'rvir': 5, 'rs': 6, 'Np' : 7, 'x': 8, 'y': 9, 'z': 10, 'vx': 11, 'vy': 12, 'vz': 13, 'Jx': 14, 'Jy': 15, 'Jz': 16, 'Spin': 17, 'Rs_Klypin': 18, 'Mmvir_all': 19, 'M200b': 20, 'M200c': 21, 'M500c': 22, 'M2500c': 23,'Xoff': 24, 'Voff': 25, 'Spin_Bullock': 26, 'b_to_a': 27, 'c_to_a': 28, 'Ax': 29, 'Ay': 30, 'Az': 31, 'b_to_a_500c': 32, 'c_to_a_500c': 33, 'Ax_500c': 34, 'Ay_500c': 35, 'Az_500c': 36, 'TU': 37, 'M_pe_Behroozi': 38, 'M_pe_Diemer': 39, 'pid': 40}
 
 		if self.boxDir == "MD_0.4Gpc":
 			self.Melement = 9.63 * 10**7 # Msun
@@ -89,7 +89,7 @@ class MultiDarkSimulation :
 		if self.boxDir == "MD_1Gpc_new_rockS" :
 			self.columnDictHlist = {'id': 0, 'desc_id': 1, 'mvir': 2, 'vmax': 3, 'vrms': 4, 'rvir': 5, 'rs': 6, 'Np': 7, 'x': 8, 'y': 9, 'z': 10, 'vx': 11, 'vy': 12, 'vz': 13, 'Jx': 14, 'Jy': 15, 'Jz': 16, 'Spin':17, 'Rs_Klypin': 18, 'Mmvir_all': 19, 'M200b': 20, 'M200c': 21, 'M500c': 22, 'M2500c': 23, 'Xoff': 24, 'Voff': 25, 'Spin_Bullock': 26, 'b_to_a': 27, 'c_to_a': 28, 'Ax': 29, 'Ay': 30, 'Az': 31, 'b_to_a_500c': 32, 'c_to_a_500c': 33, 'Ax_500c': 34, 'Ay_500c': 35, 'Az_500c': 36, 'TU': 37, 'M_pe_Behroozi': 38, 'M_pe_Diemer': 39, 'pid': 40}
 
-	def writePositionCatalog(self, ii, vmin=70, vmax=3500, NperBatch = 1000000):
+	def writePositionCatalog(self, ii, vmin=70, vmax=10000, NperBatch = 10000000):
 		"""
 		Extracts the positions and velocity out of a snapshot of the Multidark simulation.        
 		:param ii: index of the snapshot in the list self.snl
@@ -188,11 +188,10 @@ class MultiDarkSimulation :
 				print nD, nR
 				
 				bin_xi3D=n.arange(0, rmax, 2.)
-				rs=(bin_xi3D[1:] * bin_xi3D[:-1])**0.5
 				pairs=treeData.count_neighbors(treeRandoms, bin_xi3D)
 
 				DR=pairs[1:]-pairs[:-1]
-				dV=4*n.pi*(bin_xi3D[1:]**3 - bin_xi3D[:-1]**3 )
+				dV=4*n.pi*(bin_xi3D[1:]**3 - bin_xi3D[:-1]**3 )/3.
 				pairCount=nD*nR-nD*(1+nD)/2.
 				xis = DR*volume/(dV * pairCount) -1.
 				hdu.close()
