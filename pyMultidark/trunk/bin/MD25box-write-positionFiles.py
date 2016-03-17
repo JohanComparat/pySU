@@ -3,6 +3,6 @@ box = MultiDarkSimulation(Lbox=2500.0 * uu.Mpc,wdir="/data2/DATA/eBOSS/Multidark
 
 
 for ii in n.arange(len(box.snl)):
-	box.writePositionCatalog(ii,400, 3000)
+	box.writePositionCatalog(ii,400, 3000,1000)
 
 

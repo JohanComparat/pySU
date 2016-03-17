@@ -147,6 +147,7 @@ class MultiDarkSimulation :
 		prihdr = fits.Header()
 		prihdr['nameSnapshot'] = nameSnapshot
 		prihdr['batchN'] = Nb
+		prihdr['count'] = count
 		prihdu = fits.PrimaryHDU(header=prihdr)
 		#writes the file
 		thdulist = fits.HDUList([prihdu, tb_hdu])
