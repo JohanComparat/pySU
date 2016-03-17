@@ -112,6 +112,8 @@ class MultiDarkSimulation :
 				
 			if count == NperBatch -1 :
 				print "count",count
+				print output
+				print output.shape
 				#define the columns
 				col0 = fits.Column(name='x',format='D', array= n.array([output.T[0]]))
 				col1 = fits.Column(name='y',format='D', array= n.array([output.T[1]]))
