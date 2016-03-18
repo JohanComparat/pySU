@@ -193,7 +193,7 @@ class MultiDarkSimulation :
 				nD=len(treeData.data)
 				nR=len(treeRandoms.data)
 				print nD, nR
-				bin_xi3D=n.arange(0, rmax, 2.)
+				bin_xi3D=n.arange(0, rmax, 1.)
 				# now does the pair counts :
 				pairs=treeData.count_neighbors(treeRandoms, bin_xi3D)
 				t3 = time.time()
@@ -206,6 +206,7 @@ class MultiDarkSimulation :
 				f.close()
 				t4 = time.time()
 				print "total time in s, min",t4 - t0, (t4 - t0)/60.
+				return DR, volume, dV, pairCount, pairs, nD, nR
 
 			if  len(xR)>Nmax:
 				print vbins[jj], vbins[jj+1], "downsampling ..."
