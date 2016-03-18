@@ -183,6 +183,7 @@ class MultiDarkSimulation :
 			yR = n.hstack(( n.array([ hdus[ii]['y'][sel[ii]] for ii in range(len(hdus)) ]) ))
 			zR = n.hstack(( n.array([ hdus[ii]['z'][sel[ii]] for ii in range(len(hdus)) ]) ))
 			if len(xR)>50000:
+				print vbins[jj], vbins[jj+1]
 				insideSel=(xR>rmax)&(xR<self.Lbox.value-rmax)&(yR>rmax)&(yR<self.Lbox.value-rmax)&(zR>rmax)&(zR<self.Lbox.value-rmax)
 				volume=(self.Lbox.value-rmax*2)**3
 				# defines the trees
@@ -191,6 +192,7 @@ class MultiDarkSimulation :
 				treeData=t.cKDTree(n.transpose([xR[insideSel],yR[insideSel],zR[insideSel]]),1000.0)
 				nD=len(treeData.data)
 				nR=len(treeRandoms.data)
+				print nD, nR
 				bin_xi3D=n.arange(0, rmax, 2.)
 				# now does the pair counts :
 				pairs=treeData.count_neighbors(treeRandoms, bin_xi3D)
