@@ -169,20 +169,22 @@ class MultiDarkSimulation :
 		:param vmin: minimum circular velocity.
 		:param dlogBin: bin width.
 		:param rmax: maximum distance
-		"""		
-		hdu = fits.open(catalog)
+		"""
+		hdus = []
+		for ii in n.arange(len(catalogList)):
+			hdus.append( fits.open(catalogList[ii])[1].data )
+
 		vbins = 10**n.arange(n.log10(vmin),4. ,dlogBin)
 		for jj in range(len(vbins)-1):
 			outfile = ll[0][:-10] + "_vmax_" +str(n.round(vbins[jj],2))+ "_" +str(n.round(vbins[jj+1],2)) + "_xiR.pkl"
 			t0 = time.time()
 			sel = n.array([ (hdu['vmax']>vbins[jj])&(hdu['vmax']<vbins[jj+1]) for hdu in hdus])
-
 			xR = n.hstack(( n.array([ hdus[ii]['x'][sel[ii]] for ii in range(len(hdus)) ]) ))
 			yR = n.hstack(( n.array([ hdus[ii]['y'][sel[ii]] for ii in range(len(hdus)) ]) ))
 			zR = n.hstack(( n.array([ hdus[ii]['z'][sel[ii]] for ii in range(len(hdus)) ]) ))
 			if len(xR)>50000:
-				insideSel=(xR>rmax)&(xR<Lbox-rmax)&(yR>rmax)&(yR<Lbox-rmax)&(zR>rmax)&(zR<Lbox-rmax)
-				volume=(Lbox-rmax*2)**3
+				insideSel=(xR>rmax)&(xR<self.Lbox.value-rmax)&(yR>rmax)&(yR<self.Lbox.value-rmax)&(zR>rmax)&(zR<self.Lbox.value-rmax)
+				volume=(self.Lbox.value-rmax*2)**3
 				# defines the trees
 				print "creates trees"
 				treeRandoms=t.cKDTree(n.transpose([xR,yR,zR]),1000.0)
