@@ -51,7 +51,7 @@ for ii in range(len(ll)):
 	zz[ii] = sn2z[snapNum[ii]]
 
 
-sel = (snapNum ==9)
+sel = (snapNum ==46)
 xi = n.empty((len(ll[sel]),19))
 for ii, file in enumerate(ll[sel]):
 	f=open(file,'r')
@@ -62,11 +62,13 @@ rr = (bin_xi3D[1:] + bin_xi3D[:-1])/2.
 	
 p.figure(0,(10,6))
 p.axes([0.17,0.17,0.6,0.8])
-for ii, file in enumerate(ll[sel]):
+for ii in n.arange(len(ll[sel]))[::3]:
 	p.plot(rr,rr*rr*xi[ii],label=str(n.round(vmin[sel][ii])))
 
 p.xlabel('r Mpc/h')
-p.ylabel('r r xi(r)')
+p.ylabel(' r xi(r)')
+#p.yscale('log')
+#p.xscale('log')
 gl = p.legend(bbox_to_anchor=(1.05, 1), loc=2,fontsize=10)
 gl.set_frame_on(False)
 p.grid()
