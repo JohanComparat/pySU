@@ -207,9 +207,9 @@ class MultiDarkSimulation :
 				t4 = time.time()
 				print "total time in s, min",t4 - t0, (t4 - t0)/60.
 
-			if len(xR)>50000 and len(xR)>Nmax:
+			if  len(xR)>Nmax:
 				print vbins[jj], vbins[jj+1], "downsampling ..."
-				downSamp = (n.random.random(len(xR))<Nmax / float(len(xR))
+				downSamp = (n.random.random(len(xR))<Nmax / float(len(xR)) )
 				xR = xR[downSamp]
 				yR = yR[downSamp]
 				zR = zR[downSamp]
