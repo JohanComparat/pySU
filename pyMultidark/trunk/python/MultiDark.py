@@ -162,7 +162,7 @@ class MultiDarkSimulation :
 		os.system("rm "+self.snl[ii][:-5]+"_Nb_"+str(Nb)+".fits")
 		thdulist.writeto(self.snl[ii][:-5]+"_Nb_"+str(Nb)+".fits")
 	
-	def compute2PCF(self, catalogList, vmin=200, rmax=31, dlogBin=0.05, Nmax=1000000.):
+	def compute2PCF(self, catalogList, vmin=200, rmax=41, dlogBin=0.01, Nmax=1000000.):
 		"""
 		Extracts the 2PCF out of a catalog of halos        
 		:param catalog: where the catalog is
@@ -182,6 +182,7 @@ class MultiDarkSimulation :
 			xR = n.hstack(( n.array([ hdus[ii]['x'][sel[ii]] for ii in range(len(hdus)) ]) ))
 			yR = n.hstack(( n.array([ hdus[ii]['y'][sel[ii]] for ii in range(len(hdus)) ]) ))
 			zR = n.hstack(( n.array([ hdus[ii]['z'][sel[ii]] for ii in range(len(hdus)) ]) ))
+			Ntotal = len(xR)
 			if len(xR)>50000 and len(xR)<=Nmax:
 				print vbins[jj], vbins[jj+1]
 				insideSel=(xR>rmax)&(xR<self.Lbox.value-rmax)&(yR>rmax)&(yR<self.Lbox.value-rmax)&(zR>rmax)&(zR<self.Lbox.value-rmax)
@@ -198,7 +199,7 @@ class MultiDarkSimulation :
 				pairs=treeData.count_neighbors(treeRandoms, bin_xi3D)
 				t3 = time.time()
 				DR=pairs[1:]-pairs[:-1]
-				dV=4*n.pi*(bin_xi3D[1:]**3 - bin_xi3D[:-1]**3 )/3.
+				dV= (bin_xi3D[1:]**3 - bin_xi3D[:-1]**3 )*4*n.pi/3.
 				pairCount=nD*nR#-nD*(nD-1)/2.
 				xis = DR*volume/(dV * pairCount) -1.
 				f=open(outfile,'w')
