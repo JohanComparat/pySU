@@ -6,6 +6,15 @@ all=n.array([ 0.25320, 0.33030, 0.36090 ])
 a= all[0]
 
 ll = n.array( glob.glob( "/data2/DATA/eBOSS/Multidark-lightcones/MD_1Gpc_new_rockS/snapshots/*"+str(a)+"*.fits" ) )
-box.compute2PCF(ll, vmin=200, rmax=41, dlogBin=0.05)
+box.compute2PCF(ll)
 
 
+a= all[1]
+
+ll = n.array( glob.glob( "/data2/DATA/eBOSS/Multidark-lightcones/MD_1Gpc_new_rockS/snapshots/*"+str(a)+"*.fits" ) )
+box.compute2PCF(ll)
+
+a= all[2]
+
+ll = n.array( glob.glob( "/data2/DATA/eBOSS/Multidark-lightcones/MD_1Gpc_new_rockS/snapshots/*"+str(a)+"*.fits" ) )
+box.compute2PCF(ll)
