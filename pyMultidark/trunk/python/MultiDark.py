@@ -237,6 +237,7 @@ class MultiDarkSimulation :
 				f.close()
 				t4 = time.time()
 				print "total time in s, min",t4 - t0, (t4 - t0)/60.
+				return DR, volume, dV, pairCount, pairs, nD, nR
 
 
 	def computeSingleDistributionFunction(self, ii, name, bins, Mfactor=100. ) :
