@@ -176,7 +176,7 @@ class MultiDarkSimulation :
 
 		vbins = 10**n.arange(n.log10(vmin),4. ,dlogBin)
 		for jj in range(len(vbins)-1):
-			outfile = ll[0][:-10] + "_vmax_" +str(n.round(vbins[jj],2))+ "_" +str(n.round(vbins[jj+1],2)) + "_xiR.pkl"
+			outfile = catalogList[0][:-10] + "_vmax_" +str(n.round(vbins[jj],2))+ "_" +str(n.round(vbins[jj+1],2)) + "_xiR.pkl"
 			t0 = time.time()
 			sel = n.array([ (hdu['vmax']>vbins[jj])&(hdu['vmax']<vbins[jj+1]) for hdu in hdus])
 			xR = n.hstack(( n.array([ hdus[ii]['x'][sel[ii]] for ii in range(len(hdus)) ]) ))
