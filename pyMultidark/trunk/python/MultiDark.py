@@ -162,7 +162,7 @@ class MultiDarkSimulation :
 		os.system("rm "+self.snl[ii][:-5]+"_Nb_"+str(Nb)+".fits")
 		thdulist.writeto(self.snl[ii][:-5]+"_Nb_"+str(Nb)+".fits")
 	
-	def compute2PCF(self, catalog, vmin=400, rmax=60, dlogBin=0.02):
+	def compute2PCF(self, catalogList, vmin=200, rmax=50, dlogBin=0.05):
 		"""
 		Extracts the 2PCF out of a catalog of halos        
 		:param catalog: where the catalog is
@@ -171,38 +171,38 @@ class MultiDarkSimulation :
 		:param rmax: maximum distance
 		"""		
 		hdu = fits.open(catalog)
-		vbins = 10**n.arange(n.log10(vmin), n.log10(n.max(hdu[1].data['vmax'])),dlogBin)
+		vbins = 10**n.arange(n.log10(vmin),4. ,dlogBin)
 		for jj in range(len(vbins)-1):
-			print vbins[jj]
-			outfile = catalog[:-5] + "_" +str(n.round(vbins[jj],2))+ "_" +str(n.round(vbins[jj+1],2)) + "_xiR.pkl"
-			sel = (hdu[1].data['vmax']>vbins[jj])&(hdu[1].data['vmax']<vbins[jj+1])
-			if len(hdu[1].data['vmax'][sel])>1000:
-				print time.time()
-				xR = hdu[1].data['x'][sel]
-				yR = hdu[1].data['y'][sel]
-				zR = hdu[1].data['z'][sel]
-				insideSel=(xR>rmax)&(xR<self.Lbox.value-rmax)&(yR>rmax)&(yR<self.Lbox.value-rmax)&(zR>rmax)&(zR<self.Lbox.value-rmax)
-				volume=(self.Lbox.value-rmax*2)**3
+			outfile = ll[0][:-10] + "_vmax_" +str(n.round(vbins[jj],2))+ "_" +str(n.round(vbins[jj+1],2)) + "_xiR.pkl"
+			t0 = time.time()
+			sel = n.array([ (hdu['vmax']>vbins[jj])&(hdu['vmax']<vbins[jj+1]) for hdu in hdus])
+
+			xR = n.hstack(( n.array([ hdus[ii]['x'][sel[ii]] for ii in range(len(hdus)) ]) ))
+			yR = n.hstack(( n.array([ hdus[ii]['y'][sel[ii]] for ii in range(len(hdus)) ]) ))
+			zR = n.hstack(( n.array([ hdus[ii]['z'][sel[ii]] for ii in range(len(hdus)) ]) ))
+			if len(xR)>50000:
+				insideSel=(xR>rmax)&(xR<Lbox-rmax)&(yR>rmax)&(yR<Lbox-rmax)&(zR>rmax)&(zR<Lbox-rmax)
+				volume=(Lbox-rmax*2)**3
 				# defines the trees
 				print "creates trees"
-				treeRandoms=t.cKDTree(n.transpose([xR,yR,zR]),100.0)
-				treeData=t.cKDTree(n.transpose([xR[insideSel],yR[insideSel],zR[insideSel]]),100.0)
+				treeRandoms=t.cKDTree(n.transpose([xR,yR,zR]),1000.0)
+				treeData=t.cKDTree(n.transpose([xR[insideSel],yR[insideSel],zR[insideSel]]),1000.0)
 				nD=len(treeData.data)
 				nR=len(treeRandoms.data)
-				print nD, nR
-				
 				bin_xi3D=n.arange(0, rmax, 2.)
+				# now does the pair counts :
 				pairs=treeData.count_neighbors(treeRandoms, bin_xi3D)
-
+				t3 = time.time()
 				DR=pairs[1:]-pairs[:-1]
 				dV=4*n.pi*(bin_xi3D[1:]**3 - bin_xi3D[:-1]**3 )/3.
-				pairCount=nD*nR-nD*(1+nD)/2.
+				pairCount=nD*nR#-nD*(nD-1)/2.
 				xis = DR*volume/(dV * pairCount) -1.
-				hdu.close()
 				f=open(outfile,'w')
 				cPickle.dump([bin_xi3D,xis],f)
 				f.close()
-				print time.time()
+				t4 = time.time()
+				print "total time in s, min",t4 - t0, (t4 - t0)/60.
+
 
 	def computeSingleDistributionFunction(self, ii, name, bins, Mfactor=100. ) :
 		"""
