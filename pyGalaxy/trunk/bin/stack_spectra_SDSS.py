@@ -1,7 +1,7 @@
 import sys
 import os 
 from os.path import join
-from SpectraStacking import *
+from SpectraStackingSDSSonly import *
 import glob	
 
 dir_to_stack_list = ""
