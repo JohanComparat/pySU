@@ -20,28 +20,44 @@ import cPickle
 from os.path import join
 from scipy.optimize import minimize
 
-dir = join("D:","data","MultiDark")
 
-dir_04 = join(dir,"MD_0.4Gpc")
-dir_10 = join(dir,"MD_1Gpc")
-dir_25 = join(dir,"MD_2.5Gpc")
-dir_40 = join(dir,"MD_4Gpc")
+p.figure(0,(10,6))
+p.axes([0.17,0.17,0.6,0.8])
+f=open("MD_0.4Gpc\halo_bias\clustering\hlist_1.00000_vmax_190.0_213.18_xiR.pkl",'r')
+bin_xi3D_04,xis_04, DR_04, volume_04, dV_04, pairCount_04, pairs_04, Ntotal_04, nD_04, nR_04, vbinsL_04, vbinsH_04 = cPickle.load(f)
+f.close()
+rr = (bin_xi3D_04[1:] + bin_xi3D_04[:-1])/2.
+#p.plot(rr,xis,label="0.4 190-213")
+f=open("MD_2.5Gpc\halo_bias\clustering\hlist_80_vmax_190.0_213.18_xiR.pkl",'r')
+bin_xi3D_25,xis_25, DR_25, volume_25, dV_25, pairCount_25, pairs_25, Ntotal_25, nD_25, nR_25, vbinsL_25, vbinsH_25 = cPickle.load(f)
+f.close()
+y= (DR_25* volume_04)/ (DR_04 * volume_25)
+y= (DR_25* dV_04)/ (DR_04 * dV_25)
+print y
+p.plot(rr,y,label="Npairs(2.5)/(0.4) 190<vmax<213")
 
-dir_04_b = join(dir,"MD_0.4Gpc","halo_bias","clustering")
-dir_10_b = join(dir,"MD_1Gpc","halo_bias","clustering")
-dir_25_b = join(dir,"MD_2.5Gpc","halo_bias","clustering")
-dir_40_b = join(dir,"MD_4Gpc","halo_bias","clustering")
+f=open("MD_0.4Gpc\halo_bias\clustering\hlist_1.00000_vmax_213.18_239.2_xiR.pkl",'r')
+bin_xi3D_04,xis_04, DR_04, volume_04, dV_04, pairCount_04, pairs_04, Ntotal_04, nD_04, nR_04, vbinsL_04, vbinsH_04 = cPickle.load(f)
+f.close()
+f=open("MD_2.5Gpc\halo_bias\clustering\hlist_80_vmax_213.18_239.2_xiR.pkl",'r')
+bin_xi3D_25,xis_25, DR_25, volume_25, dV_25, pairCount_25, pairs_25, Ntotal_25, nD_25, nR_25, vbinsL_25, vbinsH_25= cPickle.load(f)
+f.close()
+y=(DR_25* volume_04)/ (DR_04 * volume_25)
+y= (DR_25* dV_04)/ (DR_04 * dV_25)
+print y
+p.plot(rr,y,label="Npairs(2.5)/(0.4) 213<vmax<240")
 
-dir_boxes =  n.array([dir_04, dir_10, dir_25, dir_40])
-zList_files = n.array([ join(dir_box,"redshift-list.txt") for dir_box in dir_boxes])
+p.xlabel('r Mpc/h')
+p.ylabel(' r xi(2.5Gpc)/xi(0.4Gpc)(r)')
+#p.yscale('log')
+#p.xscale('log')
+gl = p.legend(bbox_to_anchor=(1.05, 1), loc=2,fontsize=10)
+gl.set_frame_on(False)
+p.grid()
+p.show()
 
-snn, scaleFactor = n.loadtxt(join(dir_10,"redshift-list.txt"),unpack=True)
-sn2a = {scaleFactor[i]: redshift[i] for i in range(len(snn))}
 
-snn, redshift = n.loadtxt(join(dir_25,"redshift-list.txt"),unpack=True)
-sn2z = {snn[i]: 1/redshift[i]-1 for i in range(len(snn))}
-
-#zList_files[2],unpack=True)
+sys.exit()
 
 
 ll = n.array( glob.glob(join(dir_10,"halo_bias","clustering","*.pkl")))#dir_25_b,"*.pkl" ) ))
