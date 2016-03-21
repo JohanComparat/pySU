@@ -95,7 +95,7 @@ class SpectraStacking:
 
 		return res, resErr
 
-	def stackEbossPlateSpectra(self,PLATE,MJD,FIBERID,outPutFileName, g_min = 22,g_max=22.8, gr_min=-0.5, gr_max=1.5, rz_min=-0.5, rz_max = 1.5):
+	def stackEbossPlateSpectra(self,PLATE,MJD,FIBERID,REDSHIFT,outPutFileName, g_min = 22,g_max=22.8, gr_min=-0.5, gr_max=1.5, rz_min=-0.5, rz_max = 1.5):
 		"""
 		Function that constructs the stacks for a listof spectra
 		"""

@@ -19,5 +19,5 @@ for ii, el in enumerate(list_of_stacks):
 		rz_max = n.max(grcol)
 		st=SpectraStacking(el, Nspec = 100, dLambda = 0.00005)
 		outPutFileName = join("/uufs/chpc.utah.edu/common/home/u0936736/stack_eBOSSELG",el[:-5].split('/')[-1] + "_stack.fits")
-		st.stackEbossPlateSpectra(PLATE,MJD,FIBERID,outPutFileName, g_min = g_min,g_max=g_max, gr_min=gr_min, gr_max=gr_max, rz_min= rz_min, rz_max = rz_max)
+		st.stackEbossPlateSpectra(PLATE.astype(int),MJD.astype(int),FIBERID.astype(int),REDSHIFT,outPutFileName, g_min = g_min,g_max=g_max, gr_min=gr_min, gr_max=gr_max, rz_min= rz_min, rz_max = rz_max)
 
