@@ -24,13 +24,10 @@ class HandleReducedELGPlate:
         :param mjd: modified julian date
 	
 	"""
-	def __init__(self,plate = 8123, mjd = 56931, dV=-9999.99, fitWidth = 40. ):
+	def __init__(self,plate = 8123, mjd = 56931):
 		self.plate = plate
 		self.mjd = mjd
-		self.dV = dV
-		self.fitWidth = fitWidth
-		self.lfit  =  lineFit.LineFittingLibrary(fitWidth = self.fitWidth)
-
+		
 	def loadPlate(self):
 		"""
 		Opens the plate files: spPlate, spZbest. In the case one isworking on the Utah cluster.
@@ -60,33 +57,25 @@ class HandleReducedELGPlate:
 		self.Ngalaxies = len((self.selection).nonzero()[0])
 		print "data loaded, Ngalaxy=", self.Ngalaxies
 
-	def loadPlateSDSSMAIN(self):
+		
+	def loadSpec(self,fiber):
 		"""
 		Opens the plate files: spPlate, spZbest. In the case one isworking on the Utah cluster.
 		"""
 		spfile = join( os.environ['BOSS_SPECTRO_REDUX'] , os.environ['RUN2D'] , str(self.plate) , "spPlate-"+ str(self.plate) +"-"+ str(self.mjd) +".fits" )
-		zbfile = join( os.environ['BOSS_SPECTRO_REDUX'] , os.environ['RUN2D'] , str(self.plate) , os.environ['RUN1D'] , "spZbest-" + str(self.plate) +"-"+ str(self.mjd) +".fits" )
-		self.outputFile = join(os.environ['BOSS_SPECTRO_REDUX'] , os.environ['RUN2D'] , str(self.plate) , os.environ['RUN1D'] ,"spZ_ELGflag-" + str(self.plate) +"-"+ str(self.mjd) +".fits")
-		# join(os.environ['BOSS_SPECTRO_REDUX'], os.environ['RUN2D'], str(self.plate), os.environ['RUN1D'], "spZ_ELGflag-" + str(self.plate) +"-"+ str(self.mjd) +".fits")
+		print spfile
 		# opens spPlate file
 		hdulist = fits.open(spfile)
 		c0 = hdulist[0].header['coeff0']
 		c1 = hdulist[0].header['coeff1']
 		npix = hdulist[0].header['naxis1']
-		self.wavelength = 10.**(c0 + c1 * n.arange(npix))
-		self.flux = hdulist[0].data
-		self.fluxErr = hdulist[1].data**(-0.5)
+		goodPix = (hdulist[1].data[fiber-1]>0)
+		self.wavelength = 10.**(c0 + c1 * n.arange(npix))[goodPix]
+		self.flux = hdulist[0].data[fiber-1][goodPix]
+		self.fluxErr = hdulist[1].data[fiber-1][goodPix]**(-0.5)
 		hdulist.close()
 		# opens spZbest file
-		hdulist = fits.open(zbfile)
-		self.zstruc = hdulist[1].data
-		hdulist.close()
-		hdulist = 0
-		# defines what are galaxies 
-		self.selection = (self.zstruc['Z']>0.) & (self.zstruc['Z'] > self.zstruc['Z_ERR'])
-		self.Ngalaxies = len((self.selection).nonzero()[0])
-		print "data loaded, Ngalaxy=", self.Ngalaxies
-
+		
 	def save_result(self):
 		"""
 		Saves the results into a spZ_ELG-file.fits
