@@ -162,6 +162,7 @@ class SpectraStacking:
 			for entry in self.catalog_entries[ids] :
 				plate  = str(entry['PLATE']).zfill(4)
 				specFile = join(specDirSdssMain, str(plate), "spec-"+str(plate) +"-" + str(entry['MJD'])+"-"+str(entry['FIBERID']).zfill(4)+".fits")
+				print specFile
 				hdulist = fits.open(specFile)
 				sel = (hdulist[1].data['and_mask']==0)
 				self.wavelength = 10.**hdulist[1].data['loglam'][sel]
