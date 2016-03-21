@@ -8,6 +8,7 @@ list_of_stacks_eb67 = glob.glob(join("/uufs/chpc.utah.edu/common/home/u0992342/e
 list_of_stacks_eb17 = glob.glob(join("/uufs/chpc.utah.edu/common/home/u0992342/eboss17/grz_stacks/","*.asc"))
 
 list_of_stacks = n.hstack((list_of_stacks_eb67,list_of_stacks_eb17))
+list_of_stacks.sort()
 
 for ii, el in enumerate(list_of_stacks):
 		PLATE ,   MJD  ,  FIBERID ,   REDSHIFT   , gmag ,   rzcol  ,  grcol = n.loadtxt(el, unpack=True)
