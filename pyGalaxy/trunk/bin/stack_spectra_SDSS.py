@@ -16,5 +16,5 @@ for ii, el in enumerate(list_of_stacks):
 		rz_max = 
 		st=SpectraStacking(el, Nspec = 100, dLambda = 0.00005)
 		outPutFileName = el[:-5] + "_stack.fits"
-		st.stackSdssSpectra(self,outPutFileName, g_min = g_min,g_max=g_max, gr_min=gr_min, gr_max=gr_max, rz_min= rz_min, rz_max = rz_max):
+		st.stackSdssSpectra(self,outPutFileName, g_min = g_min,g_max=g_max, gr_min=gr_min, gr_max=gr_max, rz_min= rz_min, rz_max = rz_max)
 

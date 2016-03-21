@@ -224,3 +224,49 @@ class SpectraStacking:
 			os.system('rm '+outPutFileName)
 			thdulist.writeto(outPutFileName)
 
+
+	def stackSdssMainSpectra(self, specFile, outPutFileName):
+		"""
+		Function that constructs the stacks for a listof spectra
+		"""
+		# loop over the file with N sorted with luminosity
+		specDirSdssMain = "/uufs/chpc.utah.edu/common/home/sdss00/sdsswork/sdss/spectro/redux/26/spectra"
+		indexes = n.argsort(self.catalog_entries['REDSHIFT'])
+		jumps = n.arange(0, len(self.catalog_entries['PLATE']), self.Nspec)
+		for ii in range(len(jumps)-1):
+			ids = indexes[jumps[ii]:jumps[ii+1]]
+			specMatrix,specMatrixErr,specMatrixWeight=[],[],[]
+			count=0
+			Zdistrib = scoreatpercentile( self.catalog_entries[ids]['REDSHIFT'] , [0,25,50,75,100])
+			print "stacks ",len(self.catalog_entries[ids]), "galaxies from " +self.survey + " with redshifts (min, Q25, median, Q75, max)", Zdistrib
+			for entry in self.catalog_entries[ids] :
+				plate  = str(entry['PLATE']).zfill(4)
+				specFile = join(specDirSdssMain, str(plate), "spec-"+str(plate) +"-" + str(entry['MJD'])+"-"+str(entry['FIBERID']).zfill(4)+".fits")
+				hdulist = fits.open(specFile)
+				sel = (hdulist[1].data['and_mask']==0)
+				self.wavelength = 10.**hdulist[1].data['loglam'][sel]
+				self.flux = hdulist[1].data['flux'][sel]
+				self.fluxErr = hdulist[1].data['ivar'][sel]**(-0.5)
+				hdulist.close()
+				pts,ptsErr = self.convertSpectrum(entry['REDSHIFT'])
+				specMatrix.append(pts)
+				specMatrixErr.append(ptsErr)
+				weight=entry['WEIGHT_COMPLETENESS']*entry['WEIGHT_FC']
+				specMatrixWeight.append(n.ones_like(pts)*weight)
+				count+=1
+
+			specMatrixWeight=n.array(specMatrixWeight)
+			specMatrix=n.array(specMatrix)
+			specMatrixErr=n.array(specMatrixErr)
+			print "now stacks"
+			wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel = self.stack_function( specMatrix ,specMatrixWeight)
+			cols = fits.ColDefs([wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel])
+			tbhdu = fits.BinTableHDU.from_columns(cols)
+			prihdr = fits.Header()
+			prihdr['Z_min'] = Zdistrib[0]
+			prihdr['Z_mean'] = Zdistrib[2]
+			prihdr['Z_max'] = Zdistrib[-1]
+			prihdu = fits.PrimaryHDU(header=prihdr)
+			thdulist = fits.HDUList([prihdu, tbhdu])
+			os.system('rm '+outPutFileName)
+			thdulist.writeto(outPutFileName)
