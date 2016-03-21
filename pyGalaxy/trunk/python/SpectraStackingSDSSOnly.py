@@ -106,7 +106,7 @@ class SpectraStacking:
 			print PLATE[ii], MJD[ii], FIBERID[ii]
 			ObsPlate = HandleReducedELGPlate(PLATE[ii],MJD[ii])
 			ObsPlate.loadSpec(FIBERID[ii])
-			self.wavelength,self.fluxl,self.fluxlErr = ObsPlate.wavelength], ObsPlate.flux, ObsPlate.fluxErr
+			self.wavelength,self.fluxl,self.fluxlErr = ObsPlate.wavelength, ObsPlate.flux, ObsPlate.fluxErr
 			pts,ptsErr = self.convertSpectrum(REDSHIFT[ii])
 			print pts,ptsErr, pts.shape, ptsErr.shape
 			specMatrix.append(pts)
