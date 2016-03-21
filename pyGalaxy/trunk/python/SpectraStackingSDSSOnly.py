@@ -164,7 +164,7 @@ class SpectraStacking:
 				specFile = join(specDirSdssMain, str(plate), "spec-"+str(plate) +"-" + str(entry['MJD'])+"-"+str(entry['FIBERID']).zfill(4)+".fits")
 				print specFile
 				hdulist = fits.open(specFile)
-				sel = (hdulist[1].data['and_mask']==0)
+				sel = (hdulist[1].data['ivar']>0)#(hdulist[1].data['and_mask']==0)
 				self.wavelength = 10.**hdulist[1].data['loglam'][sel]
 				self.fluxl = hdulist[1].data['flux'][sel]
 				self.fluxlErr = hdulist[1].data['ivar'][sel]**(-0.5)
