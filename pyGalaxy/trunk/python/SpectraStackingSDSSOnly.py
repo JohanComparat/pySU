@@ -109,7 +109,7 @@ class SpectraStacking:
 			specMatrix,specMatrixErr,specMatrixWeight=[],[],[]
 			count=0
 			Zdistrib = scoreatpercentile( self.catalog_entries[ids]['Z' ] , [0,25,50,75,100])
-			print "stacks ",len(self.catalog_entries[ids]), "galaxies from " +self.survey + " with redshifts (min, Q25, median, Q75, max)", Zdistrib
+			print "stacks ",len(self.catalog_entries[ids]), "galaxies from eBOSS plates with redshifts (min, Q25, median, Q75, max)", Zdistrib
 			for entry in self.catalog_entries[ids] :
 				ObsPlate = HandleReducedELGPlate(entry['PLATE'],entry['MJD'])
 				ObsPlate.loadPlate()
@@ -158,7 +158,7 @@ class SpectraStacking:
 			specMatrix,specMatrixErr,specMatrixWeight=[],[],[]
 			count=0
 			Zdistrib = scoreatpercentile( self.catalog_entries[ids]['REDSHIFT'] , [0,25,50,75,100])
-			print "stacks ",len(self.catalog_entries[ids]), "galaxies from " +self.survey + " with redshifts (min, Q25, median, Q75, max)", Zdistrib
+			print "stacks ",len(self.catalog_entries[ids]), "galaxies from SDSS MAIN with redshifts (min, Q25, median, Q75, max)", Zdistrib
 			for entry in self.catalog_entries[ids] :
 				plate  = str(entry['PLATE']).zfill(4)
 				specFile = join(specDirSdssMain, str(plate), "spec-"+str(plate) +"-" + str(entry['MJD'])+"-"+str(entry['FIBERID']).zfill(4)+".fits")
