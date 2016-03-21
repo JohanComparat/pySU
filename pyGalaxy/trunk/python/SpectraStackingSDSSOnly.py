@@ -165,8 +165,8 @@ class SpectraStacking:
 				hdulist = fits.open(specFile)
 				sel = (hdulist[1].data['and_mask']==0)
 				self.wavelength = 10.**hdulist[1].data['loglam'][sel]
-				self.flux = hdulist[1].data['flux'][sel]
-				self.fluxErr = hdulist[1].data['ivar'][sel]**(-0.5)
+				self.fluxl = hdulist[1].data['flux'][sel]
+				self.fluxlErr = hdulist[1].data['ivar'][sel]**(-0.5)
 				hdulist.close()
 				pts,ptsErr = self.convertSpectrum(entry['REDSHIFT'])
 				specMatrix.append(pts)

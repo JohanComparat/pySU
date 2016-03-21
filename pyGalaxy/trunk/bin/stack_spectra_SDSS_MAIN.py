@@ -7,7 +7,7 @@ import glob
 dir_to_stack_list = ""
 list_of_stacks = glob.glob(join(dir_to_stack_list,"stackList*.fits"))
 
-list_of_stacks = n.array(["specIDS_z_wfc_wcomp_SDSS_test.fits"])
+list_of_stacks = n.array(["/uufs/chpc.utah.edu/common/home/u0936736/stack_SDSSMAIN/specIDS_z_wfc_wcomp_SDSS_test.fits"])
 
 el = list_of_stacks[0]
 st=SpectraStacking(el, Nspec = 998, dLambda = 0.00005)
