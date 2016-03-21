@@ -57,7 +57,6 @@ class HandleReducedELGPlate:
 		self.Ngalaxies = len((self.selection).nonzero()[0])
 		print "data loaded, Ngalaxy=", self.Ngalaxies
 
-		
 	def loadSpec(self,fiber):
 		"""
 		Opens the plate files: spPlate, spZbest. In the case one isworking on the Utah cluster.
@@ -75,7 +74,7 @@ class HandleReducedELGPlate:
 		self.fluxErr = hdulist[1].data[fiber-1][goodPix]**(-0.5)
 		hdulist.close()
 		# opens spZbest file
-		
+
 	def save_result(self):
 		"""
 		Saves the results into a spZ_ELG-file.fits
