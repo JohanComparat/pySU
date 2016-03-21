@@ -12,8 +12,6 @@ import numpy as n
 import astropy.io.fits as fits
 from scipy.interpolate import interp1d
 import os
-from lineListAir import *
-import LineFittingLibrary as lineFit
 from os.path import join
 
 class HandleReducedELGPlate:
