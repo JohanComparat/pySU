@@ -48,6 +48,7 @@ class HandleReducedELGPlate:
 		self.flux = hdulist[0].data
 		self.fluxErr = hdulist[1].data**(-0.5)
 		self.goodPix = (hdulist[1].data>0)
+		print self.flux, self.goodPix
 		hdulist.close()
 		# opens spZbest file
 		hdulist = fits.open(zbfile)
