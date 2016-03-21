@@ -35,10 +35,6 @@ class SpectraStacking:
 		self.R = int(1/n.mean((self.wave[1:] -self.wave[:-1])/ self.wave[1:]))
 		self.dV = dV
 		self.Nspec = Nspec
-		hdus= fits.open(self.LF_file)
-		ok = (hdus[1].data['MJD']>1)
-		self.catalog_entries=hdus[1].data[ok]
-		print len(self.catalog_entries)
 
 	def stack_function(self,specMatrix,specMatrixWeight):
 		"""Creates the stack.
@@ -99,30 +95,23 @@ class SpectraStacking:
 
 		return res, resErr
 
-	def stackEbossPlateSpectra(self,outPutFileName, g_min = 22,g_max=22.8, gr_min=-0.5, gr_max=1.5, rz_min=-0.5, rz_max = 1.5):
+	def stackEbossPlateSpectra(self,PLATE,MJD,FIBERID,outPutFileName, g_min = 22,g_max=22.8, gr_min=-0.5, gr_max=1.5, rz_min=-0.5, rz_max = 1.5):
 		"""
 		Function that constructs the stacks for a listof spectra
 		"""
 		# loop over the file with N sorted with luminosity
-		indexes = n.arange(len(self.catalog_entries['PLATE']))
-		jumps = n.arange(0, len(self.catalog_entries['PLATE']), self.Nspec)
-		for ii in range(len(jumps)-1):
-			ids = indexes[jumps[ii]:jumps[ii+1]]
-			specMatrix,specMatrixErr,specMatrixWeight=[],[],[]
-			count=0
-			Zdistrib = scoreatpercentile( self.catalog_entries[ids]['Z' ] , [0,25,50,75,100])
-			print "stacks ",len(self.catalog_entries[ids]), "galaxies from eBOSS plates with redshifts (min, Q25, median, Q75, max)", Zdistrib
-			for entry in self.catalog_entries[ids] :
-				ObsPlate = HandleReducedELGPlate(entry['PLATE'],entry['MJD'])
-				ObsPlate.loadPlate()
-				print "Z = ", ObsPlate.zstruc['Z'][entry['FIBERID']-1], entry['Z']
-				self.wavelength,self.fluxl,self.fluxlErr = ObsPlate.wavelength, ObsPlate.flux[entry['FIBERID']-1], ObsPlate.fluxErr[entry['FIBERID']-1]
-				pts,ptsErr = self.convertSpectrum(entry['Z'])
-				specMatrix.append(pts)
-				specMatrixErr.append(ptsErr)
-				weight=1.
-				specMatrixWeight.append(n.ones_like(pts)*weight)
-				count+=1
+		specMatrix,specMatrixErr,specMatrixWeight=[],[],[]
+		print "stacks ",len(self.catalog_entries[ids])
+		for ii in range(len(PLATE)) :
+			ObsPlate = HandleReducedELGPlate(PLATE[ii],MJD[ii])
+			ObsPlate.loadPlate()
+			print "Z = ", ObsPlate.zstruc['Z'][FIBERID[ii]-1], REDSHIFT[ii]
+			self.wavelength,self.fluxl,self.fluxlErr = ObsPlate.wavelength, ObsPlate.flux[FIBERID[ii]-1], ObsPlate.fluxErr[FIBERID[ii]-1]
+			pts,ptsErr = self.convertSpectrum(REDSHIFT[ii])
+			specMatrix.append(pts)
+			specMatrixErr.append(ptsErr)
+			weight=1.
+			specMatrixWeight.append(n.ones_like(pts)*weight)
 
 			specMatrixWeight=n.array(specMatrixWeight)
 			specMatrix=n.array(specMatrix)
@@ -138,9 +127,6 @@ class SpectraStacking:
 			prihdr['gr_max'] = gr_max
 			prihdr['rz_min'] = rz_min
 			prihdr['zr_max'] = rz_max
-			prihdr['Z_min'] = Zdistrib[0]
-			prihdr['Z_mean'] = Zdistrib[2]
-			prihdr['Z_max'] = Zdistrib[-1]
 			prihdu = fits.PrimaryHDU(header=prihdr)
 			thdulist = fits.HDUList([prihdu, tbhdu])
 			os.system('rm '+outPutFileName)
@@ -152,6 +138,10 @@ class SpectraStacking:
 		Function that constructs the stacks for a listof spectra
 		"""
 		# loop over the file with N sorted with luminosity
+		hdus= fits.open(self.LF_file)
+		ok = (hdus[1].data['MJD']>1)
+		self.catalog_entries=hdus[1].data[ok]
+		print len(self.catalog_entries)
 		specDirSdssMain = "/uufs/chpc.utah.edu/common/home/sdss00/sdsswork/sdss/spectro/redux/26/spectra"
 		indexes = n.argsort(self.catalog_entries['REDSHIFT'])
 		jumps = n.arange(0, len(self.catalog_entries['PLATE']), self.Nspec)
