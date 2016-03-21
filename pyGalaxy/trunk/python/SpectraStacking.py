@@ -19,7 +19,7 @@ from GalaxySpectrumDEEP2 import *
 from GalaxySpectrumVIPERS import *
 from GalaxySpectrumVVDS import *
 from MiscellanousFunctionsLibrary import *
-
+from HandleReducedELGPlate import *
 #SpectraStacking("/home/comparat/database/DEEP2/products/emissionLineLuminosityFunctions/O2_3728/O2_3728-DEEP2-z0.925.fits")
 
 class SpectraStacking:
@@ -173,6 +173,54 @@ class SpectraStacking:
 			thdulist = fits.HDUList([prihdu, tbhdu])
 			outPutFileName_inter = self.LF_file[:-5] +"_stack_N_"+ str(count) +"_R_"+ str(self.R) +"_L_"+ str( n.round( Ldistrib[2],3)) + ".fits"
 			outPutFileName = outPutFileName_inter.replace("emissionLineLuminosityFunctions","spectraStacks")
+			os.system('rm '+outPutFileName)
+			thdulist.writeto(outPutFileName)
+
+
+	def stackSdssSpectra(self,outPutFileName, g_min = 22,g_max=22.8, gr_min=-0.5, gr_max=1.5, rz_min=-0.5, rz_max = 1.5):
+		"""
+		Function that constructs the stacks for a listof spectra
+		"""
+		# loop over the file with N sorted with luminosity
+		indexes = n.arange(len(self.catalog_entries['PLATE']))
+		jumps = n.arange(0, len(self.catalog_entries['PLATE']), self.Nspec)
+		for ii in range(len(jumps)-1):
+			ids = indexes[jumps[ii]:jumps[ii+1]]
+			specMatrix,specMatrixErr,specMatrixWeight=[],[],[]
+			count=0
+			Zdistrib = scoreatpercentile( self.catalog_entries[ids]['Z' ] , [0,25,50,75,100])
+			print "stacks ",len(self.catalog_entries[ids]), "galaxies from " +self.survey + " with redshifts (min, Q25, median, Q75, max)", Zdistrib
+			for entry in self.catalog_entries[ids] :
+				ObsPlate = HandleReducedELGPlate(entry['PLATE'],entry['MJD'])
+				ObsPlate.loadPlate()
+				print "Z = ", ObsPlate.zstruc['Z'][entry['FIBERID']-1], entry['Z']
+				self.wavelength,self.fluxl,self.fluxlErr = ObsPlate.wavelength, ObsPlate.flux[entry['FIBERID']-1], ObsPlate.fluxErr[entry['FIBERID']-1]
+				pts,ptsErr = self.convertSpectrum(entry['Z'])
+				specMatrix.append(pts)
+				specMatrixErr.append(ptsErr)
+				weight=1.
+				specMatrixWeight.append(n.ones_like(pts)*weight)
+				count+=1
+
+			specMatrixWeight=n.array(specMatrixWeight)
+			specMatrix=n.array(specMatrix)
+			specMatrixErr=n.array(specMatrixErr)
+			print "now stacks"
+			wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel = self.stack_function( specMatrix ,specMatrixWeight)
+			cols = fits.ColDefs([wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel])
+			tbhdu = fits.BinTableHDU.from_columns(cols)
+			prihdr = fits.Header()
+			prihdr['g_min'] = g_min
+			prihdr['g_max'] = g_max
+			prihdr['gr_min'] = gr_min
+			prihdr['gr_max'] = gr_max
+			prihdr['rz_min'] = rz_min
+			prihdr['zr_max'] = rz_max
+			prihdr['Z_min'] = Zdistrib[0]
+			prihdr['Z_mean'] = Zdistrib[2]
+			prihdr['Z_max'] = Zdistrib[-1]
+			prihdu = fits.PrimaryHDU(header=prihdr)
+			thdulist = fits.HDUList([prihdu, tbhdu])
 			os.system('rm '+outPutFileName)
 			thdulist.writeto(outPutFileName)
 
