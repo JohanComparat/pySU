@@ -102,6 +102,7 @@ class SpectraStacking:
 		# loop over the file with N sorted with luminosity
 		specMatrix,specMatrixErr,specMatrixWeight=[],[],[]
 		print "stacks ",len(PLATE)
+		specMatrix,specMatrixErr,specMatrixWeight = n.empty((len(PLATE),len(self.wave))), n.empty((len(PLATE),len(self.wave))), n.empty((len(PLATE),len(self.wave)))
 		for ii in range(len(PLATE)) :
 			print PLATE[ii], MJD[ii], FIBERID[ii]
 			ObsPlate = HandleReducedELGPlate(PLATE[ii],MJD[ii])
@@ -110,13 +111,10 @@ class SpectraStacking:
 			pts,ptsErr = self.convertSpectrum(REDSHIFT[ii])
 			print pts,ptsErr, pts.shape, ptsErr.shape
 			print specMatrix
-			specMatrix.append(pts)
-			specMatrixErr.append(ptsErr)
+			specMatrix[ii]= pts
+			specMatrixErr[ii]=  ptsErr
 			weight=1.
-			specMatrixWeight.append(n.ones_like(pts)*weight)
-			specMatrixWeight=n.array(specMatrixWeight)
-			specMatrix=n.array(specMatrix)
-			specMatrixErr=n.array(specMatrixErr)
+			specMatrixWeight[ii]= n.ones_like(pts)*weight
 			print "now stacks"
 			wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel = self.stack_function( specMatrix ,specMatrixWeight)
 			cols = fits.ColDefs([wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel])
