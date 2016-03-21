@@ -109,11 +109,11 @@ class SpectraStacking:
 			self.wavelength,self.fluxl,self.fluxlErr = ObsPlate.wavelength, ObsPlate.flux, ObsPlate.fluxErr
 			pts,ptsErr = self.convertSpectrum(REDSHIFT[ii])
 			print pts,ptsErr, pts.shape, ptsErr.shape
+			print specMatrix
 			specMatrix.append(pts)
 			specMatrixErr.append(ptsErr)
 			weight=1.
 			specMatrixWeight.append(n.ones_like(pts)*weight)
-
 			specMatrixWeight=n.array(specMatrixWeight)
 			specMatrix=n.array(specMatrix)
 			specMatrixErr=n.array(specMatrixErr)
