@@ -35,7 +35,9 @@ class SpectraStacking:
 		self.R = int(1/n.mean((self.wave[1:] -self.wave[:-1])/ self.wave[1:]))
 		self.dV = dV
 		self.Nspec = Nspec
-		self.catalog_entries=fits.open(self.LF_file)[1].data
+		hdus= fits.open(self.LF_file)
+		ok = (hdus[1].data['MJD']>1)
+		self.catalog_entries=hdus[1].data[ok]
 		print len(self.catalog_entries)
 
 	def stack_function(self,specMatrix,specMatrixWeight):
