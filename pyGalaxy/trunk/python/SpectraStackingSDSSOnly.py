@@ -101,7 +101,7 @@ class SpectraStacking:
 		"""
 		# loop over the file with N sorted with luminosity
 		specMatrix,specMatrixErr,specMatrixWeight=[],[],[]
-		print "stacks ",len(self.catalog_entries[ids])
+		print "stacks ",len(PLATE)
 		for ii in range(len(PLATE)) :
 			ObsPlate = HandleReducedELGPlate(PLATE[ii],MJD[ii])
 			ObsPlate.loadPlate()
