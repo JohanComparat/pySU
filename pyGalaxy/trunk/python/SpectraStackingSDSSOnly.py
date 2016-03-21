@@ -145,7 +145,7 @@ class SpectraStacking:
 			thdulist.writeto(outPutFileName)
 
 
-	def stackSdssMainSpectra(self, specFile, outPutFileName):
+	def stackSdssMainSpectra(self, outPutFileName):
 		"""
 		Function that constructs the stacks for a listof spectra
 		"""

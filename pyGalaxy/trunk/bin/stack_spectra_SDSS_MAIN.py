@@ -1,7 +1,7 @@
 import sys
 import os 
 from os.path import join
-from SpectraStackingSDSSonly import *
+from SpectraStackingSDSSOnly import *
 import glob	
 
 dir_to_stack_list = ""
@@ -12,7 +12,7 @@ list_of_stacks = n.array(["specIDS_z_wfc_wcomp_SDSS_test.fits"])
 el = list_of_stacks[0]
 st=SpectraStacking(el, Nspec = 999, dLambda = 0.00005)
 outPutFileName = el[:-5] + "_stack.fits"
-st.stackSdssMainSpectra(self,outPutFileName)
+st.stackSdssMainSpectra(outPutFileName)
 
 """
 for ii, el in enumerate(list_of_stacks):
