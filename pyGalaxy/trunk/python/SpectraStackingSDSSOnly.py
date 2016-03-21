@@ -103,6 +103,7 @@ class SpectraStacking:
 		specMatrix,specMatrixErr,specMatrixWeight=[],[],[]
 		print "stacks ",len(PLATE)
 		for ii in range(len(PLATE)) :
+			print PLATE[ii], MJD[ii], FIBERID[ii]
 			ObsPlate = HandleReducedELGPlate(PLATE[ii],MJD[ii])
 			ObsPlate.loadPlate()
 			print "Z = ", ObsPlate.zstruc['Z'][FIBERID[ii]-1], REDSHIFT[ii]
