@@ -115,21 +115,22 @@ class SpectraStacking:
 			specMatrixErr[ii]=  ptsErr
 			weight=1.
 			specMatrixWeight[ii]= n.ones_like(pts)*weight
-			print "now stacks"
-			wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel = self.stack_function( specMatrix ,specMatrixWeight)
-			cols = fits.ColDefs([wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel])
-			tbhdu = fits.BinTableHDU.from_columns(cols)
-			prihdr = fits.Header()
-			prihdr['g_min'] = g_min
-			prihdr['g_max'] = g_max
-			prihdr['gr_min'] = gr_min
-			prihdr['gr_max'] = gr_max
-			prihdr['rz_min'] = rz_min
-			prihdr['zr_max'] = rz_max
-			prihdu = fits.PrimaryHDU(header=prihdr)
-			thdulist = fits.HDUList([prihdu, tbhdu])
-			os.system('rm '+outPutFileName)
-			thdulist.writeto(outPutFileName)
+		
+		print "now stacks"
+		wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel = self.stack_function( specMatrix ,specMatrixWeight)
+		cols = fits.ColDefs([wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel])
+		tbhdu = fits.BinTableHDU.from_columns(cols)
+		prihdr = fits.Header()
+		prihdr['g_min'] = g_min
+		prihdr['g_max'] = g_max
+		prihdr['gr_min'] = gr_min
+		prihdr['gr_max'] = gr_max
+		prihdr['rz_min'] = rz_min
+		prihdr['zr_max'] = rz_max
+		prihdu = fits.PrimaryHDU(header=prihdr)
+		thdulist = fits.HDUList([prihdu, tbhdu])
+		os.system('rm '+outPutFileName)
+		thdulist.writeto(outPutFileName)
 
 
 	def stackSdssMainSpectra(self, outPutFileName):
