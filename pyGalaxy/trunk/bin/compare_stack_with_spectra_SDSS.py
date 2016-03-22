@@ -45,8 +45,8 @@ def compareSpectraAndStack(nameRoot):
 	chi3 = n.empty(len(table['PLATE']))
 
 	for ii in range(len(table['PLATE'])):
-		print entry
 		entry = table[ii]
+		print entry
 		chi1[ii], chi2[ii], chi3[ii] = compareSpectrumToStack(entry, nameRoot=nameRoot, ggrid  = ggrid, rzgrid = rzgrid, grgrid = grgrid)
 
 	summaryTableName =join(stackDir, nameRoot + "summaryTable_stack_comparison.fits")
