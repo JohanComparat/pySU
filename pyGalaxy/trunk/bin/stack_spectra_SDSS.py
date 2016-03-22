@@ -27,10 +27,10 @@ def produce_stacks(table, ggrid, rzgrid, grgrid, nameRoot="elg270_eboss67_"):
 				rz_min = n.min(grcol)
 				rz_max = n.max(grcol)
 				st=SpectraStacking("-", Nspec = 100, dLambda = 0.00005)
-				suffix = "_g_"+str(n.round(ggrid[i],1))+"_rz_"+str(n.round(rzgrid[i],1))+"_gr_"+str(n.round(grgrid[i],1))
+				suffix = "_g_"+str(n.round(ggrid[i],1))+"_rz_"+str(n.round(rzgrid[j],1))+"_gr_"+str(n.round(grgrid[k],1))
 				outPutFileName = join("/uufs/chpc.utah.edu/common/home/u0936736/stack_eBOSSELG", nameRoot + suffix + "_stack.fits")
 				st.stackEbossPlateSpectra(PLATE.astype(int),MJD.astype(int),FIBERID.astype(int),REDSHIFT,outPutFileName, g_min = g_min,g_max=g_max, gr_min=gr_min, gr_max=gr_max, rz_min= rz_min, rz_max = rz_max)
 
 
-produce_stacks(hdus_eb17[1].data, ggrid, rzgrid, grgrid, nameRoot="elg270_eboss17_")
-produce_stacks(hdus_eb67[1].data, ggrid, rzgrid, grgrid, nameRoot="elg270_eboss67_")
+produce_stacks(hdus_eb17[1].data, ggrid, rzgrid, grgrid, nameRoot="elg270_eboss17")
+produce_stacks(hdus_eb67[1].data, ggrid, rzgrid, grgrid, nameRoot="elg270_eboss67")
