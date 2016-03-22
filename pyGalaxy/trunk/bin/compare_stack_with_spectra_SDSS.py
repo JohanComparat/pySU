@@ -39,7 +39,7 @@ def compareSpectrumToStack(entry, nameRoot="elg270_eboss17_", ggrid  = [21.8,22.
 
 def compareSpectraAndStack(nameRoot):
 	summaryTableName =join(stackDir, nameRoot + "summaryTable_stack.fits")
-	table = fits.open(summaryTableName)
+	table = fits.open(summaryTableName)[1].data
 	chi1 = n.empty(len(table['PLATE']))
 	chi2 = n.empty(len(table['PLATE']))
 	chi3 = n.empty(len(table['PLATE']))
