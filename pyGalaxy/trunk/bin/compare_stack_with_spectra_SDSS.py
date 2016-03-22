@@ -12,7 +12,7 @@ list_of_stacks = n.hstack((list_of_stacks_eb67,list_of_stacks_eb17))
 list_of_stacks.sort()
 
 for ii, el in enumerate(list_of_stacks):
-	PLATE ,   MJD  ,  FIBERID ,   REDSHIFT   , gmag ,   rzcol  ,  grcol = n.loadtxt(el, unpack=True)
+	PLATE ,   MJD  ,  FIBERID ,   REDSHIFT   , gmag ,   rzcol  ,  grcol = n.loadtxt(el, unpack=True, usecols=(0,1,2,3,4,5,6))
 	g_min = n.min(gmag)
 	g_max = n.max(gmag)
 	gr_min = n.min(grcol)

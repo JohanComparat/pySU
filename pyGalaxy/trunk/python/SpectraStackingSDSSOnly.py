@@ -28,7 +28,7 @@ class SpectraStacking:
 	:param outputDirectory: where to output the fits
 	:param fileName: file name where things are saved.
 	"""
-	def __init__(self, LF_file,Nspec= 400, dLambda = 0.0001, dV=-9999.99):
+	def __init__(self, LF_file, Nspec= 400, dLambda = 0.0001, dV=-9999.99):
 		self.LF_file = LF_file
 		self.dLambda = dLambda
 		self.wave= 10**n.arange(3.1760912590556813, 4.0211892990699383, dLambda) # 1500,10500
