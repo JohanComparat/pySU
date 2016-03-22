@@ -32,5 +32,5 @@ def produce_stacks(table, ggrid, rzgrid, grgrid, namRoot="elg270_eboss67_"):
 				st.stackEbossPlateSpectra(PLATE.astype(int),MJD.astype(int),FIBERID.astype(int),REDSHIFT,outPutFileName, g_min = g_min,g_max=g_max, gr_min=gr_min, gr_max=gr_max, rz_min= rz_min, rz_max = rz_max)
 
 
-produce_stacks(hdus_eb17, ggrid, rzgrid, grgrid, namRoot="elg270_eboss17_")
-produce_stacks(hdus_eb67, ggrid, rzgrid, grgrid, namRoot="elg270_eboss67_")
+produce_stacks(hdus_eb17[1].data, ggrid, rzgrid, grgrid, namRoot="elg270_eboss17_")
+produce_stacks(hdus_eb67[1].data, ggrid, rzgrid, grgrid, namRoot="elg270_eboss67_")
