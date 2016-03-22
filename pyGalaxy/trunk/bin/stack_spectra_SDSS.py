@@ -15,10 +15,17 @@ grgrid = [0.0,0.4,0.6,1.0]
 
 def produce_stacks(table, ggrid, rzgrid, grgrid, nameRoot="elg270_eboss67_"):
 	print table.dtype
-	for i in range(len(ggrid)-1):
-		for j in range(len(rzgrid)-1):
-			for k in range(len(grgrid)-1):
+	index_g = n.ones_like(table['gmag'])*-1
+	index_rz = n.ones_like(table['gmag'])*-1
+	index_gr = n.ones_like(table['gmag'])*-1
+	for i in range(len(ggrid)-2):
+		for j in range(len(rzgrid)-3):
+			for k in range(len(grgrid)-3):
 				sel = (table['gmag']>ggrid[i])&(table['gmag']<ggrid[i+1]) & (table['rzcol']>rzgrid[j])&(table['rzcol']<rzgrid[j+1]) & (table['grcol']>grgrid[k])&(table['grcol']<grgrid[k+1])&(table['Z_1']>0)&(table['Z_1']>table['Z_ERR_1'])&(table['Z_ERR_1']>0)
+				index_g[sel] = i*n.ones_like(index_g[sel])
+				index_rz[sel] = j*n.ones_like(index_g[sel])
+				index_gr[sel] = k*n.ones_like(index_g[sel])
+				
 				PLATE ,   MJD  ,  FIBERID ,   REDSHIFT   , gmag ,   rzcol  ,  grcol = table['PLATE'][sel], table['MJD'][sel], table['FIBER'][sel], table['Z_1'][sel], table['gmag'][sel], table['rzcol'][sel], table['grcol'][sel]
 				g_min = n.min(gmag)
 				g_max = n.max(gmag)
@@ -30,6 +37,19 @@ def produce_stacks(table, ggrid, rzgrid, grgrid, nameRoot="elg270_eboss67_"):
 				suffix = "_g_"+str(n.round(ggrid[i],1))+"_rz_"+str(n.round(rzgrid[j],1))+"_gr_"+str(n.round(grgrid[k],1))
 				outPutFileName = join("/uufs/chpc.utah.edu/common/home/u0936736/stack_eBOSSELG", nameRoot + suffix + "_stack.fits")
 				st.stackEbossPlateSpectra(PLATE.astype(int),MJD.astype(int),FIBERID.astype(int),REDSHIFT,outPutFileName, g_min = g_min,g_max=g_max, gr_min=gr_min, gr_max=gr_max, rz_min= rz_min, rz_max = rz_max)
+
+	summaryTableName =join("/uufs/chpc.utah.edu/common/home/u0936736/stack_eBOSSELG", nameRoot + "summaryTable_stack.fits")
+	col_index_g = fits.Column(name="index_g",format="I", array= index_g.astype(int))
+	col_index_rz = fits.Column(name="index_rz",format="I", array= index_rz.astype(int))
+	col_index_gr = fits.Column(name="index_gr",format="I", array= index_gr.astype(int))
+	cols = table.columns + col_index_g + col_index_rz + col_index_gr
+	tbhdu = fits.BinTableHDU.from_columns(cols)
+	prihdr = fits.Header()
+	prihdr['chunk'] = nameRoot
+	prihdu = fits.PrimaryHDU(header=prihdr)
+	thdulist = fits.HDUList([prihdu, tbhdu])
+	os.system('rm '+summaryTableName)
+	thdulist.writeto(summaryTableName)
 
 
 produce_stacks(hdus_eb17[1].data, ggrid, rzgrid, grgrid, nameRoot="elg270_eboss17")
