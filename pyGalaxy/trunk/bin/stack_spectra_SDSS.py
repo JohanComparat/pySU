@@ -18,8 +18,8 @@ def produce_stacks(table, ggrid, rzgrid, grgrid, namRoot="elg270_eboss67_"):
 	for i in range(len(ggrid)-1):
 		for j in range(len(rzgrid)-1):
 			for k in range(len(grgrid)-1):
-				sel = (table['gmag']>ggrid[i])&(table['gmag']<ggrid[i+1]) & (table['rzcol']>rzgrid[j])&(table['rzcol']<rzgrid[j+1]) & (table['grcol']>grgrid[k])&(table['grcol']<grgrid[k+1])
-				PLATE ,   MJD  ,  FIBERID ,   REDSHIFT   , gmag ,   rzcol  ,  grcol = table['PLATE'][sel], table['MJD'][sel], table['FIBER'][sel], table['Z_!'][sel], table['gmag'][sel], table['rzcol'][sel], table['grcol'][sel]
+				sel = (table['gmag']>ggrid[i])&(table['gmag']<ggrid[i+1]) & (table['rzcol']>rzgrid[j])&(table['rzcol']<rzgrid[j+1]) & (table['grcol']>grgrid[k])&(table['grcol']<grgrid[k+1])&(table['Z_1']>0)&(table['Z_1']>table['Z_ERR_1'])&(table['Z_ERR_1']>0)
+				PLATE ,   MJD  ,  FIBERID ,   REDSHIFT   , gmag ,   rzcol  ,  grcol = table['PLATE'][sel], table['MJD'][sel], table['FIBER'][sel], table['Z_1'][sel], table['gmag'][sel], table['rzcol'][sel], table['grcol'][sel]
 				g_min = n.min(gmag)
 				g_max = n.max(gmag)
 				gr_min = n.min(grcol)
@@ -27,7 +27,7 @@ def produce_stacks(table, ggrid, rzgrid, grgrid, namRoot="elg270_eboss67_"):
 				rz_min = n.min(grcol)
 				rz_max = n.max(grcol)
 				st=SpectraStacking("-", Nspec = 100, dLambda = 0.00005)
-				suffix = "_g_"+str(n.round(ggrid[i]),1)+"_rz_"+str(n.round(rzgrid[i]),1)+"_gr_"+str(n.round(grgrid[i]),1)
+				suffix = "_g_"+str(n.round(ggrid[i],1))+"_rz_"+str(n.round(rzgrid[i],1))+"_gr_"+str(n.round(grgrid[i],1))
 				outPutFileName = join("/uufs/chpc.utah.edu/common/home/u0936736/stack_eBOSSELG", nameRoot + suffix + "_stack.fits")
 				st.stackEbossPlateSpectra(PLATE.astype(int),MJD.astype(int),FIBERID.astype(int),REDSHIFT,outPutFileName, g_min = g_min,g_max=g_max, gr_min=gr_min, gr_max=gr_max, rz_min= rz_min, rz_max = rz_max)
 
