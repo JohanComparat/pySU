@@ -13,7 +13,7 @@ ggrid  = [21.8,22.5,22.8]
 rzgrid = [0.0,0.8,1.0,2.0]
 grgrid = [0.0,0.4,0.6,1.0]
 
-def produce_stacks(table, ggrid, rzgrid, grgrid, namRoot="elg270_eboss67_"):
+def produce_stacks(table, ggrid, rzgrid, grgrid, nameRoot="elg270_eboss67_"):
 	print table.dtype
 	for i in range(len(ggrid)-1):
 		for j in range(len(rzgrid)-1):
@@ -32,5 +32,5 @@ def produce_stacks(table, ggrid, rzgrid, grgrid, namRoot="elg270_eboss67_"):
 				st.stackEbossPlateSpectra(PLATE.astype(int),MJD.astype(int),FIBERID.astype(int),REDSHIFT,outPutFileName, g_min = g_min,g_max=g_max, gr_min=gr_min, gr_max=gr_max, rz_min= rz_min, rz_max = rz_max)
 
 
-produce_stacks(hdus_eb17[1].data, ggrid, rzgrid, grgrid, namRoot="elg270_eboss17_")
-produce_stacks(hdus_eb67[1].data, ggrid, rzgrid, grgrid, namRoot="elg270_eboss67_")
+produce_stacks(hdus_eb17[1].data, ggrid, rzgrid, grgrid, nameRoot="elg270_eboss17_")
+produce_stacks(hdus_eb67[1].data, ggrid, rzgrid, grgrid, nameRoot="elg270_eboss67_")
