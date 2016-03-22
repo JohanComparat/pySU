@@ -18,9 +18,9 @@ def produce_stacks(table, ggrid, rzgrid, grgrid, nameRoot="elg270_eboss67_"):
 	index_g = n.ones_like(table['gmag'])*-1
 	index_rz = n.ones_like(table['gmag'])*-1
 	index_gr = n.ones_like(table['gmag'])*-1
-	for i in range(len(ggrid)-2):
-		for j in range(len(rzgrid)-3):
-			for k in range(len(grgrid)-3):
+	for i in range(len(ggrid)-1):
+		for j in range(len(rzgrid)-1):
+			for k in range(len(grgrid)-1):
 				sel = (table['gmag']>ggrid[i])&(table['gmag']<ggrid[i+1]) & (table['rzcol']>rzgrid[j])&(table['rzcol']<rzgrid[j+1]) & (table['grcol']>grgrid[k])&(table['grcol']<grgrid[k+1])&(table['Z_1']>0)&(table['Z_1']>table['Z_ERR_1'])&(table['Z_ERR_1']>0)
 				index_g[sel] = i*n.ones_like(index_g[sel])
 				index_rz[sel] = j*n.ones_like(index_g[sel])
