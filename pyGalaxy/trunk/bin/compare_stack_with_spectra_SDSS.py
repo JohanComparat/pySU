@@ -19,8 +19,8 @@ for ii, el in enumerate(list_of_stacks):
 	gr_max = n.max(grcol)
 	rz_min = n.min(grcol)
 	rz_max = n.max(grcol)
-	stackName = join("/uufs/chpc.utah.edu/common/home/u0936736/stack_eBOSSELG",el[:-5].split('/')[-1] + "_stack.fits")
-	outPutFileName = join("/uufs/chpc.utah.edu/common/home/u0936736/stack_eBOSSELG",el[:-5].split('/')[-1] + "_stackComparison.dat")
+	stackName = join("/uufs/chpc.utah.edu/common/home/u0936736/stack_eBOSSELG",el[:-4].split('/')[-1] + "_stack.fits")
+	outPutFileName = join("/uufs/chpc.utah.edu/common/home/u0936736/stack_eBOSSELG",el[:-4].split('/')[-1] + "_stackComparison.dat")
 	hdu = fits.open(stackName)[1].data
 	sel= (hdu['NspectraPerPixel']>0.9*n.max(hdu['NspectraPerPixel']))
 	chi2median = n.empty_like(PLATE) 
