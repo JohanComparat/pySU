@@ -4,8 +4,8 @@ from os.path import join
 from SpectraStackingSDSSOnly import *
 import glob	
 
-hdus_eb67 = fits.open("/uufs/chpc.utah.edu/common/home/u0992342/eboss67/grz_stacks/elg270_eboss67_3zbest.fits")
-hdus_eb17 = fits.open("/uufs/chpc.utah.edu/common/home/u0992342/eboss17/grz_stacks/elg270_eboss17_3zbest.fits")
+hdus_eb67 = fits.open("/uufs/chpc.utah.edu/common/home/u0992342/eboss67/elg270_eboss67_3zbest.fits")
+hdus_eb17 = fits.open("/uufs/chpc.utah.edu/common/home/u0992342/eboss17/elg270_eboss17_3zbest.fits")
 
 #'PLATE', 'MJD', 'FIBER', 'gmag', 'rzcol', 'grcol', 'Z_1', 'Z_2', 'Z_3', 'Z_ERR_1', 'Z_ERR_2', 'Z_ERR_3', 'RCHI2_1', 'RCHI2_2', 'RCHI2_3', 'CLASS_1', 'CLASS_2', 'CLASS_3'
 
@@ -18,7 +18,7 @@ def produce_stacks(table, ggrid, rzgrid, grgrid, namRoot="elg270_eboss67_"):
 		for j in range(len(rzgrid)-1):
 			for k in range(len(grgrid)-1):
 				sel = (table['gmag']>ggrid[i])&(table['gmag']<ggrid[i+1]) & (table['rzcol']>rzgrid[j])&(table['rzcol']<rzgrid[j+1]) & (table['grcol']>grgrid[k])&(table['grcol']<grgrid[k+1])
-				PLATE ,   MJD  ,  FIBERID ,   REDSHIFT   , gmag ,   rzcol  ,  grcol = table['PLATE'], table['MJD'], table['FIBERID'], table['REDSHIFT'], table['gmag'], table['rzcol'], table['grcol']
+				PLATE ,   MJD  ,  FIBERID ,   REDSHIFT   , gmag ,   rzcol  ,  grcol = table['PLATE'][sel], table['MJD'][sel], table['FIBERID'][sel], table['REDSHIFT'][sel], table['gmag'][sel], table['rzcol'][sel], table['grcol'][sel]
 				g_min = n.min(gmag)
 				g_max = n.max(gmag)
 				gr_min = n.min(grcol)
