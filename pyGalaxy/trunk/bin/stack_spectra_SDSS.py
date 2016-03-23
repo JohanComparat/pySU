@@ -4,10 +4,47 @@ from os.path import join
 from SpectraStackingSDSSOnly import *
 import glob	
 
-hdus_eb67 = fits.open("/uufs/chpc.utah.edu/common/home/u0992342/eboss67/elg270_eboss67_3zbest.fits")
-hdus_eb17 = fits.open("/uufs/chpc.utah.edu/common/home/u0992342/eboss17/elg270_eboss17_3zbest.fits")
+hdus_eb67 = fits.open("/uufs/chpc.utah.edu/common/home/u0936736/stack_eBOSSELG/elg270_eboss67summaryTable_stack_comparison.fits")
+hdus_eb17 = fits.open("/uufs/chpc.utah.edu/common/home/u0936736/stack_eBOSSELG/elg270_eboss17summaryTable_stack_comparison.fits")
 
 #'PLATE', 'MJD', 'FIBER', 'gmag', 'rzcol', 'grcol', 'Z_1', 'Z_2', 'Z_3', 'Z_ERR_1', 'Z_ERR_2', 'Z_ERR_3', 'RCHI2_1', 'RCHI2_2', 'RCHI2_3', 'CLASS_1', 'CLASS_2', 'CLASS_3'
+
+grid  = n.arange(0,1.66,0.15)
+
+def produce_stacks_z(table, grid, nameRoot="elg270_eboss67"):
+	print table.dtype
+	index_Z1 = n.ones_like(table['gmag'])*-1
+	for i in range(len(grid)-1):
+		sel = (table['Z_1']>grid[i])&(table['Z_1']<grid[i+1]) (table['Z_1']>0)&(table['Z_1']>table['Z_ERR_1'])&(table['Z_ERR_1']>0)
+		index_Z1[sel] = i*n.ones_like(index_g[sel])
+		PLATE ,   MJD  ,  FIBERID ,   REDSHIFT   , gmag ,   rzcol  ,  grcol = table['PLATE'][sel], table['MJD'][sel], table['FIBER'][sel], table['Z_1'][sel], table['gmag'][sel], table['rzcol'][sel], table['grcol'][sel]
+		g_min = n.min(gmag)
+		g_max = n.max(gmag)
+		gr_min = n.min(grcol)
+		gr_max = n.max(grcol)
+		rz_min = n.min(grcol)
+		rz_max = n.max(grcol)
+		st=SpectraStacking("-", Nspec = 100, dLambda = 0.00005)
+		suffix = "_Z1_"+str(n.round(grid[i],2))
+		outPutFileName = join("/uufs/chpc.utah.edu/common/home/u0936736/stack_eBOSSELG", nameRoot + suffix + "_stack.fits")
+		st.stackEbossPlateSpectra(PLATE.astype(int),MJD.astype(int),FIBERID.astype(int),REDSHIFT,outPutFileName, g_min = g_min,g_max=g_max, gr_min=gr_min, gr_max=gr_max, rz_min= rz_min, rz_max = rz_max)
+
+	summaryTableName =join("/uufs/chpc.utah.edu/common/home/u0936736/stack_eBOSSELG", nameRoot + "_summaryTable_Zstack.fits")
+	col_index_Z1 = fits.Column(name="index_Z1",format="I", array= index_Z1.astype(int))
+	cols = table.columns + col_index_Z1
+	tbhdu = fits.BinTableHDU.from_columns(cols)
+	prihdr = fits.Header()
+	prihdr['chunk'] = nameRoot
+	prihdu = fits.PrimaryHDU(header=prihdr)
+	thdulist = fits.HDUList([prihdu, tbhdu])
+	os.system('rm '+summaryTableName)
+	thdulist.writeto(summaryTableName)
+
+
+produce_stacks_z(hdus_eb17[1].data, ggrid, rzgrid, grgrid, nameRoot="elg270_eboss17")
+produce_stacks_z(hdus_eb67[1].data, ggrid, rzgrid, grgrid, nameRoot="elg270_eboss67")
+
+sys.exit()
 
 ggrid  = [21.8,22.5,22.8]
 rzgrid = [0.0,0.8,1.0,2.0]
