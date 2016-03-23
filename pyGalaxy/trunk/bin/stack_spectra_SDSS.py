@@ -42,8 +42,8 @@ def produce_stacks_z(table, nameRoot="elg270_eboss67"):
 	thdulist.writeto(summaryTableName)
 
 
-produce_stacks_z(hdus_eb17[1].data, ggrid, rzgrid, grgrid, nameRoot="elg270_eboss17")
-produce_stacks_z(hdus_eb67[1].data, ggrid, rzgrid, grgrid, nameRoot="elg270_eboss67")
+produce_stacks_z(hdus_eb17[1].data, grid, nameRoot="elg270_eboss17")
+produce_stacks_z(hdus_eb67[1].data, grid, nameRoot="elg270_eboss67")
 
 sys.exit()
 
