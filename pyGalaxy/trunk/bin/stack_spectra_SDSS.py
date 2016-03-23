@@ -16,7 +16,7 @@ def produce_stacks_z(table, nameRoot="elg270_eboss67"):
 	grid  = zarr[::100]
 	index_Z1 = n.ones_like(table['gmag'])*-1
 	for i in range(len(grid)-1):
-		sel = (table['Z_1']>=grid[i])&(table['Z_1']<grid[i+1]) (table['Z_1']>0)&(table['Z_1']>table['Z_ERR_1'])&(table['Z_ERR_1']>0)
+		sel = (table['Z_1']>=grid[i])&(table['Z_1']<grid[i+1])&(table['Z_1']>0)&(table['Z_1']>table['Z_ERR_1'])&(table['Z_ERR_1']>0)
 		index_Z1[sel] = i*n.ones_like(index_g[sel])
 		PLATE ,   MJD  ,  FIBERID ,   REDSHIFT   , gmag ,   rzcol  ,  grcol = table['PLATE'][sel], table['MJD'][sel], table['FIBER'][sel], table['Z_1'][sel], table['gmag'][sel], table['rzcol'][sel], table['grcol'][sel]
 		g_min = n.min(gmag)
@@ -42,8 +42,8 @@ def produce_stacks_z(table, nameRoot="elg270_eboss67"):
 	thdulist.writeto(summaryTableName)
 
 
-produce_stacks_z(hdus_eb17[1].data, grid, nameRoot="elg270_eboss17")
-produce_stacks_z(hdus_eb67[1].data, grid, nameRoot="elg270_eboss67")
+produce_stacks_z(hdus_eb17[1].data, nameRoot="elg270_eboss17")
+produce_stacks_z(hdus_eb67[1].data, nameRoot="elg270_eboss67")
 
 sys.exit()
 
