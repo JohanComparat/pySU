@@ -11,12 +11,12 @@ hdus_eb17 = fits.open("/uufs/chpc.utah.edu/common/home/u0936736/stack_eBOSSELG/e
 
 def produce_stacks_z(table, nameRoot="elg270_eboss67"):
 	print table.dtype
-	zarr = table['Z_1'][(table['Z_1']>0)&(table['Z_1']>table['Z_ERR_1'])]
+	zarr = table['Z_1'][((table['Z_1']>0)&(table['Z_1']>table['Z_ERR_1'])&(table['Z_ERR_1']>0))&((table['CLASS_1']=="QSO")|(table['CLASS_1']=="GALAXY"))]
 	zarr.sort()
 	grid  = zarr[::100]
 	index_Z1 = n.ones_like(table['gmag'])*-1
 	for i in range(len(grid)-1):
-		sel = (table['Z_1']>=grid[i])&(table['Z_1']<grid[i+1])&(table['Z_1']>0)&(table['Z_1']>table['Z_ERR_1'])&(table['Z_ERR_1']>0)
+		sel = ((table['Z_1']>=grid[i])&(table['Z_1']<grid[i+1])&(table['Z_1']>0)&(table['Z_1']>table['Z_ERR_1'])&(table['Z_ERR_1']>0))&((table['CLASS_1']=="QSO")|(table['CLASS_1']=="GALAXY"))
 		index_Z1[sel] = i*n.ones_like(index_Z1[sel])
 		PLATE ,   MJD  ,  FIBERID ,   REDSHIFT   , gmag ,   rzcol  ,  grcol = table['PLATE'][sel], table['MJD'][sel], table['FIBER'][sel], table['Z_1'][sel], table['gmag'][sel], table['rzcol'][sel], table['grcol'][sel]
 		g_min = n.min(gmag)
