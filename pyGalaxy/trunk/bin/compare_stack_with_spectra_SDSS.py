@@ -51,9 +51,9 @@ def compareSpectraAndStack(nameRoot):
 		chi1[ii], chi2[ii], chi3[ii] = compareSpectrumToStack(entry, grid  = grid, nameRoot=nameRoot)
 
 	summaryTableName =join(stackDir, nameRoot + "_summaryTable_stack_Zstack_comparison.fits")
-	col_chi1 = fits.Column(name="chi2_Z1",format="D", array= chi1)
-	col_chi2 = fits.Column(name="chi2_Z2",format="D", array= chi2)
-	col_chi3 = fits.Column(name="chi2_Z3",format="D", array= chi3)
+	col_chi1 = fits.Column(name="chi2_Z_Z1",format="D", array= chi1)
+	col_chi2 = fits.Column(name="chi2_Z_Z2",format="D", array= chi2)
+	col_chi3 = fits.Column(name="chi2_Z_Z3",format="D", array= chi3)
 	cols = table.columns + col_chi1 + col_chi2 + col_chi3
 	tbhdu = fits.BinTableHDU.from_columns(cols)
 	prihdr = fits.Header()
