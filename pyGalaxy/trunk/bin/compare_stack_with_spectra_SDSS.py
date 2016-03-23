@@ -6,6 +6,71 @@ from HandleSdssPlate import *
 import glob	
 
 stackDir = "/uufs/chpc.utah.edu/common/home/u0936736/stack_eBOSSELG"
+
+def compareSpectrumToStack(entry, grid, nameRoot="elg270_eboss17_"):
+	# gets the spectrum
+	ObsPlate = HandleReducedELGPlate(entry['PLATE'],entry['MJD'])
+	ObsPlate.loadSpec(entry['FIBER'])
+	# gets the stack
+	if entry['index_g']>=0:
+		suffix = "_Z1_"+str(n.round(grid[entry['index_Z1']],3))+"_"+str(n.round(grid[entry['index_Z1']+1],3))
+		stackName = join(stackDir, nameRoot + suffix + "_stack.fits")
+		hdu = fits.open(stackName)[1].data
+		sel = (hdu['NspectraPerPixel']>0.9*n.max(hdu['NspectraPerPixel']))
+		# compares stakc and spectrum at REDSHIFT
+		def getchi2(REDSHIFT):
+			wlmin=n.min(hdu['wavelength'][sel]*(1+REDSHIFT))
+			wlmax=n.max(hdu['wavelength'][sel]*(1+REDSHIFT))
+			meanStack =interp1d(hdu['wavelength'][sel]*(1+REDSHIFT),hdu['medianStack'][sel])
+			overlap=(ObsPlate.wavelength>wlmin)&(ObsPlate.wavelength<wlmax)
+			x = ObsPlate.wavelength[overlap]
+			y = ObsPlate.flux[overlap]
+			yerr = ObsPlate.fluxErr[overlap]
+			chi2mean = n.sum(((y - meanStack(x))/yerr)**2.)/len(x)
+			return chi2mean
+			
+		return getchi2(entry['Z_1']), getchi2(entry['Z_2']), getchi2(entry['Z_3'])
+	else:
+		return -1,-1,-1
+
+
+def compareSpectraAndStack(nameRoot):
+	summaryTableName =join(stackDir, nameRoot + "summaryTable_stack_Zstack.fits")
+	table = fits.open(summaryTableName)[1].data
+	zarr = table['Z_1'][(table['Z_1']>0)&(table['Z_1']>table['Z_ERR_1'])]
+	zarr.sort()
+	grid  = zarr[::100]
+
+	chi1 = n.empty(len(table['PLATE']))
+	chi2 = n.empty(len(table['PLATE']))
+	chi3 = n.empty(len(table['PLATE']))
+
+	for ii in range(len(table['PLATE'])):
+		entry = table[ii]
+		print entry
+		chi1[ii], chi2[ii], chi3[ii] = compareSpectrumToStack(entry, grid  = grid, nameRoot=nameRoot)
+
+	summaryTableName =join(stackDir, nameRoot + "summaryTable_stack_Zstack_comparison.fits")
+	col_chi1 = fits.Column(name="chi2_Z1",format="D", array= chi1)
+	col_chi2 = fits.Column(name="chi2_Z2",format="D", array= chi2)
+	col_chi3 = fits.Column(name="chi2_Z3",format="D", array= chi3)
+	cols = table.columns + col_chi1 + col_chi2 + col_chi3
+	tbhdu = fits.BinTableHDU.from_columns(cols)
+	prihdr = fits.Header()
+	prihdr['chunk'] = nameRoot
+	prihdu = fits.PrimaryHDU(header=prihdr)
+	thdulist = fits.HDUList([prihdu, tbhdu])
+	os.system('rm '+summaryTableName)
+	thdulist.writeto(summaryTableName)
+
+nameRoot="elg270_eboss17"
+compareSpectraAndStack(nameRoot)
+nameRoot="elg270_eboss67"
+compareSpectraAndStack(nameRoot)
+
+sys.exit()
+
+stackDir = "/uufs/chpc.utah.edu/common/home/u0936736/stack_eBOSSELG"
 ggrid  = [21.8,22.5,22.8]
 rzgrid = [0.0,0.8,1.0,2.0]
 grgrid = [0.0,0.4,0.6,1.0]
