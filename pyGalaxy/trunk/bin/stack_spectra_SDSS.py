@@ -9,13 +9,14 @@ hdus_eb17 = fits.open("/uufs/chpc.utah.edu/common/home/u0936736/stack_eBOSSELG/e
 
 #'PLATE', 'MJD', 'FIBER', 'gmag', 'rzcol', 'grcol', 'Z_1', 'Z_2', 'Z_3', 'Z_ERR_1', 'Z_ERR_2', 'Z_ERR_3', 'RCHI2_1', 'RCHI2_2', 'RCHI2_3', 'CLASS_1', 'CLASS_2', 'CLASS_3'
 
-grid  = n.arange(0,1.66,0.15)
-
-def produce_stacks_z(table, grid, nameRoot="elg270_eboss67"):
+def produce_stacks_z(table, nameRoot="elg270_eboss67"):
 	print table.dtype
+	zarr = table['Z_1'][(table['Z_1']>0)&(table['Z_1']>table['Z_ERR_1'])]
+	zarr.sort()
+	grid  = zarr[::100]
 	index_Z1 = n.ones_like(table['gmag'])*-1
 	for i in range(len(grid)-1):
-		sel = (table['Z_1']>grid[i])&(table['Z_1']<grid[i+1]) (table['Z_1']>0)&(table['Z_1']>table['Z_ERR_1'])&(table['Z_ERR_1']>0)
+		sel = (table['Z_1']>=grid[i])&(table['Z_1']<grid[i+1]) (table['Z_1']>0)&(table['Z_1']>table['Z_ERR_1'])&(table['Z_ERR_1']>0)
 		index_Z1[sel] = i*n.ones_like(index_g[sel])
 		PLATE ,   MJD  ,  FIBERID ,   REDSHIFT   , gmag ,   rzcol  ,  grcol = table['PLATE'][sel], table['MJD'][sel], table['FIBER'][sel], table['Z_1'][sel], table['gmag'][sel], table['rzcol'][sel], table['grcol'][sel]
 		g_min = n.min(gmag)
@@ -25,7 +26,7 @@ def produce_stacks_z(table, grid, nameRoot="elg270_eboss67"):
 		rz_min = n.min(grcol)
 		rz_max = n.max(grcol)
 		st=SpectraStacking("-", Nspec = 100, dLambda = 0.00005)
-		suffix = "_Z1_"+str(n.round(grid[i],2))
+		suffix = "_Z1_"+str(n.round(grid[i],3))+"_"+str(n.round(grid[i+1],3))
 		outPutFileName = join("/uufs/chpc.utah.edu/common/home/u0936736/stack_eBOSSELG", nameRoot + suffix + "_stack.fits")
 		st.stackEbossPlateSpectra(PLATE.astype(int),MJD.astype(int),FIBERID.astype(int),REDSHIFT,outPutFileName, g_min = g_min,g_max=g_max, gr_min=gr_min, gr_max=gr_max, rz_min= rz_min, rz_max = rz_max)
 
