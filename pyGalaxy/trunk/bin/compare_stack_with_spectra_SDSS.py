@@ -12,7 +12,7 @@ def compareSpectrumToStack(entry, grid, nameRoot="elg270_eboss17_"):
 	ObsPlate = HandleReducedELGPlate(entry['PLATE'],entry['MJD'])
 	ObsPlate.loadSpec(entry['FIBER'])
 	# gets the stack
-	if entry['index_g']>=0:
+	if entry['index_g']>=0 and entry['Z_1']>0 and entry['Z_ERR_1']>0 and entry['Z_1']>entry['Z_ERR_1']:
 		suffix = "_Z1_"+str(n.round(grid[entry['index_Z1']],3))+"_"+str(n.round(grid[entry['index_Z1']+1],3))
 		stackName = join(stackDir, nameRoot + suffix + "_stack.fits")
 		hdu = fits.open(stackName)[1].data
