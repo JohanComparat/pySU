@@ -13,7 +13,7 @@ def produce_stacks_z(table, nameRoot="elg270_eboss67"):
 	print table.dtype
 	zarr = table['Z_1'][((table['Z_1']>0)&(table['Z_1']>table['Z_ERR_1'])&(table['Z_ERR_1']>0))&((table['CLASS_1']=="QSO")|(table['CLASS_1']=="GALAXY"))]
 	zarr.sort()
-	grid  = zarr[::100]
+	grid  = zarr[::50]
 	index_Z1 = n.ones_like(table['gmag'])*-1
 	for i in range(len(grid)-1):
 		sel = ((table['Z_1']>=grid[i])&(table['Z_1']<grid[i+1])&(table['Z_1']>0)&(table['Z_1']>table['Z_ERR_1'])&(table['Z_ERR_1']>0))&((table['CLASS_1']=="QSO")|(table['CLASS_1']=="GALAXY"))
@@ -27,7 +27,7 @@ def produce_stacks_z(table, nameRoot="elg270_eboss67"):
 		rz_max = n.max(grcol)
 		st=SpectraStacking("-", Nspec = 100, dLambda = 0.00005)
 		suffix = "_Z1_"+str(n.round(grid[i],3))+"_"+str(n.round(grid[i+1],3))
-		outPutFileName = join("/uufs/chpc.utah.edu/common/home/u0936736/stack_eBOSSELG", nameRoot + suffix + "_stack.fits")
+		outPutFileName = join("/uufs/chpc.utah.edu/common/home/u0936736/stack_eBOSSELG", nameRoot + suffix + "_stackN50.fits")
 		st.stackEbossPlateSpectra(PLATE.astype(int),MJD.astype(int),FIBERID.astype(int),REDSHIFT,outPutFileName, g_min = g_min,g_max=g_max, gr_min=gr_min, gr_max=gr_max, rz_min= rz_min, rz_max = rz_max)
 
 	summaryTableName =join("/uufs/chpc.utah.edu/common/home/u0936736/stack_eBOSSELG", nameRoot + "_summaryTable_Zstack.fits")
