@@ -35,7 +35,7 @@ def compareSpectrumToStack(entry, grid, nameRoot="elg270_eboss17_"):
 
 
 def compareSpectraAndStack(nameRoot):
-	summaryTableName =join(stackDir, nameRoot + "summaryTable_Zstack.fits")
+	summaryTableName =join(stackDir, nameRoot + "_summaryTable_Zstack.fits")
 	table = fits.open(summaryTableName)[1].data
 	zarr = table['Z_1'][(table['Z_1']>0)&(table['Z_1']>table['Z_ERR_1'])]
 	zarr.sort()
@@ -50,7 +50,7 @@ def compareSpectraAndStack(nameRoot):
 		print entry
 		chi1[ii], chi2[ii], chi3[ii] = compareSpectrumToStack(entry, grid  = grid, nameRoot=nameRoot)
 
-	summaryTableName =join(stackDir, nameRoot + "summaryTable_stack_Zstack_comparison.fits")
+	summaryTableName =join(stackDir, nameRoot + "_summaryTable_stack_Zstack_comparison.fits")
 	col_chi1 = fits.Column(name="chi2_Z1",format="D", array= chi1)
 	col_chi2 = fits.Column(name="chi2_Z2",format="D", array= chi2)
 	col_chi3 = fits.Column(name="chi2_Z3",format="D", array= chi3)
