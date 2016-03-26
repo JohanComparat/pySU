@@ -14,8 +14,8 @@ import sys
 import os 
 from os.path import join
 import glob
-eb17_sL = n.array(glob.glob("elg270_eboss17*Z1*_stack.fits"))
-eb67_sL = n.array(glob.glob("elg270_eboss67*Z1*_stack.fits"))
+eb17_sL = n.array(glob.glob("elg270_eboss17*Z1*_stac*.fits"))
+eb67_sL = n.array(glob.glob("elg270_eboss67*Z1*_stac*.fits"))
 eb67_sL.sort()
 eb17_sL.sort()
 
