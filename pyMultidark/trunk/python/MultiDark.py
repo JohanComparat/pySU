@@ -186,7 +186,7 @@ class MultiDarkSimulation :
 			if len(xR)>50000 and len(xR)<=Nmax:
 				print vbins[jj], vbins[jj+1]
 				insideSel=(xR>rmax)&(xR<self.Lbox.value-rmax)&(yR>rmax)&(yR<self.Lbox.value-rmax)&(zR>rmax)&(zR<self.Lbox.value-rmax)
-				volume=(self.Lbox.value-rmax*2)**3
+				volume=(self.Lbox.value)**3
 				# defines the trees
 				print "creates trees"
 				treeRandoms=t.cKDTree(n.transpose([xR,yR,zR]),1000.0)
