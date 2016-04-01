@@ -162,7 +162,7 @@ class MultiDarkSimulation :
 		os.system("rm "+self.snl[ii][:-5]+"_Nb_"+str(Nb)+".fits")
 		thdulist.writeto(self.snl[ii][:-5]+"_Nb_"+str(Nb)+".fits")
 	
-	def compute2PCF(self, catalogList, vmin=190, rmax=26, dlogBin=0.05, Nmax=1000000., dr = 1.):
+	def compute2PCF(self, catalogList, vmin=65, rmax=200, dlogBin=0.05, Nmax=4000000., dr = 1., name = ""):
 		"""
 		Extracts the 2PCF out of a catalog of halos        
 		:param catalog: where the catalog is
@@ -176,14 +176,14 @@ class MultiDarkSimulation :
 
 		vbins = 10**n.arange(n.log10(vmin),4. ,dlogBin)
 		for jj in range(len(vbins)-1):
-			outfile = catalogList[0][:-10] + "_vmax_" +str(n.round(vbins[jj],2))+ "_" +str(n.round(vbins[jj+1],2)) + "_xiR.pkl"
+			outfile = catalogList[0][:-10] + "_vmax_" +str(n.round(vbins[jj],2))+ "_" +str(n.round(vbins[jj+1],2)) + "_" + name + "_xiR.pkl"
 			t0 = time.time()
 			sel = n.array([ (hdu['vmax']>vbins[jj])&(hdu['vmax']<vbins[jj+1]) for hdu in hdus])
 			xR = n.hstack(( n.array([ hdus[ii]['x'][sel[ii]] for ii in range(len(hdus)) ]) ))
 			yR = n.hstack(( n.array([ hdus[ii]['y'][sel[ii]] for ii in range(len(hdus)) ]) ))
 			zR = n.hstack(( n.array([ hdus[ii]['z'][sel[ii]] for ii in range(len(hdus)) ]) ))
 			Ntotal = len(xR)
-			if len(xR)>50000 and len(xR)<=Nmax:
+			if len(xR)>20000 and len(xR)<=Nmax:
 				print vbins[jj], vbins[jj+1]
 				insideSel=(xR>rmax)&(xR<self.Lbox.value-rmax)&(yR>rmax)&(yR<self.Lbox.value-rmax)&(zR>rmax)&(zR<self.Lbox.value-rmax)
 				volume=(self.Lbox.value)**3
