@@ -67,7 +67,7 @@ for MagLim in MagLimS :
 			lf.correctVolumeEffect(mCorr, error)
 			lf.writeLF(selection,surveyNameSuffix="R"+str(MagLim))
 
-
+sys.exit()
 # from VIPERS survey
 print "VIPERS"
 zsVIMOSmin=n.array([0.65,0.84, 1.1])
