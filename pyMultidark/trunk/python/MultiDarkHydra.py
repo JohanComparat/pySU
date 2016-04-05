@@ -97,7 +97,9 @@ class MultiDarkSimulation :
 		:param vmax: of the quantity of interest in the snapshots.
 		:param NperBatch: number of line per fits file, default: 1000000
 		 """		
+		print "uncompressing ", time.time()
 		os.system("bzcat "+self.snl[ii] + " > " + self.snl[ii][:-4])
+		print "reading file ", time.time()
 		fl = fileinput.input(self.snl[ii][:-4])
 		nameSnapshot = self.snl[ii].split('/')[-1][:-5]
 		Nb = 0
