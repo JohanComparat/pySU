@@ -10,3 +10,5 @@ export PYTHONPATH=$PYTHONPATH:/users/jcomparat/skies_universes_production/pySU/p
 
 export DATA_DIR='/users/jcomparat/skies_universes_production/’
 export PYSU_DIR='/users/jcomparat/skies_universes_production/pySU/'
+
+export PYTHONPATH=$PYTHONPATH:/users/jcomparat/.local/
