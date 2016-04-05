@@ -14,6 +14,7 @@ from lib_plot import *
 #from lineListAir import *
 SNlim = 5
 
+# "D:\data\LF-O\LFmodels\data\trends_color_mag\O2_3728-VVDSDEEPI24-z0.947.txt"
 
 plotDir="/home/comparat/database/Simulations/galform-lightcone/products/emissionLineLuminosityFunctions/plots/"
 
