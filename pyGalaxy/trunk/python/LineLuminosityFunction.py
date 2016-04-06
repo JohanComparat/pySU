@@ -253,6 +253,7 @@ class LineLuminosityFunction:
         """
         selection = (sel) & (self.lineSelection) & (self.redshiftSelection) & (self.catalog[self.lineName+'_EW']!=n.inf)&(self.catalog[self.lineName+'_EW']>0)&(self.catalog[self.lineName+'_EW']<10**4)
         bins=n.logspace(0,3,40)
+		print len(self.catalog[self.lineName+'_EW'][selection]), n.min(self.catalog[self.lineName+'_EW'][selection]), n.max(self.catalog[self.lineName+'_EW'][selection])
         aa,bb = n.histogram(self.catalog[self.lineName+'_EW'][selection], bins=bins)
         self.completness_limit_EW = bb[n.argmax(aa)+1]
         
