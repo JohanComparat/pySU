@@ -21,7 +21,7 @@ cd $PYSU_DIR/pyGalaxy/trunk/bin
 ./estimate_line_LF
 #python fit_model_LF_single
 #python fit_model_LF_all
-python plotLFs
+#python plotLFs
 
 # MODEL
 # models the LFs
