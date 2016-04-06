@@ -19,9 +19,9 @@ cd $PYSU_DIR/pyGalaxy/trunk/bin
 # DATA
 # compute luminosity functions
 ./estimate_line_LF
-./fit_model_LF_single
-./fit_model_LF_all
-./plotLFs
+#python fit_model_LF_single
+#python fit_model_LF_all
+python plotLFs
 
 # MODEL
 # models the LFs
