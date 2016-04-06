@@ -251,7 +251,7 @@ class LineLuminosityFunction:
         """
         Estimates the completeness. It maps the maximum of the EW distribution to a Luminosity limit.
         """
-        selection = (sel) & (self.lineSelection) & (self.redshiftSelection)
+        selection = (sel) & (self.lineSelection) & (self.redshiftSelection) & (self.catalog[self.lineName+'_EW']!=n.inf)
         bins=n.logspace(1,3,20)
         aa,bb = n.histogram(self.catalog[self.lineName+'_EW'][selection], bins=bins)
         self.completness_limit_EW = bb[n.argmax(aa)+1]
