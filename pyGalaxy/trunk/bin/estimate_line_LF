@@ -37,7 +37,7 @@ area2=0.62
 area3=0.90
 area4=0.66
 areaAll=area1+area2+area3+area4
-MagLimS = [24.2] # [23., 23.5, 24.2]
+MagLimS = [24.2, 23., 23.5]
 for MagLim in MagLimS :
 	print "mag limit=", MagLim
 	for ii in range(len(zsDEEP2min)):
@@ -47,7 +47,7 @@ for MagLim in MagLimS :
 		for line in lineSet :
 			print "---------------------------------------------------"
 			print line, zmin, zmax
-			lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "DEEP2", redshift_catalog = "zcat.deep2.dr4.v2.LFcatalogTC.Planck15.fits", luminosityBins = n.logspace(38,45,25), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions" , zmin = zmin, zmax = zmax)
+			lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "DEEP2", redshift_catalog = "zcat.deep2.dr4.v3.LFcatalogTC.Planck15.fits", luminosityBins = n.logspace(38,45,25), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions" , zmin = zmin, zmax = zmax)
 			lf.setRedshiftArray( redshiftColumn='ZBEST' )
 			lf.setRedshiftSelection( redshiftQualityColumn='ZQUALITY', lowerBound=0.9, upperBound=7.)
 			if zmin < 0.7:
@@ -314,7 +314,7 @@ for MagLim in MagLimS :
 		for line in lineSet :
 			print "---------------------------------------------------"
 			print line, zmin, zmax
-			lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "DEEP2", redshift_catalog = "zcat.deep2.dr4.v2.LFcatalogTC.Planck15.fits", luminosityBins = n.logspace(38,45,25), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions" , zmin = zmin, zmax = zmax)
+			lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "DEEP2", redshift_catalog = "zcat.deep2.dr4.v3.LFcatalogTC.Planck15.fits", luminosityBins = n.logspace(38,45,25), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions" , zmin = zmin, zmax = zmax)
 			lf.setRedshiftArray( redshiftColumn='ZBEST' )
 			lf.setRedshiftSelection( redshiftQualityColumn='ZQUALITY', lowerBound=0.9, upperBound=7.)
 			if zmin < 0.7:

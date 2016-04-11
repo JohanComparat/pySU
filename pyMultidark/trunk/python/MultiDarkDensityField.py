@@ -79,6 +79,21 @@ class MultiDarkSimulation :
             # for satellites ...
             self.columnDictHlist = {'scale': 0, 'id': 1, 'desc_scale': 2, 'desc_id': 3, 'num_prog': 4, 'pid': 5, 'upid': 6, 'desc_pid': 7, 'phantom': 8, 'sam_mvir': 9, 'mvir': 10, 'rvir': 11, 'rs': 12, 'vrms': 13, 'mmp?': 14, 'scale_of_last_MM': 15, 'vmax': 16, 'x': 17, 'y': 18, 'z': 19, 'vx': 20, 'vy': 21, 'vz': 22, 'Jx': 23, 'Jy': 24, 'Jz': 25, 'Spin': 26, 'Breadth_first_ID': 27, 'Depth_first_ID': 28, 'Tree_root_ID': 29, 'Orig_halo_ID': 30, 'Snap_num': 31, 'Next_coprogenitor_depthfirst_ID': 32, 'Last_progenitor_depthfirst_ID': 33, 'Last_mainleaf_depthfirst_ID': 34, 'Rs_Klypin': 35, 'Mmvir_all': 36, 'M200b': 37, 'M200c': 38, 'M500c': 39, 'M2500c': 40, 'Xoff': 41, 'Voff': 42, 'Spin_Bullock': 43, 'b_to_a': 44, 'c_to_a': 45, 'Ax': 46, 'Ay': 47, 'Az': 48, 'b_to_a_500c': 49, 'c_to_a_500c': 50, 'Ax_500c': 51, 'Ay_500c': 52, 'Az_500c': 53, 'TU': 54, 'M_pe_Behroozi': 55, 'M_pe_Diemer': 56, 'Macc': 57, 'Mpeak': 58, 'Vacc': 59, 'Vpeak': 60, 'Halfmass_Scale': 61, 'Acc_Rate_Inst': 62, 'Acc_Rate_100Myr': 63, 'Acc_Rate_1Tdyn': 64, 'Acc_Rate_2Tdyn': 65, 'Acc_Rate_Mpeak': 66, 'Mpeak_Scale': 67, 'Acc_Scale': 68, 'First_Acc_Scale': 69, 'First_Acc_Mvir': 70, 'First_Acc_Vmax': 71, 'VmaxatMpeak': 72}
 
+	def get_DF_at_XYZ(x, y, z, path_to_DF, Lbox=1000., gridSize = 2048.):
+		dL = Lbox/gridSize
+		sel =( x > dL*(0.5 + ii) ) & ( x < dL*(0.5 + ii + 1) ) & ( y > dL*(0.5 + jj) ) & ( y < dL*(0.5 + jj + 1) ) & ( x > dL*(0.5 + kk) ) & ( z < dL*(0.5 + kk + 1) )
+		compute : 
+		imax = x/dL - 0.5 
+		imin = x/dL - 0.5 - 1 
+		jmax = y/dL - 0.5 
+		jmin = y/dL - 0.5 - 1 
+		kmax = z/dL - 0.5 
+		kmin = z/dL - 0.5 - 1 
+		f=open(path_to_DF,'r')
+		qty = n.empty( (Nratio,len(bins)-1) ) 
+		data1 =  n.fromfile(f,dtype="float64",count=NperBatch) # 512 cube
+
+		
     def computeSingleDistributionFunction(self, ii, name, bins, Mfactor=100. ) :
         """
         Extracts the distribution of quantity 'name' out of all snapshots of the Multidark simulation.        
@@ -170,7 +185,7 @@ class MultiDarkSimulation :
 				
 		n.savetxt(outputFile+".hist",n.transpose([bins[:-1], bins[1:], qty.sum(axis=0) ]), header = " minLogDelta maxLogDelta N")
 
-	
+		
     def computeDensityFieldForHaloNumber(self, path_to_DF, path_to_RS, outputFile, gridSize=2048, subgridSize = 256 ) :
 		"""
         Extracts the distribution of quantity 'name' out of all snapshots of the Multidark simulation.        

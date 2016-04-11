@@ -37,3 +37,21 @@ data1 =  n.fromfile(f,dtype="float64",count=134217728) # 512 cube
 data1 =  n.fromfile(f,dtype="float64",count=134217728) # 512 cube
 data1 =  n.fromfile(f,dtype="float64",count=134217728) # 512 cube
 
+
+
+x, y, z = 0., 0., 0.
+path_to_DF = path_to_file
+def get_DF_at_XYZ(x, y, z, path_to_DF, Lbox=1000., gridSize = 2048.):
+Lbox=1000.
+gridSize = 2048.
+dL = Lbox/gridSize
+
+imax = x/dL - 0.5 
+imin = x/dL - 0.5 - 1 
+jmax = y/dL - 0.5 
+jmin = y/dL - 0.5 - 1 
+kmax = z/dL - 0.5 
+kmin = z/dL - 0.5 - 1 
+f=open(path_to_DF,'r')
+qty = n.empty( (Nratio,len(bins)-1) ) 
+data1 =  n.fromfile(f,dtype="float64",count=NperBatch) # 512 cube
