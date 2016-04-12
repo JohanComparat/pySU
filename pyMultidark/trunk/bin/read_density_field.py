@@ -36,13 +36,15 @@ def writeDFMock(dataCat, DFfile, Lbox = 1000.):
 		# assign -1 err value to points on the boundary
 		border1 = (sel)&(sel1==False)
 		delta1[border1] = n.ones_like(delta1[border1])*-1.
+		"""
 		# distance 2 mean density field in the plane
-		sel2 = (sel)&(i>3)&(i<gridx-3)&(j>3)&(j<gridx-3)
+		sel2 = (sel)&(i>4)&(i<gridx-4)&(j>4)&(j<gridx-4)
 		N2 = n.transpose([ (i[sel2]-2) * (j[sel2] -2), (i[sel2]-2) * (j[sel2] -1), (i[sel2]-2) * (j[sel2] ), (i[sel2]-2) * (j[sel2] +1), (i[sel2]-2) * (j[sel2] +2), (i[sel2]-1) * (j[sel2] + 2), (i[sel2]) * (j[sel2] +2), (i[sel2]+11) * (j[sel2] +2), (i[sel2] + 2) * (j[sel2] +2), (i[sel2] + 2) * (j[sel2] +1), (i[sel2] + 2) * (j[sel2] ), (i[sel2] + 2) * (j[sel2] -1), (i[sel2] + 2) * (j[sel2] -2), (i[sel2] + 1) * (j[sel2] -2),  (i[sel2] ) * (j[sel2] -2),  (i[sel2] - 1) * (j[sel2] -2) ]) -1 
 		delta2[sel2] = n.array([ n.mean(DF[el]) for el in N2 ])
 		# assign -1 err value to points on the boundary
 		border2 = (sel)&(sel2==False)
 		delta2[border2] = n.ones_like(delta2[border2])*-1.
+		"""
 
 	f.close()
 
@@ -65,12 +67,13 @@ def writeDFMock(dataCat, DFfile, Lbox = 1000.):
 	# now writes the catalog
 	cols = fits.ColDefs([c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c0, c01, c02 ])
 	hdu = fits.BinTableHDU.from_columns(cols)
+	os.system("rm -rf "+path_to_outputCat)
 	hdu.writeto(path_to_outputCat)
 
 
 DFfile = join(DFdir,"dmdens_cic_104.dat")
-writeDFMock(join( mockDir,"Box_HAM_z0.701838_nbar1.000000e-04_LRG.dat"), DFfile)
 writeDFMock(join( mockDir,"Box_HAM_z0.701838_nbar1.350000e-05_QSO.dat"), DFfile)
+writeDFMock(join( mockDir,"Box_HAM_z0.701838_nbar1.000000e-04_LRG.dat"), DFfile)
 writeDFMock(join( mockDir,"Box_HAM_z0.701838_nbar2.400000e-04_ELG.dat"), DFfile)
 DFfile = join(DFdir,"dmdens_cic_101.dat")
 writeDFMock(join( mockDir,"Box_HAM_z0.818843_nbar1.000000e-04_LRG.dat"), DFfile)
