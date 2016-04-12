@@ -10,7 +10,7 @@ data_dir = os.environ['DATA_DIR']
 from SpectraStacking import *
 
 
-f = open(join(os.environ['LFMODELS_DIR'], "data" , "O2_3728-data-luminosity-limits-Planck15.txt"),'r')
+f = open(join(os.environ['LFMODELS_DIR'], "content", "data" , "O2_3728-data-luminosity-limits-Planck15.txt"),'r')
 lines = f.readlines()
 lmins, lmaxs, fileNames = [], [], []
 for line in lines[1:] :
@@ -21,7 +21,7 @@ for line in lines[1:] :
 f.close()
 
 
-f = open(join(os.environ['LFMODELS_DIR'], "data" , "O3_5007-data-luminosity-limits-Planck15.txt"),'r')
+f = open(join(os.environ['LFMODELS_DIR'], "content", "data" , "O3_5007-data-luminosity-limits-Planck15.txt"),'r')
 lines = f.readlines()
 for line in lines[1:] :
 	lmins.append( float(line.split()[0]) )
@@ -30,7 +30,7 @@ for line in lines[1:] :
 	
 f.close()
 
-f = open(join(os.environ['LFMODELS_DIR'], "data" , "H1_4862-data-luminosity-limits-Planck15.txt"),'r')
+f = open(join(os.environ['LFMODELS_DIR'], "content", "data" , "H1_4862-data-luminosity-limits-Planck15.txt"),'r')
 lines = f.readlines()
 for line in lines[1:] :
 	lmins.append( float(line.split()[0]) )
