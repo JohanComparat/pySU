@@ -19,7 +19,7 @@ from GalaxySpectrumDEEP2 import *
 from GalaxySpectrumVIPERS import *
 from GalaxySpectrumVVDS import *
 from MiscellanousFunctionsLibrary import *
-from HandleReducedELGPlate import *
+from HandleSdssPlate import *
 #SpectraStacking("/home/comparat/database/DEEP2/products/emissionLineLuminosityFunctions/O2_3728/O2_3728-DEEP2-z0.925.fits")
 
 class SpectraStacking:
