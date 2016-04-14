@@ -1,3 +1,5 @@
+#  cd pySU/pyMultidark/trunk/bin/fortranfile-0.2.1/
+
 import numpy as n
 import os
 from os.path import join
@@ -16,35 +18,34 @@ def writeDFMock(dataCat, DFfile, Lbox = 1000.):
 	gridx, gridy, gridz = f.readInts()
 	dx = Lbox/gridx
 	# convert QSO positions into indexes
-	i = (x/dx).astype(int) + 1
-	j = (y/dx).astype(int) + 1
-	k= (z/dx).astype(int) + 1
+	i = (x/dx).astype(int) 
+	j = (y/dx).astype(int) 
+	k= (z/dx).astype(int) 
 	#init the output array :
 	delta = n.empty_like(x)
 	delta1 = n.empty_like(x)
 	delta2 = n.empty_like(x)
 	# now loops over k (every line of the file) and assigns delta values.
 	for kk in range(gridx):
-		sel = (k==kk+1)
-		N = i[sel] * j[sel] -1 #* k[sel]
+		sel = (k==kk)
+		N = i[sel] + gridx * j[sel] 
 		DF = f.readReals()
 		delta[sel] = DF[N]
 		# distance 1 mean density field in the plane
-		sel1 = (sel)&(i>1)&(i<gridx)&(j>1)&(j<gridx)
-		N1 = n.transpose([ (i[sel1]-1) * (j[sel1] -1), (i[sel1]) * (j[sel1] -1), (i[sel1]-1) * (j[sel1]), (i[sel1]+1) * (j[sel1] +1), (i[sel1]+1) * (j[sel1] ), (i[sel1]) * (j[sel1] +1), (i[sel1]+1) * (j[sel1] -1), (i[sel1]-1) * (j[sel1] +1) ]) - 1
+		sel1 = (sel)&(i>=1)&(i<gridx-1)&(j>=1)&(j<gridx-1)
+		N1 = n.transpose([ (i[sel1]-1) + gridx * (j[sel1] -1), (i[sel1]) + gridx * (j[sel1] -1), (i[sel1]-1) + gridx * (j[sel1]), (i[sel1]+1) + gridx * (j[sel1] +1), (i[sel1]+1) + gridx * (j[sel1] ), (i[sel1]) + gridx * (j[sel1] +1), (i[sel1]+1) + gridx * (j[sel1] -1), (i[sel1]-1) + gridx * (j[sel1] +1) ]) 
 		delta1[sel1] = n.array([ n.mean(DF[el]) for el in N1 ]) 
 		# assign -1 err value to points on the boundary
 		border1 = (sel)&(sel1==False)
 		delta1[border1] = n.ones_like(delta1[border1])*-1.
-		"""
 		# distance 2 mean density field in the plane
-		sel2 = (sel)&(i>4)&(i<gridx-4)&(j>4)&(j<gridx-4)
-		N2 = n.transpose([ (i[sel2]-2) * (j[sel2] -2), (i[sel2]-2) * (j[sel2] -1), (i[sel2]-2) * (j[sel2] ), (i[sel2]-2) * (j[sel2] +1), (i[sel2]-2) * (j[sel2] +2), (i[sel2]-1) * (j[sel2] + 2), (i[sel2]) * (j[sel2] +2), (i[sel2]+11) * (j[sel2] +2), (i[sel2] + 2) * (j[sel2] +2), (i[sel2] + 2) * (j[sel2] +1), (i[sel2] + 2) * (j[sel2] ), (i[sel2] + 2) * (j[sel2] -1), (i[sel2] + 2) * (j[sel2] -2), (i[sel2] + 1) * (j[sel2] -2),  (i[sel2] ) * (j[sel2] -2),  (i[sel2] - 1) * (j[sel2] -2) ]) -1 
+		sel2 = (sel)&(i>=2)&(i<gridx-2)&(j>=2)&(j<gridx-2)
+		N2 = n.transpose([ (i[sel2]-2) + gridx * (j[sel2] -2), (i[sel2]-2) + gridx * (j[sel2] -1), (i[sel2]-2) + gridx * (j[sel2] ), (i[sel2]-2) + gridx * (j[sel2] +1), (i[sel2]-2) + gridx * (j[sel2] +2), (i[sel2]-1) + gridx * (j[sel2] + 2), (i[sel2]) + gridx * (j[sel2] +2), (i[sel2]+11) + gridx * (j[sel2] +2), (i[sel2] + 2) + gridx * (j[sel2] +2), (i[sel2] + 2) + gridx * (j[sel2] +1), (i[sel2] + 2) + gridx * (j[sel2] ), (i[sel2] + 2) + gridx * (j[sel2] -1), (i[sel2] + 2) + gridx * (j[sel2] -2), (i[sel2] + 1) + gridx * (j[sel2] -2),  (i[sel2] ) + gridx * (j[sel2] -2),  (i[sel2] - 1) + gridx * (j[sel2] -2) ]) -1 
 		delta2[sel2] = n.array([ n.mean(DF[el]) for el in N2 ])
 		# assign -1 err value to points on the boundary
 		border2 = (sel)&(sel2==False)
 		delta2[border2] = n.ones_like(delta2[border2])*-1.
-		"""
+
 
 	f.close()
 
@@ -88,6 +89,28 @@ writeDFMock(join( mockDir,"Box_HAM_z1.480160_nbar1.930000e-05_QSO.dat"), DFfile)
 
 
 sys.exit()
+
+N = i[sel] + gridx * j[sel]  # * k[sel]
+
+# distance 1 mean density field in the plane
+sel1 = (sel)&(i>=1)&(i<gridx-1)&(j>=1)&(j<gridx-1)
+
+N1 = n.transpose([ (i[sel1]-1) + gridx * (j[sel1] -1), (i[sel1]) + gridx * (j[sel1] -1), (i[sel1]-1) + gridx * (j[sel1]), (i[sel1]+1) + gridx * (j[sel1] +1), (i[sel1]+1) + gridx * (j[sel1] ), (i[sel1]) + gridx * (j[sel1] +1), (i[sel1]+1) + gridx * (j[sel1] -1), (i[sel1]-1) + gridx * (j[sel1] +1) ]) 
+
+
+delta1[sel1] = n.array([ n.mean(DF[el]) for el in N1 ]) 
+# assign -1 err value to points on the boundary
+border1 = (sel)&(sel1==False)
+delta1[border1] = n.ones_like(delta1[border1])*-1.
+"""
+# distance 2 mean density field in the plane
+sel2 = (sel)&(i>4)&(i<gridx-4)&(j>4)&(j<gridx-4)
+N2 = n.transpose([ (i[sel2]-2) * (j[sel2] -2), (i[sel2]-2) * (j[sel2] -1), (i[sel2]-2) * (j[sel2] ), (i[sel2]-2) * (j[sel2] +1), (i[sel2]-2) * (j[sel2] +2), (i[sel2]-1) * (j[sel2] + 2), (i[sel2]) * (j[sel2] +2), (i[sel2]+11) * (j[sel2] +2), (i[sel2] + 2) * (j[sel2] +2), (i[sel2] + 2) * (j[sel2] +1), (i[sel2] + 2) * (j[sel2] ), (i[sel2] + 2) * (j[sel2] -1), (i[sel2] + 2) * (j[sel2] -2), (i[sel2] + 1) * (j[sel2] -2),  (i[sel2] ) * (j[sel2] -2),  (i[sel2] - 1) * (j[sel2] -2) ]) -1 
+delta2[sel2] = n.array([ n.mean(DF[el]) for el in N2 ])
+# assign -1 err value to points on the boundary
+border2 = (sel)&(sel2==False)
+delta2[border2] = n.ones_like(delta2[border2])*-1.
+"""
 
 
 
