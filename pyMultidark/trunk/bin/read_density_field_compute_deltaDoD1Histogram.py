@@ -19,7 +19,7 @@ for infi in inFiles:
 	gridx, gridy, gridz = f.readInts()
 	res0 = n.empty((gridx, len(bins)-1))
 	res1 = n.empty((gridx, len(bins)-1))
-	resH = n.empty((gridx, len(bins)-1), len(bins)-1))
+	resH = n.empty((gridx, len(bins)-1, len(bins)-1))
 	for kk in range(3):#gridx):
 		DF = f.readReals()
 		i = n.arange(1, gridx-1, 1)
