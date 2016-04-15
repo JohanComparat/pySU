@@ -52,8 +52,8 @@ for jj in range(survey.Ngalaxies):
 			d_out,m,h=[],[],[]
 			datI,mI,hI=lfit.fit_Line_OIIdoublet(wl,fl,flErr,a0= n.array([O2_3727,O2_3729]) *(1+catalog_entry['FINAL_Z']), lineName="O2_3728", fitWidth=40, DLC=40,  p0_flux=2e-16, p0_sigma=3.,model="gaussian")
 			
-			if datI[2]>0 : 
-				lfit.plotLineFit(wl,fl,flErr,mI,n.mean( n.array([O2_3727,O2_3729])* (1+ catalog_entry['FINAL_Z'] ) ),join( survey.muse_catalog_dir,"plots", catalog_entry['SpecName'] + "_O2_3728.png"))
+			if datI[2] != lfit.dV : 
+				lfit.plotLineFit(wl,fl,flErr,mI,n.mean( n.array([O2_3727,O2_3729])* (1+ catalog_entry['FINAL_Z'] ) ),join( survey.muse_catalog_dir,"plots", catalog_entry['SpecName'] + "_O2_3728.png"), title = r"$\log(f)$="+str(n.round(n.log10(datI[2]),2)) + r", $\sigma$="+str(n.round(datI[4],2)) )
 			
 			d_out.append(datI)
 			print len(datI)
@@ -63,12 +63,9 @@ for jj in range(survey.Ngalaxies):
 			# now fits the emission lines
 			for li in lineList:
 				datI,mI,hI=lfit.fit_Line(wl,fl,flErr,li[1]*(1+ catalog_entry['FINAL_Z']) , lineName=li[2], continuumSide=li[3], fitWidth=40, DLC=40, p0_flux=2e-16 ,model="gaussian",p0_sigma=2.)
-				"""
-				if datI[1]>0 and datI[2]>0 and datI[1]>3*datI[2]:
-								plotLineFit(wl,fl,flErr,mI,li[1]*( 1+ catalog_entry['FINAL_Z'] ), "../MUSE/specPdf/spec_"+str(ID)+"_"+li[2]+".pdf")
-				"""
-				#print li,li[1],li[2],li[3], li[3]=="left", len(datI)
-				#print datI,mI,hI
+				if datI[1] != lfit.dV : 
+					lfit.plotLineFit(wl,fl,flErr,mI,n.mean( n.array([O2_3727,O2_3729])* (1+ catalog_entry['FINAL_Z'] ) ),join( survey.muse_catalog_dir,"plots", catalog_entry['SpecName'] + "_"+li[2]+".png"), title =  r"$\log(f)$="+str(n.round(n.log10(datI[1]),2)) + r", $\sigma$="+str(n.round(datI[3],2)) )
+					
 				d_out.append(datI)
 				m.append(mI)
 				h.append(hI)
@@ -76,6 +73,9 @@ for jj in range(survey.Ngalaxies):
 			# now fits the recombination lines 
 			for li in recLineList:
 				datI,mI,hI=lfit.fit_Line(wl,fl,flErr,li[1]*(1 +catalog_entry['FINAL_Z'] ),lineName=li[2], continuumSide=li[3], model="gaussian")
+				if datI[1] != lfit.dV : 
+					lfit.plotLineFit(wl,fl,flErr,mI,n.mean( n.array([O2_3727,O2_3729])* (1+ catalog_entry['FINAL_Z'] ) ),join( survey.muse_catalog_dir,"plots", catalog_entry['SpecName'] + "_"+li[2]+".png"), title =  r"$\log(abs(f))$="+str(n.round(n.log10(abs(datI[1])),2)) + r", $\sigma$="+str(n.round(datI[3],2)) )
+
 				#print len(datI)
 				d_out.append(datI)
 				m.append(mI)

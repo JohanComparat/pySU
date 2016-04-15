@@ -112,7 +112,7 @@ class LineFittingLibrary:
 		fo_err=(LgU/Lfilt/goal-LgL/Lfilt/goal)/2
 		return fo, fo_err
 
-	def plotLineFit(self,wl,fl,flErr,lineModel,a0,path_to_fig="plot.pdf"):
+	def plotLineFit(self,wl,fl,flErr,lineModel,a0,path_to_fig="plot.pdf", title=" - "):
 		"""
 		Plots a spectrum and the emission line model fitted.
 
@@ -132,6 +132,8 @@ class LineFittingLibrary:
 		p.plot(wlMod,lineModel[1],'r')
 		p.xlim((wlMod.min()-50,wlMod.max()+50))
 		p.yscale('log')
+		p.ylim((1e-18, 1e-15))
+		p.title(title)
 		p.savefig(path_to_fig)
 		p.clf()
 
