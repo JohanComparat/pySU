@@ -25,8 +25,9 @@ for infi in inFiles:
 		DF = f.readReals()
 		i = n.arange(1, gridx-1, 1)
 		j = n.arange(1, gridx-1, 1)
-		DF0 = DF[i+gridx*j]
-		N1 = n.transpose([ (i-1) + gridx * (j -1), (i) + gridx * (j -1), (i-1) + gridx * (j), (i+1) + gridx * (j +1), (i+1) + gridx * (j ), (i) + gridx * (j +1), (i+1) + gridx * (j -1), (i-1) + gridx * (j +1) ]) 
+		DF0 = DF[n.hstack((n.outer(i,j)))]
+		N1 = n.transpose([ n.hstack((n.outer(i-1,j-1))), n.hstack((n.outer(i,j-1))), n.hstack((n.outer(i-1,j))), n.hstack((n.outer(i+1,j+1))), n.hstack((n.outer(i+1,j))), n.hstack((n.outer(i,j+1))), n.hstack((n.outer(i+1,j+1))), n.hstack((n.outer(i-1,j+1))) ])
+		#  N1 = n.transpose([ (i-1) + gridx * (j -1), (i) + gridx * (j -1), (i-1) + gridx * (j), (i+1) + gridx * (j +1), (i+1) + gridx * (j ), (i) + gridx * (j +1), (i+1) + gridx * (j -1), (i-1) + gridx * (j +1) ]) 
 		DF1 = n.array([ n.mean(DF[el]) for el in N1 ]) 
 		res0[kk] = n.histogram(DF0,bins=bins)[0]
 		res1[kk] = n.histogram(DF1,bins=bins)[0]
