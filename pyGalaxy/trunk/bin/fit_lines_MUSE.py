@@ -7,8 +7,6 @@ This script computes the fits the line strength on the spectra from of the MUSE 
 # defines the survey object
 import numpy as n
 from astropy.io import fits
-path_to_catalog = "D:\data\Spectra_MACS1931\Catalog.spectra_MACS1931.fits"
-hd=fits.open(path_to_catalog)
 
 
 # global parameters to add to the survey class
@@ -17,7 +15,7 @@ survey.zmax = 6. # maximum redshift considered
 survey.WLmin = 4750. # lambda min
 survey.WLmax = 9350. # lambda max of the spectrum
 survey.resolution = 3000. # resolution of the Keck deimos setting used
-survey.path_to_output_catalog  =  survey.muse_catalog_dir+"/Catalog.spectra_MACS1931.lines.fits"
+survey.path_to_output_catalog  = join( survey.muse_catalog_dir, "Catalog.spectra_MACS1931.lines.fits")
 survey.Ngalaxies=len(survey.catalog)
 
 # line list to be fitted
