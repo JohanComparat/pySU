@@ -72,7 +72,7 @@ for jj in range(survey.Ngalaxies):
 
 			# now fits the recombination lines 
 			for li in recLineList:
-				datI,mI,hI=lfit.fit_Line(wl,fl,flErr,li[1]*(1 +catalog_entry['FINAL_Z'] ),lineName=li[2], continuumSide=li[3], model="gaussian")
+				datI,mI,hI=lfit.fit_Line(wl,fl,flErr,li[1]*(1 +catalog_entry['FINAL_Z'] ),lineName=li[2], continuumSide=li[3], fitWidth=40, DLC=40, p0_flux=2e-16 ,model="gaussian",p0_sigma=2.)
 				if datI[1] != lfit.dV : 
 					lfit.plotLineFit(wl,fl,flErr,mI,n.mean( n.array([O2_3727,O2_3729])* (1+ catalog_entry['FINAL_Z'] ) ),join( survey.muse_catalog_dir,"plots", catalog_entry['SpecName'] + "_"+li[2]+".png"), title =  r"$\log(abs(f))$="+str(n.round(n.log10(abs(datI[1])),2)) + r", $\sigma$="+str(n.round(datI[3],2)) )
 
