@@ -14,13 +14,14 @@ inFiles = n.array(["dmdens_cic_104.dat", "dmdens_cic_101.dat", "dmdens_cic_097.d
 bins = n.hstack((0,n.logspace(-3, 4, 1000)))
 
 for infi in inFiles:
+	print infi
 	DFfile = join(DFdir,infi)
 	f = fortranfile.FortranFile(DFfile)
 	gridx, gridy, gridz = f.readInts()
 	res0 = n.empty((gridx, len(bins)-1))
 	res1 = n.empty((gridx, len(bins)-1))
 	resH = n.empty((gridx, len(bins)-1, len(bins)-1))
-	for kk in range(3):#gridx):
+	for kk in range(gridx):
 		DF = f.readReals()
 		i = n.arange(1, gridx-1, 1)
 		j = n.arange(1, gridx-1, 1)
