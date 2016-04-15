@@ -90,11 +90,11 @@ for jj in range(survey.Ngalaxies):
 
 # now writes the output
 colNames = heading.split()
-hdu2 = gs.fits.BinTableHDU.from_columns(survey.catalog.columns)
+hdu2 = fits.BinTableHDU.from_columns(survey.catalog.columns)
 new_columns = hdu2.data.columns 
 
 for ii in range(len(colNames)):
-	new_columns += gs.fits.Column(name=colNames[ii],format='D', array=output.T[ii] )
+	new_columns += fits.Column(name=colNames[ii],format='D', array=output.T[ii] )
 
-hdu = gs.fits.BinTableHDU.from_columns(new_columns)
+hdu = fits.BinTableHDU.from_columns(new_columns)
 hdu.writeto(survey.path_to_output_catalog)
