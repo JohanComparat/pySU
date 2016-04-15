@@ -46,11 +46,11 @@ for jj in range(survey.Ngalaxies):
 	if catalog_entry['FINAL_Z']>survey.zmin and catalog_entry['FINAL_Z']<survey.zmax :
 		print catalog_entry
 		print "check flux unit !!"
-		wl, fl, flErr = spectrum.wavelength, spectrum.fluxl*1e-18, spectrum.fluxlErr*1e-18
+		wl, fl, flErr = spectrum.wavelength, spectrum.fluxl*1e-20, spectrum.fluxlErr*1e-20
 
 		if len(wl)>100 : 
 			d_out,m,h=[],[],[]
-			datI,mI,hI=lfit.fit_Line_OIIdoublet(wl,fl,flErr,a0= n.array([O2_3727,O2_3729]) *(1+catalog_entry['FINAL_Z']), lineName="O2_3728", fitWidth=40, DLC=20,  p0_flux=2e-16, p0_sigma=1.,model="gaussian")
+			datI,mI,hI=lfit.fit_Line_OIIdoublet(wl,fl,flErr,a0= n.array([O2_3727,O2_3729]) *(1+catalog_entry['FINAL_Z']), lineName="O2_3728", fitWidth=40, DLC=20,  p0_flux=1e-17, p0_sigma=1.,model="gaussian")
 			
 			if datI[2] != lfit.dV : 
 				lfit.plotLineFit(wl,fl,flErr,mI,n.mean( n.array([O2_3727,O2_3729])* (1+ catalog_entry['FINAL_Z'] ) ),join( survey.muse_catalog_dir,"plots", catalog_entry['SpecName'] + "_O2_3728.png"), title = r"$\log(f)$="+str(n.round(n.log10(datI[2]),2)) + r", $\sigma$="+str(n.round(datI[4],2)) )
