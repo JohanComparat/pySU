@@ -18,7 +18,7 @@ survey.path_to_output_catalog  = join( survey.muse_catalog_dir, "Catalog.spectra
 survey.Ngalaxies=len(survey.catalog)
 
 # line list to be fitted
-from lineListAir import *
+from lineListVac import *
 lineList = n.array([[Ne3,Ne3_3869,"Ne3_3869","left"],[O3,O3_4363,"O3_4363","right"],[O3,O3_4960,"O3_4960","left"],[O3,O3_5007,"O3_5007","right"],[N2,N2_6549,"N2_6549","left"],[N2,N2_6585,"N2_6585","right"],[S2,S2_6718,"S2_6718","left"],[S2,S2_6732,"S2_6732","right"],[Ar3,Ar3_7137,"Ar3_7137","left"]])
 recLineList = n.array([[H1,H1_1216,"H1_1216","right"],[H1,H1_3970,"H1_3970","right"],[H1,H1_4102,"H1_4102","right"],[H1,H1_4341,"H1_4341","right"],[H1,H1_4862,"H1_4862","left"],[H1,H1_6564,"H1_6564","left"]])
 doubletList = n.array([[O2_3727,"O2_3727",O2_3729,"O2_3729",O2]])
@@ -48,9 +48,9 @@ for jj in range(survey.Ngalaxies):
 		print "check flux unit !!"
 		wl, fl, flErr = spectrum.wavelength, spectrum.fluxl*1e-18, spectrum.fluxlErr*1e-18
 
-		if len(wl)>200 : 
+		if len(wl)>100 : 
 			d_out,m,h=[],[],[]
-			datI,mI,hI=lfit.fit_Line_OIIdoublet(wl,fl,flErr,a0= n.array([O2_3727,O2_3729]) *(1+catalog_entry['FINAL_Z']), lineName="O2_3728", fitWidth=40, DLC=40,  p0_flux=2e-16, p0_sigma=3.,model="gaussian")
+			datI,mI,hI=lfit.fit_Line_OIIdoublet(wl,fl,flErr,a0= n.array([O2_3727,O2_3729]) *(1+catalog_entry['FINAL_Z']), lineName="O2_3728", fitWidth=40, DLC=20,  p0_flux=2e-16, p0_sigma=3.,model="gaussian")
 			
 			if datI[2] != lfit.dV : 
 				lfit.plotLineFit(wl,fl,flErr,mI,n.mean( n.array([O2_3727,O2_3729])* (1+ catalog_entry['FINAL_Z'] ) ),join( survey.muse_catalog_dir,"plots", catalog_entry['SpecName'] + "_O2_3728.png"), title = r"$\log(f)$="+str(n.round(n.log10(datI[2]),2)) + r", $\sigma$="+str(n.round(datI[4],2)) )
@@ -62,7 +62,7 @@ for jj in range(survey.Ngalaxies):
 
 			# now fits the emission lines
 			for li in lineList:
-				datI,mI,hI=lfit.fit_Line(wl,fl,flErr,li[1]*(1+ catalog_entry['FINAL_Z']) , lineName=li[2], continuumSide=li[3], fitWidth=40, DLC=40, p0_flux=2e-16 ,model="gaussian",p0_sigma=2.)
+				datI,mI,hI=lfit.fit_Line(wl,fl,flErr,li[1]*(1+ catalog_entry['FINAL_Z']) , lineName=li[2], continuumSide=li[3], fitWidth=40, DLC=20, p0_flux=2e-16 ,model="gaussian",p0_sigma=2.)
 				if datI[1] != lfit.dV : 
 					lfit.plotLineFit(wl,fl,flErr,mI,n.mean( n.array([O2_3727,O2_3729])* (1+ catalog_entry['FINAL_Z'] ) ),join( survey.muse_catalog_dir,"plots", catalog_entry['SpecName'] + "_"+li[2]+".png"), title =  r"$\log(f)$="+str(n.round(n.log10(datI[1]),2)) + r", $\sigma$="+str(n.round(datI[3],2)) )
 					
@@ -72,7 +72,7 @@ for jj in range(survey.Ngalaxies):
 
 			# now fits the recombination lines 
 			for li in recLineList:
-				datI,mI,hI=lfit.fit_Line(wl,fl,flErr,li[1]*(1 +catalog_entry['FINAL_Z'] ),lineName=li[2], continuumSide=li[3], fitWidth=40, DLC=40, p0_flux=2e-16 ,model="gaussian",p0_sigma=2.)
+				datI,mI,hI=lfit.fit_Line(wl,fl,flErr,li[1]*(1 +catalog_entry['FINAL_Z'] ),lineName=li[2], continuumSide=li[3], fitWidth=40, DLC=20, p0_flux=2e-16 ,model="gaussian",p0_sigma=2.)
 				if datI[1] != lfit.dV : 
 					lfit.plotLineFit(wl,fl,flErr,mI,n.mean( n.array([O2_3727,O2_3729])* (1+ catalog_entry['FINAL_Z'] ) ),join( survey.muse_catalog_dir,"plots", catalog_entry['SpecName'] + "_"+li[2]+".png"), title =  r"$\log(abs(f))$="+str(n.round(n.log10(abs(datI[1])),2)) + r", $\sigma$="+str(n.round(datI[3],2)) )
 

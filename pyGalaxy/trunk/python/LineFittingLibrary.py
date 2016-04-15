@@ -132,7 +132,7 @@ class LineFittingLibrary:
 		p.plot(wlMod,lineModel[1],'r')
 		p.xlim((wlMod.min()-50,wlMod.max()+50))
 		p.yscale('log')
-		p.ylim((lineModel[1].min() / 5., lineModel[1].max() * 5.))
+		p.ylim((n.max([lineModel[1].min() / 5., 1e-18], lineModel[1].max() * 5.))
 		p.title(title)
 		p.savefig(path_to_fig)
 		p.clf()
