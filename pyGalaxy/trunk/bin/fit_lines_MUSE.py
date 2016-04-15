@@ -5,9 +5,8 @@ This script computes the fits the line strength on the spectra from of the MUSE 
 """
 
 # defines the survey object
-import numpy as n
-from astropy.io import fits
-
+from GalaxySurveyMUSE import *
+survey = GalaxySurveyMUSE()
 
 # global parameters to add to the survey class
 survey.zmin = 0.1 # minimum redshift considered
@@ -28,17 +27,13 @@ doubletList = n.array([[O2_3727,"O2_3727",O2_3729,"O2_3729",O2]])
 import LineFittingLibrary as lineFit
 lfit  =  lineFit.LineFittingLibrary(fitWidth = 40.)
 
-# import the class to handle spectra
-import GalaxySpectrumMUSE as gsp
-
 output = n.ones_like(n.empty([survey.Ngalaxies,195]))*lfit.dV
 for jj in range(survey.Ngalaxies):
 	catalog_entry = survey.catalog[jj]
-	spectrum = gsp.GalaxySpectrumMUSE(catalog_entry,survey)
-
-	if len(spectrum.path_to_spectrum)==1 and catalog_entry['FINAL_Z']>survey.zmin and catalog_entry['FINAL_Z']<survey.zmax :
+	spectrum = GalaxySpectrumMUSE(catalog_entry)
+	spectrum.openObservedSpectrum()
+	if catalog_entry['FINAL_Z']>survey.zmin and catalog_entry['FINAL_Z']<survey.zmax :
 		print catalog_entry
-		spectrum.openCalibratedSpectrum()
 		print "check flux unit !!"
 		wl, fl, flErr = spectrum.wavelength, spectrum.fluxl*1e-18, spectrum.fluxlErr*1e-18
 
