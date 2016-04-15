@@ -51,10 +51,10 @@ for jj in range(survey.Ngalaxies):
 		if len(wl)>200 : 
 			d_out,m,h=[],[],[]
 			datI,mI,hI=lfit.fit_Line_OIIdoublet(wl,fl,flErr,a0= n.array([O2_3727,O2_3729]) *(1+catalog_entry['FINAL_Z']), lineName="O2_3728", fitWidth=40, DLC=40,  p0_flux=2e-16, p0_sigma=3.,model="gaussian")
-			"""
-			if datI[1]>0 and datI[2]>0 and datI[1]>3*datI[2]:
-				plotLineFit(wl,fl,flErr,mI,n.mean( n.array([O2_3727,O2_3729])* (1+ catalog_entry['FINAL_Z'] ) ),"../MUSE/specPdf/spec_"+str(ID)+"_O2_3728.pdf")
-			"""
+			
+			if datI[2]>0 : 
+				plotLineFit(wl,fl,flErr,mI,n.mean( n.array([O2_3727,O2_3729])* (1+ catalog_entry['FINAL_Z'] ) ),join( survey.muse_catalog_dir,"plots", catalog_entry['SpecName'] + "_O2_3728.png"))
+			
 			d_out.append(datI)
 			print len(datI)
 			m.append(mI)
@@ -97,4 +97,5 @@ for ii in range(len(colNames)):
 	new_columns += fits.Column(name=colNames[ii],format='D', array=output.T[ii] )
 
 hdu = fits.BinTableHDU.from_columns(new_columns)
+os.system("rm -rf "+survey.path_to_output_catalog)
 hdu.writeto(survey.path_to_output_catalog)
