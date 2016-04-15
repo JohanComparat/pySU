@@ -25,9 +25,20 @@ doubletList = n.array([[O2_3727,"O2_3727",O2_3729,"O2_3729",O2]])
 
 # import the fitting routines
 import LineFittingLibrary as lineFit
-lfit  =  lineFit.LineFittingLibrary(fitWidth = 40.)
+lfit  =  lineFit.LineFittingLibrary()
 
 output = n.ones_like(n.empty([survey.Ngalaxies,195]))*lfit.dV
+"""
+jj=0
+catalog_entry = survey.catalog[jj]
+spectrum = GalaxySpectrumMUSE(catalog_entry)
+spectrum.openObservedSpectrum()
+print catalog_entry
+print "check flux unit !!"
+wl, fl, flErr = spectrum.wavelength, spectrum.fluxl*1e-18, spectrum.fluxlErr*1e-18
+d_out,m,h=[],[],[]
+datI,mI,hI=lfit.fit_Line_OIIdoublet(wl,fl,flErr,a0= n.array([O2_3727,O2_3729]) *(1+catalog_entry['FINAL_Z']), lineName="O2_3728",p0_sigma=0.1,model="gaussian")
+"""
 for jj in range(survey.Ngalaxies):
 	catalog_entry = survey.catalog[jj]
 	spectrum = GalaxySpectrumMUSE(catalog_entry)

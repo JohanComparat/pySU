@@ -71,6 +71,6 @@ class GalaxySpectrumMUSE:
 		
 	def openObservedSpectrum(self):
 		"""Loads the observed spectrum in counts."""
-		self.wavelength, self.fluxl, self.fluxlErr = n.loadtxt(self.path_to_spectrum)
+		self.wavelength, self.fluxl, self.fluxlErr = n.loadtxt(self.path_to_spectrum, unpack=True)
 
 
