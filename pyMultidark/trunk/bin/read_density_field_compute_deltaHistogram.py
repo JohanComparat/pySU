@@ -18,7 +18,7 @@ for infi in inFiles:
 	f = fortranfile.FortranFile(DFfile)
 	gridx, gridy, gridz = f.readInts()
 	res = n.empty((gridx, len(bins)-1))
-	for kk in range(3):#gridx):
+	for kk in range(gridx):
 		DF = f.readReals()
 		res[kk],bi = n.histogram(DF,bins=bins)
 
