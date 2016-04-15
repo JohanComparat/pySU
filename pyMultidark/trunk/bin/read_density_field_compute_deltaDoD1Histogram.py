@@ -32,7 +32,6 @@ for infi in inFiles:
 		resH[kk] = n.histogram2d(DF0, DF1, bins)[0]
 
 	f.close()
-	result = n.sum(res,axis=0)
 	path_to_outputCat =  join(mockDir,infi[:-4] + "_DF0DF1hist.dat")
 	f=open(path_to_outputCat, 'w')
 	cPickle.dump([bins,n.sum(res0,axis=0), n.sum(res1,axis=0), n.sum(resH,axis=0)],f)
