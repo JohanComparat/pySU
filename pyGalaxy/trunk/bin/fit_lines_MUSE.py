@@ -50,7 +50,7 @@ for jj in range(survey.Ngalaxies):
 
 		if len(wl)>200 : 
 			d_out,m,h=[],[],[]
-			datI,mI,hI=lfit.fit_Line_OIIdoublet(wl,fl,flErr,a0= n.array([O2_3727,O2_3729]) *(1+catalog_entry['FINAL_Z']), lineName="O2_3728",p0_sigma=0.1,model="gaussian")
+			datI,mI,hI=lfit.fit_Line_OIIdoublet(wl,fl,flErr,a0= n.array([O2_3727,O2_3729]) *(1+catalog_entry['FINAL_Z']), lineName="O2_3728", fitWidth=40, DLC=40,  p0_flux=2e-16, p0_sigma=3.,model="gaussian")
 			"""
 			if datI[1]>0 and datI[2]>0 and datI[1]>3*datI[2]:
 				plotLineFit(wl,fl,flErr,mI,n.mean( n.array([O2_3727,O2_3729])* (1+ catalog_entry['FINAL_Z'] ) ),"../MUSE/specPdf/spec_"+str(ID)+"_O2_3728.pdf")
@@ -62,7 +62,7 @@ for jj in range(survey.Ngalaxies):
 
 			# now fits the emission lines
 			for li in lineList:
-				datI,mI,hI=lfit.fit_Line(wl,fl,flErr,li[1]*(1+ catalog_entry['FINAL_Z']) , lineName=li[2], continuumSide=li[3] ,model="gaussian",p0_sigma=1)
+				datI,mI,hI=lfit.fit_Line(wl,fl,flErr,li[1]*(1+ catalog_entry['FINAL_Z']) , lineName=li[2], continuumSide=li[3], fitWidth=40, DLC=40, p0_flux=2e-16 ,model="gaussian",p0_sigma=2.)
 				"""
 				if datI[1]>0 and datI[2]>0 and datI[1]>3*datI[2]:
 								plotLineFit(wl,fl,flErr,mI,li[1]*( 1+ catalog_entry['FINAL_Z'] ), "../MUSE/specPdf/spec_"+str(ID)+"_"+li[2]+".pdf")
