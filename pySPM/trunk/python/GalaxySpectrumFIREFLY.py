@@ -43,6 +43,36 @@ class GalaxySpectrumFIREFLY:
 		self.milky_way_reddening = milky_way_reddening
 		self.stack_resolution = stack_resolution 
 
+	def openObservedMuseSpectrum(self, catalog):
+		"""Loads the observed spectrum in counts."""
+		self.wavelength, self.flux, self.error = n.loadtxt(self.path_to_spectrum, unpack=True)
+		self.bad_flags = np.ones(len(self.wavelength))
+		bad_data = np.isnan(self.flux) | np.isinf(self.flux) | (self.flux <= 0.0) | np.isnan(self.error) | np.isinf(self.error)
+		# removes the bad data from the spectrum 
+		self.flux[bad_data] 	= 0.0
+		self.error[bad_data] 	= np.max(self.flux) * 99999999999.9
+		self.bad_flags[bad_data] = 0
+
+		self.r_instrument = np.zeros(len(self.wavelength))
+		for wi,w in enumerate(self.wavelength):
+			if w<6000:
+				self.r_instrument[wi] = (2270.0-1560.0)/(6000.0-3700.0)*w + 420.0 
+			else:
+				self.r_instrument[wi] = (2650.0-1850.0)/(9000.0-6000.0)*w + 250.0 
+
+		self.redshift = catalog['FINAL_Z']
+		self.vdisp = 100 # catalog['VDISP']
+		self.restframe_wavelength = self.wavelength / (1.0+self.redshift)
+
+		self.trust_flag = 1
+		self.objid = 0
+
+		if self.milky_way_reddening :
+			# gets the amount of MW reddening on the models
+			self.ebv_mw = get_dust_radec(self.ra,self.dec,'ebv')
+		else:
+			self.ebv_mw = 0.0
+
 	def openObservedSDSSSpectrum(self):
 		"""
 		It reads an SDSS spectrum and provides the input for the firefly fitting routine.
