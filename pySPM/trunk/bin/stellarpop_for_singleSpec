@@ -11,29 +11,56 @@ import glob
 import numpy as np
 import astropy.cosmology as co
 cosmo = co.Planck15
+from astropy.io import fits
 #cosmo=co.FlatLambdaCDM(H0=70,Om0=0.3)
 from GalaxySurveyMUSE import *
 survey = GalaxySurveyMUSE()
-
+path_to_output_catalog_mass = join( survey.muse_catalog_dir, "Catalog.spectra_MACS1931.lines.spm.fits")
 # for one galaxy spectrum
 import GalaxySpectrumFIREFLY as gs
 import StellarPopulationModel as spm
 
 stackList = glob.glob(join(os.environ['DATA_DIR'],"MUSE","*.txt"))
-
+output = n.empty((len(survey.catalog),16))
 for ii	 in range(len(survey.catalog)):
-	catalog_entry = survey.catalog[ii]
-	spectrum = GalaxySpectrumMUSE(catalog_entry)
-	spec = gs.GalaxySpectrumFIREFLY(spectrum.path_to_spectrum)
-	spec.openObservedMuseSpectrum(catalog_entry)
 	t0=time.time()
 	# initiates the spectrum and gets the data
-	spec=gs.GalaxySpectrumFIREFLY(specFile, milky_way_reddening=True, stack_resolution = 3000. )
-	spec.openObservedMuseSpectrum(catalog_entry)
-	outFile = specFile[:-4], ".modelContinuum.fits"
-	print outFile
-	# gets the model for MILES, fits and writes
-	model = spm.StellarPopulationModel(spec, outFile, cosmo, models = 'm11', model_libs = ['MILES'], imfs = ['ss'], age_limits = [6,10], downgrade_models = True, data_wave_medium = 'air', Z_limits = [-3.,1.],suffix="-SPM-MILES.fits", use_downgraded_models = False)
-	model.fit_models_to_data()
-	print "time used =", time.time()-t0 ,"seconds"
+	catalog_entry = survey.catalog[ii]
+	if catalog_entry['FINAL_Z']<1.6 :
+		spectrum = GalaxySpectrumMUSE(catalog_entry)
+		spec = gs.GalaxySpectrumFIREFLY(spectrum.path_to_spectrum , milky_way_reddening=True, stack_resolution = 3000. )
+		spec.openObservedMuseSpectrum(catalog_entry)
+		outFile = spectrum.path_to_spectrum[:-4] + "-modelContinuum"
+		print outFile
+		# gets the model for MILES, fits and writes
+		model = spm.StellarPopulationModel(spec, outFile, cosmo, models = 'm11', model_libs = ['MILES'], imfs = ['ss'], age_limits = [6,10], downgrade_models = True, data_wave_medium = 'air', Z_limits = [-3.,1.],suffix="-SPM-MILES.fits", use_downgraded_models = False)
+		model.fit_models_to_data()
+		print "time used =", time.time()-t0 ,"seconds"
+		tbhdu = fits.open(outFile + "-SPM-MILES.fits")
+		output[ii] = [tbhdu[0].header['light_age'],  
+		tbhdu[0].header['light_age_up'] , 
+		tbhdu[0].header['light_age_low'] ,	
+		tbhdu[0].header['light_metallicity'], 
+		tbhdu[0].header['light_metallicity_up'], 		
+		tbhdu[0].header['light_metallicity_low'] , 		
+		tbhdu[0].header['mass_age'] ,		
+		tbhdu[0].header['mass_age_up'] ,		
+		tbhdu[0].header['mass_age_low'] ,		
+		tbhdu[0].header['mass_metallicity'] ,		
+		tbhdu[0].header['mass_metallicity_up'] ,		
+		tbhdu[0].header['mass_metallicity_low'] , 		
+		tbhdu[0].header['EBV'], 		
+		tbhdu[0].header['stellar_mass'], 		
+		tbhdu[0].header['stellar_mass_up'], 		
+		tbhdu[0].header['stellar_mass_low'] ]
 
+colNames = ['light_age', 	'light_age_up', 	'light_age_low' ,	'light_metallicity', 'light_metallicity_up', 'light_metallicity_low',  'mass_age', 'mass_age_up', 'mass_age_low', 'mass_metallicity', 'mass_metallicity_up', 	'mass_metallicity_low',  'EBV', 'stellar_mass', 'stellar_mass_up', 'stellar_mass_low']
+hdu2 = fits.BinTableHDU.from_columns(survey.catalog.columns)
+new_columns = hdu2.data.columns 
+
+for ii in range(len(colNames)):
+	new_columns += fits.Column(name=colNames[ii],format='D', array=output.T[ii] )
+
+hdu = fits.BinTableHDU.from_columns(new_columns)
+os.system("rm -rf "+path_to_output_catalog_mass)
+hdu.writeto(path_to_output_catalog_mass)
