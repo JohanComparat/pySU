@@ -37,7 +37,7 @@ for ii	 in range(len(survey.catalog)):
 		model.fit_models_to_data()
 		print "time used =", time.time()-t0 ,"seconds"
 		tbhdu = fits.open(outFile + "-SPM-MILES.fits")
-		output[ii] = [tbhdu[0].header['light_age'],  
+		output[ii] = [tbhdu[1].header['light_age'],  
 		tbhdu[1].header['light_age_up'] , 
 		tbhdu[1].header['light_age_low'] ,	
 		tbhdu[1].header['light_metallicity'], 
