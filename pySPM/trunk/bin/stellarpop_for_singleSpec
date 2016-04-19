@@ -22,7 +22,8 @@ import StellarPopulationModel as spm
 
 stackList = glob.glob(join(os.environ['DATA_DIR'],"MUSE","*.txt"))
 output = n.empty((len(survey.catalog),16))
-for ii	 in range(55,len(survey.catalog),1):
+indexes = n.hstack(( n.range(0, 55, 1), n.range(56,len(survey.catalog),1)))
+for ii	 in indexes:
 	t0=time.time()
 	# initiates the spectrum and gets the data
 	catalog_entry = survey.catalog[ii]
