@@ -6,6 +6,7 @@ from firefly_fitter import *
 from firefly_library import *
 from firefly_instrument import *
 import scipy.interpolate as interpolate
+from astropy.io import fits
 # Calzetti curves, and other general attenuation curves are computed
 # here, along with (in dust_calzetti) applying to spectra directly.
 
@@ -354,7 +355,7 @@ def get_SFD_dust(long,lat,dustmap='ebv',interpolate=True):
     
     """
     from numpy import sin,cos,round,isscalar,array,ndarray,ones_like
-    from pyfits import open
+    #from pyfits import open
     
     if type(dustmap) is not str:
         raise ValueError('dustmap is not a string')
@@ -387,7 +388,7 @@ def get_SFD_dust(long,lat,dustmap='ebv',interpolate=True):
     
     
     if '%s' not in dustmapfn:
-        f=open(dustmapfn)
+        f=fits.open(dustmapfn)
         try:
             mapds=[f[0].data]
         finally:
@@ -414,13 +415,13 @@ def get_SFD_dust(long,lat,dustmap='ebv',interpolate=True):
         ns = [1,-1]
         
         mapds=[]
-        f=open(dustmapfn%'ngp')
+        f=fits.open(dustmapfn%'ngp')
         try:
             mapds.append(f[0].data)
         finally:
             f.close()
         assert mapds[-1].shape[0] == mapds[-1].shape[1],'map dimensions not equal - incorrect map file?'
-        f=open(dustmapfn%'sgp')
+        f=fits.open(dustmapfn%'sgp')
         try:
             mapds.append(f[0].data)
         finally:
