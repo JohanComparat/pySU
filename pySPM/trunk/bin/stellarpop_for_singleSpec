@@ -38,21 +38,21 @@ for ii	 in range(len(survey.catalog)):
 		print "time used =", time.time()-t0 ,"seconds"
 		tbhdu = fits.open(outFile + "-SPM-MILES.fits")
 		output[ii] = [tbhdu[0].header['light_age'],  
-		tbhdu[0].header['light_age_up'] , 
-		tbhdu[0].header['light_age_low'] ,	
-		tbhdu[0].header['light_metallicity'], 
-		tbhdu[0].header['light_metallicity_up'], 		
-		tbhdu[0].header['light_metallicity_low'] , 		
-		tbhdu[0].header['mass_age'] ,		
-		tbhdu[0].header['mass_age_up'] ,		
-		tbhdu[0].header['mass_age_low'] ,		
-		tbhdu[0].header['mass_metallicity'] ,		
-		tbhdu[0].header['mass_metallicity_up'] ,		
-		tbhdu[0].header['mass_metallicity_low'] , 		
-		tbhdu[0].header['EBV'], 		
-		tbhdu[0].header['stellar_mass'], 		
-		tbhdu[0].header['stellar_mass_up'], 		
-		tbhdu[0].header['stellar_mass_low'] ]
+		tbhdu[1].header['light_age_up'] , 
+		tbhdu[1].header['light_age_low'] ,	
+		tbhdu[1].header['light_metallicity'], 
+		tbhdu[1].header['light_metallicity_up'], 		
+		tbhdu[1].header['light_metallicity_low'] , 		
+		tbhdu[1].header['mass_age'] ,		
+		tbhdu[1].header['mass_age_up'] ,		
+		tbhdu[1].header['mass_age_low'] ,		
+		tbhdu[1].header['mass_metallicity'] ,		
+		tbhdu[1].header['mass_metallicity_up'] ,		
+		tbhdu[1].header['mass_metallicity_low'] , 		
+		tbhdu[1].header['EBV'], 		
+		tbhdu[1].header['stellar_mass'], 		
+		tbhdu[1].header['stellar_mass_up'], 		
+		tbhdu[1].header['stellar_mass_low'] ]
 
 colNames = ['light_age', 	'light_age_up', 	'light_age_low' ,	'light_metallicity', 'light_metallicity_up', 'light_metallicity_low',  'mass_age', 'mass_age_up', 'mass_age_low', 'mass_metallicity', 'mass_metallicity_up', 	'mass_metallicity_low',  'EBV', 'stellar_mass', 'stellar_mass_up', 'stellar_mass_low']
 hdu2 = fits.BinTableHDU.from_columns(survey.catalog.columns)
