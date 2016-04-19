@@ -21,8 +21,8 @@ import GalaxySpectrumFIREFLY as gs
 import StellarPopulationModel as spm
 
 stackList = glob.glob(join(os.environ['DATA_DIR'],"MUSE","*.txt"))
-output = n.empty((len(survey.catalog),16))
-indexes = n.hstack(( n.range(0, 55, 1), n.range(56,len(survey.catalog),1)))
+output = np.empty((len(survey.catalog),16))
+indexes = np.hstack(( np.range(0, 55, 1), np.range(56,len(survey.catalog),1)))
 for ii	 in indexes:
 	t0=time.time()
 	# initiates the spectrum and gets the data
