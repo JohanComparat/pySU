@@ -22,7 +22,7 @@ import StellarPopulationModel as spm
 stackList = glob.glob(join(os.environ['DATA_DIR'],"MUSE","*.txt"))
 
 for ii	 in range(len(survey.catalog)):
-	catalog_entry = survey.catalog[jj]
+	catalog_entry = survey.catalog[ii]
 	spectrum = GalaxySpectrumMUSE(catalog_entry)
 	spec = gs.GalaxySpectrumFIREFLY(spectrum.path_to_spectrum)
 	spec.openObservedMuseSpectrum(catalog_entry)

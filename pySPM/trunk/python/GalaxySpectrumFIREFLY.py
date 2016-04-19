@@ -45,7 +45,7 @@ class GalaxySpectrumFIREFLY:
 
 	def openObservedMuseSpectrum(self, catalog):
 		"""Loads the observed spectrum in counts."""
-		self.wavelength, self.flux, self.error = n.loadtxt(self.path_to_spectrum, unpack=True)
+		self.wavelength, self.flux, self.error = np.loadtxt(self.path_to_spectrum, unpack=True)
 		self.bad_flags = np.ones(len(self.wavelength))
 		bad_data = np.isnan(self.flux) | np.isinf(self.flux) | (self.flux <= 0.0) | np.isnan(self.error) | np.isinf(self.error)
 		# removes the bad data from the spectrum 
