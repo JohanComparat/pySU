@@ -21,13 +21,15 @@ import GalaxySpectrumFIREFLY as gs
 import StellarPopulationModel as spm
 
 stackList = glob.glob(join(os.environ['DATA_DIR'],"MUSE","*.txt"))
-output = np.empty((len(survey.catalog),16))
+output = np.ones((len(survey.catalog),16)) * -9999.99
 
-for ii	 in indexes:
+for ii	 in range(len(survey.catalog)):
 	t0=time.time()
 	catalog_entry = survey.catalog[ii]
+	spectrum = GalaxySpectrumMUSE(catalog_entry)
 	outFile = spectrum.path_to_spectrum[:-4] + "-modelContinuum" 
-	if len(glob.glob(outFile))==1:
+	if len(glob.glob(outFile+ "-SPM-MILES.fits"))==1:
+		print "ok"
 		tbhdu = fits.open(outFile + "-SPM-MILES.fits")
 		output[ii] = [tbhdu[1].header['light_age'],  
 		tbhdu[1].header['light_age_up'] , 
