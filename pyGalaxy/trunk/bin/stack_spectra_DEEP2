@@ -10,7 +10,7 @@ data_dir = os.environ['DATA_DIR']
 from SpectraStacking import *
 
 
-f = open(join(os.environ['LFMODELS_DIR'], "content", "data" , "O2_3728-data-luminosity-limits-Planck15.txt"),'r')
+f = open(join(os.environ['LFMODELS_DIR'], "data" , "O2_3728-data-luminosity-limits-Planck15.txt"),'r')
 lines = f.readlines()
 lmins, lmaxs, fileNames = [], [], []
 for line in lines[1:] :
@@ -21,7 +21,7 @@ for line in lines[1:] :
 f.close()
 
 
-f = open(join(os.environ['LFMODELS_DIR'], "content", "data" , "O3_5007-data-luminosity-limits-Planck15.txt"),'r')
+f = open(join(os.environ['LFMODELS_DIR'], "data" , "O3_5007-data-luminosity-limits-Planck15.txt"),'r')
 lines = f.readlines()
 for line in lines[1:] :
 	lmins.append( float(line.split()[0]) )
@@ -30,7 +30,7 @@ for line in lines[1:] :
 	
 f.close()
 
-f = open(join(os.environ['LFMODELS_DIR'], "content", "data" , "H1_4862-data-luminosity-limits-Planck15.txt"),'r')
+f = open(join(os.environ['LFMODELS_DIR'], "data" , "H1_4862-data-luminosity-limits-Planck15.txt"),'r')
 lines = f.readlines()
 for line in lines[1:] :
 	lmins.append( float(line.split()[0]) )
@@ -59,19 +59,17 @@ for ii, el in enumerate(dataList):
 	hd = fits.open(el)
 	lcomp[ii] = n.log10(hd[0].header['COMPLETENESS'])
 
-selection = ((survey =="DEEP2R24.2") ) #(survey =="VVDSDEEPI24") | 
+selection = ((survey =="DEEP2R24.2") )#&((LFname=="H1_4862-DEEP2R24.2-z0.516.txt")|(LFname == "H1_4862-DEEP2R24.2-z0.802.txt"))) #(survey =="VVDSDEEPI24") | 
+
 
 for ii in n.arange(len(dataList))[selection]:
 		el = dataList[ii]
 		#if lcomp[ii] > dictLmin[LFname[ii]] :
 		print el, "stacks !"
-
 		st=SpectraStacking(el, Nspec = 100, dLambda = 0.00005)
 		st.stackSpectra()
-
 		st=SpectraStacking(el, Nspec = 200, dLambda = 0.00005)
 		st.stackSpectra()
-
 		st=SpectraStacking(el, Nspec = 400, dLambda = 0.00005)
 		st.stackSpectra()
 

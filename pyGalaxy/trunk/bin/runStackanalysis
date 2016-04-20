@@ -26,6 +26,9 @@ rm  $SPECTRASTACKS_DIR/data/O3_5007/O3_5007-VVDSDEEPI24-z0.674*
 rm  $SPECTRASTACKS_DIR/data/O3_5007/O3_5007-VVDSDEEPI24-z0.741*
 
 # plot the stacks, present the results
+
+UPDATE PATHES in the scripts
+
 cd $SPECTRASTACKS_DIR/scripts/
 python presentationPlot.py
 python plotStacks.py
