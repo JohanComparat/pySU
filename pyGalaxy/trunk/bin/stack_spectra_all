@@ -40,9 +40,9 @@ for line in lines[1:] :
 		lmaxs.append( float(line.split()[1]) )
 		fileNames.append(name)
 		if surv == "DEEP2R24.2":
-			pathes.append(join(os.environ['DEEP2_DIR'], "products", "emissionLineLuminosityFunctions","O2_3728", name[:-4]+".fits"))
+			pathes.append(join(os.environ['DEEP2_DIR'], "products", "emissionLineLuminosityFunctions","O3_5007", name[:-4]+".fits"))
 		if surv == "VVDSDEEPI24" or surv == "VVDSWIDEI22.5":
-			pathes.append(join(os.environ['VVDS_DIR'], "products", "emissionLineLuminosityFunctions","O2_3728", name[:-4]+".fits"))
+			pathes.append(join(os.environ['VVDS_DIR'], "products", "emissionLineLuminosityFunctions","O3_5007", name[:-4]+".fits"))
 
 
 f.close()
@@ -58,9 +58,9 @@ for line in lines[1:] :
 		lmaxs.append( float(line.split()[1]) )
 		fileNames.append(name)
 		if surv == "DEEP2R24.2":
-			pathes.append(join(os.environ['DEEP2_DIR'], "products", "emissionLineLuminosityFunctions","O2_3728", name[:-4]+".fits"))
+			pathes.append(join(os.environ['DEEP2_DIR'], "products", "emissionLineLuminosityFunctions","H1_4862", name[:-4]+".fits"))
 		if surv == "VVDSDEEPI24" or surv == "VVDSWIDEI22.5":
-			pathes.append(join(os.environ['VVDS_DIR'], "products", "emissionLineLuminosityFunctions","O2_3728", name[:-4]+".fits"))
+			pathes.append(join(os.environ['VVDS_DIR'], "products", "emissionLineLuminosityFunctions","H1_4862", name[:-4]+".fits"))
 
 
 f.close()
