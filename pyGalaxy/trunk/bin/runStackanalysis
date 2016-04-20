@@ -4,8 +4,8 @@ cd $PYSU_DIR/pyGalaxy/trunk/bin
 # Stacking LF spectra
 # DATA
 # stacks after the luminosity function
-python stack_spectra_DEEP2
-python stack_spectra_VVDSDEEP
+python stack_spectra_all
+#python stack_spectra_VVDSDEEP
 
 # MODEL
 # copy the stacks of interest to $SPECTRASTACKS_DIR/data/
