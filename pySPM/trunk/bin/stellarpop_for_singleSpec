@@ -22,6 +22,43 @@ import StellarPopulationModel as spm
 
 stackList = glob.glob(join(os.environ['DATA_DIR'],"MUSE","*.txt"))
 output = np.empty((len(survey.catalog),16))
+
+for ii	 in indexes:
+	t0=time.time()
+	catalog_entry = survey.catalog[ii]
+	outFile = spectrum.path_to_spectrum[:-4] + "-modelContinuum" 
+	if len(glob.glob(outFile))==1:
+		tbhdu = fits.open(outFile + "-SPM-MILES.fits")
+		output[ii] = [tbhdu[1].header['light_age'],  
+		tbhdu[1].header['light_age_up'] , 
+		tbhdu[1].header['light_age_low'] ,	
+		tbhdu[1].header['light_metallicity'], 
+		tbhdu[1].header['light_metallicity_up'], 		
+		tbhdu[1].header['light_metallicity_low'] , 		
+		tbhdu[1].header['mass_age'] ,		
+		tbhdu[1].header['mass_age_up'] ,		
+		tbhdu[1].header['mass_age_low'] ,		
+		tbhdu[1].header['mass_metallicity'] ,		
+		tbhdu[1].header['mass_metallicity_up'] ,		
+		tbhdu[1].header['mass_metallicity_low'] , 		
+		tbhdu[1].header['EBV'], 		
+		tbhdu[1].header['stellar_mass'], 		
+		tbhdu[1].header['stellar_mass_up'], 		
+		tbhdu[1].header['stellar_mass_low'] ]
+
+colNames = ['light_age', 	'light_age_up', 	'light_age_low' ,	'light_metallicity', 'light_metallicity_up', 'light_metallicity_low',  'mass_age', 'mass_age_up', 'mass_age_low', 'mass_metallicity', 'mass_metallicity_up', 	'mass_metallicity_low',  'EBV', 'stellar_mass', 'stellar_mass_up', 'stellar_mass_low']
+hdu2 = fits.BinTableHDU.from_columns(survey.catalog.columns)
+new_columns = hdu2.data.columns 
+
+for ii in range(len(colNames)):
+	new_columns += fits.Column(name=colNames[ii],format='D', array=output.T[ii] )
+
+hdu = fits.BinTableHDU.from_columns(new_columns)
+os.system("rm -rf "+path_to_output_catalog_mass)
+hdu.writeto(path_to_output_catalog_mass)
+
+sys.exit()
+
 indexes = np.hstack(( np.arange(0, 55, 1), np.arange(56,len(survey.catalog),1)))
 for ii	 in indexes:
 	t0=time.time()
@@ -65,3 +102,5 @@ for ii in range(len(colNames)):
 hdu = fits.BinTableHDU.from_columns(new_columns)
 os.system("rm -rf "+path_to_output_catalog_mass)
 hdu.writeto(path_to_output_catalog_mass)
+
+
