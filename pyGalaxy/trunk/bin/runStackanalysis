@@ -7,6 +7,8 @@ cd $PYSU_DIR/pyGalaxy/trunk/bin
 python stack_spectra_all
 #python stack_spectra_VVDSDEEP
 
+# RUN CODE FROM HERE ON :
+
 # MODEL
 # copy the stacks of interest to $SPECTRASTACKS_DIR/data/
 cp $VVDS_DIR/products/spectraStacks/O2_3728/*.fits  $SPECTRASTACKS_DIR/data/O2_3728/
@@ -15,19 +17,17 @@ cp $DEEP2_DIR/products/spectraStacks/H1_4862/*.fits  $SPECTRASTACKS_DIR/data/H1_
 cp $DEEP2_DIR/products/spectraStacks/O2_3728/*.fits  $SPECTRASTACKS_DIR/data/O2_3728/
 cp $DEEP2_DIR/products/spectraStacks/O3_5007/*.fits  $SPECTRASTACKS_DIR/data/O3_5007/
 # remove the ones that are not from a complete LF TBD
-rm  $SPECTRASTACKS_DIR/data/O2_3728/O2_3728-DEEP2R24.2-z0.778*
-rm  $SPECTRASTACKS_DIR/data/O3_5007/O3_5007-DEEP2R24.2-z0.451*
-rm  $SPECTRASTACKS_DIR/data/O3_5007/O3_5007-DEEP2R24.2-z0.767*
-rm  $SPECTRASTACKS_DIR/data/H1_4862/H1_4862-DEEP2R24.2-z0.775*
-rm  $SPECTRASTACKS_DIR/data/O2_3728/O2_3728-VVDSDEEPI24-z0.69*
-rm  $SPECTRASTACKS_DIR/data/O3_5007/O3_5007-VVDSDEEPI24-z0.294*
-rm  $SPECTRASTACKS_DIR/data/O3_5007/O3_5007-VVDSDEEPI24-z0.606*
-rm  $SPECTRASTACKS_DIR/data/O3_5007/O3_5007-VVDSDEEPI24-z0.674*
-rm  $SPECTRASTACKS_DIR/data/O3_5007/O3_5007-VVDSDEEPI24-z0.741*
+#rm  $SPECTRASTACKS_DIR/data/O2_3728/O2_3728-DEEP2R24.2-z0.778*
+#rm  $SPECTRASTACKS_DIR/data/O3_5007/O3_5007-DEEP2R24.2-z0.451*
+#rm  $SPECTRASTACKS_DIR/data/O3_5007/O3_5007-DEEP2R24.2-z0.767*
+#rm  $SPECTRASTACKS_DIR/data/H1_4862/H1_4862-DEEP2R24.2-z0.775*
+#rm  $SPECTRASTACKS_DIR/data/O2_3728/O2_3728-VVDSDEEPI24-z0.69*
+#rm  $SPECTRASTACKS_DIR/data/O3_5007/O3_5007-VVDSDEEPI24-z0.294*
+#rm  $SPECTRASTACKS_DIR/data/O3_5007/O3_5007-VVDSDEEPI24-z0.606*
+#rm  $SPECTRASTACKS_DIR/data/O3_5007/O3_5007-VVDSDEEPI24-z0.674*
+#rm  $SPECTRASTACKS_DIR/data/O3_5007/O3_5007-VVDSDEEPI24-z0.741*
 
 # plot the stacks, present the results
-
-UPDATE PATHES in the scripts
 
 cd $SPECTRASTACKS_DIR/scripts/
 python presentationPlot.py
@@ -39,7 +39,6 @@ screen python setup_run_for_stacks_VVDSDEEP
 screen python setup_run_for_stacks_DEEP2
 # writes to to $SPECTRASTACKS_DIR/fits/
 
-# RUN CODE FROM HERE ON :
 
 cd $PYSU_DIR/pyGalaxy/trunk/bin
 # relink things correclty :

@@ -30,7 +30,7 @@ for infi in inFiles:
 	f.close()
 	path_to_outputCat =  join(mockDir,infi[:-4] + "_DF0hist.dat")
 	f=open(path_to_outputCat, 'w')
-	cPickle.dump([bins,n.sum(res0,axis=0), n.sum(res1,axis=0), n.sum(resH,axis=0)],f)
+	cPickle.dump( [bins, n.sum(res0, axis=0)], f )
 	f.close()
 
 	
