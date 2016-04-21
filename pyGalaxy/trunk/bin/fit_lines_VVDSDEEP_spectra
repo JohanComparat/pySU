@@ -3,7 +3,7 @@
 """
 This script computes the fits the line strength on the spectra from of the VVDS DEEP survey
 """
-from lib_plot import *ç
+from lib_plot import *
 from os.path import join
 
 # defines the survey object
