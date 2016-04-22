@@ -79,9 +79,6 @@ class HandleReducedELGPlate:
 		"""
 		Saves the results into a spZ_ELG-file.fits
 		"""
-
-		# now writes the output
-		# creates the hdu
 		prihdr = fits.Header()
 		prihdr['PLATE'] = self.plate
 		prihdr['MJD'] = self.mjd

@@ -4,7 +4,7 @@
 General purpose:
 ................
 
-The class ModelSpectraStacks is dedicated to modelling and extracting information from stacks of spectra.
+The class InterpretSpectraStacks is dedicated to modelling and extracting information from stacks of spectra.
 
 *Imports*::
 

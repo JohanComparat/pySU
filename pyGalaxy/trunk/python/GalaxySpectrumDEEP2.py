@@ -175,22 +175,14 @@ class GalaxySpectrumDEEP2:
 
 	def plotFit(self, outputFigureNameRoot, ymin = 1e-19, ymax = 1e-17):
 		"""
-		Plots the spectrum and the line fits in a few figures
+		Plots spectrum and the line fits in a few figures
+		:param outputFigureNameRoot:  path + name to save the plots
 		"""
-		#ifl = lfl.flambda(self.catalog_entry['MAGI'], lambIcfht)
-		#ifl_max = lfl.flambda(self.catalog_entry['MAGI']+self.catalog_entry['MAGIERR'], lambIcfht)
-		#ifl_min = lfl.flambda(self.catalog_entry['MAGI']-self.catalog_entry['MAGIERR'], lambIcfht)
-
-		#rfl = lfl.flambda(self.catalog_entry['MAGR'], lambRcfht)
-		#rfl_max = lfl.flambda(self.catalog_entry['MAGR']+self.catalog_entry['MAGRERR'], lambRcfht)
-		#rfl_min = lfl.flambda(self.catalog_entry['MAGR']-self.catalog_entry['MAGRERR'], lambRcfht)
 		
 		ok = (self.fluxl >0 ) & (self.fluxl > 1.5* self.fluxlErr)
 		p.figure(1,(12,4))
 		p.axes([0.1,0.2,0.85,0.75])
 		p.errorbar(self.wavelength[ok],self.fluxl[ok],yerr = self.fluxlErr[ok], linewidth=1, alpha= 0.4, label='spectrum')
-		#p.plot([lambIcfht,lambIcfht,lambIcfht],[ifl_min,ifl,ifl_max], 'r', label = 'magnitudes', lw=2)
-		#p.plot([lambRcfht, lambRcfht, lambRcfht], [rfl_min, rfl, rfl_max], 'r', lw=2)
 		p.xlabel('wavelength [A]')
 		p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
 		p.yscale('log')
@@ -205,8 +197,7 @@ class GalaxySpectrumDEEP2:
 		continu= self.catalog_entry['O2_3728_continu']
 		aas =n.arange(self.catalog_entry['O2_3728_a0a']-25, self.catalog_entry['O2_3728_a0b']+25,0.05)
 		flMod=lambda aa,sigma,F0,sh :continu+ lfl.gaussianLineNC(aa,sigma,(1-sh)*F0,a0_1)+lfl.gaussianLineNC(aa,sigma,sh*F0,a0_2)
-		model = flMod(aas, self.catalog_entry['O2_3728_sigma'], self.catalog_entry['O2_3728_flux'], self.catalog_entry['O2_3728_share'] )# self.catalog_entry['O2_3728_share'])
-		
+		model = flMod(aas, self.catalog_entry['O2_3728_sigma'], self.catalog_entry['O2_3728_flux'], self.catalog_entry['O2_3728_share'] )		
 		p.figure(2,(4,4))
 		p.axes([0.21,0.2,0.78,0.7])
 		p.errorbar(self.wavelength,self.fluxl,yerr = self.fluxlErr)
