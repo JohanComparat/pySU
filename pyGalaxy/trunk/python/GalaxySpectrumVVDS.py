@@ -54,7 +54,7 @@ class GalaxySpectrumVVDS:
 		else :
 			self.wavelength,self.fluxl,self.fluxlErr= [-1,-1.],[-1,-1.],[-1,-1.]
 
-	def plotFit(self, outputFigureNameRoot):
+	def plotFit(self, outputFigureNameRoot, ymin = 1e-19, ymax = 1e-17):
 		"""
 		Plots the spectrum and the line fits in a few figures
 		"""
@@ -74,7 +74,7 @@ class GalaxySpectrumVVDS:
 		p.xlabel('wavelength [A]')
 		p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
 		p.yscale('log')
-		p.ylim((1e-20, 1e-18))
+		p.ylim((ymin, ymax))
 		p.legend(fontsize=12) 
 		p.savefig( outputFigureNameRoot + "-all.png" )
 		p.clf()
@@ -93,8 +93,8 @@ class GalaxySpectrumVVDS:
 		p.xlabel('wavelength [A]')
 		p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
 		p.yscale('log')
-		p.ylim((1e-20, 1e-18))
-		p.xlim(( self.catalog_entry['O2_3728_a0']-50, self.catalog_entry['O2_3728_a0']+50))
+		p.ylim((ymin, ymax))
+		p.xlim(( self.catalog_entry['O2_3728_a0']-100, self.catalog_entry['O2_3728_a0']+100))
 		p.legend(fontsize=12, loc=4) 
 		p.savefig( outputFigureNameRoot + "-O2_3728.png")
 		p.clf()
@@ -113,8 +113,8 @@ class GalaxySpectrumVVDS:
 		p.xlabel('wavelength [A]')
 		p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
 		p.yscale('log')
-		p.ylim((1e-20, 1e-18))
-		p.xlim(( self.catalog_entry['O3_5007_a0']-50, self.catalog_entry['O3_5007_a0']+50))
+		p.ylim((ymin, ymax))
+		p.xlim(( self.catalog_entry['O3_5007_a0']-100, self.catalog_entry['O3_5007_a0']+100))
 		p.legend(fontsize=12, loc=4) 
 		p.savefig( outputFigureNameRoot + "-O3_5007.png")
 		p.clf()
