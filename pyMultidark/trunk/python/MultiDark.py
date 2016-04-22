@@ -335,7 +335,7 @@ class MultiDarkSimulation :
 		n.savetxt(join(output_dir,"hist-"+type+"-"+name+"-"+nameSnapshot[6:]+".dat"),n.transpose([bins[:-1], bins[1:], nnM.sum(axis=0)]))
 
 
-	def computeDoubleDistributionFunction(self, ii, nameA, nameB, binsA, binsB, Mfactor = 10. ) :
+	def computeDoubleDistributionFunction(self, ii, nameA, nameB, binsA, binsB, Mfactor = 100. ) :
 		"""
 		Extracts the distributions of two quantity and their correlation 'name' out of all snapshots of the Multidark simulation.
 		:param ii: index of the snapshot in the list self.snl
