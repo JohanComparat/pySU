@@ -374,11 +374,13 @@ class MultiDarkSimulation :
 				qtyCentral[countCen] = float(line[indexA]),float(line[indexB])
 				
 			if countCen == NperBatch-1 :
-				print n.log10(qtyCentral.T[0]), binsA
-				print n.log10(qtyCentral.T[1]), binsB
-				nnA,bbA = n.histogram(n.log10(qtyCentral.T[0]),bins = binsA)
-				nnB,bbB = n.histogram(n.log10(qtyCentral.T[1]),bins = binsB)
-				dataAB = n.histogram2d(n.log10(qtyCentral.T[0]), n.log10(qtyCentral.T[1]) ,bins = [binsA,binsB])
+				arrA = n.log10(qtyCentral.T[0][(qtyCentral.T[0]>0)])
+				arrB = n.log10(qtyCentral.T[1][(qtyCentral.T[1]>0)])
+				print len(arrA), arrA, binsA
+				print len(arrB), arrB, binsB
+				nnA,bbA = n.histogram(arrA,bins = binsA)
+				nnB,bbB = n.histogram(arrB,bins = binsB)
+				dataAB = n.histogram2d(arrA,arrB,bins = [binsA,binsB])
 				print "countCen",countCen
 				f = open(join(output_dir, nameSnapshot + "_" + nameA+"-"+nameB + "_Central_" + str(countFileCen)+ ".pkl"),'w')
 				cPickle.dump([nnA,nnB,dataAB],f)
@@ -388,9 +390,13 @@ class MultiDarkSimulation :
 				qtyCentral = n.empty((NperBatch,2))
 
 			if countSat == NperBatch-1 :
-				nnA,bbA = n.histogram(n.log10(qtySat.T[0]),bins = binsA)
-				nnB,bbB = n.histogram(n.log10(qtySat.T[1]),bins = binsB)
-				dataAB = n.histogram2d(n.log10(qtySat.T[0]), n.log10(qtySat.T[1]) ,bins = [binsA,binsB])
+				arrAs = n.log10(qtySat.T[0][(qtySat.T[0]>0)])
+				arrBs = n.log10(qtySat.T[1][(qtySat.T[1]>0)])
+				print len(arrAs), arrAs, binsA
+				print len(arrBs), arrBs, binsB
+				nnA,bbA = n.histogram(arrAs,bins = binsA)
+				nnB,bbB = n.histogram(arrBs,bins = binsB)
+				dataAB = n.histogram2d(arrAs, arrBs ,bins = [binsA,binsB])
 				print "countSat", countSat
 				f = open(join(output_dir, nameSnapshot + "_" + nameA+"-"+nameB+ "_Satellite_" + str(countFileSat)+ ".pkl"),'w')
 				cPickle.dump([nnA,nnB,dataAB],f)
