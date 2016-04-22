@@ -67,7 +67,7 @@ class GalaxySpectrumVVDS:
 		#rfl_max = lfl.flambda(self.catalog_entry['MAG_R_CFHTLS']+self.catalog_entry['MAGERR_AUTO_R_1'], lambRcfht)
 		#rfl_min = lfl.flambda(self.catalog_entry['MAG_R_CFHTLS']-self.catalog_entry['MAGERR_AUTO_R_1'], lambRcfht)
 		
-		ok = (self.fluxl >0 ) & (self.fluxl > 1.5* self.fluxlErr)
+		ok = (self.fluxl >0 ) & (self.fluxl > 1.2* self.fluxlErr)
 		p.figure(1,(12,4))
 		p.axes([0.1,0.2,0.85,0.75])
 		p.errorbar(self.wavelength[ok],self.fluxl[ok],yerr = self.fluxlErr[ok], linewidth=1, alpha= 0.4, label='spectrum')
