@@ -177,20 +177,20 @@ class GalaxySpectrumDEEP2:
 		"""
 		Plots the spectrum and the line fits in a few figures
 		"""
-		ifl = lfl.flambda(self.catalog_entry['MAGI'], lambIcfht)
-		ifl_max = lfl.flambda(self.catalog_entry['MAGI']+self.catalog_entry['MAGIERR'], lambIcfht)
-		ifl_min = lfl.flambda(self.catalog_entry['MAGI']-self.catalog_entry['MAGIERR'], lambIcfht)
+		#ifl = lfl.flambda(self.catalog_entry['MAGI'], lambIcfht)
+		#ifl_max = lfl.flambda(self.catalog_entry['MAGI']+self.catalog_entry['MAGIERR'], lambIcfht)
+		#ifl_min = lfl.flambda(self.catalog_entry['MAGI']-self.catalog_entry['MAGIERR'], lambIcfht)
 
-		rfl = lfl.flambda(self.catalog_entry['MAGR'], lambRcfht)
-		rfl_max = lfl.flambda(self.catalog_entry['MAGR']+self.catalog_entry['MAGRERR'], lambRcfht)
-		rfl_min = lfl.flambda(self.catalog_entry['MAGR']-self.catalog_entry['MAGRERR'], lambRcfht)
+		#rfl = lfl.flambda(self.catalog_entry['MAGR'], lambRcfht)
+		#rfl_max = lfl.flambda(self.catalog_entry['MAGR']+self.catalog_entry['MAGRERR'], lambRcfht)
+		#rfl_min = lfl.flambda(self.catalog_entry['MAGR']-self.catalog_entry['MAGRERR'], lambRcfht)
 		
-		ok = (self.fluxl >0 ) & (self.fluxl > 2* self.fluxlErr)
+		ok = (self.fluxl >0 ) & (self.fluxl > 1.5* self.fluxlErr)
 		p.figure(1,(12,4))
 		p.axes([0.1,0.2,0.85,0.75])
 		p.errorbar(self.wavelength[ok],self.fluxl[ok],yerr = self.fluxlErr[ok], linewidth=1, alpha= 0.4, label='spectrum')
-		p.plot([lambIcfht,lambIcfht,lambIcfht],[ifl_min,ifl,ifl_max], 'r', label = 'magnitudes', lw=2)
-		p.plot([lambRcfht, lambRcfht, lambRcfht], [rfl_min, rfl, rfl_max], 'r', lw=2)
+		#p.plot([lambIcfht,lambIcfht,lambIcfht],[ifl_min,ifl,ifl_max], 'r', label = 'magnitudes', lw=2)
+		#p.plot([lambRcfht, lambRcfht, lambRcfht], [rfl_min, rfl, rfl_max], 'r', lw=2)
 		p.xlabel('wavelength [A]')
 		p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
 		p.yscale('log')
@@ -203,7 +203,7 @@ class GalaxySpectrumDEEP2:
 		a0_1 = self.catalog_entry['O2_3728_a0a']
 		a0_2 = self.catalog_entry['O2_3728_a0b']
 		continu= self.catalog_entry['O2_3728_continu']
-		aas =n.arange(self.catalog_entry['O2_3728_a0']-70, self.catalog_entry['O2_3728_a0']+70,0.1)
+		aas =n.arange(self.catalog_entry['O2_3728_a0a']-70, self.catalog_entry['O2_3728_a0b']+70,0.1)
 		flMod=lambda aa,sigma,F0,sh :continu+ lfl.gaussianLineNC(aa,sigma,(1-sh)*F0,a0_1)+lfl.gaussianLineNC(aa,sigma,sh*F0,a0_2)
 		model = flMod(aas, self.catalog_entry['O2_3728_sigma'], self.catalog_entry['O2_3728_flux'], self.catalog_entry['O2_3728_share'] )# self.catalog_entry['O2_3728_share'])
 		
@@ -215,7 +215,7 @@ class GalaxySpectrumDEEP2:
 		p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
 		p.yscale('log')
 		p.ylim((ymin, ymax))
-		p.xlim(( self.catalog_entry['O2_3728_a0']-100, self.catalog_entry['O2_3728_a0']+100))
+		p.xlim(( self.catalog_entry['O2_3728_a0a']-100, self.catalog_entry['O2_3728_a0b']+100))
 		gl = p.legend(loc=0,fontsize=12)
 		gl.set_frame_on(False)
 		p.title('[OII] 3727')

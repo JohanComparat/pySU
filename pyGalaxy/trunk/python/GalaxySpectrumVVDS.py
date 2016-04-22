@@ -59,20 +59,20 @@ class GalaxySpectrumVVDS:
 		"""
 		Plots the spectrum and the line fits in a few figures
 		"""
-		ifl = lfl.flambda(self.catalog_entry['MAGI'], lambIcfht)
-		ifl_max = lfl.flambda(self.catalog_entry['MAGI']+self.catalog_entry['MAGERR_AUTO_I_1'], lambIcfht)
-		ifl_min = lfl.flambda(self.catalog_entry['MAGI']-self.catalog_entry['MAGERR_AUTO_I_1'], lambIcfht)
+		#ifl = lfl.flambda(self.catalog_entry['MAGI'], lambIcfht)
+		#ifl_max = lfl.flambda(self.catalog_entry['MAGI']+self.catalog_entry['MAGERR_AUTO_I_1'], lambIcfht)
+		#ifl_min = lfl.flambda(self.catalog_entry['MAGI']-self.catalog_entry['MAGERR_AUTO_I_1'], lambIcfht)
 
-		rfl = lfl.flambda(self.catalog_entry['MAG_R_CFHTLS'], lambRcfht)
-		rfl_max = lfl.flambda(self.catalog_entry['MAG_R_CFHTLS']+self.catalog_entry['MAGERR_AUTO_R_1'], lambRcfht)
-		rfl_min = lfl.flambda(self.catalog_entry['MAG_R_CFHTLS']-self.catalog_entry['MAGERR_AUTO_R_1'], lambRcfht)
+		#rfl = lfl.flambda(self.catalog_entry['MAG_R_CFHTLS'], lambRcfht)
+		#rfl_max = lfl.flambda(self.catalog_entry['MAG_R_CFHTLS']+self.catalog_entry['MAGERR_AUTO_R_1'], lambRcfht)
+		#rfl_min = lfl.flambda(self.catalog_entry['MAG_R_CFHTLS']-self.catalog_entry['MAGERR_AUTO_R_1'], lambRcfht)
 		
-		ok = (self.fluxl >0 ) & (self.fluxl > 2* self.fluxlErr)
+		ok = (self.fluxl >0 ) & (self.fluxl > 1.5* self.fluxlErr)
 		p.figure(1,(12,4))
 		p.axes([0.1,0.2,0.85,0.75])
 		p.errorbar(self.wavelength[ok],self.fluxl[ok],yerr = self.fluxlErr[ok], linewidth=1, alpha= 0.4, label='spectrum')
-		p.plot([lambIcfht,lambIcfht,lambIcfht],[ifl_min,ifl,ifl_max], 'r', label = 'magnitudes', lw=2)
-		p.plot([lambRcfht, lambRcfht, lambRcfht], [rfl_min, rfl, rfl_max], 'r', lw=2)
+		#p.plot([lambIcfht,lambIcfht,lambIcfht],[ifl_min,ifl,ifl_max], 'r', label = 'magnitudes', lw=2)
+		#p.plot([lambRcfht, lambRcfht, lambRcfht], [rfl_min, rfl, rfl_max], 'r', lw=2)
 		p.xlabel('wavelength [A]')
 		p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
 		p.yscale('log')
