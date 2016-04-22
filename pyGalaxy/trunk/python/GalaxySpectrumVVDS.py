@@ -87,7 +87,7 @@ class GalaxySpectrumVVDS:
 		model = flMod(aas, self.catalog_entry['O2_3728_sigma'], self.catalog_entry['O2_3728_flux'],0.58 )# self.catalog_entry['O2_3728_share'])
 		
 		p.figure(2,(4,4))
-		p.axes([0.17,0.2,0.8,0.7])
+		p.axes([0.21,0.2,0.78,0.7])
 		p.errorbar(self.wavelength,self.fluxl,yerr = self.fluxlErr)
 		p.axvline(self.catalog_entry['O2_3728_a0'],color='k', ls='dashed', label= 'obs')
 		p.plot(aas, model,'g',label='model', lw=2)
@@ -109,7 +109,7 @@ class GalaxySpectrumVVDS:
 		model = flMod(aas, self.catalog_entry['O3_5007_sigma'], self.catalog_entry['O3_5007_flux'])
 		
 		p.figure(2,(4,4))
-		p.axes([0.17,0.2,0.8,0.7])
+		p.axes([0.21,0.2,0.78,0.7])
 		p.errorbar(self.wavelength,self.fluxl,yerr = self.fluxlErr)
 		p.axvline(self.catalog_entry['O3_5007_a0'],color='k', ls='dashed', label= 'obs')
 		p.plot(aas, model,'g',label='model', lw =2)
