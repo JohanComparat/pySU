@@ -13,6 +13,12 @@ import astropy.io.fits as fits
 import glob
 from scipy.optimize import curve_fit
 from GalaxySurveyDEEP2 import *
+import matplotlib
+matplotlib.use('pdf')
+import matplotlib.pyplot as p
+from LineFittingLibrary import *
+lfl = LineFittingLibrary()
+from filterList import *
 
 class GalaxySpectrumDEEP2:
     """
@@ -165,5 +171,75 @@ class GalaxySpectrumDEEP2:
         """
         self.wavelength,self.fluxl,self.fluxlErr= n.loadtxt(self.path_to_spectrum[0], unpack=True)
 
+
+	def plotFit(self, outputFigureNameRoot, ymin = 1e-19, ymax = 1e-17):
+		"""
+		Plots the spectrum and the line fits in a few figures
+		"""
+		ifl = lfl.flambda(self.catalog_entry['MAGI'], lambIcfht)
+		ifl_max = lfl.flambda(self.catalog_entry['MAGI']+self.catalog_entry['MAGIERR'], lambIcfht)
+		ifl_min = lfl.flambda(self.catalog_entry['MAGI']-self.catalog_entry['MAGIERR'], lambIcfht)
+
+		rfl = lfl.flambda(self.catalog_entry['MAGR'], lambRcfht)
+		rfl_max = lfl.flambda(self.catalog_entry['MAGR']+self.catalog_entry['MAGRERR'], lambRcfht)
+		rfl_min = lfl.flambda(self.catalog_entry['MAGR']-self.catalog_entry['MAGRERR'], lambRcfht)
+		
+		p.figure(1,(12,4))
+		p.axes([0.1,0.2,0.85,0.75])
+		p.errorbar(self.wavelength,self.fluxl,yerr = self.fluxlErr, linewidth=1, alpha= 0.4, label='spectrum')
+		p.plot([lambIcfht,lambIcfht,lambIcfht],[ifl_min,ifl,ifl_max], 'r', label = 'magnitudes', lw=2)
+		p.plot([lambRcfht, lambRcfht, lambRcfht], [rfl_min, rfl, rfl_max], 'r', lw=2)
+		p.xlabel('wavelength [A]')
+		p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
+		p.yscale('log')
+		p.ylim((ymin, ymax))
+		gl = p.legend(loc=0,fontsize=12)
+		gl.set_frame_on(False)
+		p.savefig( outputFigureNameRoot + "-all.png" )
+		p.clf()
+
+		a0 = self.catalog_entry['O2_3728_a0']
+		continu= self.catalog_entry['O2_3728_continu']
+		aas =n.arange(self.catalog_entry['O2_3728_a0']-70, self.catalog_entry['O2_3728_a0']+70,0.1)
+		flMod=lambda aa,sigma,F0,sh :continu+ lfl.gaussianLineNC(aa,sigma,(1-sh)*F0,a0)+lfl.gaussianLineNC(aa,sigma,sh*F0,a0)
+		model = flMod(aas, self.catalog_entry['O2_3728_sigma'], self.catalog_entry['O2_3728_flux'], self.catalog_entry['O2_3728_share'] )# self.catalog_entry['O2_3728_share'])
+		
+		p.figure(2,(4,4))
+		p.axes([0.21,0.2,0.78,0.7])
+		p.errorbar(self.wavelength,self.fluxl,yerr = self.fluxlErr)
+		p.axvline(self.catalog_entry['O2_3728_a0'],color='k', ls='dashed', label= 'obs')
+		p.plot(aas, model,'g',label='model', lw=2)
+		p.xlabel('wavelength [A]')
+		p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
+		p.yscale('log')
+		p.ylim((ymin, ymax))
+		p.xlim(( self.catalog_entry['O2_3728_a0']-100, self.catalog_entry['O2_3728_a0']+100))
+		gl = p.legend(loc=0,fontsize=12)
+		gl.set_frame_on(False)
+		p.title('[OII] 3727')
+		p.savefig( outputFigureNameRoot + "-O2_3728.png")
+		p.clf()
+
+		a0 = self.catalog_entry['O3_5007_a0']
+		continu= self.catalog_entry['O3_5007_continu']
+		aas =n.arange(self.catalog_entry['O3_5007_a0']-70, self.catalog_entry['O3_5007_a0']+70,0.1)
+		flMod=lambda aa,sigma,F0: lfl.gaussianLine(aa,sigma,F0,a0,continu)
+		model = flMod(aas, self.catalog_entry['O3_5007_sigma'], self.catalog_entry['O3_5007_flux'])
+		
+		p.figure(2,(4,4))
+		p.axes([0.21,0.2,0.78,0.7])
+		p.errorbar(self.wavelength,self.fluxl,yerr = self.fluxlErr)
+		p.axvline(self.catalog_entry['O3_5007_a0'],color='k', ls='dashed', label= 'obs')
+		p.plot(aas, model,'g',label='model', lw =2)
+		p.xlabel('wavelength [A]')
+		p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
+		p.yscale('log')
+		p.ylim((ymin, ymax))
+		p.xlim(( self.catalog_entry['O3_5007_a0']-100, self.catalog_entry['O3_5007_a0']+100))
+		gl = p.legend(loc=0,fontsize=12)
+		gl.set_frame_on(False)
+		p.title('[OIII] 5007')
+		p.savefig( outputFigureNameRoot + "-O3_5007.png")
+		p.clf()
 
 
