@@ -17,6 +17,7 @@ import matplotlib.pyplot as p
 from LineFittingLibrary import *
 lfl = LineFittingLibrary()
 from filterList import *
+from lineListAir import *
 
 class GalaxySpectrumVVDS:
         """
@@ -66,9 +67,10 @@ class GalaxySpectrumVVDS:
 		rfl_max = lfl.flambda(self.catalog_entry['MAG_R_CFHTLS']+self.catalog_entry['MAGERR_AUTO_R_1'], lambRcfht)
 		rfl_min = lfl.flambda(self.catalog_entry['MAG_R_CFHTLS']-self.catalog_entry['MAGERR_AUTO_R_1'], lambRcfht)
 		
+		ok = (self.fluxl >0 ) & (self.fluxl > 2* self.fluxlErr)
 		p.figure(1,(12,4))
 		p.axes([0.1,0.2,0.85,0.75])
-		p.errorbar(self.wavelength,self.fluxl,yerr = self.fluxlErr, linewidth=1, alpha= 0.4, label='spectrum')
+		p.errorbar(self.wavelength[ok],self.fluxl[ok],yerr = self.fluxlErr[ok], linewidth=1, alpha= 0.4, label='spectrum')
 		p.plot([lambIcfht,lambIcfht,lambIcfht],[ifl_min,ifl,ifl_max], 'r', label = 'magnitudes', lw=2)
 		p.plot([lambRcfht, lambRcfht, lambRcfht], [rfl_min, rfl, rfl_max], 'r', lw=2)
 		p.xlabel('wavelength [A]')
@@ -80,16 +82,16 @@ class GalaxySpectrumVVDS:
 		p.savefig( outputFigureNameRoot + "-all.png" )
 		p.clf()
 
-		a0 = self.catalog_entry['O2_3728_a0']
+		a0_1 = (1+self.catalog_entry['Z'])*O2_3727
+		a0_2 = (1+self.catalog_entry['Z'])*O2_3729
 		continu= self.catalog_entry['O2_3728_continu']
 		aas =n.arange(self.catalog_entry['O2_3728_a0']-70, self.catalog_entry['O2_3728_a0']+70,0.1)
-		flMod=lambda aa,sigma,F0,sh :continu+ lfl.gaussianLineNC(aa,sigma,(1-sh)*F0,a0)+lfl.gaussianLineNC(aa,sigma,sh*F0,a0)
+		flMod=lambda aa,sigma,F0,sh :continu+ lfl.gaussianLineNC(aa,sigma,(1-sh)*F0,a0_1)+lfl.gaussianLineNC(aa,sigma,sh*F0,a0_2)
 		model = flMod(aas, self.catalog_entry['O2_3728_sigma'], self.catalog_entry['O2_3728_flux'],0.58 )# self.catalog_entry['O2_3728_share'])
 		
 		p.figure(2,(4,4))
 		p.axes([0.21,0.2,0.78,0.7])
 		p.errorbar(self.wavelength,self.fluxl,yerr = self.fluxlErr)
-		p.axvline(self.catalog_entry['O2_3728_a0'],color='k', ls='dashed', label= 'obs')
 		p.plot(aas, model,'g',label='model', lw=2)
 		p.xlabel('wavelength [A]')
 		p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
@@ -111,7 +113,6 @@ class GalaxySpectrumVVDS:
 		p.figure(2,(4,4))
 		p.axes([0.21,0.2,0.78,0.7])
 		p.errorbar(self.wavelength,self.fluxl,yerr = self.fluxlErr)
-		p.axvline(self.catalog_entry['O3_5007_a0'],color='k', ls='dashed', label= 'obs')
 		p.plot(aas, model,'g',label='model', lw =2)
 		p.xlabel('wavelength [A]')
 		p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
