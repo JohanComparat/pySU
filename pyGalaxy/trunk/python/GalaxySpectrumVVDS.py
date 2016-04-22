@@ -82,7 +82,7 @@ class GalaxySpectrumVVDS:
 		continu= self.catalog_entry['O2_3728_continu']
 		aas =n.arange(self.catalog_entry['O2_3728_a0']-30, self.catalog_entry['O2_3728_a0']+30,0.1)
 		flMod=lambda aa,sigma,F0,sh :continu+ lfl.gaussianLineNC(aa,sigma,(1-sh)*F0,a0)+lfl.gaussianLineNC(aa,sigma,sh*F0,a0)
-		model = flMod(aas, self.catalog_entry['O2_3728_sigma'], self.catalog_entry['O2_3728_flux'], self.catalog_entry['O2_3728_share'])
+		model = flMod(aas, self.catalog_entry['O2_3728_sigma'], self.catalog_entry['O2_3728_flux'],0.58 )# self.catalog_entry['O2_3728_share'])
 		
 		p.figure(2,(12,4))
 		p.axes([0.1,0.2,0.85,0.75])
