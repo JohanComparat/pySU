@@ -68,7 +68,7 @@ class GalaxySpectrumVVDS:
 		
 		p.figure(1,(12,4))
 		p.axes([0.1,0.2,0.85,0.75])
-		p.errorbar(self.wavelength,self.fluxl,yerr = self.fluxlErr, linewidth=1, alpha= 0.2, label='spectrum')
+		p.errorbar(self.wavelength,self.fluxl,yerr = self.fluxlErr, linewidth=1, alpha= 0.4, label='spectrum')
 		p.plot([lambIcfht,lambIcfht,lambIcfht],[ifl_min,ifl,ifl_max], 'r', label = 'magnitudes', lw=2)
 		p.plot([lambRcfht, lambRcfht, lambRcfht], [rfl_min, rfl, rfl_max], 'r', lw=2)
 		p.xlabel('wavelength [A]')
