@@ -203,7 +203,7 @@ class GalaxySpectrumDEEP2:
 		a0_1 = self.catalog_entry['O2_3728_a0a']
 		a0_2 = self.catalog_entry['O2_3728_a0b']
 		continu= self.catalog_entry['O2_3728_continu']
-		aas =n.arange(self.catalog_entry['O2_3728_a0a']-70, self.catalog_entry['O2_3728_a0b']+70,0.05)
+		aas =n.arange(self.catalog_entry['O2_3728_a0a']-25, self.catalog_entry['O2_3728_a0b']+25,0.05)
 		flMod=lambda aa,sigma,F0,sh :continu+ lfl.gaussianLineNC(aa,sigma,(1-sh)*F0,a0_1)+lfl.gaussianLineNC(aa,sigma,sh*F0,a0_2)
 		model = flMod(aas, self.catalog_entry['O2_3728_sigma'], self.catalog_entry['O2_3728_flux'], self.catalog_entry['O2_3728_share'] )# self.catalog_entry['O2_3728_share'])
 		
@@ -215,7 +215,7 @@ class GalaxySpectrumDEEP2:
 		p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
 		p.yscale('log')
 		p.ylim((ymin, ymax))
-		p.xlim(( self.catalog_entry['O2_3728_a0a']-50, self.catalog_entry['O2_3728_a0b']+50))
+		p.xlim(( self.catalog_entry['O2_3728_a0a']-25, self.catalog_entry['O2_3728_a0b']+25))
 		gl = p.legend(loc=0,fontsize=12)
 		gl.set_frame_on(False)
 		p.title('[OII] 3727')
@@ -224,7 +224,7 @@ class GalaxySpectrumDEEP2:
 
 		a0 = self.catalog_entry['O3_5007_a0']
 		continu= self.catalog_entry['O3_5007_continu']
-		aas =n.arange(self.catalog_entry['O3_5007_a0']-70, self.catalog_entry['O3_5007_a0']+70,0.05)
+		aas =n.arange(self.catalog_entry['O3_5007_a0']-25, self.catalog_entry['O3_5007_a0']+25,0.05)
 		flMod=lambda aa,sigma,F0: lfl.gaussianLine(aa,sigma,F0,a0,continu)
 		model = flMod(aas, self.catalog_entry['O3_5007_sigma'], self.catalog_entry['O3_5007_flux'])
 		
@@ -236,7 +236,7 @@ class GalaxySpectrumDEEP2:
 		p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
 		p.yscale('log')
 		p.ylim((ymin, ymax))
-		p.xlim(( self.catalog_entry['O3_5007_a0']-50, self.catalog_entry['O3_5007_a0']+50))
+		p.xlim(( self.catalog_entry['O3_5007_a0']-25, self.catalog_entry['O3_5007_a0']+25))
 		gl = p.legend(loc=0,fontsize=12)
 		gl.set_frame_on(False)
 		p.title('[OIII] 5007')
@@ -245,7 +245,7 @@ class GalaxySpectrumDEEP2:
 
 		a0 = self.catalog_entry['H1_4862_a0']
 		continu= self.catalog_entry['H1_4862_continu']
-		aas =n.arange(self.catalog_entry['H1_4862_a0']-70, self.catalog_entry['H1_4862_a0']+70,0.05)
+		aas =n.arange(self.catalog_entry['H1_4862_a0']-25, self.catalog_entry['H1_4862_a0']+25,0.05)
 		flMod=lambda aa,sigma,F0: lfl.gaussianLine(aa,sigma,F0,a0,continu)
 		model = flMod(aas, self.catalog_entry['H1_4862_sigma'], self.catalog_entry['H1_4862_flux'])
 		
@@ -257,7 +257,7 @@ class GalaxySpectrumDEEP2:
 		p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
 		p.yscale('log')
 		p.ylim((ymin, ymax))
-		p.xlim(( self.catalog_entry['H1_4862_a0']-50, self.catalog_entry['H1_4862_a0']+50))
+		p.xlim(( self.catalog_entry['H1_4862_a0']-25, self.catalog_entry['H1_4862_a0']+25))
 		gl = p.legend(loc=0,fontsize=12)
 		gl.set_frame_on(False)
 		p.title(r'H$\beta$')
