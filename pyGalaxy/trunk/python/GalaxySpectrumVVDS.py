@@ -14,7 +14,7 @@ import glob
 import matplotlib
 matplotlib.use('pdf')
 import matplotlib.pyplot as p
-from lineFittingLibrary import *
+from LineFittingLibrary import *
 from filterList import *
 
 class GalaxySpectrumVVDS:
@@ -77,7 +77,7 @@ class GalaxySpectrumVVDS:
 		p.savefig( outputFigureNameRoot + "-all.png" )
 		p.clf()
 
-		a0 = 3726.0321735398957
+		a0 = self.catalog_entry['O2_3728_a0']
 		continu= self.catalog_entry['O2_3728_continu']
 		aas =n.arange(self.catalog_entry['O2_3728_a0']-30, self.catalog_entry['O2_3728_a0']+30,0.1)
 		flMod=lambda aa,sigma,F0,sh :continu+ self.gaussianLineNC(aa,sigma,(1-sh)*F0,a0)+self.gaussianLineNC(aa,sigma,sh*F0,a0)
@@ -93,7 +93,26 @@ class GalaxySpectrumVVDS:
 		p.yscale('log')
 		p.xlim(( self.catalog_entry['O2_3728_a0']-50, self.catalog_entry['O2_3728_a0']+50))
 		p.legend(fontsize=12, loc=4) 
-		p.savefig( outputFigureNameRoot + "-O2.png")
+		p.savefig( outputFigureNameRoot + "-O2_3728.png")
+		p.clf()
+
+		a0 = self.catalog_entry['O3_5007_a0']
+		continu= self.catalog_entry['O3_5007_continu']
+		aas =n.arange(self.catalog_entry['O3_5007_a0']-30, self.catalog_entry['O3_5007_a0']+30,0.1)
+		flMod=lambda aa,sigma,F0: self.gaussianLine(aa,sigma,F0,a0,continu)
+		model = flMod(aas, self.catalog_entry['O3_5007_sigma'], self.catalog_entry['O3_5007_flux'])
+		
+		p.figure(2,(12,4))
+		p.axes([0.1,0.2,0.85,0.75])
+		p.errorbar(self.wavelength,self.fluxl,yerr = self.fluxlErr)
+		p.axvline(self.catalog_entry['O3_5007_a0'],color='k', ls='dashed', label= 'obs')
+		p.plot(aas, model,'g',label='model')
+		p.xlabel('wavelength [A]')
+		p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
+		p.yscale('log')
+		p.xlim(( self.catalog_entry['O3_5007_a0']-50, self.catalog_entry['O3_5007_a0']+50))
+		p.legend(fontsize=12, loc=4) 
+		p.savefig( outputFigureNameRoot + "-O3_5007.png")
 		p.clf()
 
 
