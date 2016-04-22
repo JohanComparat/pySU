@@ -58,11 +58,18 @@ class GalaxySpectrumVVDS:
 		Plots the spectrum and the line fits in a few figures
 		"""
 		ifl = flambda(self.catalog_entry['MAGI'], lambIcfht)
+		ifl_max = flambda(self.catalog_entry['MAGI']+self.catalog_entry['MAGERR_AUTO_I_1'], lambIcfht)
+		ifl_min = flambda(self.catalog_entry['MAGI']-self.catalog_entry['MAGERR_AUTO_I_1'], lambIcfht)
+
 		rfl = flambda(self.catalog_entry['MAG_R_CFHTLS'], lambRcfht)
+		rfl_max = flambda(self.catalog_entry['MAG_R_CFHTLS']+self.catalog_entry['MAGERR_AUTO_R_1'], lambRcfht)
+		rfl_min = flambda(self.catalog_entry['MAG_R_CFHTLS']-self.catalog_entry['MAGERR_AUTO_R_1'], lambRcfht)
+		
 		p.figure(1,(12,4))
 		p.axes([0.1,0.2,0.85,0.75])
-		p.errorbar(self.wavelength,self.fluxl,yerr = self.fluxlErr, linewidth=1)
-		p.plot()
+		p.errorbar(self.wavelength,self.fluxl,yerr = self.fluxlErr, linewidth=1, label='spectrum')
+		p.plot([lambIcfht,lambIcfht,lambIcfht],[ifl_min,ifl,ifl_max], 'bo', label = 'magnitudes')
+		p.plot([lambRcfht, lambRcfht, lambRcfht], [rfl_min, rfl, rfl_max], 'bo')
 		p.xlabel('wavelength [A]')
 		p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
 		p.yscale('log')
@@ -70,24 +77,23 @@ class GalaxySpectrumVVDS:
 		p.savefig( outputFigureNameRoot + "-all.png" )
 		p.clf()
 
+		a0 = 3726.0321735398957
+		continu= self.catalog_entry['O2_3728_continu']
+		aas =n.arange(self.catalog_entry['O2_3728_a0']-30, self.catalog_entry['O2_3728_a0']+30,0.1)
+		flMod=lambda aa,sigma,F0,sh :continu+ self.gaussianLineNC(aa,sigma,(1-sh)*F0,a0)+self.gaussianLineNC(aa,sigma,sh*F0,a0)
+		model = flMod(aas, self.catalog_entry['O2_3728_sigma'], self.catalog_entry['O2_3728_flux'], self.catalog_entry['O2_3728_share'])
+		
 		p.figure(2,(12,4))
 		p.axes([0.1,0.2,0.85,0.75])
-		p.errorbar(self.wavelength,self.fluxl,yerr = self.fluxlErr,label= "z="+str(redshift)+", "+str(Lmin) +"< log(L"+line+")<"+ str(Lmax),linewidth=1)
-		p.axvline(4861,color='k', ls='dashed')
-		p.axvline(4341,color='k', ls='dashed')
-		try :
-			aa=str(n.round(hdus[0].header['H1_4862_flux_nc']/hdus[0].header['H1_4341_flux_nc'] , 3))
-			bb=str(n.round(hdus[0].header['EBV_4862_4341'],3))
-			p.text(4331+50,1e-17,r"GP. H$\beta/\gamma$="+aa+", EBV=" +bb)
-		except KeyError:
-			pass
-
+		p.errorbar(self.wavelength,self.fluxl,yerr = self.fluxlErr)
+		p.axvline(self.catalog_entry['O2_3728_a0'],color='k', ls='dashed', label= 'obs')
+		p.plot(aas, model,'g',label='model')
 		p.xlabel('wavelength [A]')
 		p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
 		p.yscale('log')
-		p.xlim(( 4331, 4871 ))
+		p.xlim(( self.catalog_entry['O2_3728_a0']-50, self.catalog_entry['O2_3728_a0']+50))
 		p.legend(fontsize=12, loc=4) 
-		p.savefig( join( os.environ['SPECTRASTACKS_DIR'], "plots", "models", modeledStackFile.split('/')[-1] + "-H1lineDecr.png"))
+		p.savefig( outputFigureNameRoot + "-O2.png")
 		p.clf()
 
 
