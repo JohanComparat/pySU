@@ -15,6 +15,7 @@ import matplotlib
 matplotlib.use('pdf')
 import matplotlib.pyplot as p
 from LineFittingLibrary import *
+lfl = LineFittingLibrary()
 from filterList import *
 
 class GalaxySpectrumVVDS:
@@ -57,13 +58,13 @@ class GalaxySpectrumVVDS:
 		"""
 		Plots the spectrum and the line fits in a few figures
 		"""
-		ifl = flambda(self.catalog_entry['MAGI'], lambIcfht)
-		ifl_max = flambda(self.catalog_entry['MAGI']+self.catalog_entry['MAGERR_AUTO_I_1'], lambIcfht)
-		ifl_min = flambda(self.catalog_entry['MAGI']-self.catalog_entry['MAGERR_AUTO_I_1'], lambIcfht)
+		ifl = lfl.flambda(self.catalog_entry['MAGI'], lambIcfht)
+		ifl_max = lfl.flambda(self.catalog_entry['MAGI']+self.catalog_entry['MAGERR_AUTO_I_1'], lambIcfht)
+		ifl_min = lfl.flambda(self.catalog_entry['MAGI']-self.catalog_entry['MAGERR_AUTO_I_1'], lambIcfht)
 
-		rfl = flambda(self.catalog_entry['MAG_R_CFHTLS'], lambRcfht)
-		rfl_max = flambda(self.catalog_entry['MAG_R_CFHTLS']+self.catalog_entry['MAGERR_AUTO_R_1'], lambRcfht)
-		rfl_min = flambda(self.catalog_entry['MAG_R_CFHTLS']-self.catalog_entry['MAGERR_AUTO_R_1'], lambRcfht)
+		rfl = lfl.flambda(self.catalog_entry['MAG_R_CFHTLS'], lambRcfht)
+		rfl_max = lfl.flambda(self.catalog_entry['MAG_R_CFHTLS']+self.catalog_entry['MAGERR_AUTO_R_1'], lambRcfht)
+		rfl_min = lfl.flambda(self.catalog_entry['MAG_R_CFHTLS']-self.catalog_entry['MAGERR_AUTO_R_1'], lambRcfht)
 		
 		p.figure(1,(12,4))
 		p.axes([0.1,0.2,0.85,0.75])
@@ -80,7 +81,7 @@ class GalaxySpectrumVVDS:
 		a0 = self.catalog_entry['O2_3728_a0']
 		continu= self.catalog_entry['O2_3728_continu']
 		aas =n.arange(self.catalog_entry['O2_3728_a0']-30, self.catalog_entry['O2_3728_a0']+30,0.1)
-		flMod=lambda aa,sigma,F0,sh :continu+ self.gaussianLineNC(aa,sigma,(1-sh)*F0,a0)+self.gaussianLineNC(aa,sigma,sh*F0,a0)
+		flMod=lambda aa,sigma,F0,sh :continu+ lfl.gaussianLineNC(aa,sigma,(1-sh)*F0,a0)+lfl.gaussianLineNC(aa,sigma,sh*F0,a0)
 		model = flMod(aas, self.catalog_entry['O2_3728_sigma'], self.catalog_entry['O2_3728_flux'], self.catalog_entry['O2_3728_share'])
 		
 		p.figure(2,(12,4))
@@ -99,7 +100,7 @@ class GalaxySpectrumVVDS:
 		a0 = self.catalog_entry['O3_5007_a0']
 		continu= self.catalog_entry['O3_5007_continu']
 		aas =n.arange(self.catalog_entry['O3_5007_a0']-30, self.catalog_entry['O3_5007_a0']+30,0.1)
-		flMod=lambda aa,sigma,F0: self.gaussianLine(aa,sigma,F0,a0,continu)
+		flMod=lambda aa,sigma,F0: lfl.gaussianLine(aa,sigma,F0,a0,continu)
 		model = flMod(aas, self.catalog_entry['O3_5007_sigma'], self.catalog_entry['O3_5007_flux'])
 		
 		p.figure(2,(12,4))
