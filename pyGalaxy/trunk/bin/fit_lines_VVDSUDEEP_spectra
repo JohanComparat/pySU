@@ -18,7 +18,7 @@ survey.WLmin = 5800. # lambda min
 survey.WLmax = 9200. # lambda max of the spectrum
 survey.resolution = 200. # resolution of the Keck deimos setting used
 #survey.path_to_output_catalog  =  survey.vvds_catalog_dir+ "VVDS_DEEP_summary.linesFitted.fits"
-survey.path_to_output_catalog  =  survey.vvds_catalog_dir+ "VVDS_UDEEP_summary.linesFitted.fits"
+survey.path_to_output_catalog  =  survey.vvds_catalog_dir+ "/VVDS_UDEEP_summary.linesFitted.fits"
 #survey.path_to_output_catalog  =  survey.vvds_catalog_dir+ "VVDS_WIDE_summary.linesFitted.fits"
 survey.Ngalaxies=len(survey.catalog)
 

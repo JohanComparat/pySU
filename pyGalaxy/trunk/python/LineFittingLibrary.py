@@ -32,10 +32,10 @@ class LineFittingLibrary:
 	def __init__(self,dV=-9999.99):
 		self.dV=dV # default value put in the catalogs
 		# Line models
-		self.gaussianLine=lambda aa,sigma,F0,a0,continu : continu + F0*(n.e**( -(aa-a0)**2. / (2.*sigma**2.)))/ (sigma*(2.*n.pi)**0.5)
-		self.gaussianLineNC=lambda aa,sigma,F0,a0 : F0*(n.e**(-(aa-a0)**2./ (2.*sigma**2.) ))/(sigma*(2.*n.pi)**0.5)
-		self.lorentzLine=lambda aa,gamma,F0,a0,continu  : continu + F0 * gamma / (n.pi* ((aa-a0)**2 +gamma**2))
-		self.pseudoVoigtLine=lambda aa,fwhm,F0,a0,continu,sh : continu + F0*sh/(1+ ((aa-a0) /(fwhm/2.))**2.)+F0*(1-sh)*n.e**( -n.log(2)* ((aa-a0)/(fwhm/2.))**2.) 
+		self.gaussianLine=lambda aa,sigma,F0,a0,continu : continu + F0*(n.e**( -(aa-a0)**2. / (2.*sigma**2.)))/ (abs(sigma)*(2.*n.pi)**0.5)
+		self.gaussianLineNC=lambda aa,sigma,F0,a0 : F0*(n.e**(-(aa-a0)**2./ (2.*sigma**2.) ))/(abs(sigma)*(2.*n.pi)**0.5)
+		self.lorentzLine=lambda aa,gamma,F0,a0,continu  : continu + F0 * abs(gamma) / (n.pi* ((aa-a0)**2 +gamma**2))
+		self.pseudoVoigtLine=lambda aa,fwhm,F0,a0,continu,sh : continu + F0*abs(sh)/(1+ ((aa-a0) /(fwhm/2.))**2.)+F0*(1-abs(sh))*n.e**( -n.log(2)* ((aa-a0)/(fwhm/2.))**2.) 
 
 		# conversion magnitude flux
 		self.fnu = lambda mAB : 10**(-(mAB+48.6)/2.5) # erg/cm2/s/Hz
