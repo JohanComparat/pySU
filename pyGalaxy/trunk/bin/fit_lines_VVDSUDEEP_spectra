@@ -33,7 +33,7 @@ recLineList = n.array([[H1,H1_1216,"H1_1216","right"],[H1,H1_3970,"H1_3970","rig
 
 # import the fitting routines
 import LineFittingLibrary as lineFit
-lfit  =  lineFit.LineFittingLibrary(fitWidth = 70.)
+lfit  =  lineFit.LineFittingLibrary()
 
 # import the class to handle spectra
 import GalaxySpectrumVVDS as gsp
@@ -64,7 +64,7 @@ for jj in range(survey.Ngalaxies):
 		h.append(hI)
 		"""
 		for li in lineList:
-			datI,mI,hI=lfit.fit_Line(wl,fl,flErr,li[1]*(1+catalog_entry['Z']), lineName=li[2], continuumSide=li[3], model="gaussian",p0_sigma=1)
+			datI,mI,hI=lfit.fit_Line(wl,fl,flErr,li[1]*(1+catalog_entry['Z']), lineName=li[2], continuumSide=li[3], model="gaussian",p0_sigma=1, fitWidth = 70.)
 			d_out.append(datI)
 			m.append(mI)
 			h.append(hI)
@@ -88,7 +88,7 @@ for jj in range(survey.Ngalaxies):
 
 		# now fits the recombination lines 
 		for li in recLineList:
-			datI,mI,hI=lfit.fit_Line(wl,fl,flErr,li[1]*(1+catalog_entry['Z']), lineName=li[2], continuumSide=li[3],model="gaussian",p0_sigma=1)
+			datI,mI,hI=lfit.fit_Line(wl,fl,flErr,li[1]*(1+catalog_entry['Z']), lineName=li[2], continuumSide=li[3],model="gaussian",p0_sigma=1, fitWidth = 70.)
 			d_out.append(datI)
 			m.append(mI)
 			h.append(hI)
