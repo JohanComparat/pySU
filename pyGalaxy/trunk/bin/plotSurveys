@@ -117,7 +117,7 @@ plotZ_EW(survey.catalog['Z'][ok],survey.catalog['H1_4862_EW'][ok], "vvdsdeep-EW-
 
 from GalaxySurveyDEEP2 import * 
 plotDir=join(data_dir, "DEEP2", "products", "emissionLineLuminosityFunctions", "plotSurvey")
-survey = GalaxySurveyDEEP2(redshift_catalog="zcat.deep2.dr4.v3.LFcatalogTC.Planck15.fits", calibration = False)
+survey = GalaxySurveyDEEP2(redshift_catalog="zcat.deep2.dr4.v4.LFcatalogTC.Planck15.fits", calibration = False)
 
 area1=0.60
 area2=0.62
