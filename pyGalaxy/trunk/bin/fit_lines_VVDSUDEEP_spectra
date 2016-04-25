@@ -42,7 +42,7 @@ import GalaxySpectrumVVDS as gsp
 # first loads the filter list
 from filterList import *
 
-output = n.ones_like(n.empty([survey.Ngalaxies,194]))*lfit.dV
+output = n.ones_like(n.empty([survey.Ngalaxies,170]))*lfit.dV
 for jj in range(survey.Ngalaxies):
 	catalog_entry = survey.catalog[jj]
 	spectrum = gsp.GalaxySpectrumVVDS(catalog_entry,lineFits = True)
