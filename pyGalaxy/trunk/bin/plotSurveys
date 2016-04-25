@@ -14,7 +14,7 @@ data_dir = os.environ['DATA_DIR']
 
 from GalaxySurveyVVDS import *
 plotDir = join(data_dir, "VVDS", "products", "emissionLineLuminosityFunctions", "plotSurvey")
-
+"""
 # UDEEP
 survey = GalaxySurveyVVDS(redshift_catalog="VVDS_UDEEP_summary.LFcatalog.Planck15.fits")
 
@@ -27,26 +27,28 @@ plot_I_TSR(survey.catalog['MAGI'][zok],survey.catalog['TSR'][zok],"vvdsudeep-z-t
 ok=(zok) & (survey.catalog['O2_3728_flux']>0.)& (survey.catalog['O2_3728_flux'] > SNlim*survey.catalog['O2_3728_fluxErr']) & (survey.catalog['O2_3728_fluxErr']>0.)
 plotZ_Flux(survey.catalog['Z'][ok],survey.catalog['O2_3728_flux'][ok], "vvdsudeep-f-O2_3728-z.png",r'$log_{10}(\mathrm{flux }\, [O^{3728}_{II}])$ [erg s$^{-1}$ cm$^{-2}$]', plotDir)
 ok=(zok) & (survey.catalog['O2_3728_luminosity']>0.)& (survey.catalog['O2_3728_flux'] > SNlim*survey.catalog['O2_3728_fluxErr']) & (survey.catalog['O2_3728_fluxErr']>0.)
-plotZ_Luminosity(survey.catalog['Z'][ok],survey.catalog['O2_3728_luminosity'][ok], "vvdsudeep-L-O2_3728-z.png",r'$log_{10}(L\, [O^{3728}_{II}])$ [erg s$^{-1}$]', plotDir)
+plotZ_Luminosity_Pdeg2(survey.catalog['Z'][ok],survey.catalog['O2_3728_luminosity'][ok], "vvdsudeep-L-O2_3728-z.png",r'$log_{10}(L\, [O^{3728}_{II}])$ [erg s$^{-1}$]', plotDir)
 ok=(zok) & (survey.catalog['O2_3728_EW']>0.)&(survey.catalog['O2_3728_flux']>0.)& (survey.catalog['O2_3728_flux'] > SNlim*survey.catalog['O2_3728_fluxErr']) & (survey.catalog['O2_3728_fluxErr']>0.)
 plotZ_EW(survey.catalog['Z'][ok],survey.catalog['O2_3728_EW'][ok], "vvdsudeep-EW-O2_3728-z.png",r'$log_{10}(EW\,[O^{3728}_{II}])$ [A]', plotDir)
 
 ok=(zok) & (survey.catalog['O3_5007_flux']>0.)& (survey.catalog['O3_5007_flux'] > SNlim*survey.catalog['O3_5007_fluxErr']) & (survey.catalog['O3_5007_fluxErr']>0.)
 plotZ_Flux(survey.catalog['Z'][ok],survey.catalog['O3_5007_flux'][ok], "vvdsudeep-f-O3_5007-z.png",r'$log_{10}(\mathrm{flux }\, [O^{5007}_{III}])$ [erg s$^{-1}$ cm$^{-2}$]', plotDir)
 ok=(zok) & (survey.catalog['O3_5007_luminosity']>0.)& (survey.catalog['O3_5007_flux'] > SNlim*survey.catalog['O3_5007_fluxErr']) & (survey.catalog['O3_5007_fluxErr']>0.)
-plotZ_Luminosity(survey.catalog['Z'][ok],survey.catalog['O3_5007_luminosity'][ok], "vvdsudeep-L-O3_5007-z.png",r'$log_{10}(L\, [O^{5007}_{III}])$ [erg s$^{-1}$]', plotDir)
+plotZ_Luminosity_Pdeg2(survey.catalog['Z'][ok],survey.catalog['O3_5007_luminosity'][ok], "vvdsudeep-L-O3_5007-z.png",r'$log_{10}(L\, [O^{5007}_{III}])$ [erg s$^{-1}$]', plotDir)
 ok=(zok) & (survey.catalog['O3_5007_EW']>0.) & (survey.catalog['O3_5007_flux']>0.)& (survey.catalog['O3_5007_flux'] > SNlim*survey.catalog['O3_5007_fluxErr']) & (survey.catalog['O3_5007_fluxErr']>0.)
 plotZ_EW(survey.catalog['Z'][ok],survey.catalog['O3_5007_EW'][ok], "vvdsudeep-EW-O3_5007-z.png",r'$log_{10}(EW\,[O^{5007}_{III}])$ [A]', plotDir)
 
 ok=(zok) & (survey.catalog['H1_4862_flux']>0.)& (survey.catalog['H1_4862_flux'] > SNlim*survey.catalog['H1_4862_fluxErr']) & (survey.catalog['H1_4862_fluxErr']>0.)
 plotZ_Flux(survey.catalog['Z'][ok],survey.catalog['H1_4862_flux'][ok], "vvdsudeep-f-H1_4862-z.png",r'$log_{10}(\mathrm{flux }\, H^{4861}_{\beta})$ [erg s$^{-1}$ cm$^{-2}$]', plotDir)
 ok=(zok) & (survey.catalog['H1_4862_luminosity']>0.)& (survey.catalog['H1_4862_flux'] > SNlim*survey.catalog['H1_4862_fluxErr']) & (survey.catalog['H1_4862_fluxErr']>0.)
-plotZ_Luminosity(survey.catalog['Z'][ok],survey.catalog['H1_4862_luminosity'][ok], "vvdsudeep-L-H1_4862-z.png",r'$log_{10}(L\, H^{4861}_{\beta})$ [erg s$^{-1}$]', plotDir)
+plotZ_Luminosity_Pdeg2(survey.catalog['Z'][ok],survey.catalog['H1_4862_luminosity'][ok], "vvdsudeep-L-H1_4862-z.png",r'$log_{10}(L\, H^{4861}_{\beta})$ [erg s$^{-1}$]', plotDir)
 ok=(zok) & (survey.catalog['H1_4862_EW']>0.)& (survey.catalog['H1_4862_flux']>0.)& (survey.catalog['H1_4862_flux'] > SNlim*survey.catalog['H1_4862_fluxErr']) & (survey.catalog['H1_4862_fluxErr']>0.)
 plotZ_EW(survey.catalog['Z'][ok],survey.catalog['H1_4862_EW'][ok], "vvdsudeep-EW-H1_4862-z.png",r'$log_{10}(EW\,H^{4861}_{\beta})$ [A]', plotDir)
-
+"""
 # WIDE
 survey = GalaxySurveyVVDS(redshift_catalog="VVDS_WIDE_summary.LFcatalog.Planck15.fits")
+areaWide=4.0+2.2+1.9
+area = areaWide
 
 zok=(survey.catalog['ZFLAGS']>1.9)&(survey.catalog['ZFLAGS']<9.1)
 sel1=(survey.catalog['alpha']<170)&(zok)
@@ -63,27 +65,28 @@ for i in range(3):
 ok=(zok) & (survey.catalog['O2_3728_flux']>0.)& (survey.catalog['O2_3728_flux'] > SNlim*survey.catalog['O2_3728_fluxErr']) & (survey.catalog['O2_3728_fluxErr']>0.)
 plotZ_Flux(survey.catalog['Z'][ok],survey.catalog['O2_3728_flux'][ok], "vvdswide-f-O2_3728-z.png",r'$log_{10}(\mathrm{flux }\, [O^{3728}_{II}])$ [erg s$^{-1}$ cm$^{-2}$]', plotDir, flux_limit = 3.5e-17)
 ok=(zok) & (survey.catalog['O2_3728_luminosity']>0.)& (survey.catalog['O2_3728_flux'] > SNlim*survey.catalog['O2_3728_fluxErr']) & (survey.catalog['O2_3728_fluxErr']>0.)
-plotZ_Luminosity(survey.catalog['Z'][ok],survey.catalog['O2_3728_luminosity'][ok], "vvdswide-L-O2_3728-z.png",r'$log_{10}(L\, [O^{3728}_{II}])$ [erg s$^{-1}$]', plotDir, flux_limit = 3.5e-17)
+plotZ_Luminosity_Pdeg2(survey.catalog['Z'][ok],survey.catalog['O2_3728_luminosity'][ok], n.ones_like(survey.catalog['O2_3728_luminosity'][ok])/area, "vvdswide-L-O2_3728-z.png",r'$log_{10}(L\, [O^{3728}_{II}])$ [erg s$^{-1}$]', plotDir, flux_limit = 3.5e-17)
 ok=(zok) & (survey.catalog['O2_3728_EW']>0.)&(survey.catalog['O2_3728_flux']>0.)& (survey.catalog['O2_3728_flux'] > SNlim*survey.catalog['O2_3728_fluxErr']) & (survey.catalog['O2_3728_fluxErr']>0.)
 plotZ_EW(survey.catalog['Z'][ok],survey.catalog['O2_3728_EW'][ok], "vvdswide-EW-O2_3728-z.png",r'$log_{10}(EW\,[O^{3728}_{II}])$ [A]', plotDir)
 
 ok=(zok) & (survey.catalog['O3_5007_flux']>0.)& (survey.catalog['O3_5007_flux'] > SNlim*survey.catalog['O3_5007_fluxErr']) & (survey.catalog['O3_5007_fluxErr']>0.)
 plotZ_Flux(survey.catalog['Z'][ok],survey.catalog['O3_5007_flux'][ok], "vvdswide-f-O3_5007-z.png",r'$log_{10}(\mathrm{flux }\, [O^{5007}_{III}])$ [erg s$^{-1}$ cm$^{-2}$]', plotDir, flux_limit = 3.5e-17)
 ok=(zok) & (survey.catalog['O3_5007_luminosity']>0.)& (survey.catalog['O3_5007_flux'] > SNlim*survey.catalog['O3_5007_fluxErr']) & (survey.catalog['O3_5007_fluxErr']>0.)
-plotZ_Luminosity(survey.catalog['Z'][ok],survey.catalog['O3_5007_luminosity'][ok], "vvdswide-L-O3_5007-z.png",r'$log_{10}(L\, [O^{5007}_{III}])$ [erg s$^{-1}$]', plotDir, flux_limit = 3.5e-17)
+plotZ_Luminosity_Pdeg2(survey.catalog['Z'][ok], survey.catalog['O3_5007_luminosity'][ok], n.ones_like(survey.catalog['O3_5007_luminosity'][ok])/area, "vvdswide-L-O3_5007-z.png",r'$log_{10}(L\, [O^{5007}_{III}])$ [erg s$^{-1}$]', plotDir, flux_limit = 3.5e-17)
 ok=(zok) & (survey.catalog['O3_5007_EW']>0.) & (survey.catalog['O3_5007_flux']>0.)& (survey.catalog['O3_5007_flux'] > SNlim*survey.catalog['O3_5007_fluxErr']) & (survey.catalog['O3_5007_fluxErr']>0.)
 plotZ_EW(survey.catalog['Z'][ok],survey.catalog['O3_5007_EW'][ok], "vvdswide-EW-O3_5007-z.png",r'$log_{10}(EW\,[O^{5007}_{III}])$ [A]', plotDir)
 
 ok=(zok) & (survey.catalog['H1_4862_flux']>0.)& (survey.catalog['H1_4862_flux'] > SNlim*survey.catalog['H1_4862_fluxErr']) & (survey.catalog['H1_4862_fluxErr']>0.)
 plotZ_Flux(survey.catalog['Z'][ok],survey.catalog['H1_4862_flux'][ok], "vvdswide-f-H1_4862-z.png",r'$log_{10}(\mathrm{flux }\, H^{4861}_{\beta})$ [erg s$^{-1}$ cm$^{-2}$]', plotDir, flux_limit = 3.5e-17)
 ok=(zok) & (survey.catalog['H1_4862_luminosity']>0.)& (survey.catalog['H1_4862_flux'] > SNlim*survey.catalog['H1_4862_fluxErr']) & (survey.catalog['H1_4862_fluxErr']>0.)
-plotZ_Luminosity(survey.catalog['Z'][ok],survey.catalog['H1_4862_luminosity'][ok], "vvdswide-L-H1_4862-z.png",r'$log_{10}(L\, H^{4861}_{\beta})$ [erg s$^{-1}$]', plotDir, flux_limit = 3.5e-17)
+plotZ_Luminosity_Pdeg2(survey.catalog['Z'][ok],survey.catalog['H1_4862_luminosity'][ok], n.ones_like(survey.catalog['H1_4862_luminosity'][ok])/area, "vvdswide-L-H1_4862-z.png",r'$log_{10}(L\, H^{4861}_{\beta})$ [erg s$^{-1}$]', plotDir, flux_limit = 3.5e-17)
 ok=(zok) & (survey.catalog['H1_4862_EW']>0.)& (survey.catalog['H1_4862_flux']>0.)& (survey.catalog['H1_4862_flux'] > SNlim*survey.catalog['H1_4862_fluxErr']) & (survey.catalog['H1_4862_fluxErr']>0.)
 plotZ_EW(survey.catalog['Z'][ok],survey.catalog['H1_4862_EW'][ok], "vvdswide-EW-H1_4862-z.png",r'$log_{10}(EW\,H^{4861}_{\beta})$ [A]', plotDir)
 
 # DEEP
 survey = GalaxySurveyVVDS(redshift_catalog="VVDS_DEEP_summary.LFcatalog.Planck15.fits")
-
+areaDeep=0.61
+area = areaDeep
 zok=(survey.catalog['ZFLAGS']>1.9)&(survey.catalog['ZFLAGS']<9.1)
 
 plotRaDecEBV(survey.catalog['ALPHA'][zok], survey.catalog['DELTA'][zok], survey.catalog['EBV_MW'][zok] , "vvdsdeep-ra-dec.png", plotDir)
@@ -93,21 +96,21 @@ plot_I_TSR(survey.catalog['MAGI'][zok],survey.catalog['TSR'][zok],"vvdsdeep-z-ts
 ok=(zok) & (survey.catalog['O2_3728_flux']>0.)& (survey.catalog['O2_3728_flux'] > SNlim*survey.catalog['O2_3728_fluxErr']) & (survey.catalog['O2_3728_fluxErr']>0.)
 plotZ_Flux(survey.catalog['Z'][ok],survey.catalog['O2_3728_flux'][ok], "vvdsdeep-f-O2_3728-z.png",r'$log_{10}(\mathrm{flux }\, [O^{3728}_{II}])$ [erg s$^{-1}$ cm$^{-2}$]', plotDir, flux_limit = 1.9e-17)
 ok=(zok) & (survey.catalog['O2_3728_luminosity']>0.)& (survey.catalog['O2_3728_flux'] > SNlim*survey.catalog['O2_3728_fluxErr']) & (survey.catalog['O2_3728_fluxErr']>0.)
-plotZ_Luminosity(survey.catalog['Z'][ok],survey.catalog['O2_3728_luminosity'][ok], "vvdsdeep-L-O2_3728-z.png",r'$log_{10}(L\, [O^{3728}_{II}])$ [erg s$^{-1}$]', plotDir, flux_limit = 1.9e-17)
+plotZ_Luminosity_Pdeg2(survey.catalog['Z'][ok],survey.catalog['O2_3728_luminosity'][ok], n.ones_like(survey.catalog['O2_3728_luminosity'][ok])/area, "vvdsdeep-L-O2_3728-z.png",r'$log_{10}(L\, [O^{3728}_{II}])$ [erg s$^{-1}$]', plotDir, flux_limit = 1.9e-17)
 ok=(zok) & (survey.catalog['O2_3728_EW']>0.)&(survey.catalog['O2_3728_flux']>0.)& (survey.catalog['O2_3728_flux'] > SNlim*survey.catalog['O2_3728_fluxErr']) & (survey.catalog['O2_3728_fluxErr']>0.)
 plotZ_EW(survey.catalog['Z'][ok],survey.catalog['O2_3728_EW'][ok], "vvdsdeep-EW-O2_3728-z.png",r'$log_{10}(EW\,[O^{3728}_{II}])$ [A]', plotDir)
 
 ok=(zok) & (survey.catalog['O3_5007_flux']>0.)& (survey.catalog['O3_5007_flux'] > SNlim*survey.catalog['O3_5007_fluxErr']) & (survey.catalog['O3_5007_fluxErr']>0.)
 plotZ_Flux(survey.catalog['Z'][ok],survey.catalog['O3_5007_flux'][ok], "vvdsdeep-f-O3_5007-z.png",r'$log_{10}(\mathrm{flux }\, [O^{5007}_{III}])$ [erg s$^{-1}$ cm$^{-2}$]', plotDir, flux_limit = 1.9e-17)
 ok=(zok) & (survey.catalog['O3_5007_luminosity']>0.)& (survey.catalog['O3_5007_flux'] > SNlim*survey.catalog['O3_5007_fluxErr']) & (survey.catalog['O3_5007_fluxErr']>0.)
-plotZ_Luminosity(survey.catalog['Z'][ok],survey.catalog['O3_5007_luminosity'][ok], "vvdsdeep-L-O3_5007-z.png",r'$log_{10}(L\, [O^{5007}_{III}])$ [erg s$^{-1}$]', plotDir, flux_limit = 1.9e-17)
+plotZ_Luminosity_Pdeg2(survey.catalog['Z'][ok],survey.catalog['O3_5007_luminosity'][ok], n.ones_like(survey.catalog['O3_5007_luminosity'][ok])/area, "vvdsdeep-L-O3_5007-z.png",r'$log_{10}(L\, [O^{5007}_{III}])$ [erg s$^{-1}$]', plotDir, flux_limit = 1.9e-17)
 ok=(zok) & (survey.catalog['O3_5007_EW']>0.) & (survey.catalog['O3_5007_flux']>0.)& (survey.catalog['O3_5007_flux'] > SNlim*survey.catalog['O3_5007_fluxErr']) & (survey.catalog['O3_5007_fluxErr']>0.)
 plotZ_EW(survey.catalog['Z'][ok],survey.catalog['O3_5007_EW'][ok], "vvdsdeep-EW-O3_5007-z.png",r'$log_{10}(EW\,[O^{5007}_{III}])$ [A]', plotDir)
 
 ok=(zok) & (survey.catalog['H1_4862_flux']>0.)& (survey.catalog['H1_4862_flux'] > SNlim*survey.catalog['H1_4862_fluxErr']) & (survey.catalog['H1_4862_fluxErr']>0.)
 plotZ_Flux(survey.catalog['Z'][ok],survey.catalog['H1_4862_flux'][ok], "vvdsdeep-f-H1_4862-z.png",r'$log_{10}(\mathrm{flux }\, H^{4861}_{\beta})$ [erg s$^{-1}$ cm$^{-2}$]', plotDir, flux_limit = 1.9e-17)
 ok=(zok) & (survey.catalog['H1_4862_luminosity']>0.)& (survey.catalog['H1_4862_flux'] > SNlim*survey.catalog['H1_4862_fluxErr']) & (survey.catalog['H1_4862_fluxErr']>0.)
-plotZ_Luminosity(survey.catalog['Z'][ok],survey.catalog['H1_4862_luminosity'][ok], "vvdsdeep-L-H1_4862-z.png",r'$log_{10}(L\, H^{4861}_{\beta})$ [erg s$^{-1}$]', plotDir, flux_limit = 1.9e-17)
+plotZ_Luminosity_Pdeg2(survey.catalog['Z'][ok],survey.catalog['H1_4862_luminosity'][ok], n.ones_like(survey.catalog['H1_4862_luminosity'][ok])/area, "vvdsdeep-L-H1_4862-z.png",r'$log_{10}(L\, H^{4861}_{\beta})$ [erg s$^{-1}$]', plotDir, flux_limit = 1.9e-17)
 ok=(zok) & (survey.catalog['H1_4862_EW']>0.)& (survey.catalog['H1_4862_flux']>0.)& (survey.catalog['H1_4862_flux'] > SNlim*survey.catalog['H1_4862_fluxErr']) & (survey.catalog['H1_4862_fluxErr']>0.)
 plotZ_EW(survey.catalog['Z'][ok],survey.catalog['H1_4862_EW'][ok], "vvdsdeep-EW-H1_4862-z.png",r'$log_{10}(EW\,H^{4861}_{\beta})$ [A]', plotDir)
 
@@ -115,6 +118,12 @@ plotZ_EW(survey.catalog['Z'][ok],survey.catalog['H1_4862_EW'][ok], "vvdsdeep-EW-
 from GalaxySurveyDEEP2 import * 
 plotDir=join(data_dir, "DEEP2", "products", "emissionLineLuminosityFunctions", "plotSurvey")
 survey = GalaxySurveyDEEP2(redshift_catalog="zcat.deep2.dr4.v3.LFcatalogTC.Planck15.fits", calibration = False)
+
+area1=0.60
+area2=0.62
+area3=0.90
+area4=0.66
+area=area1+area2+area3+area4
 
 zok=(survey.catalog['ZQUALITY']>0.9)
 sel1=(survey.catalog['DEC']>50)&(zok)
@@ -133,27 +142,28 @@ for i in range(4):
 ok=(zok) & (survey.catalog['O2_3728_flux']>0.)& (survey.catalog['O2_3728_flux'] > SNlim*survey.catalog['O2_3728_fluxErr']) & (survey.catalog['O2_3728_fluxErr']>0.)
 plotZ_Flux(survey.catalog['ZBEST'][ok],survey.catalog['O2_3728_flux'][ok], "deep2-f-O2_3728-z.png",r'$log_{10}(\mathrm{flux }\, [O^{3728}_{II}])$ [erg s$^{-1}$ cm$^{-2}$]', plotDir, flux_limit = 2.7e-17)
 ok=(zok) & (survey.catalog['O2_3728_luminosity']>0.)& (survey.catalog['O2_3728_flux'] > SNlim*survey.catalog['O2_3728_fluxErr']) & (survey.catalog['O2_3728_fluxErr']>0.)
-plotZ_Luminosity(survey.catalog['ZBEST'][ok],survey.catalog['O2_3728_luminosity'][ok], "deep2-L-O2_3728-z.png",r'$log_{10}(L\, [O^{3728}_{II}])$ [erg s$^{-1}$]', plotDir, flux_limit = 2.7e-17)
+plotZ_Luminosity_Pdeg2(survey.catalog['ZBEST'][ok],survey.catalog['O2_3728_luminosity'][ok], n.ones_like(survey.catalog['O2_3728_luminosity'][ok])/area, "deep2-L-O2_3728-z.png",r'$log_{10}(L\, [O^{3728}_{II}])$ [erg s$^{-1}$]', plotDir, flux_limit = 2.7e-17)
 ok=(zok) & (survey.catalog['O2_3728_EW']>0.)&(survey.catalog['O2_3728_flux']>0.)& (survey.catalog['O2_3728_flux'] > SNlim*survey.catalog['O2_3728_fluxErr']) & (survey.catalog['O2_3728_fluxErr']>0.)
 plotZ_EW(survey.catalog['ZBEST'][ok],survey.catalog['O2_3728_EW'][ok], "deep2-EW-O2_3728-z.png",r'$log_{10}(EW\,[O^{3728}_{II}])$ [A]', plotDir)
 
 ok=(zok) & (survey.catalog['O3_5007_flux']>0.)& (survey.catalog['O3_5007_flux'] > SNlim*survey.catalog['O3_5007_fluxErr']) & (survey.catalog['O3_5007_fluxErr']>0.)
 plotZ_Flux(survey.catalog['ZBEST'][ok],survey.catalog['O3_5007_flux'][ok], "deep2-f-O3_5007-z.png",r'$log_{10}(\mathrm{flux }\, [O^{5007}_{III}])$ [erg s$^{-1}$ cm$^{-2}$]', plotDir, flux_limit = 2.7e-17)
 ok=(zok) & (survey.catalog['O3_5007_luminosity']>0.)& (survey.catalog['O3_5007_flux'] > SNlim*survey.catalog['O3_5007_fluxErr']) & (survey.catalog['O3_5007_fluxErr']>0.)
-plotZ_Luminosity(survey.catalog['ZBEST'][ok],survey.catalog['O3_5007_luminosity'][ok], "deep2-L-O3_5007-z.png",r'$log_{10}(L\, [O^{5007}_{III}])$ [erg s$^{-1}$]', plotDir, flux_limit = 2.7e-17)
+plotZ_Luminosity_Pdeg2(survey.catalog['ZBEST'][ok],survey.catalog['O3_5007_luminosity'][ok], n.ones_like(survey.catalog['O3_5007_luminosity'][ok])/area, "deep2-L-O3_5007-z.png",r'$log_{10}(L\, [O^{5007}_{III}])$ [erg s$^{-1}$]', plotDir, flux_limit = 2.7e-17)
 ok=(zok) & (survey.catalog['O3_5007_EW']>0.) & (survey.catalog['O3_5007_flux']>0.)& (survey.catalog['O3_5007_flux'] > SNlim*survey.catalog['O3_5007_fluxErr']) & (survey.catalog['O3_5007_fluxErr']>0.)
 plotZ_EW(survey.catalog['ZBEST'][ok],survey.catalog['O3_5007_EW'][ok], "deep2-EW-O3_5007-z.png",r'$log_{10}(EW\,[O^{5007}_{III}])$ [A]', plotDir)
 
 ok=(zok) & (survey.catalog['H1_4862_flux']>0.)& (survey.catalog['H1_4862_flux'] > SNlim*survey.catalog['H1_4862_fluxErr']) & (survey.catalog['H1_4862_fluxErr']>0.)
 plotZ_Flux(survey.catalog['ZBEST'][ok],survey.catalog['H1_4862_flux'][ok], "deep2-f-H1_4862-z.png",r'$log_{10}(\mathrm{flux }\, H^{4861}_{\beta})$ [erg s$^{-1}$ cm$^{-2}$]', plotDir, flux_limit = 2.7e-17)
 ok=(zok) & (survey.catalog['H1_4862_luminosity']>0.)& (survey.catalog['H1_4862_flux'] > SNlim*survey.catalog['H1_4862_fluxErr']) & (survey.catalog['H1_4862_fluxErr']>0.)
-plotZ_Luminosity(survey.catalog['ZBEST'][ok],survey.catalog['H1_4862_luminosity'][ok], "deep2-L-H1_4862-z.png",r'$log_{10}(L\, H^{4861}_{\beta})$ [erg s$^{-1}$]', plotDir, flux_limit = 2.7e-17)
+plotZ_Luminosity_Pdeg2(survey.catalog['ZBEST'][ok],survey.catalog['H1_4862_luminosity'][ok], n.ones_like(survey.catalog['H1_4862_luminosity'][ok])/area, "deep2-L-H1_4862-z.png",r'$log_{10}(L\, H^{4861}_{\beta})$ [erg s$^{-1}$]', plotDir, flux_limit = 2.7e-17)
 ok=(zok) & (survey.catalog['H1_4862_EW']>0.)& (survey.catalog['H1_4862_flux']>0.)& (survey.catalog['H1_4862_flux'] > SNlim*survey.catalog['H1_4862_fluxErr']) & (survey.catalog['H1_4862_fluxErr']>0.)
 plotZ_EW(survey.catalog['ZBEST'][ok],survey.catalog['H1_4862_EW'][ok], "deep2-EW-H1_4862-z.png",r'$log_{10}(EW\,H^{4861}_{\beta})$ [A]', plotDir)
 
 
 from GalaxySurveyVIPERS import *
 plotDir=join(data_dir, "VIPERS", "products", "emissionLineLuminosityFunctions", "plotSurvey")
+area=24.
 
 # VIPERS
 survey = GalaxySurveyVIPERS(redshift_catalog="VIPERS_W14_summary_v1.LFcatalog.Planck15.fits")
@@ -175,20 +185,20 @@ plot_I_TSR(survey.catalog['MAGI'][zokR],survey.catalog['TSR'][zokR],"vipers-z-ts
 ok=(zok) & (survey.catalog['O2_3728_flux']>0.)& (survey.catalog['O2_3728_flux'] > SNlim*survey.catalog['O2_3728_fluxErr']) & (survey.catalog['O2_3728_fluxErr']>0.)
 plotZ_Flux(survey.catalog['zspec'][ok],survey.catalog['O2_3728_flux'][ok], "vipers-f-O2_3728-z.png",r'$log_{10}(\mathrm{flux }\, [O^{3728}_{II}])$ [erg s$^{-1}$ cm$^{-2}$]', plotDir, flux_limit = 3.5e-17)
 ok=(zok) & (survey.catalog['O2_3728_luminosity']>0.)& (survey.catalog['O2_3728_flux'] > SNlim*survey.catalog['O2_3728_fluxErr']) & (survey.catalog['O2_3728_fluxErr']>0.)
-plotZ_Luminosity(survey.catalog['zspec'][ok],survey.catalog['O2_3728_luminosity'][ok], "vipers-L-O2_3728-z.png",r'$log_{10}(L\, [O^{3728}_{II}])$ [erg s$^{-1}$]', plotDir, flux_limit = 3.5e-17)
+plotZ_Luminosity_Pdeg2(survey.catalog['zspec'][ok],survey.catalog['O2_3728_luminosity'][ok], n.ones_like(survey.catalog['O2_3728_luminosity'][ok])/area, "vipers-L-O2_3728-z.png",r'$log_{10}(L\, [O^{3728}_{II}])$ [erg s$^{-1}$]', plotDir, flux_limit = 3.5e-17)
 ok=(zok) & (survey.catalog['O2_3728_EW']>0.)&(survey.catalog['O2_3728_flux']>0.)& (survey.catalog['O2_3728_flux'] > SNlim*survey.catalog['O2_3728_fluxErr']) & (survey.catalog['O2_3728_fluxErr']>0.)
 plotZ_EW(survey.catalog['zspec'][ok],survey.catalog['O2_3728_EW'][ok], "vipers-EW-O2_3728-z.png",r'$log_{10}(EW\,[O^{3728}_{II}])$ [A]', plotDir)
 
 ok=(zok) & (survey.catalog['O3_5007_flux']>0.)& (survey.catalog['O3_5007_flux'] > SNlim*survey.catalog['O3_5007_fluxErr']) & (survey.catalog['O3_5007_fluxErr']>0.)
 plotZ_Flux(survey.catalog['zspec'][ok],survey.catalog['O3_5007_flux'][ok], "vipers-f-O3_5007-z.png",r'$log_{10}(\mathrm{flux }\, [O^{5007}_{III}])$ [erg s$^{-1}$ cm$^{-2}$]', plotDir, flux_limit = 3.5e-17)
 ok=(zok) & (survey.catalog['O3_5007_luminosity']>0.)& (survey.catalog['O3_5007_flux'] > SNlim*survey.catalog['O3_5007_fluxErr']) & (survey.catalog['O3_5007_fluxErr']>0.)
-plotZ_Luminosity(survey.catalog['zspec'][ok],survey.catalog['O3_5007_luminosity'][ok], "vipers-L-O3_5007-z.png",r'$log_{10}(L\, [O^{5007}_{III}])$ [erg s$^{-1}$]', plotDir, flux_limit = 3.5e-17)
+plotZ_Luminosity_Pdeg2(survey.catalog['zspec'][ok],survey.catalog['O3_5007_luminosity'][ok], n.ones_like(survey.catalog['O3_5007_luminosity'][ok])/area, "vipers-L-O3_5007-z.png",r'$log_{10}(L\, [O^{5007}_{III}])$ [erg s$^{-1}$]', plotDir, flux_limit = 3.5e-17)
 ok=(zok) & (survey.catalog['O3_5007_EW']>0.) & (survey.catalog['O3_5007_flux']>0.)& (survey.catalog['O3_5007_flux'] > SNlim*survey.catalog['O3_5007_fluxErr']) & (survey.catalog['O3_5007_fluxErr']>0.)
 plotZ_EW(survey.catalog['zspec'][ok],survey.catalog['O3_5007_EW'][ok], "vipers-EW-O3_5007-z.png",r'$log_{10}(EW\,[O^{5007}_{III}])$ [A]', plotDir)
 
 ok=(zok) & (survey.catalog['H1_4862_flux']>0.)& (survey.catalog['H1_4862_flux'] > SNlim*survey.catalog['H1_4862_fluxErr']) & (survey.catalog['H1_4862_fluxErr']>0.)
 plotZ_Flux(survey.catalog['zspec'][ok],survey.catalog['H1_4862_flux'][ok], "vipers-f-H1_4862-z.png",r'$log_{10}(\mathrm{flux }\, H^{4861}_{\beta})$ [erg s$^{-1}$ cm$^{-2}$]', plotDir)
 ok=(zok) & (survey.catalog['H1_4862_luminosity']>0.)& (survey.catalog['H1_4862_flux'] > SNlim*survey.catalog['H1_4862_fluxErr']) & (survey.catalog['H1_4862_fluxErr']>0.)
-plotZ_Luminosity(survey.catalog['zspec'][ok],survey.catalog['H1_4862_luminosity'][ok], "vipers-L-H1_4862-z.png",r'$log_{10}(L\, H^{4861}_{\beta})$ [erg s$^{-1}$]', plotDir, flux_limit = 3.5e-17)
+plotZ_Luminosity_Pdeg2(survey.catalog['zspec'][ok],survey.catalog['H1_4862_luminosity'][ok], n.ones_like(survey.catalog['H1_4862_luminosity'][ok])/area, "vipers-L-H1_4862-z.png",r'$log_{10}(L\, H^{4861}_{\beta})$ [erg s$^{-1}$]', plotDir, flux_limit = 3.5e-17)
 ok=(zok) & (survey.catalog['H1_4862_EW']>0.)& (survey.catalog['H1_4862_flux']>0.)& (survey.catalog['H1_4862_flux'] > SNlim*survey.catalog['H1_4862_fluxErr']) & (survey.catalog['H1_4862_fluxErr']>0.)
 plotZ_EW(survey.catalog['zspec'][ok],survey.catalog['H1_4862_EW'][ok], "vipers-EW-H1_4862-z.png",r'$log_{10}(EW\,H^{4861}_{\beta})$ [A]', plotDir)

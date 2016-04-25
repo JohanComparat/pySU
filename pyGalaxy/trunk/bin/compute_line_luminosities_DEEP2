@@ -9,13 +9,13 @@ cosmo=co.Planck15 #co.FlatLambdaCDM(H0=70,Om0=0.3)
 
 # line list to be converted to luminosities
 from lineListAir import *
-lineList = n.array([[O2,O2_mean,"O2_3728"],[Ne3,Ne3_3869,"Ne3_3869"], [O3,O3_4363,"O3_4363"], [O3,O3_4960,"O3_4960"], [O3,O3_5007,"O3_5007"], [N2,N2_6549,"N2_6549"], [N2,N2_6585,"N2_6585"], [S2,S2_6718,"S2_6718"], [S2,S2_6732,"S2_6732"],  [Ar3,Ar3_7137,"Ar3_7137"],[H1,H1_1216,"H1_1216"], [H1,H1_3970,"H1_3970"], [H1,H1_4102,"H1_4102"], [H1,H1_4341,"H1_4341"], [H1,H1_4862,"H1_4862"], [H1,H1_6564,"H1_6564"]])
+lineList = n.array([[O2,O2_mean,"O2_3728"],[Ne3,Ne3_3869,"Ne3_3869"], [O3,O3_4363,"O3_4363"], [O3,O3_4960,"O3_4960"], [O3,O3_5007,"O3_5007"], [N2,N2_6549,"N2_6549"], [N2,N2_6585,"N2_6585"], [S2,S2_6718,"S2_6718"], [S2,S2_6732,"S2_6732"], [H1,H1_3970,"H1_3970"], [H1,H1_4102,"H1_4102"], [H1,H1_4341,"H1_4341"], [H1,H1_4862,"H1_4862"], [H1,H1_6564,"H1_6564"]])
 
 from GalaxySurveyDEEP2 import *
-survey = GalaxySurveyDEEP2(redshift_catalog="zcat.deep2.dr4.v2.linesFittedTC.fits", calibration = False)
+survey = GalaxySurveyDEEP2(redshift_catalog="zcat.deep2.dr4.v4.linesFittedTC.fits", calibration = False)
 
 # global parameters to add to the survey class
-survey.path_to_output_catalog  =  join(survey.deep2_catalog_dir, "zcat.deep2.dr4.v2.LFcatalogTC.Planck15.fits")
+survey.path_to_output_catalog  =  join(survey.deep2_catalog_dir, "zcat.deep2.dr4.v4.LFcatalogTC.Planck15.fits")
 survey.Ngalaxies=len(survey.catalog)
 
 new_columns = survey.catalog.columns

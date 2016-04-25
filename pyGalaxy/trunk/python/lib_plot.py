@@ -129,6 +129,31 @@ def plotZ_EW(zz,ew,name,ylab,pDir):
 	p.savefig(join(pDir, name))
 	p.clf()
 
+
+def plotZ_Luminosity_Pdeg2(zz,lum,WW,name,ylab,pDir,flux_limit = 3e-17):
+	"""
+	creates a figure with redshift, luminosity.
+	:param zz: column redshift
+	:param ew: column luminosity
+	:param name: name of the figure.
+	:param ylab : y axis label
+	:param pDir: where the figure will be saved.
+	"""
+	bins=[n.arange(0.1,1.4,0.025),n.arange(38,45,0.2)]
+	fig=p.figure(1,(6,5))
+	p.axes([0.25,0.15,0.65,0.7])
+	p.hist2d(zz,n.log10(lum),rasterized=True,bins=bins,cmin=2, weights  = WW)
+	p.plot(zrr,l_limit(flux_limit),color='k',ls='dashed',lw='2')
+	p.xlabel('redshift')
+	p.ylabel(ylab)
+	cb=p.colorbar(shrink=0.8)
+	cb.set_label(r'N / deg$^2$')
+	p.ylim((39,44))
+	p.xlim((0.1,1.4))
+	p.grid()
+	p.savefig(join(pDir, name))
+	p.clf()
+
 def plotZ_Luminosity(zz,lum,name,ylab,pDir,flux_limit = 3e-17):
 	"""
 	creates a figure with redshift, luminosity.

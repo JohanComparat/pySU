@@ -47,7 +47,7 @@ for MagLim in MagLimS :
 		for line in lineSet :
 			print "---------------------------------------------------"
 			print line, zmin, zmax
-			lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "DEEP2", redshift_catalog = "zcat.deep2.dr4.v3.LFcatalogTC.Planck15.fits", luminosityBins = n.logspace(38,45,25), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions" , zmin = zmin, zmax = zmax)
+			lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "DEEP2", redshift_catalog = "zcat.deep2.dr4.v4.LFcatalogTC.Planck15.fits", luminosityBins = n.logspace(38,45,25), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions" , zmin = zmin, zmax = zmax)
 			lf.setRedshiftArray( redshiftColumn='ZBEST' )
 			lf.setRedshiftSelection( redshiftQualityColumn='ZQUALITY', lowerBound=0.9, upperBound=7.)
 			if zmin < 0.7:
@@ -96,7 +96,7 @@ for ColorLim in ColorLimS :
 		zmax = zsVIMOSmax[ii]
 		lineSet=linesFittedVIMOS[ii]
 		for line in lineSet :
-			lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "VIPERS", redshift_catalog = "VIPERS_W14_summary_v1.LFcatalog.Planck15.fits", luminosityBins = n.logspace(38,45,50), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions/" , zmin = zmin, zmax = zmax)
+			lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "VIPERS", redshift_catalog = "VIPERS_W14_summary_v1.2.LFcatalog.Planck15.fits", luminosityBins = n.logspace(38,45,50), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions/" , zmin = zmin, zmax = zmax)
 			lf.setRedshiftArray( redshiftColumn='zspec' )
 			lf.setRedshiftSelection( redshiftQualityColumn='zflg', lowerBound=0.9, upperBound=100.)
 			lf.setWeightArray( 1./(area * lf.catalog['SSR']*lf.catalog['TSR']), area )
@@ -120,7 +120,7 @@ for ColorLim in ColorLimS :
 		zmax = zsVIMOSmax[ii]
 		lineSet=linesFittedVIMOS[ii]
 		for line in lineSet :
-			lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "VIPERS", redshift_catalog = "VIPERS_W14_summary_v1.LFcatalog.Planck15.fits", luminosityBins = n.logspace(38,45,50), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions/" , zmin = zmin, zmax = zmax)
+			lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "VIPERS", redshift_catalog = "VIPERS_W14_summary_v1.2.LFcatalog.Planck15.fits", luminosityBins = n.logspace(38,45,50), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions/" , zmin = zmin, zmax = zmax)
 			lf.setRedshiftArray( redshiftColumn='zspec' )
 			lf.setRedshiftSelection( redshiftQualityColumn='zflg', lowerBound=0.9, upperBound=100.)
 			lf.setWeightArray( 1./(area * lf.catalog['SSR']*lf.catalog['TSR']), area )
@@ -144,7 +144,7 @@ for ColorLim in ColorLimS :
 		zmax = zsVIMOSmax[ii]
 		lineSet=linesFittedVIMOS[ii]
 		for line in lineSet :
-			lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "VIPERS", redshift_catalog = "VIPERS_W14_summary_v1.LFcatalog.Planck15.fits", luminosityBins = n.logspace(38,45,50), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions/" , zmin = zmin, zmax = zmax)
+			lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "VIPERS", redshift_catalog = "VIPERS_W14_summary_v1.2.LFcatalog.Planck15.fits", luminosityBins = n.logspace(38,45,50), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions/" , zmin = zmin, zmax = zmax)
 			lf.setRedshiftArray( redshiftColumn='zspec' )
 			lf.setRedshiftSelection( redshiftQualityColumn='zflg', lowerBound=0.9, upperBound=100.)
 			lf.setWeightArray( 1./(area * lf.catalog['SSR']*lf.catalog['TSR']), area )
@@ -168,7 +168,7 @@ for ColorLim in ColorLimS :
 		zmax = zsVIMOSmax[ii]
 		lineSet=linesFittedVIMOS[ii]
 		for line in lineSet :
-			lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "VIPERS", redshift_catalog = "VIPERS_W14_summary_v1.LFcatalog.Planck15.fits", luminosityBins = n.logspace(38,45,50), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions/" , zmin = zmin, zmax = zmax)
+			lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "VIPERS", redshift_catalog = "VIPERS_W14_summary_v1.2.LFcatalog.Planck15.fits", luminosityBins = n.logspace(38,45,50), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions/" , zmin = zmin, zmax = zmax)
 			lf.setRedshiftArray( redshiftColumn='zspec' )
 			lf.setRedshiftSelection( redshiftQualityColumn='zflg', lowerBound=0.9, upperBound=100.)
 			lf.setWeightArray( 1./(area * lf.catalog['SSR']*lf.catalog['TSR']), area )
@@ -194,7 +194,7 @@ for MagLim in MagLimS :
 		zmax = zsVIMOSmax[ii]
 		lineSet=linesFittedVIMOS[ii]
 		for line in lineSet :
-			lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "VIPERS", redshift_catalog = "VIPERS_W14_summary_v1.LFcatalog.Planck15.fits", luminosityBins = n.logspace(38,45,50), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions/" , zmin = zmin, zmax = zmax)
+			lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "VIPERS", redshift_catalog = "VIPERS_W14_summary_v1.2.LFcatalog.Planck15.fits", luminosityBins = n.logspace(38,45,50), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions/" , zmin = zmin, zmax = zmax)
 			lf.setRedshiftArray( redshiftColumn='zspec' )
 			lf.setRedshiftSelection( redshiftQualityColumn='zflg', lowerBound=0.9, upperBound=100.)
 			lf.setWeightArray( 1./(area * lf.catalog['SSR']*lf.catalog['TSR']), area )
@@ -290,6 +290,7 @@ for MagLim in MagLimS :
 			lf.writeLF(selection,surveyNameSuffix="DEEP"+"I"+str(MagLim))
 
 
+sys.exit()
 
 # from DEEP2 survey
 zsDEEP2min=n.array([0.33,0.33,0.4,0.45,0.50,0.60,0.70,0.75,0.78,0.83, 1.16 ])
@@ -314,7 +315,7 @@ for MagLim in MagLimS :
 		for line in lineSet :
 			print "---------------------------------------------------"
 			print line, zmin, zmax
-			lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "DEEP2", redshift_catalog = "zcat.deep2.dr4.v3.LFcatalogTC.Planck15.fits", luminosityBins = n.logspace(38,45,25), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions" , zmin = zmin, zmax = zmax)
+			lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "DEEP2", redshift_catalog = "zcat.deep2.dr4.v4.LFcatalogTC.Planck15.fits", luminosityBins = n.logspace(38,45,25), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions" , zmin = zmin, zmax = zmax)
 			lf.setRedshiftArray( redshiftColumn='ZBEST' )
 			lf.setRedshiftSelection( redshiftQualityColumn='ZQUALITY', lowerBound=0.9, upperBound=7.)
 			if zmin < 0.7:
