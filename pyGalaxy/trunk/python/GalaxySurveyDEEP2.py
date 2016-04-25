@@ -27,7 +27,7 @@ class GalaxySurveyDEEP2:
 
     :param redshift_catalog: name of the DEEP2 redshift catalog (path to the fits file)
     :param calibration: if the class is loaded with intention of flux calibrating the DEEP2 data (boolean)"""
-    def __init__(self,redshift_catalog="zcat.deep2.dr4.v2.fits", calibration=True, plots=True):
+    def __init__(self,redshift_catalog="zcat.deep2.dr4.v4.fits", calibration=True, plots=True):
         self.redshift_catalog = redshift_catalog
         self.database_dir = os.environ['DATA_DIR']
         self.deep2_dir = join(self.database_dir,"DEEP2")
