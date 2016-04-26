@@ -77,7 +77,7 @@ mag4[mNoPhot]=n.ones_like(survey.catalog['z'][mNoPhot])*lfit.dV
 #sel=(survey.catalog['NUM']==112154559)
 #catalog_entry = survey.catalog[sel][0]
 output = n.ones_like(n.empty([survey.Ngalaxies,179]))*lfit.dV
-for jj in range(10):#survey.Ngalaxies):
+for jj in range(survey.Ngalaxies):
 	catalog_entry = survey.catalog[jj]
 	spectrum = gsp.GalaxySpectrumVIPERS(catalog_entry,calibration = False,lineFits = True)
 	print catalog_entry
