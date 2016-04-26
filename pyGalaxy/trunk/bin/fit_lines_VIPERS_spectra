@@ -6,7 +6,7 @@ This script computes the fits the line strength on the spectra from of the VIPER
 
 # defines the survey object
 import GalaxySurveyVIPERS as gs
-survey = gs.GalaxySurveyVIPERS(redshift_catalog="VIPERS_W14_summary_v1.1.fits")
+survey = gs.GalaxySurveyVIPERS(redshift_catalog="VIPERS_W14_summary_v1.2.fits")
 
 # global parameters to add to the survey class
 survey.zmin = 0.5 # minimum redshift considered
