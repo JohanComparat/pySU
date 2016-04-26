@@ -13,8 +13,8 @@ cd $PYSU_DIR/pyGalaxy/trunk/bin
 
 # convert observed flux into luminosity
 ./compute_line_luminosities_DEEP2
-./compute_line_luminosities_VIPERS  # RUN IT
 ./compute_line_luminosities_VVDS
+./compute_line_luminosities_VIPERS  # RUN IT
 ./plotSurveys  # RUN IT
 
 # compute luminosity functions
