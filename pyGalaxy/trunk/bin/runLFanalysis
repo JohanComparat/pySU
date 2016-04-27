@@ -17,6 +17,8 @@ cd $PYSU_DIR/pyGalaxy/trunk/bin
 ./compute_line_luminosities_VIPERS  # RUN IT
 ./plotSurveys  # RUN IT
 
+# compute SSR and TSR:
+
 # compute luminosity functions
 ./estimate_line_LF
 
@@ -24,10 +26,9 @@ cd $PYSU_DIR/pyGalaxy/trunk/bin
 # copy the LFs of interest to $LFMODELS_DIR/data/
 cd $LFMODELS_DIR/script
 python  convert_biblioPoints_toPlanck15.py
-python  fits_H1_4862_LFs_schechter.py
-python  fits_O3_5007_LFs_schechter.py
-python  fits_OII_LFs_schechter.py
-python  fits_H1_4862_LFs_saunders.py
-python  fits_O3_5007_LFs_saunders.py
-python  fits_OII_LFs_saunders.py
+python write_H1_4862_data_summary.py
+python write_O2_3728_data_summary.py
+python write_O3_5007_data_summary.py
+python fitSaunders.py
+python fitSchechter.py
 
