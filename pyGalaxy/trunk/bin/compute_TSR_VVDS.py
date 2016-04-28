@@ -21,8 +21,8 @@ NSIDE = 2048
 ids = n.arange( hp.nside2npix( NSIDE ) )
 areaPerPixel = 129600. / n.pi / len( ids )
 decPixrad, raPixrad = hp.pix2ang(NSIDE, ids )
-raPix = raPixrad*180./n.pi
-decPix = decPixrad*180./n.pi -90.
+raPixAll = raPixrad*180./n.pi
+decPixAll = decPixrad*180./n.pi -90.
 
 # creates the filter masks
 def createMask(path_to_mask):
@@ -72,6 +72,10 @@ photocat_all = fits.open(path_to_photo_Cat)[1].data
 selection=(photocat_all['MAGI_CFH12K']<magLim[ii])&(photocat_all['MAGI_CFH12K']>17.5)
 photocat = photocat_all[selection]
 path_to_photo_mask = join(survey.vvds_photo_dir, "F"+str(fields[ii]).zfill(2)+"_photmask.reg")
+
+pixelSelection=(raPixAll < n.max(photocat_all['ALPHA']) + 1 ) & (raPixAll > n.min(photocat_all['ALPHA']) - 1 ) & (decPixAll < n.max(photocat_all['DELTA']) + 1 ) & (decPixAll > n.min(photocat_all['DELTA']) -1 ) 
+decPix = decPixAll[pixelSelection]
+raPix = raPixAll[pixelSelection]
 
 # loads the actual co-added photo NOT USED SO FAR
 path_to_photo_Iband = join(survey.vvds_photo_dir, "F"+str(fields[ii]).zfill(2)+"i.fits")
