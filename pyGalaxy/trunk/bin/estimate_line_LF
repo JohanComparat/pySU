@@ -81,7 +81,7 @@ for MagLim in MagLimS :
 
 
 # from VVDS WIDE survey
-areaWide=4.0+2.2+1.9
+areaWide = 5.785 # 4.0+2.2+1.9
 area = areaWide
 zsVIMOSmin=n.array([0.18,0.41,0.51,0.56,0.65,0.84, 1.1])
 zsVIMOSmax=n.array([0.41,0.65,0.7,0.83,0.84,1.1, 1.3])
@@ -98,11 +98,11 @@ for MagLim in MagLimS :
 		for line in lineSet :
 			print "---------------------------------------------------"
 			print line, zmin, zmax
-			lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "VVDS", redshift_catalog = "VVDS_WIDE_summary.LFcatalog.Planck15.fits", luminosityBins = n.logspace(38,45,50), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions/" , zmin = zmin, zmax = zmax)
+			lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "VVDS", redshift_catalog = "VVDS_WIDE_summary.LFcatalog.Planck15.v2.fits", luminosityBins = n.logspace(38,45,50), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions/" , zmin = zmin, zmax = zmax)
 			lf.setRedshiftArray( redshiftColumn='Z' )
 			lf.setRedshiftSelection( redshiftQualityColumn='ZFLAGS', lowerBound=1.9, upperBound=9.1)
-			lf.setWeightArray( 1./(area * lf.catalog['SSR']*lf.catalog['TSR']), area )
-			selection = (lf.catalog['TSR']>0) & (lf.catalog['SSR']>0)& (lf.catalog['MAGI']<MagLim)
+			lf.setWeightArray( 1./(area * lf.catalog['SSR']*lf.catalog['TSR_NEW']), area )
+			selection = (lf.catalog['TSR_NEW']>0) & (lf.catalog['SSR']>0)& (lf.catalog['MAGI']<MagLim)
 			lf.computeHistogramLF(selection)
 			lf.computeHistogramVariance(selection,jk=0.1)
 			lf.computeMeanWeightedRedshift(selection)
@@ -119,7 +119,7 @@ zsVIMOSmin=n.array([0.18,0.41,0.51,0.56,0.65,0.84, 1.1])
 zsVIMOSmax=n.array([0.41,0.65,0.7,0.83,0.84,1.1, 1.3])
 linesFittedVIMOS=n.array([ [[H1_4862,"H1_4862"],[O3_5007,"O3_5007"]], [[O3_5007,"O3_5007"],[H1_4862,"H1_4862"]], [[O3_5007,"O3_5007"],[O2_mean,"O2_3728"],[H1_4862,"H1_4862"]], [[O3_5007,"O3_5007"],[O2_mean,"O2_3728"],[H1_4862,"H1_4862"]], [[O3_5007,"O3_5007"],[O2_mean,"O2_3728"],[H1_4862,"H1_4862"]], [[O2_mean,"O2_3728"]],[[O2_mean,"O2_3728"]] ])
 
-areaDeep=0.61
+areaDeep=0.618
 area = areaDeep
 #areaUDeep=512./3600.
 MagLimS = [24, 23.5, 23., 22.5]
@@ -130,11 +130,11 @@ for MagLim in MagLimS :
 		zmax = zsVIMOSmax[ii]
 		lineSet=linesFittedVIMOS[ii]
 		for line in lineSet :		
-			lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "VVDS", redshift_catalog = "VVDS_DEEP_summary.LFcatalog.Planck15.fits", luminosityBins = n.logspace(38,45,25), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions/" , zmin = zmin, zmax = zmax)
+			lf = LineLuminosityFunction(lineWavelength=line[0], lineName=line[1], cosmology = cosmo, surveyName =  "VVDS", redshift_catalog = "VVDS_DEEP_summary.LFcatalog.Planck15.v2.fits", luminosityBins = n.logspace(38,45,25), Nstack = 400, Nclustering = 400, outputFolder="emissionLineLuminosityFunctions/" , zmin = zmin, zmax = zmax)
 			lf.setRedshiftArray( redshiftColumn='Z' )
 			lf.setRedshiftSelection( redshiftQualityColumn='ZFLAGS', lowerBound=1.9, upperBound=9.1)
-			lf.setWeightArray( 1./(area * lf.catalog['SSR']*lf.catalog['TSR']), area )
-			selection = (lf.catalog['TSR']>0) & (lf.catalog['SSR']>0)& (lf.catalog['MAGI']<MagLim)
+			lf.setWeightArray( 1./(area * lf.catalog['SSR']*lf.catalog['TSR_NEW']), area )
+			selection = (lf.catalog['TSR_NEW']>0) & (lf.catalog['SSR']>0)& (lf.catalog['MAGI']<MagLim)
 			lf.computeHistogramLF(selection)
 			
 			print "---------------------------------------------------"
