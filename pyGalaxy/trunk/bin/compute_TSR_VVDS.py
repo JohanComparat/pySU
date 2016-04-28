@@ -36,14 +36,6 @@ def createMask(path_to_mask):
 	mask_filter = filters[0]
 	return mask_filter
 
-myfilter = filter.Polygon(36.5232083,-4.5198276,36.4187083,-4.5198276,36.4089233,-4.5270616,36.4089233,-4.6536946,36.5232083,-4.6536946,36.5232083,-4.5198276) | filter.Polygon(36.3787413,-4.5289276,36.3749413,-4.5219276,36.2662083,-4.5219276,36.2662083,-4.6514946,36.3787413,-4.6514946,36.3787413,-4.5289276)
-myfilter = filter.Polygon(878.11237,811.88766,1003,861,973.00003,688,878.11237,752.11234)
-
-myfilter = filter.Polygon([43.1, 43.5, 43.6],[0.5, 0.8,0.5])
-
-myfilter.inside1(43.3, 0.501)
-myfilter.inside1(10, 0)
-myfilter.inside([0, 10], [0, 0])
 
 # define field number 02 for the DEEP and 10, 14, 22 for the WIDE.
 fields = [02, 10, 14, 22] 
