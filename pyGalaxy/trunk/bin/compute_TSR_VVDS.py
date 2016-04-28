@@ -15,6 +15,15 @@ matplotlib.use('pdf')
 import matplotlib.pyplot as p
 import pyregion 
 import pyregion._region_filter as filter
+import numpy as n
+import healpy as hp
+NSIDE = 2048
+ids = n.arange( hp.nside2npix( NSIDE ) )
+areaPerPixel = 129600. / n.pi / len( ids )
+decPixrad, raPixrad = hp.pix2ang(NSIDE, ids )
+raPix = raPixrad*180./n.pi
+decPix = decPixrad*180./n.pi -90.
+
 # creates the filter masks
 def createMask(path_to_mask):
 	"""
@@ -79,15 +88,17 @@ bins = n.arange(17.5, magLim[ii]+dMag, dMag)
 tsr_A = n.empty((len(spec_mask_filter), len(bins)-1))
 nInReg = n.empty((len(spec_mask_filter), 3 ))
 for jj, mask in enumerate(spec_mask_filter):
+	areaIn = mask.inside(n.transpose([raPix, decPix]))
+	NPIX = len(areaIn.nonzero()[0])
 	specIn = mask.inside(n.transpose([speccat['ALPHA'], speccat['DELTA']]))
 	ND = len(specIn.nonzero()[0])
 	photIn = mask.inside(n.transpose([photocat['ALPHA'], photocat['DELTA']]))
-	NR = len(specIn.nonzero()[0])
+	NR = len(photIn.nonzero()[0])
 	print ND, NR
 	NDpb = n.histogram(speccat['MAGI'][specIn], bins=bins)[0]
 	NRpb = n.histogram(photocat['MAGI_CFH12K'][photIn], bins=bins)[0]
 	tsr_A[jj] = NDpb.astype(float)/NRpb
-	area = 1.  #spec_mask_polygon[jj]
+	area = NPIX * areaPerPixel  #spec_mask_polygon[jj]
 	nInReg[jj] = ND, NR, area
 	print tsr_A[jj]
 
