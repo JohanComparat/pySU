@@ -64,6 +64,10 @@ field = (survey.catalog['NUM']/1e7).astype(int)
 allSpec = (field==fields[ii])
 speccat = survey.catalog[allSpec]
 path_to_spec_mask = join(survey.vvds_catalog_dir, "F"+str(fields[ii]).zfill(2)+"_specmask.reg")
+Nspec_total = len(speccat)
+
+TSR = n.zeros_like(speccat['ALPHA'])
+TSR_ERR = n.zeros_like(speccat['ALPHA'])
 
 # photometry
 # catalog of galaxies + mask with the VVDS selection applied
@@ -76,6 +80,11 @@ path_to_photo_mask = join(survey.vvds_photo_dir, "F"+str(fields[ii]).zfill(2)+"_
 pixelSelection=(raPixAll < n.max(photocat_all['ALPHA']) + 1 ) & (raPixAll > n.min(photocat_all['ALPHA']) - 1 ) & (decPixAll < n.max(photocat_all['DELTA']) + 1 ) & (decPixAll > n.min(photocat_all['DELTA']) -1 ) 
 decPix = decPixAll[pixelSelection]
 raPix = raPixAll[pixelSelection]
+
+# creates random arrays
+randRA_all = n.random.uniform(n.min(speccat['ALPHA']) - .1, n.max(speccat['ALPHA']) + .1, Nspec_total*100)
+randDEC_all = n.random.uniform(n.min(speccat['DELTA']) - .1, n.max(speccat['DELTA']) + .1, Nspec_total*100)
+area_all = (n.max(speccat['ALPHA']) + .1 - n.min(speccat['ALPHA']) + .1)*(n.max(speccat['DELTA']) + .1 - n.min(speccat['DELTA']) + .1)
 
 # loads the actual co-added photo NOT USED SO FAR
 path_to_photo_Iband = join(survey.vvds_photo_dir, "F"+str(fields[ii]).zfill(2)+"i.fits")
@@ -90,18 +99,52 @@ spec_mask_filter, spec_mask_polygon = createMask(path_to_spec_mask)
 print "N in mask:", len(speccat['ALPHA'][spec_mask_filter.inside(n.transpose([speccat['ALPHA'], speccat['DELTA']]))]), ", N in cat: ", len(speccat['ALPHA'])
 
 bins = n.hstack((17.5, n.arange(18.5, magLim[ii]+dMag, dMag) ))
-###########################################3
-###########################################3
-# ADD RANDOMS
-###########################################3
-###########################################3
 
+areaIn = spec_mask_filter.inside(n.transpose([raPix, decPix]))
+NPIX = len(areaIn.nonzero()[0])
+areaEffective = NPIX * areaPerPixel
+print "effective area = ", areaEffective, "square degrees"
+specIn = spec_mask_filter.inside(n.transpose([speccat['ALPHA'], speccat['DELTA']]))
+ND = len(specIn.nonzero()[0])
+photIn = spec_mask_filter.inside(n.transpose([photocat['ALPHA'], photocat['DELTA']]))
+NR = len(photIn.nonzero()[0])
+randIn = spec_mask_filter.inside(n.transpose([randRA_all, randDEC_all]))
+downSelectRD = (n.random.uniform(0,1,len(randRA_all[randIn]))< float(ND)/float(NR) )
+
+# print ND, NR
+NDpb = n.histogram(speccat['MAGI'][specIn], bins=bins)[0]
+NRpb = n.histogram(photocat['MAGI_CFH12K'][photIn], bins=bins)[0]
+# piecewise interpolation of the TSR :
+tsr_eval = lambda x : n.piecewise(x, n.array([ (x > bins[kk])&(x<bins[kk+1]) for kk in range(len(NDpb)) ]), NDpb.astype(float)/NRpb)
+tsr_err_eval = lambda x : n.piecewise(x, n.array([ (x > bins[kk])&(x<bins[kk+1]) for kk in range(len(NDpb)) ]), NDpb**(-0.5) * NDpb.astype(float)/NRpb)
+
+TSR[specIn] = tsr_eval(speccat['MAGI'][specIn])
+TSR_ERR[specIn] = tsr_err_eval(speccat['MAGI'][specIn])
+
+c0 = fits.Column(name="TSR_new",format="D", array= TSR )
+c1 = fits.Column(name="TSR_ERR_new",format="D", array= TSR_ERR )
+
+new_columns = survey.catalog.columns + c0 + c1
+
+hdu = fits.BinTableHDU.from_columns(new_columns)
+hdu.writeto(join(os.environ['VVDS_DIR'], 'catalogs', summaryCatOut[ii]))
+
+col0 = fits.Column(name="RA",format='D', array= randRA_all[randIn][downSelectRD])
+col1 = fits.Column(name="DEC",format='D', array= randDEC_all[randIn][downSelectRD])
+fullSpec_cols  = fits.ColDefs([col0, col1])
+fullSpec_tb_hdu = fits.BinTableHDU.from_columns(fullSpec_cols)
+fullSpec_tb_hdu.writeto(join(os.environ['VVDS_DIR'], 'catalogs', summaryCatOut[ii][:-5]+"random.fits"))
+
+"""
+Eventually toimplement per small units of mask, but beware of overlaps between masks
 
 tsr_A = n.empty((len(spec_mask_filter), len(bins)-1))
 nInReg = n.empty((len(spec_mask_filter), 3 ))
 AREA = n.zeros_like(speccat['ALPHA'])
 TSR = n.zeros_like(speccat['ALPHA'])
 TSR_ERR = n.zeros_like(speccat['ALPHA'])
+randRA = []
+randDEC = []
 for jj, mask in enumerate(spec_mask_filter):
 	areaIn = mask.inside(n.transpose([raPix, decPix]))
 	NPIX = len(areaIn.nonzero()[0])
@@ -109,6 +152,10 @@ for jj, mask in enumerate(spec_mask_filter):
 	ND = len(specIn.nonzero()[0])
 	photIn = mask.inside(n.transpose([photocat['ALPHA'], photocat['DELTA']]))
 	NR = len(photIn.nonzero()[0])
+	randIn = mask.inside(n.transpose([randRA_all, randDEC_all]))
+	downSelectRD = (n.random.uniform(0,1,len(randRA_all[randIn]))< float(ND)/float(NR) )
+	randRA.append( randRA_all[randIn][downSelectRD] )
+	randDEC.append( randDEC_all[randIn][downSelectRD] )
 	# print ND, NR
 	NDpb = n.histogram(speccat['MAGI'][specIn], bins=bins)[0]
 	NRpb = n.histogram(photocat['MAGI_CFH12K'][photIn], bins=bins)[0]
@@ -122,7 +169,11 @@ for jj, mask in enumerate(spec_mask_filter):
 	nInReg[jj] = ND, NR, area
 	# print tsr_A[jj]
 
-define the step function and assign TSR.
+randRA = n.hstack(( randRA ))
+randDEC = n.hstack(( randDEC ))
+areaEffective = nInReg.T[2].sum()
+"""
+
 	
 for kk in range(len(tsr_A)):
 	p.plot((bins[1:]+bins[:-1])/2., tsr_A[kk])
