@@ -17,7 +17,7 @@ import pyregion
 import pyregion._region_filter as filter
 import numpy as n
 import healpy as hp
-NSIDE = 2048
+NSIDE = 4096
 ids = n.arange( hp.nside2npix( NSIDE ) )
 areaPerPixel = 129600. / n.pi / len( ids )
 decPixrad, raPixrad = hp.pix2ang(NSIDE, ids )
@@ -85,12 +85,23 @@ iband_data = fitsfile[0].data
 
 # creates the masks
 spec_mask_filter, spec_mask_polygon = createMask(path_to_spec_mask)
-photo_mask_filter, photo_mask_polygon = createMask(path_to_photo_mask)
+#photo_mask_filter, photo_mask_polygon = createMask(path_to_photo_mask)
 
-bins = n.arange(17.5, magLim[ii]+dMag, dMag)
+print "N in mask:", len(speccat['ALPHA'][spec_mask_filter.inside(n.transpose([speccat['ALPHA'], speccat['DELTA']]))]), ", N in cat: ", len(speccat['ALPHA'])
+
+bins = n.hstack((17.5, n.arange(18.5, magLim[ii]+dMag, dMag) ))
+###########################################3
+###########################################3
+# ADD RANDOMS
+###########################################3
+###########################################3
+
 
 tsr_A = n.empty((len(spec_mask_filter), len(bins)-1))
 nInReg = n.empty((len(spec_mask_filter), 3 ))
+AREA = n.zeros_like(speccat['ALPHA'])
+TSR = n.zeros_like(speccat['ALPHA'])
+TSR_ERR = n.zeros_like(speccat['ALPHA'])
 for jj, mask in enumerate(spec_mask_filter):
 	areaIn = mask.inside(n.transpose([raPix, decPix]))
 	NPIX = len(areaIn.nonzero()[0])
@@ -98,13 +109,26 @@ for jj, mask in enumerate(spec_mask_filter):
 	ND = len(specIn.nonzero()[0])
 	photIn = mask.inside(n.transpose([photocat['ALPHA'], photocat['DELTA']]))
 	NR = len(photIn.nonzero()[0])
-	print ND, NR
+	# print ND, NR
 	NDpb = n.histogram(speccat['MAGI'][specIn], bins=bins)[0]
 	NRpb = n.histogram(photocat['MAGI_CFH12K'][photIn], bins=bins)[0]
 	tsr_A[jj] = NDpb.astype(float)/NRpb
+	tsr_eval = lambda x : n.piecewise(x, n.array([ (x > bins[kk])&(x<bins[kk+1]) for kk in range(len(NDpb)) ]), tsr_A[jj])
+	tsr_err_eval = lambda x : n.piecewise(x, n.array([ (x > bins[kk])&(x<bins[kk+1]) for kk in range(len(NDpb)) ]), NDpb**(-0.5) *tsr_A[jj])
+	TSR[specIn] = tsr_eval(speccat['MAGI'][specIn])
+	TSR_ERR[specIn] = tsr_err_eval(speccat['MAGI'][specIn])
 	area = NPIX * areaPerPixel  #spec_mask_polygon[jj]
+	AREA[specIn] = n.ones_like(AREA[specIn]) * area
 	nInReg[jj] = ND, NR, area
-	print tsr_A[jj]
+	# print tsr_A[jj]
+
+define the step function and assign TSR.
+	
+for kk in range(len(tsr_A)):
+	p.plot((bins[1:]+bins[:-1])/2., tsr_A[kk])
+
+p.savefig(join(os.environ['DATA_DIR'],'indev','tsr'+str(fields[ii])+".png"))
+
 
 """
 p.plot(photocat['ALPHA'][photIn], photocat['DELTA'][photIn], 'b,')
