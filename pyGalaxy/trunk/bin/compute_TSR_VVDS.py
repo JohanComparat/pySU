@@ -34,7 +34,7 @@ def createMask(path_to_mask):
 		filters  = [ (filters[0]) | (filter.Polygon(polygons[ii].T[0], polygons[ii].T[1])) ]
 
 	mask_filter = filters[0]
-	return mask_filter
+	return mask_filter, polygons
 
 
 # define field number 02 for the DEEP and 10, 14, 22 for the WIDE.
@@ -60,7 +60,7 @@ path_to_spec_mask = join(survey.vvds_catalog_dir, "F"+str(fields[ii]).zfill(2)+"
 # catalog of galaxies + mask with the VVDS selection applied
 path_to_photo_Cat = join(survey.vvds_photo_dir, "cesam_vvds_photoF"+str(fields[ii]).zfill(2)+"_"+depth[ii]+".fits")
 photocat_all = fits.open(path_to_photo_Cat)[1].data
-selection=(photocat_all['MAGI']<magLim[ii])&(photocat_all['MAGI']>17.5)
+selection=(photocat_all['MAGI_CFH12K']<magLim[ii])&(photocat_all['MAGI_CFH12K']>17.5)
 photocat = photocat_all[selection]
 path_to_photo_mask = join(survey.vvds_photo_dir, "F"+str(fields[ii]).zfill(2)+"_photmask.reg")
 
@@ -71,21 +71,25 @@ iband_header = fitsfile[0].header
 iband_data = fitsfile[0].data
 
 # creates the masks
-spec_mask_filter = createMask(path_to_spec_mask)
-photo_mask_filter = createMask(path_to_photo_mask)
+spec_mask_filter, spec_mask_polygon = createMask(path_to_spec_mask)
+photo_mask_filter, photo_mask_polygon = createMask(path_to_photo_mask)
 
-bins = n.arange(17, magLim[ii], dMag)
+bins = n.arange(17.5, magLim[ii]+dMag, dMag)
 
 tsr_A = n.empty((len(spec_mask_filter), len(bins)-1))
+nInReg = n.empty((len(spec_mask_filter), 3 ))
 for jj, mask in enumerate(spec_mask_filter):
 	specIn = mask.inside(n.transpose([speccat['ALPHA'], speccat['DELTA']]))
 	ND = len(specIn.nonzero()[0])
 	photIn = mask.inside(n.transpose([photocat['ALPHA'], photocat['DELTA']]))
 	NR = len(specIn.nonzero()[0])
+	print ND, NR
 	NDpb = n.histogram(speccat['MAGI'][specIn], bins=bins)[0]
-	NRpb = n.histogram(photocat['MAGI'][photIn], bins=bins)[0]
-	tsr_A[jj] = float(NDpb)/float(NRpb)
-	print ND, NR, tsr_A[jj]
+	NRpb = n.histogram(photocat['MAGI_CFH12K'][photIn], bins=bins)[0]
+	tsr_A[jj] = NDpb.astype(float)/NRpb
+	area = 1.  #spec_mask_polygon[jj]
+	nInReg[jj] = ND, NR, area
+	print tsr_A[jj]
 
 """
 p.plot(photocat['ALPHA'][photIn], photocat['DELTA'][photIn], 'b,')
