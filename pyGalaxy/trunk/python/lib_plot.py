@@ -172,7 +172,7 @@ def plotZ_EW(zz,ew,name,ylab,pDir):
 	p.clf()
 
 
-def plotZ_Luminosity_Pdeg2(zz,lum,WW,name,ylab,pDir,flux_limit = 3e-17,line = "O2_3728"):
+def plotZ_Luminosity_Pdeg2(zz,lum,WW,name,ylab,pDir,flux_limit = 3e-17,line = "O2_3728", cmax = 1000):
 	"""
 	creates a figure with redshift, luminosity.
 	:param zz: column redshift
@@ -184,7 +184,7 @@ def plotZ_Luminosity_Pdeg2(zz,lum,WW,name,ylab,pDir,flux_limit = 3e-17,line = "O
 	bins=[n.arange(0.1,1.4,0.05),n.arange(38,45,0.2)]
 	fig=p.figure(1,(6,5))
 	p.axes([0.25,0.15,0.65,0.7])
-	p.hist2d(zz,n.log10(lum),rasterized=True,bins=bins,cmin=1, cmax=1000, weights  = WW)
+	p.hist2d(zz,n.log10(lum),rasterized=True,bins=bins,cmin=1, cmax=cmax, weights  = WW)
 	p.plot(zrr,l_limit(flux_limit),color='k',ls='dashed',lw='2')
 	p.xlabel('redshift')
 	p.ylabel(ylab)
