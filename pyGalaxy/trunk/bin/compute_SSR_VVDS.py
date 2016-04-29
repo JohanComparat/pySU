@@ -17,35 +17,6 @@ import matplotlib.pyplot as p
 import pyregion 
 import pyregion._region_filter as filter
 import numpy as n
-import healpy as hp
-NSIDE = 4096
-ids = n.arange( hp.nside2npix( NSIDE ) )
-areaPerPixel = 129600. / n.pi / len( ids )
-decPixrad, raPixrad = hp.pix2ang(NSIDE, ids )
-raPixAll = raPixrad*180./n.pi
-decPixAll = decPixrad*180./n.pi -90.
-
-# creates the filter masks
-def createMask(path_to_mask):
-	"""
-	From a region file containing only polygons, it creates a maskfile with "inside" method to filter the data.
-	"""
-	f=open(path_to_mask,'r')
-	lines = n.array(f.readlines())
-	f.close()
-	polygons = []
-	for ii,line in enumerate(lines):
-		if line[:3]=="pol":
-			arr = n.array(line[8:-2].split(',')).astype('float')
-			polygons.append(arr.reshape(len(arr)/2,2))
-
-	filters = [ (filter.Polygon(polygons[0].T[0], polygons[0].T[1])) | (filter.Polygon(polygons[1].T[0], polygons[1].T[1])) ]
-	for ii in n.arange(2,len(polygons),1) :
-		filters  = [ (filters[0]) | (filter.Polygon(polygons[ii].T[0], polygons[ii].T[1])) ]
-
-	mask_filter = filters[0]
-	return mask_filter, polygons
-
 
 # define field number 02 for the DEEP and 10, 14, 22 for the WIDE.
 fields = [10, 14, 22] 
@@ -59,66 +30,147 @@ bins = n.arange(0,1.4,dBin)
 finalCommandConcatenate = """java -jar ~/stilts.jar tcat ifmt=fits in="VVDS_WIDE_F10_summary.LFcatalog.Planck15.v3.fits VVDS_WIDE_F14_summary.LFcatalog.Planck15.v3.fits VVDS_WIDE_F22_summary.LFcatalog.Planck15.v3.fits" out=VVDS_WIDE_summary.LFcatalog.Planck15.v3.fits"""
 
 
+########################################
+########################################
+# SSR relation using photoz
+########################################
+########################################
+
+ii = 2
+#for ii in range(len(fields)):
+print fields[ii]
+# loads the catalog for the field
+# spectroscopy + mask
+survey = GalaxySurveyVVDS( redshift_catalog = summaryCat[ii] )
+survey.vvds_photo_dir = join(os.environ['VVDS_DIR'],'photometry')
+field = (survey.catalog['NUM']/1e7).astype(int)
+allSpec = (field==fields[ii])
+speccat = survey.catalog[allSpec]
+Nspec_total = len(speccat)
+
+SSR = n.ones_like(speccat['ALPHA'])*-1.
+SSR_ERR = n.ones_like(speccat['ALPHA'])*-1.
+
+redshiftBest = n.empty(Nspec_total)
+
+goodZ = (speccat['ZFLAGS']==2)|(speccat['ZFLAGS']==3)|(speccat['ZFLAGS']==4)|(speccat['ZFLAGS']==9)
+badZ = (goodZ==False)
+
+redshiftBest[goodZ] = speccat['Z'][goodZ]
+
+raBad, decBad = speccat['ALPHA'][badZ], speccat['DELTA'][badZ]
+
+# photometric redshift catalog
+zphcatall = fits.open(join(survey.vvds_photo_dir, photozCat) )[1].data
+zphcat = zphcatall[ (zphcatall['zphot_T07']>-0.1)&(zphcatall['zphot_T07']<2.) ]
+treePhZ = t.cKDTree( n.transpose([zphcat['alpha_T07'], zphcat['delta_T07']]) ,1000.0)
+
+indexes = treePhZ.query(n.transpose([raBad,decBad]),1)
+dist = indexes[0]
+ids = indexes[1]
+ok = (dist < 1.5/3600.)
+nok = (dist >= 1.5/3600.)
+#redshiftBest[badZ] = zphcat['zphot_T07'][ids]
+redshiftBest[badZ[ok]] = zphcat['zphot_T07'][ids[ok]]
+redshiftBest[badZ[nok]] = n.ones_like(zphcat['zphot_T07'][ids[nok]])*-1.
+
+print float(len(zphcat['zphot_T07'][ids[ok]]))/len(raBad), "% of photoz used"
+print len(zphcat['zphot_T07'][ids[ok]])
+print len(raBad)
+print len(redshiftBest[badZ[ok]])
+print len(redshiftBest[badZ[nok]])
+# print ND, NR
+NDpb = n.histogram(redshiftBest[goodZ], bins=bins)[0]
+NRpb = n.histogram(redshiftBest, bins=bins)[0]
+# piecewise interpolation of the TSR :
+ssr_eval = lambda x : n.piecewise(x, n.array([ (x > bins[kk])&(x<bins[kk+1]) for kk in range(len(NDpb)) ]), NDpb.astype(float)/NRpb)
+ssr_err_eval = lambda x : n.piecewise(x, n.array([ (x > bins[kk])&(x<bins[kk+1]) for kk in range(len(NDpb)) ]), NDpb**(-0.5) * NDpb.astype(float)/NRpb)
+
+SSR = ssr_eval(redshiftBest[goodZ])
+SSR_ERR = ssr_err_eval(redshiftBest[goodZ])
+
+# writes the new catalog
+c0 = fits.Column(name="SSR_new",format="D", array= SSR )
+c1 = fits.Column(name="SSR_ERR_new",format="D", array= SSR_ERR )
+new_columns = survey.catalog.columns + c0 + c1
+hdu = fits.BinTableHDU.from_columns(new_columns)
+os.system("rm -rf "+join(os.environ['VVDS_DIR'], 'catalogs', summaryCatOut[ii]) )
+hdu.writeto(join(os.environ['VVDS_DIR'], 'catalogs', summaryCatOut[ii]))
+
+
+########################################
+########################################
+# extrapolation to other field
+########################################
+########################################
 
 ii = 0
-for ii in range(len(fields)):
-	print fields[ii]
-	# loads the catalog for the field
-	# spectroscopy + mask
-	survey = GalaxySurveyVVDS( redshift_catalog = summaryCat[ii] )
-	survey.vvds_photo_dir = join(os.environ['VVDS_DIR'],'photometry')
-	field = (survey.catalog['NUM']/1e7).astype(int)
-	allSpec = (field==fields[ii])
-	speccat = survey.catalog[allSpec]
-	path_to_spec_mask = join(survey.vvds_catalog_dir, "F"+str(fields[ii]).zfill(2)+"_specmask.reg")
-	Nspec_total = len(speccat)
+#for ii in range(len(fields)):
+print fields[ii]
+# loads the catalog for the field
+# spectroscopy + mask
+survey = GalaxySurveyVVDS( redshift_catalog = summaryCat[ii] )
+survey.vvds_photo_dir = join(os.environ['VVDS_DIR'],'photometry')
+field = (survey.catalog['NUM']/1e7).astype(int)
+allSpec = (field==fields[ii])
+speccat = survey.catalog[allSpec]
+Nspec_total = len(speccat)
 
-	SSR = n.zeros_like(speccat['ALPHA'])
-	SSR_ERR = n.zeros_like(speccat['ALPHA'])
+SSR = n.ones_like(speccat['ALPHA'])*-1.
+SSR_ERR = n.ones_like(speccat['ALPHA'])*-1.
 
-	redshiftBest = n.empty(Nspec_total)
-	
-	goodZ = (speccat['ZFLAGS']==2)|(speccat['ZFLAGS']==3)|(speccat['ZFLAGS']==4)|(speccat['ZFLAGS']==9)
-	badZ = (goodZ==False)
-	
-	redshiftBest[goodZ] = speccat['Z'][goodZ]
-	
-	raBad, decBad = speccat['ALPHA'][badZ], speccat['DELTA'][badZ]
-	
-	# photometric redshift catalog
-	zphcatall = fits.open(join(survey.vvds_photo_dir, photozCat) )[1].data
-	zphcat = zphcatall [][]
-	treePhZ = t.cKDTree(n.transpose([zphcat['alpha'], zphcat['delta']))#,1000.0)
-	indexes = treePhZ.query([raBad,decBad],1)
-	redshiftBest[badZ] = zphcat['zphot'][indexes]
-	
-	# print ND, NR
-	NDpb = n.histogram(redshiftBest[goodZ], bins=bins)[0]
-	NRpb = n.histogram(redshiftBest, bins=bins)[0]
-	# piecewise interpolation of the TSR :
-	tsr_eval = lambda x : n.piecewise(x, n.array([ (x > bins[kk])&(x<bins[kk+1]) for kk in range(len(NDpb)) ]), NDpb.astype(float)/NRpb)
-	tsr_err_eval = lambda x : n.piecewise(x, n.array([ (x > bins[kk])&(x<bins[kk+1]) for kk in range(len(NDpb)) ]), NDpb**(-0.5) * NDpb.astype(float)/NRpb)
+redshiftBest = speccat['Z']
 
-	SSR = tsr_eval(redshiftBest)
-	SSR_ERR = tsr_err_eval(redshiftBest)
+goodZ = (speccat['ZFLAGS']==2)|(speccat['ZFLAGS']==3)|(speccat['ZFLAGS']==4)|(speccat['ZFLAGS']==9)
+badZ = (goodZ==False)
 
-	# writes the new catalog
-	c0 = fits.Column(name="TSR_new",format="D", array= TSR )
-	c1 = fits.Column(name="TSR_ERR_new",format="D", array= TSR_ERR )
-	new_columns = survey.catalog.columns + c0 + c1
-	hdu = fits.BinTableHDU.from_columns(new_columns)
-	os.system("rm -rf "+join(os.environ['VVDS_DIR'], 'catalogs', summaryCatOut[ii]) )
-	hdu.writeto(join(os.environ['VVDS_DIR'], 'catalogs', summaryCatOut[ii]))
+SSR = ssr_eval(redshiftBest[goodZ])
+SSR_ERR = ssr_err_eval(redshiftBest[goodZ])
 
-	# writes the randoms 
-	col0 = fits.Column(name="RA",format='D', array= randRA_all[randIn]) #[downSelectRD])
-	col1 = fits.Column(name="DEC",format='D', array= randDEC_all[randIn]) #[downSelectRD])
-	fullSpec_cols  = fits.ColDefs([col0, col1])
-	fullSpec_tb_hdu = fits.BinTableHDU.from_columns(fullSpec_cols)
-	os.system("rm -rf "+join(os.environ['VVDS_DIR'], 'catalogs', summaryCatOut[ii][:-5]+".random.fits") )
-	fullSpec_tb_hdu.writeto(join(os.environ['VVDS_DIR'], 'catalogs', summaryCatOut[ii][:-5]+".random.fits") )
 
-os.system( finalCommandConcatenate )
+c0 = fits.Column(name="SSR_new",format="D", array= SSR )
+c1 = fits.Column(name="SSR_ERR_new",format="D", array= SSR_ERR )
+new_columns = survey.catalog.columns + c0 + c1
+hdu = fits.BinTableHDU.from_columns(new_columns)
+os.system("rm -rf "+join(os.environ['VVDS_DIR'], 'catalogs', summaryCatOut[ii]) )
+hdu.writeto(join(os.environ['VVDS_DIR'], 'catalogs', summaryCatOut[ii]))
+
+
+ii = 1
+#for ii in range(len(fields)):
+print fields[ii]
+# loads the catalog for the field
+# spectroscopy + mask
+survey = GalaxySurveyVVDS( redshift_catalog = summaryCat[ii] )
+survey.vvds_photo_dir = join(os.environ['VVDS_DIR'],'photometry')
+field = (survey.catalog['NUM']/1e7).astype(int)
+allSpec = (field==fields[ii])
+speccat = survey.catalog[allSpec]
+Nspec_total = len(speccat)
+
+SSR = n.ones_like(speccat['ALPHA'])*-1.
+SSR_ERR = n.ones_like(speccat['ALPHA'])*-1.
+
+redshiftBest = speccat['Z']
+
+goodZ = (speccat['ZFLAGS']==2)|(speccat['ZFLAGS']==3)|(speccat['ZFLAGS']==4)|(speccat['ZFLAGS']==9)
+badZ = (goodZ==False)
+
+SSR = ssr_eval(redshiftBest[goodZ])
+SSR_ERR = ssr_err_eval(redshiftBest[goodZ])
+
+
+c0 = fits.Column(name="SSR_new",format="D", array= SSR )
+c1 = fits.Column(name="SSR_ERR_new",format="D", array= SSR_ERR )
+new_columns = survey.catalog.columns + c0 + c1
+hdu = fits.BinTableHDU.from_columns(new_columns)
+os.system("rm -rf "+join(os.environ['VVDS_DIR'], 'catalogs', summaryCatOut[ii]) )
+hdu.writeto(join(os.environ['VVDS_DIR'], 'catalogs', summaryCatOut[ii]))
+
+
+
+
+# os.system( finalCommandConcatenate )
 
 """
 Eventually toimplement per small units of mask, but beware of overlaps between masks
