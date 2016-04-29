@@ -167,10 +167,7 @@ hdu = fits.BinTableHDU.from_columns(new_columns)
 os.system("rm -rf "+join(os.environ['VVDS_DIR'], 'catalogs', summaryCatOut[ii]) )
 hdu.writeto(join(os.environ['VVDS_DIR'], 'catalogs', summaryCatOut[ii]))
 
-
-
-
-# os.system( finalCommandConcatenate )
+os.system( finalCommandConcatenate )
 
 """
 Eventually toimplement per small units of mask, but beware of overlaps between masks
