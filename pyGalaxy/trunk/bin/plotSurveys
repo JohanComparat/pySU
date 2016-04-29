@@ -175,7 +175,7 @@ sel2=(survey.catalog['ALPHA']<40)&(zok)
 sel=n.array([sel1,sel2])
 
 for i in range(2):
-	plotRaDecEBV(survey.catalog['ALPHA'][sel[i]], survey.catalog['DELTA'][sel[i]], survey.catalog['EBV_MW'][sel[i]] , "vipers-f"+str(i)+"-ra-dec.png", plotDir)
+	plotRaDecEBV(survey.catalog['ALPHA'][sel[i]], survey.catalog['DELTA'][sel[i]], survey.catalog['E_BV'][sel[i]] , "vipers-f"+str(i)+"-ra-dec.png", plotDir)
 
 #plotRaDecEBV(survey.catalog['ALPHA'][zok], survey.catalog['DELTA'][zok], survey.catalog['EBV_MW'][zok] , "vipers-ra-dec.png", plotDir)
 zokR=(survey.catalog['zflg']>0.9)&(survey.catalog['zflg']<100)&(survey.catalog['zspec']>0.5)&(survey.catalog['zspec']<1.2)&(survey.catalog['SSR']>=0)&(survey.catalog['TSR']>=0)&(survey.catalog['MAGI']>=16)&(survey.catalog['MAGI']<22.5)
