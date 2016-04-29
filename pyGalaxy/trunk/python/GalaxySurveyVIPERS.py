@@ -36,7 +36,7 @@ class GalaxySurveyVIPERS:
 		:param catalog: fits catalog containing redshift, EBV and line fluxes
 		:param line:
 		"""
-		ebvCorrection=n.array([ 10**(0.4 *self.catalog['EBV_MW'][i] * CalzettiLaw((1 + self.catalog['zspec'][i]) * line[1])) for i in range(len(self.catalog['zspec']))])
+		ebvCorrection=n.array([ 10**(0.4 *self.catalog['E_BV'][i] * CalzettiLaw((1 + self.catalog['zspec'][i]) * line[1])) for i in range(len(self.catalog['zspec']))])
 		correctionAperture = 1. / self.catalog['fo']
 		flux=ebvCorrection * correctionAperture * self.catalog[line[2]+'_flux']* u.erg/ u.cm**2 /u.s
 		Luminosity=fits.Column(name=line[2]+"_luminosity",format="D", unit="erg/s", array=distanceCorrection*flux )

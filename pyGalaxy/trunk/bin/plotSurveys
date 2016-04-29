@@ -149,7 +149,7 @@ plotZ_EW(survey.catalog['ZBEST'][ok],survey.catalog['O2_3728_EW'][ok], "deep2-EW
 ok=(zok) & (survey.catalog['O3_5007_flux']>0.)& (survey.catalog['O3_5007_flux'] > SNlim*survey.catalog['O3_5007_fluxErr']) & (survey.catalog['O3_5007_fluxErr']>0.)
 plotZ_Flux(survey.catalog['ZBEST'][ok],survey.catalog['O3_5007_flux'][ok], "deep2-f-O3_5007-z.png",r'$log_{10}(\mathrm{flux }\, [O^{5007}_{III}])$ [erg s$^{-1}$ cm$^{-2}$]', plotDir, flux_limit = 2.7e-17)
 ok=(zok) & (survey.catalog['O3_5007_luminosity']>0.)& (survey.catalog['O3_5007_flux'] > SNlim*survey.catalog['O3_5007_fluxErr']) & (survey.catalog['O3_5007_fluxErr']>0.)
-plotZ_Luminosity_Pdeg2(survey.catalog['ZBEST'][ok],survey.catalog['O3_5007_luminosity'][ok], 1./(survey.catalog['TSR'][ok]*survey.catalog['SSR'][ok]*area), "deep2-L-O3_5007-z.png",r'$log_{10}(L\, [O^{5007}_{III}])$ [erg s$^{-1}$]', plotDir, flux_limit = 2.7e-17, line = "O2_5007")
+plotZ_Luminosity_Pdeg2(survey.catalog['ZBEST'][ok],survey.catalog['O3_5007_luminosity'][ok], 1./(survey.catalog['TSR'][ok]*survey.catalog['SSR'][ok]*area), "deep2-L-O3_5007-z.png",r'$log_{10}(L\, [O^{5007}_{III}])$ [erg s$^{-1}$]', plotDir, flux_limit = 2.7e-17, line = "O3_5007")
 ok=(zok) & (survey.catalog['O3_5007_EW']>0.) & (survey.catalog['O3_5007_flux']>0.)& (survey.catalog['O3_5007_flux'] > SNlim*survey.catalog['O3_5007_fluxErr']) & (survey.catalog['O3_5007_fluxErr']>0.)
 plotZ_EW(survey.catalog['ZBEST'][ok],survey.catalog['O3_5007_EW'][ok], "deep2-EW-O3_5007-z.png",r'$log_{10}(EW\,[O^{5007}_{III}])$ [A]', plotDir)
 
@@ -166,7 +166,7 @@ plotDir=join(data_dir, "VIPERS", "products", "emissionLineLuminosityFunctions", 
 area=24.
 
 # VIPERS
-survey = GalaxySurveyVIPERS(redshift_catalog="VIPERS_W14_summary_v1.2.fits")
+survey = GalaxySurveyVIPERS(redshift_catalog="VIPERS_W14_summary_v1.2.LFcatalogTC.Planck15.fits")
 
 zok=(survey.catalog['zflg']>0.9)&(survey.catalog['zflg']<100)&(survey.catalog['TSR']>0)&(survey.catalog['SSR']>0)
 
