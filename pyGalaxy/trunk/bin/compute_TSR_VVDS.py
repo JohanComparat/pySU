@@ -47,8 +47,8 @@ def createMask(path_to_mask):
 
 
 # define field number 02 for the DEEP and 10, 14, 22 for the WIDE.
-fields = [02, 10, 14, 22] 
-magLim =[24., 22.5, 22.5, 22.5]
+fields = [10, 14, 22] # 02, 
+magLim =[ 22.5, 22.5, 22.5] # 24.,
 summaryCat = [ "VVDS_WIDE_F10_summary.LFcatalog.Planck15.fits", "VVDS_WIDE_F14_summary.LFcatalog.Planck15.fits",  "VVDS_WIDE_F22_summary.LFcatalog.Planck15.fits"] # "VVDS_DEEP_summary.LFcatalog.Planck15.fits",
 summaryCatOut = [ "VVDS_WIDE_F10_summary.LFcatalog.Planck15.tsr.fits", "VVDS_WIDE_F14_summary.LFcatalog.Planck15.tsr.fits", "VVDS_WIDE_F22_summary.LFcatalog.Planck15.tsr.fits"] # "VVDS_DEEP_summary.LFcatalog.Planck15.v2.fits",
 depth = ["WIDE", "WIDE", "WIDE"] # "DEEP", 
