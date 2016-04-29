@@ -11,7 +11,7 @@ data_dir = os.environ['DATA_DIR']
 
 from lineListAir import *
 import glob
-
+"""
 
 # from DEEP2 survey
 zsDEEP2min=n.array([ 0.33,0.33,0.4,0.45,0.50,0.60,0.70,0.75,0.78,0.83, 1.16 ])
@@ -78,7 +78,7 @@ for MagLim in MagLimS :
 			mCorr, error  = n.loadtxt(lll[sel][0],unpack=True ) 
 			lf.correctVolumeEffect(mCorr, error)
 			lf.writeLF(selection,surveyNameSuffix="R"+str(MagLim))
-
+"""
 
 # from VVDS WIDE survey
 areaWide = 5.785 # 4.0+2.2+1.9
