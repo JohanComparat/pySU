@@ -19,6 +19,48 @@ dl= aa.luminosity_distance(zrr).to(uu.cm)**2.*4.*n.pi
 flux_limit = 3e-17 # erg/cm2/s
 l_limit = lambda flux_limit : n.log10( dl * flux_limit / uu.cm**2)
 
+# LF density prediction
+zbins = n.arange(0,2.5,0.025)
+z = (zbins[1:]+zbins[:-1])/2.
+vol = aa.comoving_volume(zbins)
+dv = (vol[1:]-vol[:-1])*n.pi/129600.
+lums = n.arange(37, 45, 0.2)
+X, Y = n.meshgrid(z,lums)
+
+# [OII] LF density prediction
+
+l0 = 40.1
+l1=1.92
+p0=-1.95
+p1=0.07
+a0=-1.12
+sigma0=0.54
+LF_OII_saunders=lambda logl, z : 10**(p0+ p1 * n.log10(1+z)) * (10**logl/10**( l0 +l1  * n.log10(1+z) ))**(a0 +1) * n.e**( -n.log10( 1 +10**logl/10**(l0 +l1  * n.log10(1+z) ))**2./(2*(sigma0 )**2.))
+
+Nout_OII = n.array([ LF_OII_saunders(lum, z) * dv * 0.2 for lum in lums ])
+
+# H1 LF prediction
+l0 = 39.7
+l1 = 1.63
+p0= -2.92
+p1=3.37
+a0=-0.81
+sigma0=0.54
+LF_Hb_saunders=lambda logl, z : 10**(p0+ p1 * n.log10(1+z)) * (10**logl/10**( l0 +l1  * n.log10(1+z) ))**(a0 +1) * n.e**( -n.log10( 1 +10**logl/10**(l0 +l1  * n.log10(1+z) ))**2./(2*(sigma0 )**2.))
+
+Nout_Hb = n.array([ LF_Hb_saunders(lum, z) * dv * 0.2 for lum in lums ])
+
+# O3 LF prediction
+l0 = 39.57
+l1 = 8.09
+p0= -1.72
+p1= -4.66
+a0=-1.71
+sigma0=0.54
+LF_O3_saunders=lambda logl, z : 10**(p0+ p1 * n.log10(1+z)) * (10**logl/10**( l0 +l1  * n.log10(1+z) ))**(a0 +1) * n.e**( -n.log10( 1 +10**logl/10**(l0 +l1  * n.log10(1+z) ))**2./(2*(sigma0 )**2.))
+
+Nout_O3 = n.array([ LF_O3_saunders(lum, z) * dv * 0.2 for lum in lums ])
+
 def plotRaDecEBV(ra,dec,ebv,name,pDir):
 	"""
 	creates a figure with ra, dec, coded with E(B-V).
@@ -130,7 +172,7 @@ def plotZ_EW(zz,ew,name,ylab,pDir):
 	p.clf()
 
 
-def plotZ_Luminosity_Pdeg2(zz,lum,WW,name,ylab,pDir,flux_limit = 3e-17):
+def plotZ_Luminosity_Pdeg2(zz,lum,WW,name,ylab,pDir,flux_limit = 3e-17,line = "O2_3728"):
 	"""
 	creates a figure with redshift, luminosity.
 	:param zz: column redshift
@@ -151,6 +193,12 @@ def plotZ_Luminosity_Pdeg2(zz,lum,WW,name,ylab,pDir,flux_limit = 3e-17):
 	p.ylim((39,44))
 	p.xlim((0.1,1.4))
 	p.grid()
+	if line == "O2_3728":
+		p.contour(X,Y,Nout_OII,levels=[1], lw=2, ls='dashed')
+	if line == "O3_5007":
+		p.contour(X,Y,Nout_O3,levels=[1], lw=2, ls='dashed')
+	if line == "H1_4862":
+		p.contour(X,Y,Nout_Hb,levels=[1], lw=2, ls='dashed')
 	p.savefig(join(pDir, name))
 	p.clf()
 
