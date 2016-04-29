@@ -27,7 +27,7 @@ photozCat = 'photozCFHTLS-W1234-g25-Idef.fits'
 depth = [ "WIDE", "WIDE", "WIDE"]
 dBin = 0.05
 bins = n.arange(0,1.4,dBin)
-finalCommandConcatenate = """java -jar ~/stilts.jar tcat ifmt=fits in="VVDS_WIDE_F10_summary.LFcatalog.Planck15.v1.fits VVDS_WIDE_F14_summary.LFcatalog.Planck15.v1.fits VVDS_WIDE_F22_summary.LFcatalog.Planck15.v1.fits" out=VVDS_WIDE_summary.LFcatalog.Planck15.v1.fits"""
+finalCommandConcatenate = """java -jar ~/stilts.jar tcat ifmt=fits in="VVDS_WIDE_F10_summary.v1.fits VVDS_WIDE_F14_summary.v1.fits VVDS_WIDE_F22_summary.v1.fits" out=VVDS_WIDE_summary.v1.fits"""
 
 
 ########################################
