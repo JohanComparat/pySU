@@ -21,13 +21,13 @@ import numpy as n
 # define field number 02 for the DEEP and 10, 14, 22 for the WIDE.
 fields = [10, 14, 22] 
 magLim =[ 22.5, 22.5, 22.5]
-summaryCat = [ "VVDS_WIDE_F10_summary.LFcatalog.Planck15.v2.fits", "VVDS_WIDE_F14_summary.LFcatalog.Planck15.v2.fits", "VVDS_WIDE_F22_summary.LFcatalog.Planck15.v2.fits"]
-summaryCatOut = [ "VVDS_WIDE_F10_summary.LFcatalog.Planck15.v3.fits", "VVDS_WIDE_F14_summary.LFcatalog.Planck15.v3.fits", "VVDS_WIDE_F22_summary.LFcatalog.Planck15.v3.fits"]
+summaryCat = [ "VVDS_WIDE_F10_summary.LFcatalog.Planck15.tsr.fits", "VVDS_WIDE_F14_summary.LFcatalog.Planck15.tsr.fits", "VVDS_WIDE_F22_summary.LFcatalog.Planck15.tsr.fits"]
+summaryCatOut = [ "VVDS_WIDE_F10_summary.v1.fits", "VVDS_WIDE_F14_summary.v1.fits", "VVDS_WIDE_F22_summary.v1.fits"]
 photozCat = 'photozCFHTLS-W1234-g25-Idef.fits'
 depth = [ "WIDE", "WIDE", "WIDE"]
 dBin = 0.05
 bins = n.arange(0,1.4,dBin)
-finalCommandConcatenate = """java -jar ~/stilts.jar tcat ifmt=fits in="VVDS_WIDE_F10_summary.LFcatalog.Planck15.v3.fits VVDS_WIDE_F14_summary.LFcatalog.Planck15.v3.fits VVDS_WIDE_F22_summary.LFcatalog.Planck15.v3.fits" out=VVDS_WIDE_summary.LFcatalog.Planck15.v3.fits"""
+finalCommandConcatenate = """java -jar ~/stilts.jar tcat ifmt=fits in="VVDS_WIDE_F10_summary.LFcatalog.Planck15.v1.fits VVDS_WIDE_F14_summary.LFcatalog.Planck15.v1.fits VVDS_WIDE_F22_summary.LFcatalog.Planck15.v1.fits" out=VVDS_WIDE_summary.LFcatalog.Planck15.v1.fits"""
 
 
 ########################################
@@ -90,8 +90,9 @@ SSR = ssr_eval(redshiftBest[goodZ])
 SSR_ERR = ssr_err_eval(redshiftBest[goodZ])
 
 # writes the new catalog
-c0 = fits.Column(name="SSR_new",format="D", array= SSR )
-c1 = fits.Column(name="SSR_ERR_new",format="D", array= SSR_ERR )
+#survey.catalog.columns.del_col('SSR')
+c0 = fits.Column(name="SSR",format="D", array= SSR )
+c1 = fits.Column(name="SSR_ERR",format="D", array= SSR_ERR )
 new_columns = survey.catalog.columns + c0 + c1
 hdu = fits.BinTableHDU.from_columns(new_columns)
 os.system("rm -rf "+join(os.environ['VVDS_DIR'], 'catalogs', summaryCatOut[ii]) )
@@ -127,9 +128,9 @@ badZ = (goodZ==False)
 SSR = ssr_eval(redshiftBest[goodZ])
 SSR_ERR = ssr_err_eval(redshiftBest[goodZ])
 
-
-c0 = fits.Column(name="SSR_new",format="D", array= SSR )
-c1 = fits.Column(name="SSR_ERR_new",format="D", array= SSR_ERR )
+#survey.catalog.columns.del_col('SSR')
+c0 = fits.Column(name="SSR",format="D", array= SSR )
+c1 = fits.Column(name="SSR_ERR",format="D", array= SSR_ERR )
 new_columns = survey.catalog.columns + c0 + c1
 hdu = fits.BinTableHDU.from_columns(new_columns)
 os.system("rm -rf "+join(os.environ['VVDS_DIR'], 'catalogs', summaryCatOut[ii]) )
@@ -159,15 +160,15 @@ badZ = (goodZ==False)
 SSR = ssr_eval(redshiftBest[goodZ])
 SSR_ERR = ssr_err_eval(redshiftBest[goodZ])
 
-
-c0 = fits.Column(name="SSR_new",format="D", array= SSR )
-c1 = fits.Column(name="SSR_ERR_new",format="D", array= SSR_ERR )
+#survey.catalog.columns.del_col('SSR')
+c0 = fits.Column(name="SSR",format="D", array= SSR )
+c1 = fits.Column(name="SSR_ERR",format="D", array= SSR_ERR )
 new_columns = survey.catalog.columns + c0 + c1
 hdu = fits.BinTableHDU.from_columns(new_columns)
 os.system("rm -rf "+join(os.environ['VVDS_DIR'], 'catalogs', summaryCatOut[ii]) )
 hdu.writeto(join(os.environ['VVDS_DIR'], 'catalogs', summaryCatOut[ii]))
 
-os.system( finalCommandConcatenate )
+#os.system( finalCommandConcatenate )
 
 """
 Eventually toimplement per small units of mask, but beware of overlaps between masks

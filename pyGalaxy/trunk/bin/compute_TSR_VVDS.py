@@ -49,9 +49,9 @@ def createMask(path_to_mask):
 # define field number 02 for the DEEP and 10, 14, 22 for the WIDE.
 fields = [02, 10, 14, 22] 
 magLim =[24., 22.5, 22.5, 22.5]
-summaryCat = ["VVDS_DEEP_summary.LFcatalog.Planck15.fits", "VVDS_WIDE_summary.LFcatalog.Planck15.fits", "VVDS_WIDE_summary.LFcatalog.Planck15.fits", "VVDS_WIDE_summary.LFcatalog.Planck15.fits"]
-summaryCatOut = ["VVDS_DEEP_summary.LFcatalog.Planck15.v2.fits", "VVDS_WIDE_F10_summary.LFcatalog.Planck15.v2.fits", "VVDS_WIDE_F14_summary.LFcatalog.Planck15.v2.fits", "VVDS_WIDE_F22_summary.LFcatalog.Planck15.v2.fits"]
-depth = ["DEEP", "WIDE", "WIDE", "WIDE"]
+summaryCat = [ "VVDS_WIDE_F10_summary.LFcatalog.Planck15.fits", "VVDS_WIDE_F14_summary.LFcatalog.Planck15.fits",  "VVDS_WIDE_F22_summary.LFcatalog.Planck15.fits"] # "VVDS_DEEP_summary.LFcatalog.Planck15.fits",
+summaryCatOut = [ "VVDS_WIDE_F10_summary.LFcatalog.Planck15.tsr.fits", "VVDS_WIDE_F14_summary.LFcatalog.Planck15.tsr.fits", "VVDS_WIDE_F22_summary.LFcatalog.Planck15.tsr.fits"] # "VVDS_DEEP_summary.LFcatalog.Planck15.v2.fits",
+depth = ["WIDE", "WIDE", "WIDE"] # "DEEP", 
 dMag = 0.5
 
 finalCommandConcatenate = """java -jar ~/stilts.jar tcat ifmt=fits in="VVDS_WIDE_F10_summary.LFcatalog.Planck15.v2.fits VVDS_WIDE_F14_summary.LFcatalog.Planck15.v2.fits VVDS_WIDE_F22_summary.LFcatalog.Planck15.v2.fits" out=VVDS_WIDE_summary.LFcatalog.Planck15.v2.fits"""
@@ -125,9 +125,10 @@ for ii in range(len(fields)):
 	TSR_ERR[specIn] = tsr_err_eval(speccat['MAGI'][specIn])
 
 	# writes the new catalog
-	c0 = fits.Column(name="TSR_new",format="D", array= TSR )
-	c1 = fits.Column(name="TSR_ERR_new",format="D", array= TSR_ERR )
-	new_columns = survey.catalog.columns + c0 + c1
+	#speccat.columns.del_col("TSR")
+	c0 = fits.Column(name="TSR",format="D", array= TSR )
+	c1 = fits.Column(name="TSR_ERR",format="D", array= TSR_ERR )
+	new_columns = speccat.columns + c0 + c1
 	hdu = fits.BinTableHDU.from_columns(new_columns)
 	os.system("rm -rf "+join(os.environ['VVDS_DIR'], 'catalogs', summaryCatOut[ii]) )
 	hdu.writeto(join(os.environ['VVDS_DIR'], 'catalogs', summaryCatOut[ii]))
