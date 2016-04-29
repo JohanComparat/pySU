@@ -78,7 +78,7 @@ for MagLim in MagLimS :
 			lf.correctVolumeEffect(mCorr, error)
 			lf.writeLF(selection,surveyNameSuffix="R"+str(MagLim))
 
-"""
+
 # from VVDS WIDE survey
 areaWide = 5.785 # 4.0+2.2+1.9
 area = areaWide
@@ -158,9 +158,7 @@ for MagLim in MagLimS :
 			lf.writeLF(selection,surveyNameSuffix="DEEP"+"I"+str(MagLim))
 
 
-sys.exit()
-
-sys.exit()
+"""
 # from VIPERS survey
 print "VIPERS"
 zsVIMOSmin=n.array([0.65,0.84, 1.1])
@@ -267,7 +265,7 @@ for ColorLim in ColorLimS :
 
 
 area=24.
-MagLimS = [22.5]
+MagLimS = [22.0, 22.3, 22.5]
 for MagLim in MagLimS :
 	print "mag limit=", MagLim
 	for ii in range(len(zsVIMOSmin)):
@@ -290,7 +288,7 @@ for MagLim in MagLimS :
 			lf.correctVolumeEffect(n.ones_like(lf.LF), n.zeros_like(lf.LF))
 			lf.writeLF(selection,surveyNameSuffix="I"+str(MagLim))
 
-
+sys.exit()
 # from DEEP2 survey
 zsDEEP2min=n.array([0.33,0.33,0.4,0.45,0.50,0.60,0.70,0.75,0.78,0.83, 1.16 ])
 zsDEEP2max=n.array([0.40,0.45,0.5,0.55,0.60,0.70,0.78,0.8,0.83,1.03, 1.3 ])
