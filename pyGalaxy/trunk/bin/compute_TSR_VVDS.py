@@ -125,7 +125,7 @@ for ii in range(len(fields)):
 	TSR_ERR[specIn] = tsr_err_eval(speccat['MAGI'][specIn])
 
 	# writes the new catalog
-	speccat.columns.del_col("TSR")
+	#speccat.columns.del_col("TSR")
 	speccat.columns.del_col("TSR_ERR")
 	c0 = fits.Column(name="TSR",format="D", array= TSR )
 	c1 = fits.Column(name="TSR_ERR",format="D", array= TSR_ERR )
