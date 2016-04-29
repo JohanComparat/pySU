@@ -8,6 +8,7 @@ This script computes the line luminosities from of the VVDS survey
 from os.path import join
 import astropy.cosmology as co
 cosmo=co.Planck15 #co.FlatLambdaCDM(H0=70,Om0=0.3)
+import scipy.spatial.ckdtree as t
 
 from GalaxySurveyVVDS import *
 import matplotlib
@@ -47,14 +48,17 @@ def createMask(path_to_mask):
 
 
 # define field number 02 for the DEEP and 10, 14, 22 for the WIDE.
-fields = [02, 10, 14, 22] 
-magLim =[24., 22.5, 22.5, 22.5]
-summaryCat = ["VVDS_DEEP_summary.LFcatalog.Planck15.fits", "VVDS_WIDE_summary.LFcatalog.Planck15.fits", "VVDS_WIDE_summary.LFcatalog.Planck15.fits", "VVDS_WIDE_summary.LFcatalog.Planck15.fits"]
-summaryCatOut = ["VVDS_DEEP_summary.LFcatalog.Planck15.v2.fits", "VVDS_WIDE_F10_summary.LFcatalog.Planck15.v2.fits", "VVDS_WIDE_F14_summary.LFcatalog.Planck15.v2.fits", "VVDS_WIDE_F22_summary.LFcatalog.Planck15.v2.fits"]
-depth = ["DEEP", "WIDE", "WIDE", "WIDE"]
-dMag = 0.5
+fields = [10, 14, 22] 
+magLim =[ 22.5, 22.5, 22.5]
+summaryCat = [ "VVDS_WIDE_F10_summary.LFcatalog.Planck15.v2.fits", "VVDS_WIDE_F14_summary.LFcatalog.Planck15.v2.fits", "VVDS_WIDE_F22_summary.LFcatalog.Planck15.v2.fits"]
+summaryCatOut = [ "VVDS_WIDE_F10_summary.LFcatalog.Planck15.v3.fits", "VVDS_WIDE_F14_summary.LFcatalog.Planck15.v3.fits", "VVDS_WIDE_F22_summary.LFcatalog.Planck15.v3.fits"]
+photozCat = 'photozCFHTLS-W1234-g25-Idef.fits'
+depth = [ "WIDE", "WIDE", "WIDE"]
+dBin = 0.05
+bins = n.arange(0,1.4,dBin)
+finalCommandConcatenate = """java -jar ~/stilts.jar tcat ifmt=fits in="VVDS_WIDE_F10_summary.LFcatalog.Planck15.v3.fits VVDS_WIDE_F14_summary.LFcatalog.Planck15.v3.fits VVDS_WIDE_F22_summary.LFcatalog.Planck15.v3.fits" out=VVDS_WIDE_summary.LFcatalog.Planck15.v3.fits"""
 
-finalCommandConcatenate = """java -jar ~/stilts.jar tcat ifmt=fits in="VVDS_WIDE_F10_summary.LFcatalog.Planck15.v2.fits VVDS_WIDE_F14_summary.LFcatalog.Planck15.v2.fits VVDS_WIDE_F22_summary.LFcatalog.Planck15.v2.fits" out=VVDS_WIDE_summary.LFcatalog.Planck15.v2.fits"""
+
 
 ii = 0
 for ii in range(len(fields)):
@@ -69,60 +73,34 @@ for ii in range(len(fields)):
 	path_to_spec_mask = join(survey.vvds_catalog_dir, "F"+str(fields[ii]).zfill(2)+"_specmask.reg")
 	Nspec_total = len(speccat)
 
-	TSR = n.zeros_like(speccat['ALPHA'])
-	TSR_ERR = n.zeros_like(speccat['ALPHA'])
+	SSR = n.zeros_like(speccat['ALPHA'])
+	SSR_ERR = n.zeros_like(speccat['ALPHA'])
 
-	# photometry
-	# catalog of galaxies + mask with the VVDS selection applied
-	path_to_photo_Cat = join(survey.vvds_photo_dir, "cesam_vvds_photoF"+str(fields[ii]).zfill(2)+"_"+depth[ii]+".fits")
-	photocat_all = fits.open(path_to_photo_Cat)[1].data
-	selection=(photocat_all['MAGI_CFH12K']<magLim[ii])&(photocat_all['MAGI_CFH12K']>17.5)
-	photocat = photocat_all[selection]
-	path_to_photo_mask = join(survey.vvds_photo_dir, "F"+str(fields[ii]).zfill(2)+"_photmask.reg")
-
-	pixelSelection=(raPixAll < n.max(photocat_all['ALPHA']) + 1 ) & (raPixAll > n.min(photocat_all['ALPHA']) - 1 ) & (decPixAll < n.max(photocat_all['DELTA']) + 1 ) & (decPixAll > n.min(photocat_all['DELTA']) -1 ) 
-	decPix = decPixAll[pixelSelection]
-	raPix = raPixAll[pixelSelection]
-
-	# creates random arrays
-	randRA_all = n.random.uniform(n.min(speccat['ALPHA']) - .1, n.max(speccat['ALPHA']) + .1, Nspec_total*100)
-	randDEC_all = n.random.uniform(n.min(speccat['DELTA']) - .1, n.max(speccat['DELTA']) + .1, Nspec_total*100)
-	area_all = (n.max(speccat['ALPHA']) + .1 - n.min(speccat['ALPHA']) + .1)*(n.max(speccat['DELTA']) + .1 - n.min(speccat['DELTA']) + .1)
-
-	# loads the actual co-added photo NOT USED SO FAR
-	path_to_photo_Iband = join(survey.vvds_photo_dir, "F"+str(fields[ii]).zfill(2)+"i.fits")
-	fitsfile = fits.open(path_to_photo_Iband)
-	iband_header = fitsfile[0].header
-	iband_data = fitsfile[0].data
-
-	# creates the masks
-	spec_mask_filter, spec_mask_polygon = createMask(path_to_spec_mask)
-	#photo_mask_filter, photo_mask_polygon = createMask(path_to_photo_mask)
-
-	print "N in mask:", len(speccat['ALPHA'][spec_mask_filter.inside(n.transpose([speccat['ALPHA'], speccat['DELTA']]))]), ", N in cat: ", len(speccat['ALPHA'])
-
-	bins = n.hstack((17.5, n.arange(18.5, magLim[ii]+dMag, dMag) ))
-
-	areaIn = spec_mask_filter.inside(n.transpose([raPix, decPix]))
-	NPIX = len(areaIn.nonzero()[0])
-	areaEffective = NPIX * areaPerPixel
-	print "effective area = ", areaEffective, "square degrees"
-	specIn = spec_mask_filter.inside(n.transpose([speccat['ALPHA'], speccat['DELTA']]))
-	ND = len(specIn.nonzero()[0])
-	photIn = spec_mask_filter.inside(n.transpose([photocat['ALPHA'], photocat['DELTA']]))
-	NR = len(photIn.nonzero()[0])
-	randIn = spec_mask_filter.inside(n.transpose([randRA_all, randDEC_all]))
-	#downSelectRD = (n.random.uniform(0,1,len(randRA_all[randIn]))< float(ND)/float(NR) )
-
+	redshiftBest = n.empty(Nspec_total)
+	
+	goodZ = (speccat['ZFLAGS']==2)|(speccat['ZFLAGS']==3)|(speccat['ZFLAGS']==4)|(speccat['ZFLAGS']==9)
+	badZ = (goodZ==False)
+	
+	redshiftBest[goodZ] = speccat['Z'][goodZ]
+	
+	raBad, decBad = speccat['ALPHA'][badZ], speccat['DELTA'][badZ]
+	
+	# photometric redshift catalog
+	zphcatall = fits.open(join(survey.vvds_photo_dir, photozCat) )[1].data
+	zphcat = zphcatall [][]
+	treePhZ = t.cKDTree(n.transpose([zphcat['alpha'], zphcat['delta']))#,1000.0)
+	indexes = treePhZ.query([raBad,decBad],1)
+	redshiftBest[badZ] = zphcat['zphot'][indexes]
+	
 	# print ND, NR
-	NDpb = n.histogram(speccat['MAGI'][specIn], bins=bins)[0]
-	NRpb = n.histogram(photocat['MAGI_CFH12K'][photIn], bins=bins)[0]
+	NDpb = n.histogram(redshiftBest[goodZ], bins=bins)[0]
+	NRpb = n.histogram(redshiftBest, bins=bins)[0]
 	# piecewise interpolation of the TSR :
 	tsr_eval = lambda x : n.piecewise(x, n.array([ (x > bins[kk])&(x<bins[kk+1]) for kk in range(len(NDpb)) ]), NDpb.astype(float)/NRpb)
 	tsr_err_eval = lambda x : n.piecewise(x, n.array([ (x > bins[kk])&(x<bins[kk+1]) for kk in range(len(NDpb)) ]), NDpb**(-0.5) * NDpb.astype(float)/NRpb)
 
-	TSR[specIn] = tsr_eval(speccat['MAGI'][specIn])
-	TSR_ERR[specIn] = tsr_err_eval(speccat['MAGI'][specIn])
+	SSR = tsr_eval(redshiftBest)
+	SSR_ERR = tsr_err_eval(redshiftBest)
 
 	# writes the new catalog
 	c0 = fits.Column(name="TSR_new",format="D", array= TSR )
