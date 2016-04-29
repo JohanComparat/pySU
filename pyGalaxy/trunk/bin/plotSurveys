@@ -50,7 +50,7 @@ survey = GalaxySurveyVVDS(redshift_catalog="VVDS_WIDE_summary.v1.fits")
 areaWide=1.385367 + 1.6195744 + 2.78016
 area = areaWide
 
-zok=(survey.catalog['ZFLAGS']>1.9)&(survey.catalog['ZFLAGS']<9.1)
+zok=(survey.catalog['ZFLAGS']>1.9)&(survey.catalog['ZFLAGS']<9.1)&(survey.catalog['TSR']>0)&(survey.catalog['SSR']>0)
 sel1=(survey.catalog['alpha']<170)&(zok)
 sel2=(survey.catalog['delta']>3)&(zok)
 sel3=(survey.catalog['alpha']>300)&(zok)
@@ -87,7 +87,7 @@ plotZ_EW(survey.catalog['Z'][ok],survey.catalog['H1_4862_EW'][ok], "vvdswide-EW-
 survey = GalaxySurveyVVDS(redshift_catalog="VVDS_DEEP_summary.v1.fits")
 areaDeep=0.618
 area = areaDeep
-zok=(survey.catalog['ZFLAGS']>1.9)&(survey.catalog['ZFLAGS']<9.1)
+zok=(survey.catalog['ZFLAGS']>1.9)&(survey.catalog['ZFLAGS']<9.1)&(survey.catalog['TSR']>0)&(survey.catalog['SSR']>0)
 
 plotRaDecEBV(survey.catalog['ALPHA'][zok], survey.catalog['DELTA'][zok], survey.catalog['EBV_MW'][zok] , "vvdsdeep-ra-dec.png", plotDir)
 plotZ_SSR(survey.catalog['Z'][zok],survey.catalog['SSR'][zok],"vvdsdeep-z-ssr.png",'spectroscopic success rate',plotDir)
@@ -125,7 +125,7 @@ area3=0.90
 area4=0.66
 area=area1+area2+area3+area4
 
-zok=(survey.catalog['ZQUALITY']>0.9)
+zok=(survey.catalog['ZQUALITY']>0.9)&(survey.catalog['TSR']>0)&(survey.catalog['SSR']>0)
 sel1=(survey.catalog['DEC']>50)&(zok)
 sel2=(survey.catalog['DEC']<50)&(survey.catalog['DEC']>30)&(zok)
 sel3=(survey.catalog['DEC']<30)&(survey.catalog['RA']>200)&(zok)
@@ -168,7 +168,7 @@ area=24.
 # VIPERS
 survey = GalaxySurveyVIPERS(redshift_catalog="VIPERS_W14_summary_v1.2.fits")
 
-zok=(survey.catalog['zflg']>0.9)&(survey.catalog['zflg']<100)
+zok=(survey.catalog['zflg']>0.9)&(survey.catalog['zflg']<100)&(survey.catalog['TSR']>0)&(survey.catalog['SSR']>0)
 
 sel1=(survey.catalog['ALPHA']>40)&(zok)
 sel2=(survey.catalog['ALPHA']<40)&(zok)
@@ -178,9 +178,9 @@ for i in range(2):
 	plotRaDecEBV(survey.catalog['ALPHA'][sel[i]], survey.catalog['DELTA'][sel[i]], survey.catalog['E_BV'][sel[i]] , "vipers-f"+str(i)+"-ra-dec.png", plotDir)
 
 #plotRaDecEBV(survey.catalog['ALPHA'][zok], survey.catalog['DELTA'][zok], survey.catalog['EBV_MW'][zok] , "vipers-ra-dec.png", plotDir)
-zokR=(survey.catalog['zflg']>0.9)&(survey.catalog['zflg']<100)&(survey.catalog['zspec']>0.5)&(survey.catalog['zspec']<1.2)&(survey.catalog['SSR']>=0)&(survey.catalog['TSR']>=0)&(survey.catalog['MAGI']>=16)&(survey.catalog['MAGI']<22.5)
+zokR=(survey.catalog['zflg']>0.9)&(survey.catalog['zflg']<100)&(survey.catalog['zspec']>0.5)&(survey.catalog['zspec']<1.2)&(survey.catalog['SSR']>=0)&(survey.catalog['TSR']>=0)&(survey.catalog['selmag']>=16)&(survey.catalog['selmag']<22.5)
 plotZ_SSR(survey.catalog['zspec'][zokR],survey.catalog['SSR'][zokR],"vipers-z-ssr.png",'spectroscopic success rate',plotDir)
-plot_I_TSR(survey.catalog['MAGI'][zokR],survey.catalog['TSR'][zokR],"vipers-z-tsr.png",'target sampling rate',plotDir)
+plot_I_TSR(survey.catalog['selmag'][zokR],survey.catalog['TSR'][zokR],"vipers-z-tsr.png",'target sampling rate',plotDir)
 
 ok=(zok) & (survey.catalog['O2_3728_flux']>0.)& (survey.catalog['O2_3728_flux'] > SNlim*survey.catalog['O2_3728_fluxErr']) & (survey.catalog['O2_3728_fluxErr']>0.)
 plotZ_Flux(survey.catalog['zspec'][ok],survey.catalog['O2_3728_flux'][ok], "vipers-f-O2_3728-z.png",r'$log_{10}(\mathrm{flux }\, [O^{3728}_{II}])$ [erg s$^{-1}$ cm$^{-2}$]', plotDir, flux_limit = 3.5e-17)
