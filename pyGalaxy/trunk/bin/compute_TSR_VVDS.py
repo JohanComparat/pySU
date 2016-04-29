@@ -125,7 +125,8 @@ for ii in range(len(fields)):
 	TSR_ERR[specIn] = tsr_err_eval(speccat['MAGI'][specIn])
 
 	# writes the new catalog
-	#speccat.columns.del_col("TSR")
+	speccat.columns.del_col("TSR")
+	speccat.columns.del_col("TSR_ERR")
 	c0 = fits.Column(name="TSR",format="D", array= TSR )
 	c1 = fits.Column(name="TSR_ERR",format="D", array= TSR_ERR )
 	new_columns = speccat.columns + c0 + c1
@@ -141,7 +142,7 @@ for ii in range(len(fields)):
 	os.system("rm -rf "+join(os.environ['VVDS_DIR'], 'catalogs', summaryCatOut[ii][:-5]+".random.fits") )
 	fullSpec_tb_hdu.writeto(join(os.environ['VVDS_DIR'], 'catalogs', summaryCatOut[ii][:-5]+".random.fits") )
 
-os.system( finalCommandConcatenate )
+#os.system( finalCommandConcatenate )
 
 """
 Eventually toimplement per small units of mask, but beware of overlaps between masks
