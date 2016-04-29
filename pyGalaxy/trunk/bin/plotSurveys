@@ -46,7 +46,7 @@ ok=(zok) & (survey.catalog['H1_4862_EW']>0.)& (survey.catalog['H1_4862_flux']>0.
 plotZ_EW(survey.catalog['Z'][ok],survey.catalog['H1_4862_EW'][ok], "vvdsudeep-EW-H1_4862-z.png",r'$log_{10}(EW\,H^{4861}_{\beta})$ [A]', plotDir)
 """
 # WIDE
-survey = GalaxySurveyVVDS(redshift_catalog="VVDS_WIDE_summary.LFcatalog.Planck15.fits")
+survey = GalaxySurveyVVDS(redshift_catalog="VVDS_WIDE_summary.v1.fits")
 areaWide=4.0+2.2+1.9
 area = areaWide
 
@@ -84,7 +84,7 @@ ok=(zok) & (survey.catalog['H1_4862_EW']>0.)& (survey.catalog['H1_4862_flux']>0.
 plotZ_EW(survey.catalog['Z'][ok],survey.catalog['H1_4862_EW'][ok], "vvdswide-EW-H1_4862-z.png",r'$log_{10}(EW\,H^{4861}_{\beta})$ [A]', plotDir)
 
 # DEEP
-survey = GalaxySurveyVVDS(redshift_catalog="VVDS_DEEP_summary.LFcatalog.Planck15.fits")
+survey = GalaxySurveyVVDS(redshift_catalog="VVDS_DEEP_summary.v1.fits")
 areaDeep=0.61
 area = areaDeep
 zok=(survey.catalog['ZFLAGS']>1.9)&(survey.catalog['ZFLAGS']<9.1)
@@ -166,7 +166,7 @@ plotDir=join(data_dir, "VIPERS", "products", "emissionLineLuminosityFunctions", 
 area=24.
 
 # VIPERS
-survey = GalaxySurveyVIPERS(redshift_catalog="VIPERS_W14_summary_v1.LFcatalog.Planck15.fits")
+survey = GalaxySurveyVIPERS(redshift_catalog="VIPERS_W14_summary_v1.2.fits")
 
 zok=(survey.catalog['zflg']>0.9)&(survey.catalog['zflg']<100)
 
