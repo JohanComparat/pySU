@@ -18,6 +18,8 @@ cd $PYSU_DIR/pyGalaxy/trunk/bin
 ./plotSurveys  # RUN IT
 
 # compute SSR and TSR:
+python compute_TSR_VVDS.py
+python compute_SSR_VVDS.py
 
 # compute luminosity functions
 ./estimate_line_LF

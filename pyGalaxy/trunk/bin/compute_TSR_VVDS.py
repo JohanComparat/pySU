@@ -54,8 +54,6 @@ summaryCatOut = [ "VVDS_WIDE_F10_summary.LFcatalog.Planck15.tsr.fits", "VVDS_WID
 depth = ["WIDE", "WIDE", "WIDE"] # "DEEP", 
 dMag = 0.5
 
-finalCommandConcatenate = """java -jar ~/stilts.jar tcat ifmt=fits in="VVDS_WIDE_F10_summary.LFcatalog.Planck15.v2.fits VVDS_WIDE_F14_summary.LFcatalog.Planck15.v2.fits VVDS_WIDE_F22_summary.LFcatalog.Planck15.v2.fits" out=VVDS_WIDE_summary.LFcatalog.Planck15.v2.fits"""
-
 ii = 0
 for ii in range(len(fields)):
 	print fields[ii]
