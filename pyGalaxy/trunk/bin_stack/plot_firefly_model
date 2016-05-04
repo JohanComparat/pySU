@@ -21,26 +21,6 @@ stL=n.array(glob.glob( join( os.environ['SPECTRASTACKS_DIR'], "model", "??_????"
 
 print stL
 
-modeledStackFile = stL[0]
-hdus = fits.open(modeledStackFile )
-Nspecs = float(modeledStackFile.split('/')[-1].split('_')[4])
-element = modeledStackFile.split('/')[-1].split('-')[0]
-lineDict = {'O2_3728' : r'$[O^{3728}_{II}]$', 'O3_5007' : r'$[O^{5007}_{III}]$', 'H1_4862' : r'$H^{4861}_{\beta}$', 'H1_6564': r'$H^{6564}_{\alpha}$'}
-line = lineDict[element]
-print  hdus[0].header
-redshift = float(hdus[0].header['LF_FILE_name'].split('-')[-1][1:])
-Lmean = n.round( n.log10(hdus[0].header['L_mean']) ,2)
-Lmax  = n.round( n.log10(hdus[0].header['L_max'])  ,2)
-Lmin  = n.round( n.log10(hdus[0].header['L_min'])  ,2)
-selection = (hdus[1].data['NspectraPerPixel']>0.8*Nspecs) &(hdus[1].data['meanWeightedStack']> hdus[1].data['jackknifStackErrors'])
-wl = hdus[1].data['wavelength'][selection]
-flObs = hdus[1].data['meanWeightedStack'][selection]
-flObsErr = hdus[1].data['jackknifStackErrors'][selection]
-wl_fir = hdus[2].data['wavelength']
-fl_fir = hdus[2].data['firefly_model'] * 1e-17
-Ms = n.round(hdus[2].header['stellar_mass'],2)
-age = n.round( n.log10( 10**( hdus[2].header['MASS_AGE'] )*10**9 ), 3)
-
 def plotStack( modeledStackFile ):
 	outputFigureNameRoot = join( os.environ['SPECTRASTACKS_DIR'], "plots", "models", modeledStackFile.split('/')[-1] )
 	
@@ -69,8 +49,8 @@ def plotStack( modeledStackFile ):
 
 	p.figure(1,(12,4))
 	p.axes([0.1,0.2,0.85,0.75])
-	p.errorbar(wl,flObs,yerr = flObsErr,label= "z="+str(redshift)+", "+str(Lmin) +"< log(L"+line+")<"+ str(Lmax), linewidth=1)
-	p.plot(wl_fir, fl_fir,label = 'log(age)='+ str(age)+ ', log(M*)='+ str(Ms))
+	p.errorbar(wl,flObs,yerr = flObsErr,label= "z="+str(redshift)+", "+str(Lmin) +"< log(L"+line+")<"+ str(Lmax), marker = 'x', c='b', ls='None')
+	p.plot(wl_fir, fl_fir,'k',lw=2,label = 'log(age)='+ str(age)+ ', log(M*)='+ str(Ms))
 	p.xlabel('wavelength [A]')
 	p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
 	p.yscale('log')
@@ -80,8 +60,8 @@ def plotStack( modeledStackFile ):
 
 	p.figure(1,(12,4))
 	p.axes([0.1,0.2,0.85,0.75])
-	p.errorbar(wl,flObs,yerr = flObsErr,label="z="+str(redshift)+", "+ str(Lmin) +"< log(L"+line+")<"+ str(Lmax), linewidth=1)
-	p.plot(wl_fir, fl_fir,label = 'log(age)='+ str(age)+ ', log(M*)='+ str(Ms))
+	p.errorbar(wl,flObs,yerr = flObsErr,label="z="+str(redshift)+", "+ str(Lmin) +"< log(L"+line+")<"+ str(Lmax), marker = 'x', c='b', ls='None')
+	p.plot(wl_fir, fl_fir,'k',lw=2,label = 'log(age)='+ str(age)+ ', log(M*)='+ str(Ms), lw=2)
 	p.xlabel('wavelength [A]')
 	p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
 	p.yscale('log')
@@ -92,14 +72,14 @@ def plotStack( modeledStackFile ):
 
 	p.figure(1,(12,4))
 	p.axes([0.1,0.2,0.85,0.75])
-	p.errorbar(wl,flObs,yerr = flObsErr,label= "z="+str(redshift)+", "+str(Lmin) +"< log(L"+line+")<"+ str(Lmax),linewidth=1)
-	p.plot(wl_fir, fl_fir,label = 'SPM. log(age)='+ str(age)+ ', log(M*)='+ str(Ms)+", EBV="+str(hdus[2].header['EBV']))
+	p.errorbar(wl,flObs,yerr = flObsErr,label= "z="+str(redshift)+", "+str(Lmin) +"< log(L"+line+")<"+ str(Lmax), marker = 'x', c='b', ls='None')
+	p.plot(wl_fir, fl_fir,'k',lw=2,label = 'SPM. log(age)='+ str(age)+ ', log(M*)='+ str(Ms)+", EBV="+str(n.round(hdus[2].header['EBV'],3)))
 	p.axvline(4861,color='k', ls='dashed')
 	p.axvline(4341,color='k', ls='dashed')
 	try :
 		aa=str(n.round(hdus[0].header['H1_4862_flux_nc']/hdus[0].header['H1_4341_flux_nc'] , 3))
 		bb=str(n.round(hdus[0].header['EBV_4862_4341'],3))
-		p.text(4331+50,1e-17,r"GP. H$\beta/\gamma$="+aa+", EBV=" +bb)
+		p.text(4331+50,1e-17,r"GP. H$\beta/\gamma$="+aa+", EBV=" +n.round(bb,3))
 	except KeyError:
 		pass
 
@@ -122,8 +102,8 @@ def plotStack( modeledStackFile ):
 	if continu>=0 and hdus[5].data['O2_3728_flux']>=0 :
 		p.figure(2,(4,4))
 		p.axes([0.21,0.2,0.78,0.7])
-		p.errorbar(wl,flObs,yerr = flObsErr, fmt = 'x')
-		p.plot(aas, model,'g',label='model', lw=2)
+		p.errorbar(wl,flObs,yerr = flObsErr, marker = 'x', c='b', ls='None')
+		p.plot(aas, model,'k',label='model', lw=2)
 		p.xlabel('wavelength [A]')
 		p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
 		p.yscale('log')
@@ -144,8 +124,8 @@ def plotStack( modeledStackFile ):
 	if continu>=0 and hdus[5].data['O3_5007_flux']>=0 :
 		p.figure(2,(4,4))
 		p.axes([0.21,0.2,0.78,0.7])
-		p.errorbar(wl,flObs,yerr = flObsErr, fmt = 'x')
-		p.plot(aas, model,'g',label='model', lw =2)
+		p.errorbar(wl,flObs,yerr = flObsErr, marker = 'x', c='b', ls='None')
+		p.plot(aas, model,'k',label='model', lw =2)
 		p.xlabel('wavelength [A]')
 		p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
 		p.yscale('log')
@@ -167,8 +147,8 @@ def plotStack( modeledStackFile ):
 	if continu>=0 and hdus[5].data['H1_4862_flux']>=0 :
 		p.figure(2,(4,4))
 		p.axes([0.21,0.2,0.78,0.7])
-		p.errorbar(wl,flObs,yerr = flObsErr, fmt = 'x')
-		p.plot(aas, model,'g',label='model', lw =2)
+		p.errorbar(wl,flObs,yerr = flObsErr, marker = 'x', c='b', ls='None')
+		p.plot(aas, model,'k',label='model', lw =2)
 		p.xlabel('wavelength [A]')
 		p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
 		p.yscale('log')
@@ -191,8 +171,8 @@ def plotStack( modeledStackFile ):
 	if continu>=0 and hdus[4].data['O2_3728_flux']>=0 :
 		p.figure(2,(4,4))
 		p.axes([0.21,0.2,0.78,0.7])
-		p.errorbar(wl_ls, flObs_ls, yerr = flObsErr_ls, fmt = 'x')
-		p.plot(aas, model,'g',label='model', lw=2)
+		p.errorbar(wl_ls, flObs_ls, yerr = flObsErr_ls, marker = 'x', c='b', ls='None')
+		p.plot(aas, model,'k',label='model', lw=2)
 		p.xlabel('wavelength [A]')
 		p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
 		p.yscale('log')
@@ -213,8 +193,8 @@ def plotStack( modeledStackFile ):
 	if continu>=0 and hdus[4].data['O3_5007_flux']>=0 :
 		p.figure(2,(4,4))
 		p.axes([0.21,0.2,0.78,0.7])
-		p.errorbar(wl_ls, flObs_ls, yerr = flObsErr_ls, fmt = 'x')
-		p.plot(aas, model,'g',label='model', lw =2)
+		p.errorbar(wl_ls, flObs_ls, yerr = flObsErr_ls, marker = 'x', c='b', ls='None')
+		p.plot(aas, model,'k',label='model', lw =2)
 		p.xlabel('wavelength [A]')
 		p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
 		p.yscale('log')
@@ -235,8 +215,8 @@ def plotStack( modeledStackFile ):
 	if continu>=0 and hdus[4].data['H1_4862_flux']>=0 :
 		p.figure(2,(4,4))
 		p.axes([0.21,0.2,0.78,0.7])
-		p.errorbar(wl_ls, flObs_ls, yerr = flObsErr_ls, fmt = 'x')
-		p.plot(aas, model,'g',label='model', lw =2)
+		p.errorbar(wl_ls, flObs_ls, yerr = flObsErr_ls, marker = 'x', c='b', ls='None')
+		p.plot(aas, model,'k',label='model', lw =2)
 		p.xlabel('wavelength [A]')
 		p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
 		p.yscale('log')
