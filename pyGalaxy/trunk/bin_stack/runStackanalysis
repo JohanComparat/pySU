@@ -47,6 +47,8 @@ screen python model_stacked_spectra_VVDS
 # hdu[4] : emissiion line fit to the emission line spectrum
 # hdu[5] : emissiion line fit to the stack
 # hdu 
+# generate data sanity check oriented plots 
+python plot_firefly_model
 
 # concatenates results
 python create_master_table
@@ -59,7 +61,5 @@ python process_master_table
 # generate science oriented plots 
 python plot_results_spectraStacks
 
-# generate data sanity check oriented plots 
-./plot_firefly_model
 
 ./compute_intrinsic_LFs
