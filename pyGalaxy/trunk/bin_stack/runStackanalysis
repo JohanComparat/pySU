@@ -1,13 +1,10 @@
 #!/bin/bash/
-cd $PYSU_DIR/pyGalaxy/trunk/bin
+cd $PYSU_DIR/pyGalaxy/trunk/bin_stack
 
 # Stacking LF spectra
 # DATA
-# stacks after the luminosity function
+# stacks after the luminosity function from $LFMODELS_DIR
 python stack_spectra_all
-#python stack_spectra_VVDSDEEP
-
-# RUN CODE FROM HERE ON :
 
 # MODEL
 # copy the stacks of interest to $SPECTRASTACKS_DIR/data/
@@ -27,11 +24,9 @@ cp $DEEP2_DIR/products/spectraStacks/O3_5007/*.fits  $SPECTRASTACKS_DIR/data/O3_
 #rm  $SPECTRASTACKS_DIR/data/O3_5007/O3_5007-VVDSDEEPI24-z0.674*
 #rm  $SPECTRASTACKS_DIR/data/O3_5007/O3_5007-VVDSDEEPI24-z0.741*
 
-# plot the stacks, present the results
-
 cd $SPECTRASTACKS_DIR/scripts/
 python presentationPlot.py
-python plotStacks.py
+#produces the first two figures of the paper presenting the data.
 
 # fit firefly stellar population continuum models
 cd $PYSU_DIR/pySPM/trunk/bin
@@ -39,19 +34,32 @@ screen python setup_run_for_stacks_VVDSDEEP
 screen python setup_run_for_stacks_DEEP2
 # writes to to $SPECTRASTACKS_DIR/fits/
 
-
-cd $PYSU_DIR/pyGalaxy/trunk/bin
+cd $PYSU_DIR/pyGalaxy/trunk/bin_stack
 # relink things correclty :
 screen python model_stacked_spectra_DEEP2
 screen python model_stacked_spectra_VVDS
 # writes to to $SPECTRASTACKS_DIR/model/
+# model files hdus :
+# hdu[0] : header : contains LF information (no data)
+# hdu[1] : stack
+# hdu[2] : firefly best fit. header contains output parameters
+# hdu[3] : emission line spectrum = stack - firefly continuum model
+# hdu[4] : emissiion line fit to the emission line spectrum
+# hdu[5] : emissiion line fit to the stack
+# hdu 
+
 # concatenates results
 python create_master_table
+# output in  join(os.environ['SPECTRASTACKS_DIR'], "results", "table_lineSpecFit_v0.fits")
+# computes balmer decrements, line ratios, metallicities ...
 python process_master_table
+#output in join(os.environ['SPECTRASTACKS_DIR'], "results", "table_lineSpecFit_v0.VA.fits")
 
-python plot_results
+# RUN CODE FROM HERE ON :
+# generate science oriented plots 
+python plot_results_spectraStacks
 
-
+# generate data sanity check oriented plots 
 ./plot_firefly_model
 
 ./compute_intrinsic_LFs

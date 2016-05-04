@@ -15,7 +15,7 @@ from scipy.interpolate import interp1d
 import glob
 
 
-stL=n.array(glob.glob( join( os.environ['SPECTRASTACKS_DIR'], "model", "??_????", "*-modeled.model" ) ) )
+stL=n.array(glob.glob( join( os.environ['SPECTRASTACKS_DIR'], "model", "??_????", "*.model" ) ) )
 
 print stL
 
@@ -83,7 +83,6 @@ def plotStack( modeledStackFile ):
 	p.legend(fontsize=12, loc=4) 
 	p.savefig( join( os.environ['SPECTRASTACKS_DIR'], "plots", "models", modeledStackFile.split('/')[-1] + "-H1lineDecr.png"))
 	p.clf()
-
 
 
 for el in stL :

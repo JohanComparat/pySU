@@ -14,23 +14,30 @@ cd $PYSU_DIR/pyGalaxy/trunk/bin
 # convert observed flux into luminosity
 ./compute_line_luminosities_DEEP2
 ./compute_line_luminosities_VVDS
-./compute_line_luminosities_VIPERS  # RUN IT
-./plotSurveys  # RUN IT
+./compute_line_luminosities_VIPERS  
 
 # compute SSR and TSR:
 python compute_TSR_VVDS.py
 python compute_SSR_VVDS.py
+# compute flux limit
+python magnitude_limit_and_line_detection_limit.py
+python magnitude_limit_and_line_detection_limit_deep2.py
+python magnitude_limit_and_line_detection_limit_wide.py
+# produces general plots about the surveys
+python plotSurveys  
 
-# compute luminosity functions
+# compute the luminosity functions
 python estimate_line_LF
 
 # MODEL
 # copy the LFs of interest to $LFMODELS_DIR/data/
 cd $LFMODELS_DIR/script
-python  convert_biblioPoints_toPlanck15.py
+python convert_biblioPoints_toPlanck15.py
+# gather all measurements into a single file for each LF
 python write_H1_4862_data_summary.py
 python write_O2_3728_data_summary.py
 python write_O3_5007_data_summary.py
+# fits the models 
 python fitSaunders.py
 python fitSchechter.py
 
