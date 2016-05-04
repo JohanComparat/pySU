@@ -61,7 +61,7 @@ def plotStack( modeledStackFile ):
 	p.figure(1,(12,4))
 	p.axes([0.1,0.2,0.85,0.75])
 	p.errorbar(wl,flObs,yerr = flObsErr,label="z="+str(redshift)+", "+ str(Lmin) +"< log(L"+line+")<"+ str(Lmax), marker = 'x', c='b', ls='None')
-	p.plot(wl_fir, fl_fir,'k',lw=2,label = 'log(age)='+ str(age)+ ', log(M*)='+ str(Ms), lw=2)
+	p.plot(wl_fir, fl_fir,'k',lw=2,label = 'log(age)='+ str(age)+ ', log(M*)='+ str(Ms))
 	p.xlabel('wavelength [A]')
 	p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
 	p.yscale('log')
