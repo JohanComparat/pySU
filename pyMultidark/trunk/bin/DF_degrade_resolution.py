@@ -26,8 +26,8 @@ for infi in inFiles:
 		print kk, time.time()
 		DFa = f.readReals()
 		DFb = f.readReals()
-		DFaR = DFa.reshape((Ntot,Ntot))
-		DFbR = DFb.reshape((Ntot,Ntot))
+		DFaR = DFa.reshape((gridx, gridx))
+		DFbR = DFb.reshape((gridx, gridx))
 		DF = n.mean(n.array([DFaR,DFbR]), axis=0)
 		DFdg = n.array([ n.array([ n.mean([DF[2*i][2*j:2*j+2], DF[2*i+1][2*j:2*j+2]]) for j in NS]) for i in NS])
 		res0[kk] = n.histogram(n.hstack((DFdg)), bins=bins)[0]
