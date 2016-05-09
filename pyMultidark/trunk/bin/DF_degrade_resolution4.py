@@ -21,16 +21,17 @@ for infi in inFiles:
 	gridx, gridy, gridz = f.readInts()
 	res0 = n.empty((gridx, len(bins)-1))
 	NS = n.arange(gridx/4)
+	Ntot = gridx/4
 	for kk in NS:
 		print kk, time.time()
 		DFa = f.readReals()
 		DFb = f.readReals()
 		DFc = f.readReals()
 		DFd = f.readReals()
-		DFaR = DFa.reshape((2048,2048))
-		DFbR = DFb.reshape((2048,2048))
-		DFcR = DFc.reshape((2048,2048))
-		DFdR = DFd.reshape((2048,2048))
+		DFaR = DFa.reshape((Ntot,Ntot))
+		DFbR = DFb.reshape((Ntot,Ntot))
+		DFcR = DFc.reshape((Ntot,Ntot))
+		DFdR = DFd.reshape((Ntot,Ntot))
 		# compute the mean of the two layers
 		DF = n.mean(n.array([DFaR, DFbR, DFcR, DFdR]), axis=0)
 		DFdg = n.array([ n.array([ n.mean([DF[4*i][4*j:4*j+4], DF[4*i + 1][4*j:4*j+4], DF[4*i + 2][4*j:4*j+4], DF[4*i + 3][4*j:4*j+4]]) for j in NS]) for i in NS])
