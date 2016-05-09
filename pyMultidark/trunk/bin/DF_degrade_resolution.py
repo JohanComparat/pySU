@@ -19,17 +19,16 @@ for infi in inFiles:
 	DFfile = join(DFdir,infi)
 	f = fortranfile.FortranFile(DFfile)
 	gridx, gridy, gridz = f.readInts()
-	res0 = n.empty((gridx, len(bins)-1))
-	NS = n.arange(gridx/2)
+	Ntot = gridx/2
+	res0 = n.empty((Ntot, len(bins)-1))
+	NS = n.arange(Ntot)
 	for kk in NS:
 		print kk, time.time()
 		DFa = f.readReals()
 		DFb = f.readReals()
-		DFaR = DFa.reshape((2048,2048))
-		DFbR = DFb.reshape((2048,2048))
-		# compute the mean of the two layers
+		DFaR = DFa.reshape((Ntot,Ntot))
+		DFbR = DFb.reshape((Ntot,Ntot))
 		DF = n.mean(n.array([DFaR,DFbR]), axis=0)
-		all_i = n.arange(gridx/2)
 		DFdg = n.array([ n.array([ n.mean([DF[2*i][2*j:2*j+2], DF[2*i+1][2*j:2*j+2]]) for j in NS]) for i in NS])
 		res0[kk] = n.histogram(n.hstack((DFdg)), bins=bins)[0]
 
