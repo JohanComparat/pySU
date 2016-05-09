@@ -177,7 +177,7 @@ class GalaxySpectrumFIREFLY:
 		self.flux[bad_data] 	= 0.0
 		self.error[bad_data] 	= np.max(self.flux) * 99999999999.9
 		self.bad_flags[bad_data] = 0
-		if spec.path_to_spectrum.split('-')[-2][:4]=="VVDS" :
+		if self.path_to_spectrum.split('-')[-2][:4]=="VVDS" :
 			self.r_instrument = np.ones_like(np.arange(len(self.restframe_wavelength))) * 460.
 		else:
 			self.r_instrument = np.ones_like(np.arange(len(self.restframe_wavelength))) * self.stack_resolution * 2.
