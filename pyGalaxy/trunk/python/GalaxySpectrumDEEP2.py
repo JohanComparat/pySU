@@ -186,6 +186,7 @@ class GalaxySpectrumDEEP2:
 		p.xlabel('wavelength [A]')
 		p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
 		p.yscale('log')
+		p.xlim((6400,9200))
 		p.ylim((ymin, ymax))
 		gl = p.legend(loc=0,fontsize=12)
 		gl.set_frame_on(False)
