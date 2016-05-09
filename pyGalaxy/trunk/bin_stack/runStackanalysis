@@ -48,7 +48,6 @@ screen python model_stacked_spectra_VVDS
 # hdu 
 # generate data sanity check oriented plots 
 
-# RUN CODE FROM HERE ON :
 python plot_firefly_model
 
 # concatenates results
@@ -58,8 +57,9 @@ python create_master_table
 python process_master_table
 #output in join(os.environ['SPECTRASTACKS_DIR'], "results", "table_lineSpecFit_v0.VA.fits")
 
+# RUN CODE FROM HERE ON :
 # generate science oriented plots 
-python plot_results_spectraStacks
+python plot_results_spectraStacks.py
 
 
 ./compute_intrinsic_LFs

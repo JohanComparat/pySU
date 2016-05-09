@@ -32,12 +32,11 @@ for infi in inFiles:
 		DFdg = n.array([ n.array([ n.mean([DF[2*i][2*j:2*j+2], DF[2*i+1][2*j:2*j+2]]) for j in NS]) for i in NS])
 		res0[kk] = n.histogram(n.hstack((DFdg)), bins=bins)[0]
 
-
-f.close()
-path_to_outputCat =  join(mockDir,infi[:-4] + "_DF_dg2_hist.dat")
-f=open(path_to_outputCat, 'w')
-cPickle.dump( [bins, n.sum(res0, axis=0)], f )
-f.close()
+	f.close()
+	path_to_outputCat =  join(mockDir,infi[:-4] + "_DF_dg2_hist.dat")
+	f=open(path_to_outputCat, 'w')
+	cPickle.dump( [bins, n.sum(res0, axis=0)], f )
+	f.close()
 
 	
 sys.exit()
