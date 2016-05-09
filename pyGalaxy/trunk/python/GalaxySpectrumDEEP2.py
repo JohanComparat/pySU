@@ -182,7 +182,7 @@ class GalaxySpectrumDEEP2:
 		ok = (self.fluxl >0 ) & (self.fluxl > 1.5* self.fluxlErr)
 		p.figure(1,(12,4))
 		p.axes([0.1,0.2,0.85,0.75])
-		p.errorbar(self.wavelength[ok],self.fluxl[ok],yerr = self.fluxlErr[ok], linewidth=1, alpha= 0.4, label='spectrum')
+		p.errorbar(self.wavelength[ok][::4],self.fluxl[ok][::4],yerr = self.fluxlErr[ok][::4], linewidth=1, alpha= 0.4, label='spectrum')
 		p.xlabel('wavelength [A]')
 		p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
 		p.yscale('log')
