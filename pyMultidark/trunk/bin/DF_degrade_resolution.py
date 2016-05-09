@@ -15,7 +15,6 @@ bins = n.hstack((0,n.logspace(-3, 4, 1000)))
 
 for infi in inFiles:
 	print infi
-	infi = inFiles[0]
 	DFfile = join(DFdir,infi)
 	f = fortranfile.FortranFile(DFfile)
 	gridx, gridy, gridz = f.readInts()
