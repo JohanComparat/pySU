@@ -15,5 +15,5 @@ dmins = n.hstack(([0.], ds ))
 dmaxs = n.hstack((ds, [ 1000.]))
 
 for ii in n.arange(len(box.snl)):
-	box.cornerLCpositionCatalog(ii, DMIN=dmins[ii], DMAX=dmaxs[ii] vmin = 190)
+	box.cornerLCpositionCatalog(ii, DMIN=dmins[ii], DMAX=dmaxs[ii], vmin = 190)
 

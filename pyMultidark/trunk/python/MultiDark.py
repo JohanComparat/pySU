@@ -112,7 +112,7 @@ class MultiDarkSimulation :
 				continue
 
 			line = line.split()
-			newline =n.array([ float(line[self.columnDict['x']]), float(line[self.columnDict['y']]), float(line[self.columnDict['z']]), float(line[self.columnDict['vx']]), float(line[self.columnDict['vy']]), float(line[self.columnDict['vz']]), float(line[self.columnDict['vmax']]), float(line[self.columnDict['Vpeak']), n.log10(float(line[self.columnDict['mvir'])), float(line[self.columnDict['rvir']), float(line[self.columnDict['pid']]) ])
+			newline =n.array([ float(line[self.columnDict['x']]), float(line[self.columnDict['y']]), float(line[self.columnDict['z']]), float(line[self.columnDict['vx']]), float(line[self.columnDict['vy']]), float(line[self.columnDict['vz']]), float(line[self.columnDict['vmax']]), float(line[self.columnDict['Vpeak']]), n.log10(float(line[self.columnDict['mvir']])), float(line[self.columnDict['rvir']]), float(line[self.columnDict['pid']]) ])
 			distance = (newline[0]**2+newline[1]**2+newline[2]**2)**0.5
 			if float(line[self.columnDict['vmax']])>vmin and float(line[self.columnDict['vmax']])<vmax and distance<DMAX and distance>=DMIN :
 				output[count] = newline
