@@ -14,6 +14,6 @@ td = c2.lookback_time(bd)
 dmins = n.hstack(([0.], ds ))
 dmaxs = n.hstack((ds, [ 1000.]))
 
-for ii in n.arange(len(box.snl)):
-	box.cornerLCpositionCatalog(ii, DMIN=dmins[ii], DMAX=dmaxs[ii], vmin = 190)
+ii=0
+box.cornerLCpositionCatalog(ii, DMIN=dmins[ii], DMAX=dmaxs[ii], vmin = 190)
 
