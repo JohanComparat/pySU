@@ -249,7 +249,7 @@ class LightconeSquare :
 				# print toWrite
 				# print count
 				fo.write(toWrite)
-				count+ = 1
+				count += 1
 
 		
 		fl.close()
