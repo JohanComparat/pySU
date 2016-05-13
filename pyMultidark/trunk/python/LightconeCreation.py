@@ -135,6 +135,17 @@ class LightconeSquare :
 		# print "dc to z interpolated for",self.get_zArray()
 		self.Mmin=massFactor*self.get_Melement()
 
+def defineLClimitsObsInTheCorner(self,massFactor=50) :
+		self.D_bar = 0. # Mpc / h
+		print "D_bar=",self.D_bar
+		self.D_min = 0.
+		print "D_min=",self.D_min
+		self.D_max = self.get_Lbox()/2.
+		print "D_max=",self.D_max
+		self.dc_to_z = interp1d(c2.comoving_distance(self.get_zArray()) * c2.h ,self.get_zArray())
+		# print "dc to z interpolated for",self.get_zArray()
+		self.Mmin=massFactor*self.get_Melement()
+
 	def defineSnapshotLimits(self):
 		# defines the limits of the LC
 		dsl = c2.comoving_distance(self.get_zsl()) * c2.h # Mpc / h

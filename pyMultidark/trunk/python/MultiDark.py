@@ -91,6 +91,93 @@ class MultiDarkSimulation :
 			#{'scale': 0, 'id': 1, 'desc_scale': 2, 'desc_id': 3, 'num_prog': 4, 'pid': 5, 'upid': 6, 'desc_pid': 7, 'phantom': 8, 'sam_mvir': 9, 'mvir': 10, 'rvir': 11, 'rs': 12, 'vrms': 13, 'mmp?': 14, 'scale_of_last_MM': 15, 'vmax': 16, 'x': 17, 'y': 18, 'z': 19, 'vx': 20, 'vy': 21, 'vz': 22, 'Jx': 23, 'Jy': 24, 'Jz': 25, 'Spin': 26, 'Breadth_first_ID': 27, 'Depth_first_ID': 28, 'Tree_root_ID': 29, 'Orig_halo_ID': 30, 'Snap_num': 31, 'Next_coprogenitor_depthfirst_ID': 32, 'Last_progenitor_depthfirst_ID': 33, 'Last_mainleaf_depthfirst_ID': 34, 'Rs_Klypin': 35, 'Mmvir_all': 36, 'M200b': 37, 'M200c': 38, 'M500c': 39, 'M2500c': 40, 'Xoff': 41, 'Voff': 42, 'Spin_Bullock': 43, 'b_to_a': 44, 'c_to_a': 45, 'Ax': 46, 'Ay': 47, 'Az': 48, 'b_to_a_500c': 49, 'c_to_a_500c': 50, 'Ax_500c': 51, 'Ay_500c': 52, 'Az_500c': 53, 'TU': 54, 'M_pe_Behroozi': 55, 'M_pe_Diemer': 56, 'Macc': 57, 'Mpeak': 58, 'Vacc': 59, 'Vpeak': 60, 'Halfmass_Scale': 61, 'Acc_Rate_Inst': 62, 'Acc_Rate_100Myr': 63, 'Acc_Rate_1Tdyn': 64, 'Acc_Rate_2Tdyn': 65, 'Acc_Rate_Mpeak': 66, 'Mpeak_Scale': 67, 'Acc_Scale': 68, 'First_Acc_Scale': 69, 'First_Acc_Mvir': 70, 'First_Acc_Vmax': 71, 'VmaxatMpeak': 72}
 			#{'id': 0, 'desc_id': 1, 'mvir': 2, 'vmax': 3, 'vrms': 4, 'rvir': 5, 'rs': 6, 'Np': 7, 'x': 8, 'y': 9, 'z': 10, 'vx': 11, 'vy': 12, 'vz': 13, 'Jx': 14, 'Jy': 15, 'Jz': 16, 'Spin':17, 'Rs_Klypin': 18, 'Mmvir_all': 19, 'M200b': 20, 'M200c': 21, 'M500c': 22, 'M2500c': 23, 'Xoff': 24, 'Voff': 25, 'Spin_Bullock': 26, 'b_to_a': 27, 'c_to_a': 28, 'Ax': 29, 'Ay': 30, 'Az': 31, 'b_to_a_500c': 32, 'c_to_a_500c': 33, 'Ax_500c': 34, 'Ay_500c': 35, 'Az_500c': 36, 'TU': 37, 'M_pe_Behroozi': 38, 'M_pe_Diemer': 39, 'pid': 40}
 
+	def cornerLCpositionCatalog(self, ii, DMIN=0., DMAX=1000., vmin=190, vmax=100000, NperBatch = 10000000):
+		"""
+		Extracts the positions and velocity out of a snapshot of the Multidark simulation.   		
+		:param ii: index of the snapshot in the list self.snl
+		:param DMIN:maximum distance for the pointto be included.
+		:param DMAX:maximum distance for the pointto be included.
+		:param vmin: name of the quantity of interest, mass, velocity.
+		:param vmax: of the quantity of interest in the snapshots.
+		:param NperBatch: number of line per fits file, default: 1000000
+		 """		
+		fl = fileinput.input(self.snl[ii])
+		print self.snl[ii]
+		nameSnapshot = self.snl[ii].split('/')[-1][:-5]
+		Nb = 0
+		count = 0
+		output = n.empty((NperBatch,5))
+		for line in fl:
+			if line[0] == "#" :
+				continue
+
+			line = line.split()
+			newline =n.array([ float(line[self.columnDict['x']]), float(line[self.columnDict['y']]), float(line[self.columnDict['z']]), float(line[self.columnDict['vx']]), float(line[self.columnDict['vy']]), float(line[self.columnDict['vz']]), float(line[self.columnDict['vmax']]), float(line[self.columnDict['Vpeak']), n.log10(float(line[self.columnDict['mvir'])), float(line[self.columnDict['rvir']), float(line[self.columnDict['pid']]) ])
+			distance = (newline[0]**2+newline[1]**2+newline[2]**2)**0.5
+			if float(line[self.columnDict['vmax']])>vmin and float(line[self.columnDict['vmax']])<vmax and distance<DMAX and distance>=DMIN :
+				output[count] = newline
+				count+=1
+				
+			if count == NperBatch  :
+				print "count",count
+				print output
+				print output.shape
+				print output.T[0].shape
+				#define the columns
+				col0 = fits.Column(name='x',format='D', array=output.T[0] )
+				col1 = fits.Column(name='y',format='D', array= output.T[1] )
+				col2 = fits.Column(name='z',format='D', array= output.T[2] )
+				col3 = fits.Column(name='vx',format='D', array=output.T[3] )
+				col4 = fits.Column(name='vy',format='D', array= output.T[4] )
+				col5 = fits.Column(name='vz',format='D', array= output.T[5] )
+				col6 = fits.Column(name='vmax',format='D', array= output.T[6] )
+				col7 = fits.Column(name='vpeak',format='D', array= output.T[7] )
+				col8 = fits.Column(name='mvir',format='D', array= output.T[8] )
+				col9 = fits.Column(name='rvir',format='D', array= output.T[9] )
+				col10 = fits.Column(name='pid',format='D', array= output.T[10] )
+				#define the table hdu 
+				hdu_cols  = fits.ColDefs([col0, col1, col2, col3, col4, col5, col6, col7, col8, col9, col10])
+				tb_hdu = fits.BinTableHDU.from_columns( hdu_cols )
+				#define the header
+				prihdr = fits.Header()
+				prihdr['HIERARCH nameSnapshot'] = nameSnapshot
+				prihdr['count'] = count
+				prihdr['batchN'] = Nb
+				prihdu = fits.PrimaryHDU(header=prihdr)
+				#writes the file
+				thdulist = fits.HDUList([prihdu, tb_hdu])
+				os.system("rm "+self.snl[ii][:-5]+"_cornerLC_Nb_"+str(Nb)+".fits")
+				thdulist.writeto(self.snl[ii][:-5]+"_cornerLC_Nb_"+str(Nb)+".fits")
+				Nb+=1
+				count=0
+				output = n.empty((NperBatch,5))
+
+		# and for the last batch :
+		col0 = fits.Column(name='x',format='D', array=output.T[0] )
+		col1 = fits.Column(name='y',format='D', array= output.T[1] )
+		col2 = fits.Column(name='z',format='D', array= output.T[2] )
+		col3 = fits.Column(name='vx',format='D', array=output.T[3] )
+		col4 = fits.Column(name='vy',format='D', array= output.T[4] )
+		col5 = fits.Column(name='vz',format='D', array= output.T[5] )
+		col6 = fits.Column(name='vmax',format='D', array= output.T[6] )
+		col7 = fits.Column(name='vpeak',format='D', array= output.T[7] )
+		col8 = fits.Column(name='mvir',format='D', array= output.T[8] )
+		col9 = fits.Column(name='rvir',format='D', array= output.T[9] )
+		col10 = fits.Column(name='pid',format='D', array= output.T[10] )
+		#define the table hdu 
+		hdu_cols  = fits.ColDefs([col0, col1, col2, col3, col4, col5, col6, col7, col8, col9, col10])
+		tb_hdu = fits.BinTableHDU.from_columns( hdu_cols )
+		#define the header
+		prihdr = fits.Header()
+		prihdr['HIERARCH nameSnapshot'] = nameSnapshot
+		prihdr['batchN'] = Nb
+		prihdr['count'] = count
+		prihdu = fits.PrimaryHDU(header=prihdr)
+		#writes the file
+		thdulist = fits.HDUList([prihdu, tb_hdu])
+		os.system("rm "+self.snl[ii][:-5]+"_cornerLC_Nb_"+str(Nb)+".fits")
+		thdulist.writeto(self.snl[ii][:-5]+"_cornerLC_Nb_"+str(Nb)+".fits")
+	
 	def writePositionCatalog(self, ii, vmin=190, vmax=10000, NperBatch = 10000000):
 		"""
 		Extracts the positions and velocity out of a snapshot of the Multidark simulation.        
