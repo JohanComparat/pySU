@@ -106,7 +106,7 @@ class MultiDarkSimulation :
 		nameSnapshot = self.snl[ii].split('/')[-1][:-5]
 		Nb = 0
 		count = 0
-		output = n.empty((NperBatch,5))
+		output = n.empty((NperBatch,11))
 		for line in fl:
 			if line[0] == "#" :
 				continue
@@ -150,7 +150,7 @@ class MultiDarkSimulation :
 				thdulist.writeto(self.snl[ii][:-5]+"_cornerLC_Nb_"+str(Nb)+".fits")
 				Nb+=1
 				count=0
-				output = n.empty((NperBatch,5))
+				output = n.empty((NperBatch,11))
 
 		# and for the last batch :
 		col0 = fits.Column(name='x',format='D', array=output.T[0] )
