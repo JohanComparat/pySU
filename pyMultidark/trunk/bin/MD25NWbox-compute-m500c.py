@@ -4,6 +4,6 @@ box = MultiDarkSimulation(Lbox=2500.0 * uu.Mpc,wdir="/data2/DATA/eBOSS/Multidark
 
 for ii in n.arange(len(box.snl)):
 	box.computeSingleDistributionFunction(ii, 'M500c',n.arange(8,16,0.01))
-	box.combinesSingleDistributionFunction(ii,'M200c', 'M500c',n.arange(8,16,0.01), n.arange(8,16,0.01),type = "Central")
-	box.combinesSingleDistributionFunction(ii,'M200c', 'M500c',n.arange(8,16,0.01), n.arange(8,16,0.01),type = "Satellite")
+	box.combinesSingleDistributionFunction(ii, 'M500c', n.arange(8,16,0.01),type = "Central")
+	box.combinesSingleDistributionFunction(ii, 'M500c', n.arange(8,16,0.01),type = "Satellite")
 
