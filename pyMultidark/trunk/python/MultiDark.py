@@ -447,7 +447,7 @@ class MultiDarkSimulation :
 			for ii, xel in enumerate(X):
 				print ii
 				xmin, ymin, zmin, xmax, ymax, zmax = X[ii], Y[ii], Z[ii], X[ii]+Ljk, Y[ii]+Ljk, Z[ii]+Ljk
-				sel = (dd['x']>xmin)&(dd['x']<xmax)&(dd['y']>ymin)&(dd['y']<ymax)&(dd['z']>zmin)&(dd['z']<zmax)
+				sel = (dd['x']>xmin)&(dd['x']<xmax)&(dd['y']>ymin)&(dd['y']<ymax)&(dd['z']>zmin)&(dd['z']<zmax)&(dd[name]>bins[0])&(dd[name]<bins[-1])
 				print len(dd[name][(sel)&(cen)]), len(dd[name][(sel)&(cen==False)])
 				if len(dd[name][(sel)&(cen)])>=1:
 					nnC[jj][ii] = n.histogram(dd[name][(sel)&(cen)], bins = bins)[0]
