@@ -457,7 +457,7 @@ class MultiDarkSimulation :
 		f = open(join(output_dir,rootname +"_Satellite_JKresampling.pkl"),'w')
 		cPickle.dump(n.sum(nnS,axis=0),f)
 		f.close()
-		n.savetxt(join(output_dir,rootname+".bins"),n.transpose([bins]))
+		n.savetxt(join(output_dir,rootname+"_"+name+"_JKresampling.bins"),n.transpose([bins]))
 
 	def computeSingleDistributionFunction(self, ii, name, bins, Mfactor=100. ) :
 		"""
