@@ -191,8 +191,81 @@ class MultiDarkSimulation :
 		thdulist = fits.HDUList([prihdu, tb_hdu])
 		os.system("rm "+self.snl[ii][:-5]+"_cornerLC_Nb_"+str(Nb)+".fits")
 		thdulist.writeto(self.snl[ii][:-5]+"_cornerLC_Nb_"+str(Nb)+".fits")
+
+	def writePositionCatalogVmaxM200c(self, ii, vmin=190, vmax=10000, NperBatch = 10000000):
+		"""
+		Extracts the positions and velocity out of a snapshot of the Multidark simulation.        
+		:param ii: index of the snapshot in the list self.snl
+		:param vmin: name of the quantity of interest, mass, velocity.
+		:param vmax: of the quantity of interest in the snapshots.
+		:param NperBatch: number of line per fits file, default: 1000000
+		 """		
+		fl = fileinput.input(self.snl[ii])
+		nameSnapshot = self.snl[ii].split('/')[-1][:-5]
+		Nb = 0
+		count = 0
+		output = n.empty((NperBatch,5))
+		for line in fl:
+			if line[0] == "#" :
+				continue
+
+			line = line.split()
+			newline =n.array([ float(line[self.columnDict['x']]), float(line[self.columnDict['y']]), float(line[self.columnDict['z']]), float(line[self.columnDict['vmax'], n.log10(float(line[self.columnDict['M200c']])), float(line[self.columnDict['pid']]) ])
+			if newline[3]>vmin and newline[3]<vmax :
+				output[count] = newline
+				count+=1
+				
+			if count == NperBatch  :
+				print "count",count
+				print output
+				print output.shape
+				print output.T[0].shape
+				#define the columns
+				col0 = fits.Column(name='x',format='D', array=output.T[0] )
+				col1 = fits.Column(name='y',format='D', array= output.T[1] )
+				col2 = fits.Column(name='z',format='D', array= output.T[2] )
+				col3 = fits.Column(name='vmax',format='D', array= output.T[3] )
+				col4 = fits.Column(name='M200c',format='D', array= output.T[4] )
+				col5 = fits.Column(name='pid',format='D', array= output.T[5] )
+				#define the table hdu 
+				hdu_cols  = fits.ColDefs([col0, col1, col2, col3, col4, col5])
+				tb_hdu = fits.BinTableHDU.from_columns( hdu_cols )
+				#define the header
+				prihdr = fits.Header()
+				prihdr['HIERARCH nameSnapshot'] = nameSnapshot
+				prihdr['count'] = count
+				prihdr['batchN'] = Nb
+				prihdu = fits.PrimaryHDU(header=prihdr)
+				#writes the file
+				thdulist = fits.HDUList([prihdu, tb_hdu])
+				os.system("rm "+self.snl[ii][:-5]+"_VmaxM200c_Nb_"+str(Nb)+".fits")
+				thdulist.writeto(self.snl[ii][:-5]+"_VmaxM200c_Nb_"+str(Nb)+".fits")
+				Nb+=1
+				count=0
+				output = n.empty((NperBatch,5))
+
+		# and for the last batch :
+		col0 = fits.Column(name='x',format='D', array=output.T[0] )
+		col1 = fits.Column(name='y',format='D', array= output.T[1] )
+		col2 = fits.Column(name='z',format='D', array= output.T[2] )
+		col3 = fits.Column(name='vmax',format='D', array= output.T[3] )
+		col4 = fits.Column(name='M200c',format='D', array= output.T[4] )
+		col5 = fits.Column(name='pid',format='D', array= output.T[5] )
+		#define the table hdu 
+		hdu_cols  = fits.ColDefs([col0, col1, col2, col3, col4, col5])
+		tb_hdu = fits.BinTableHDU.from_columns( hdu_cols )
+		#define the header
+		prihdr = fits.Header()
+		prihdr['HIERARCH nameSnapshot'] = nameSnapshot
+		prihdr['count'] = count
+		prihdr['batchN'] = Nb
+		prihdu = fits.PrimaryHDU(header=prihdr)
+		#writes the file
+		thdulist = fits.HDUList([prihdu, tb_hdu])
+		os.system("rm "+self.snl[ii][:-5]+"_VmaxM200c_Nb_"+str(Nb)+".fits")
+		thdulist.writeto(self.snl[ii][:-5]+"_VmaxM200c_Nb_"+str(Nb)+".fits")
 	
-	def writePositionCatalog(self, ii, vmin=190, vmax=10000, NperBatch = 10000000):
+	def writePositionCatalogVmax(self, ii, vmin=190, vmax=10000, NperBatch = 10000000):
 		"""
 		Extracts the positions and velocity out of a snapshot of the Multidark simulation.        
 		:param ii: index of the snapshot in the list self.snl
