@@ -437,8 +437,8 @@ class MultiDarkSimulation :
 		Y = n.ravel(Yi)
 		Z = n.ravel(Zi)	
 		# loops over the fileList : fits files with the data
-		nnC = n.empty((len(fileList),len(X),len(bins)-1))
-		nnS = n.empty((len(fileList),len(X),len(bins)-1))
+		nnC = n.zeros((len(fileList),len(X),len(bins)-1))
+		nnS = n.zeros((len(fileList),len(X),len(bins)-1))
 		for jj, file in enumerate(fileList):
 			print file
 			dd = fits.open(file)[1].data
@@ -448,8 +448,11 @@ class MultiDarkSimulation :
 				print ii
 				xmin, ymin, zmin, xmax, ymax, zmax = X[ii], Y[ii], Z[ii], X[ii]+Ljk, Y[ii]+Ljk, Z[ii]+Ljk
 				sel = (dd['x']>xmin)&(dd['x']<xmax)&(dd['y']>ymin)&(dd['y']<ymax)&(dd['z']>zmin)&(dd['z']<zmax)
-				nnC[jj][ii] = n.histogram(dd[name][(sel)&(cen)], bins = bins)[0]
-				nnS[jj][ii] = n.histogram(dd[name][(sel)&(cen==False)], bins = bins)[0]
+				print len(dd[name][(sel)&(cen)]), len(dd[name][(sel)&(cen==False)])
+				if len(dd[name][(sel)&(cen)])>=1:
+					nnC[jj][ii] = n.histogram(dd[name][(sel)&(cen)], bins = bins)[0]
+				if  len(dd[name][(sel)&(cen==False)])>=1:
+					nnS[jj][ii] = n.histogram(dd[name][(sel)&(cen==False)], bins = bins)[0]
 			
 		f = open(join(output_dir, rootname +"_Central_JKresampling.pkl"),'w')
 		cPickle.dump(n.sum(nnC,axis=0),f)
