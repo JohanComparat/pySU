@@ -429,7 +429,7 @@ class MultiDarkSimulation :
 		output_dir = join(self.wdir,self.boxDir,"properties",name)
 		os.system('mkdir '+ output_dir)
 		# define boundaries
-		NBoundariesPerSide = int(overlap*self.Lbox/Ljk)
+		NBoundariesPerSide = int(overlap*self.Lbox.value/Ljk)
 		bounds = n.arange(NBoundariesPerSide+1)* Ljk / overlap
 		print "boundaries on each side: ", bounds
 		Xi, Yi, Zi = n.meshgrid(bounds[:-2],bounds[:-2],bounds[:-2])
