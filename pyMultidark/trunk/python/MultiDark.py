@@ -415,7 +415,7 @@ class MultiDarkSimulation :
 				#return DR, volume, dV, pairCount, pairs, nD, nR
 
 
-	def computeSingleDistributionFunctionJKresampling(self, ii, name, bins, Mfactor=100., Ljk = 1000. ) :
+	def computeSingleDistributionFunctionJKresampling(self, fileList, rootname, name, bins, Ljk = 1000., overlap = 2. ) :
 		"""
 		Extracts the distribution of quantity 'name' out of all snapshots of the Multidark simulation.
 		Resamples the box in smaller boxes of length Ljk in Mpc/h
@@ -423,70 +423,41 @@ class MultiDarkSimulation :
 		:param name: name of the quantity of interest, mass, velocity.
 		:param index: of the quantity of interest in the snapshots.
 		:param bins: binning scheme to compute the historgram.
-		:param Mfactor: only halos with Mvir > Mfact* Melement are used.
 		:param Ljk: length of the resampled box
+		:param overlap: allowed overlap between resampled realizations : 1 = no overlap 2 : 50% overlap ... 
 		"""		
-		###HERE IMPLEMENT FUnCTION
-		index = self.columnDict[name]
 		output_dir = join(self.wdir,self.boxDir,"properties",name)
 		os.system('mkdir '+ output_dir)
-		NperBatch = 10000000
-		qtyCentral = n.empty(NperBatch)  # 10M array
-		qtySat = n.empty(NperBatch)  # 10M array
-		print name, index, output_dir
-
-		fl = fileinput.input(self.snl[ii])
-		nameSnapshot = self.snl[ii].split('/')[-1][:-5]
-
-		countCen,countSat,countFileCen,countFileSat = 0,0,0,0
-		
-		for line in fl:
-			if line[0] == "#" :
-				continue
-
-			line = line.split()
-			sat_or_cen = float(line[self.columnDict['pid']])
-			mv = float(line[self.columnDict['mvir']])
-			if sat_or_cen != -1 and mv > Mfactor * self.Melement :
-				countSat+= 1					
-				qtySat[countSat] = float(line[index])
-				
-			if sat_or_cen == -1 and mv > Mfactor * self.Melement :
-				countCen+= 1					
-				qtyCentral[countCen] = float(line[index])
-				
-			if countCen == NperBatch-1 :
-				nnM,bb = n.histogram(n.log10(qtyCentral),bins = bins)
-				print "countCen",countCen
-				f = open(join(output_dir, nameSnapshot + "_" + name + "_Central_" + str(countFileCen)+ ".pkl"),'w')
-				cPickle.dump(nnM,f)
-				f.close()
-				countFileCen+= 1
-				countCen = 0
-				qtyCentral = n.empty(NperBatch)
-
-			if countSat == NperBatch-1 :
-				nnM,bb = n.histogram(n.log10(qtySat),bins = bins)
-				print "countSat", countSat
-				f = open(join(output_dir, nameSnapshot + "_" + name+ "_Satellite_" + str(countFileSat)+ ".pkl"),'w')
-				cPickle.dump(nnM,f)
-				f.close()
-				countFileSat+= 1
-				countSat = 0
-				qtySat = n.empty(NperBatch)
-
-		# and for the last batch :
-		nnM,bb = n.histogram(n.log10(qtyCentral),bins = bins)
-		f = open(join(output_dir, nameSnapshot + "_" + name +"_Central_" + str(countFileCen)+ ".pkl"),'w')
-		cPickle.dump(nnM,f)
+		# define boundaries
+		NBoundariesPerSide = int(overlap*self.Lbox/Ljk)
+		bounds = n.arange(NBoundariesPerSide+1)* Ljk / overlap
+		print "boundaries on each side: ", bounds
+		Xi, Yi, Zi = n.meshgrid(bounds[:-2],bounds[:-2],bounds[:-2])
+		X = n.ravel(Xi)
+		Y = n.ravel(Yi)
+		Z = n.ravel(Zi)	
+		# loops over the fileList : fits files with the data
+		nnC = n.empty((len(fileList),len(X),len(bins)-1))
+		nnS = n.empty((len(fileList),len(X),len(bins)-1))
+		for jj, file in enumerate(fileList):
+			print file
+			dd = fits.open(file)[1].data
+			cen = (dd['pid']==-1)
+			#computes the histogram for each resampling of the file
+			for ii, xel in enumerate(X):
+				print ii
+				xmin, ymin, zmin, xmax, ymax, zmax = X[ii], Y[ii], Z[ii], X[ii]+Ljk, Y[ii]+Ljk, Z[ii]+Ljk
+				sel = (dd['x']>xmin)&(dd['x']<xmax)&(dd['y']>ymin)&(dd['y']<ymax)&(dd['z']>zmin)&(dd['z']<zmax)
+				nnC[jj][ii] = n.histogram(dd[name][(sel)&(cen)], bins = bins)[0]
+				nnS[jj][ii] = n.histogram(dd[name][(sel)&(cen==False)], bins = bins)[0]
+			
+		f = open(join(output_dir, rootname +"_Central_JKresampling.pkl"),'w')
+		cPickle.dump(n.sum(nnC,axis=0),f)
 		f.close()
-
-		nnM,bb = n.histogram(n.log10(qtySat),bins = bins)
-		f = open(join(output_dir, nameSnapshot + "_" + name + "_Satellite_" + str(countFileSat)+ ".pkl"),'w')
-		cPickle.dump(nnM,f)
+		f = open(join(output_dir,rootname +"_Satellite_JKresampling.pkl"),'w')
+		cPickle.dump(n.sum(nnS,axis=0),f)
 		f.close()
-		
-		n.savetxt(join(output_dir,name+".bins"),n.transpose([bins]))
+		n.savetxt(join(output_dir,rootname+".bins"),n.transpose([bins]))
 
 	def computeSingleDistributionFunction(self, ii, name, bins, Mfactor=100. ) :
 		"""
