@@ -504,6 +504,7 @@ class MultiDarkSimulation :
 				qtyCentral[countCen] = point
 				
 			if countCen == NperBatch-1 :
+				print qtyCentral
 				nnM,bb = n.histogram(n.log10(qtyCentral),bins = bins)
 				print "countCen",countCen
 				f = open(join(output_dir, nameSnapshot + "_" + name + "_Central_" + str(countFileCen)+ ".pkl"),'w')
@@ -514,6 +515,7 @@ class MultiDarkSimulation :
 				qtyCentral = n.empty(NperBatch)
 
 			if countSat == NperBatch-1 :
+				print qtySat
 				nnM,bb = n.histogram(n.log10(qtySat),bins = bins)
 				print "countSat", countSat
 				f = open(join(output_dir, nameSnapshot + "_" + name+ "_Satellite_" + str(countFileSat)+ ".pkl"),'w')
@@ -523,6 +525,8 @@ class MultiDarkSimulation :
 				countSat = 0
 				qtySat = n.empty(NperBatch)
 
+		print qtyCentral
+		print qtySat
 		# and for the last batch :
 		nnM,bb = n.histogram(n.log10(qtyCentral),bins = bins)
 		f = open(join(output_dir, nameSnapshot + "_" + name +"_Central_" + str(countFileCen)+ ".pkl"),'w')
