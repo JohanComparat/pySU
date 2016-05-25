@@ -528,7 +528,7 @@ class MultiDarkSimulation :
 		print "sat2", qtyCentral
 		print "cen2", qtySat
 		# and for the last batch :
-		nnM,bb = n.histogram(n.log10(qtyCentral[ (qtyCentral>10**bins[0]) & (qtyCentral<10**bins[-]) ]),bins = bins)
+		nnM,bb = n.histogram(n.log10(qtyCentral[ (qtyCentral>10**bins[0]) & (qtyCentral<10**bins[-1]) ]),bins = bins)
 		f = open(join(output_dir, nameSnapshot + "_" + name +"_Central_" + str(countFileCen)+ ".pkl"),'w')
 		cPickle.dump(nnM,f)
 		f.close()
