@@ -462,7 +462,7 @@ class MultiDarkSimulation :
 		f.close()
 		n.savetxt(join(output_dir,rootname+"_"+name+"_JKresampling.bins"),n.transpose([bins]))
 
-	def computeSingleDistributionFunction(self, ii, name, bins, Mfactor=100. ) :
+	def computeSingleDistributionFunction(self, ii, name, bins, Mfactor=10. ) :
 		"""
 		Extracts the distribution of quantity 'name' out of all snapshots of the Multidark simulation.        
 		:param ii: index of the snapshot in the list self.snl
@@ -473,6 +473,7 @@ class MultiDarkSimulation :
 		"""		
 		index = self.columnDict[name]
 		output_dir = join(self.wdir,self.boxDir,"properties",name)
+		print output_dir
 		os.system('mkdir '+ output_dir)
 		NperBatch = 10000000
 		qtyCentral = n.empty(NperBatch)  # 10M array
@@ -481,6 +482,8 @@ class MultiDarkSimulation :
 
 		fl = fileinput.input(self.snl[ii])
 		nameSnapshot = self.snl[ii].split('/')[-1][:-5]
+		print nameSnapshot
+		print name
 
 		countCen,countSat,countFileCen,countFileSat = 0,0,0,0
 		
@@ -492,7 +495,6 @@ class MultiDarkSimulation :
 			sat_or_cen = float(line[self.columnDict['pid']])
 			mv = float(line[self.columnDict['mvir']])
 			point = float(line[index])
-			print point
 			if sat_or_cen != -1 and mv > Mfactor * self.Melement and point > 10**bins[0] and point > 10**bins[-1] :
 				countSat+= 1					
 				qtySat[countSat] = point
@@ -545,7 +547,9 @@ class MultiDarkSimulation :
 		:param type: "Central" or "Satellite"
 		"""
 		output_dir = join(self.wdir,self.boxDir,"properties",name)
+		print output_dir
 		nameSnapshot = self.snl[ii].split('/')[-1][:-5]
+		print nameSnapShot
 		pklList = n.array(glob.glob(join(output_dir, nameSnapshot + "_" + name +"_"+type+"_*.pkl")))
 
 		nnM = n.empty( [len(pklList),len(bins)-1] ) 
