@@ -540,8 +540,6 @@ class MultiDarkSimulation :
 		
 		n.savetxt(join(output_dir,name+".bins"),n.transpose([bins]))
 
-
-
 	def combinesSingleDistributionFunction(self, ii, name='Vpeak', bins=10**n.arange(0,3.5,0.01), type = "Central" ) :
 		"""
 		Coombines the outputs of computeSingleDistributionFunction.
@@ -553,7 +551,6 @@ class MultiDarkSimulation :
 		output_dir = join(self.wdir,self.boxDir,"properties",name)
 		print output_dir
 		nameSnapshot = self.snl[ii].split('/')[-1][:-5]
-		print nameSnapShot
 		pklList = n.array(glob.glob(join(output_dir, nameSnapshot + "_" + name +"_"+type+"_*.pkl")))
 
 		nnM = n.empty( [len(pklList),len(bins)-1] ) 
