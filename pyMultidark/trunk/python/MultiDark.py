@@ -492,6 +492,7 @@ class MultiDarkSimulation :
 			sat_or_cen = float(line[self.columnDict['pid']])
 			mv = float(line[self.columnDict['mvir']])
 			point = float(line[index])
+			print point
 			if sat_or_cen != -1 and mv > Mfactor * self.Melement and point > 10**bins[0] and point > 10**bins[-1] :
 				countSat+= 1					
 				qtySat[countSat] = point
