@@ -496,14 +496,14 @@ class MultiDarkSimulation :
 			mv = float(line[self.columnDict['mvir']])
 			point = float(line[index])
 			if sat_or_cen != -1 and mv > Mfactor * self.Melement and point > 10**bins[0] and point < 10**bins[-1] :
-				countSat+= 1					
 				qtySat[countSat] = point
+				countSat+= 1					
 				
 			if sat_or_cen == -1 and mv > Mfactor * self.Melement and point > 10**bins[0] and point < 10**bins[-1] :
-				countCen+= 1					
 				qtyCentral[countCen] = point
+				countCen+= 1					
 				
-			if countCen == NperBatch-1 :
+			if countCen == NperBatch :
 				print "cen", qtyCentral
 				nnM,bb = n.histogram(n.log10(qtyCentral),bins = bins)
 				print "countCen",countCen
@@ -514,7 +514,7 @@ class MultiDarkSimulation :
 				countCen = 0
 				qtyCentral = n.empty(NperBatch)
 
-			if countSat == NperBatch-1 :
+			if countSat == NperBatch :
 				print "sat", qtySat
 				nnM,bb = n.histogram(n.log10(qtySat),bins = bins)
 				print "countSat", countSat
