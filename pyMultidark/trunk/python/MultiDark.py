@@ -495,11 +495,11 @@ class MultiDarkSimulation :
 			sat_or_cen = float(line[self.columnDict['pid']])
 			mv = float(line[self.columnDict['mvir']])
 			point = float(line[index])
-			if sat_or_cen != -1 and mv > Mfactor * self.Melement and point > 10**bins[0] and point > 10**bins[-1] :
+			if sat_or_cen != -1 and mv > Mfactor * self.Melement and point > 10**bins[0] and point < 10**bins[-1] :
 				countSat+= 1					
 				qtySat[countSat] = point
 				
-			if sat_or_cen == -1 and mv > Mfactor * self.Melement and point > 10**bins[0] and point > 10**bins[-1] :
+			if sat_or_cen == -1 and mv > Mfactor * self.Melement and point > 10**bins[0] and point < 10**bins[-1] :
 				countCen+= 1					
 				qtyCentral[countCen] = point
 				
