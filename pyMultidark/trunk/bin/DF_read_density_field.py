@@ -7,7 +7,7 @@ from astropy.io import fits
 import time
 import fortranfile
 DFdir = join("/data2", "users", "gustavo", "BigMD", "1Gpc_3840_Planck1_New", "DENSFIELDS")
-mockDir = "/data1/DATA/eBOSS/Multidark-box-mocks/parts/"
+mockDir = "/data1/DATA/eBOSS/Multidark-box-mocks/v1.0/parts/"
 
 def writeDFMock(dataCat, DFfile, Lbox = 1000.):
 	print dataCat, DFfile
@@ -73,18 +73,18 @@ def writeDFMock(dataCat, DFfile, Lbox = 1000.):
 
 
 DFfile = join(DFdir,"dmdens_cic_104.dat")
-writeDFMock(join( mockDir,"Box_HAM_z0.701838_nbar1.350000e-05_QSO.dat"), DFfile)
-writeDFMock(join( mockDir,"Box_HAM_z0.701838_nbar1.000000e-04_LRG.dat"), DFfile)
-writeDFMock(join( mockDir,"Box_HAM_z0.701838_nbar2.400000e-04_ELG.dat"), DFfile)
+#writeDFMock(join( mockDir,"Box_HAM_z0.701838_nbar1.350000e-05_QSO.dat"), DFfile)
+writeDFMock(join( mockDir,"Box_HAM_z0.701838_nbar1.359000e-05_QSO_v1.0.dat"), DFfile)
+#writeDFMock(join( mockDir,"Box_HAM_z0.701838_nbar2.400000e-04_ELG.dat"), DFfile)
 DFfile = join(DFdir,"dmdens_cic_101.dat")
-writeDFMock(join( mockDir,"Box_HAM_z0.818843_nbar1.000000e-04_LRG.dat"), DFfile)
-writeDFMock(join( mockDir,"Box_HAM_z0.818843_nbar1.680000e-05_QSO.dat"), DFfile)
-writeDFMock(join( mockDir,"Box_HAM_z0.818843_nbar3.200000e-04_ELG.dat"), DFfile)
+#writeDFMock(join( mockDir,"Box_HAM_z0.818843_nbar1.000000e-04_LRG.dat"), DFfile)
+writeDFMock(join( mockDir,"Box_HAM_z0.818843_nbar1.720000e-05_QSO_v1.0.dat"), DFfile)
+#writeDFMock(join( mockDir,"Box_HAM_z0.818843_nbar3.200000e-04_ELG.dat"), DFfile)
 DFfile = join(DFdir,"dmdens_cic_097.dat")
-writeDFMock(join( mockDir,"Box_HAM_z0.987281_nbar1.720000e-05_QSO.dat"), DFfile)
-writeDFMock(join( mockDir,"Box_HAM_z0.987281_nbar2.400000e-04_ELG.dat"), DFfile)
+writeDFMock(join( mockDir,"Box_HAM_z0.987281_nbar1.933000e-05_QSO_v1.0.dat "), DFfile)
+#writeDFMock(join( mockDir,"Box_HAM_z0.987281_nbar2.400000e-04_ELG.dat"), DFfile)
 DFfile = join(DFdir,"dmdens_cic_087.dat")
-writeDFMock(join( mockDir,"Box_HAM_z1.480160_nbar1.930000e-05_QSO.dat"), DFfile)
+writeDFMock(join( mockDir,"Box_HAM_z1.480160_nbar2.040000e-05_QSO_v1.0.dat"), DFfile)
 
 
 
