@@ -73,6 +73,7 @@ def writeDFMock(dataCat, DFfile, Lbox = 1000.):
 	os.system("rm -rf "+path_to_outputCat)
 	hdu.writeto(path_to_outputCat)
 
+sys.exit()
 
 DFfile = join(DFdir,"dmdens_cic_104.dat")
 #writeDFMock(join( mockDir,"Box_HAM_z0.701838_nbar1.350000e-05_QSO.dat"), DFfile)
@@ -89,4 +90,3 @@ DFfile = join(DFdir,"dmdens_cic_087.dat")
 writeDFMock(join( mockDir,"Box_HAM_z1.480160_nbar2.040000e-05_QSO_v1.0.dat"), DFfile)
 
 
-sys.exit()
