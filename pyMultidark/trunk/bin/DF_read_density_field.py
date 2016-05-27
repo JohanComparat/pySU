@@ -52,8 +52,8 @@ def writeDFMock(dataCat, DFfile, Lbox = 1000.):
 	f.close()
 
 	c0 = fits.Column(name="DF",format='D', array=delta )
-	c01 = fits.Column(name="DF_N1",format='D', array=delta1 )
-	c02 = fits.Column(name="DF_N2",format='D', array=delta2 )
+	#c01 = fits.Column(name="DF_N1",format='D', array=delta1 )
+	#c02 = fits.Column(name="DF_N2",format='D', array=delta2 )
 	c1 = fits.Column(name="x",format='D', array=x )
 	c2 = fits.Column(name="y",format='D', array=y )
 	c3 = fits.Column(name="z",format='D', array=z )
@@ -68,7 +68,7 @@ def writeDFMock(dataCat, DFfile, Lbox = 1000.):
 	c12 = fits.Column(name="kind",format='D', array=kind )
 	c13 = fits.Column(name="z_dis",format='D', array=z_dis )
 	# now writes the catalog
-	cols = fits.ColDefs([c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c0, c01, c02 ])
+	cols = fits.ColDefs([c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c0])#, c01, c02 ])
 	hdu = fits.BinTableHDU.from_columns(cols)
 	os.system("rm -rf "+path_to_outputCat)
 	hdu.writeto(path_to_outputCat)
