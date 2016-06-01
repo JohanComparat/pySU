@@ -6,6 +6,7 @@ from os.path import join
 from astropy.io import fits
 import time
 import fortranfile
+import sys
 DFdir = join("/data2", "users", "gustavo", "BigMD", "1Gpc_3840_Planck1_New", "DENSFIELDS")
 mockDir = "/data1/DATA/eBOSS/Multidark-box-mocks/v1.0/parts/"
 
