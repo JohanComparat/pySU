@@ -462,6 +462,43 @@ class MultiDarkSimulation :
 		f.close()
 		n.savetxt(join(output_dir,rootname+"_"+name+"_JKresampling.bins"),n.transpose([bins]))
 
+
+	def computeSingleDistributionFunctionV2(self, fileList, rootname, name, bins ) :
+		"""
+		Extracts the distribution of quantity 'name' out of all snapshots of the Multidark simulation.
+		Resamples the box in smaller boxes of length Ljk in Mpc/h
+		:param ii: index of the snapshot in the list self.snl
+		:param name: name of the quantity of interest, mass, velocity.
+		:param index: of the quantity of interest in the snapshots.
+		:param bins: binning scheme to compute the historgram.
+		:param Ljk: length of the resampled box
+		:param overlap: allowed overlap between resampled realizations : 1 = no overlap 2 : 50% overlap ... 
+		"""		
+		output_dir = join(self.wdir,self.boxDir,"properties",name)
+		os.system('mkdir '+ output_dir)
+		# define boundaries
+		nnC = n.zeros((len(fileList),len(bins)-1))
+		nnS = n.zeros((len(fileList),len(bins)-1))
+		for jj, file in enumerate(fileList):
+			print file
+			dd = fits.open(file)[1].data
+			cen = (dd['pid']==-1)
+			#computes the histogram for each resampling of the file
+			sel = (dd['x']>0)&(dd['x']<self.Lbox)&(dd['y']>0)&(dd['y']<self.Lbox)&(dd['z']>0)&(dd['z']<self.Lbox)&(dd[name]>bins[0])&(dd[name]<bins[-1])
+			print len(dd[name][(sel)&(cen)]), len(dd[name][(sel)&(cen==False)])
+			if len(dd[name][(sel)&(cen)])>=1:
+				nnC[jj] = n.histogram(dd[name][(sel)&(cen)], bins = bins)[0]
+			if  len(dd[name][(sel)&(cen==False)])>=1:
+				nnS[jj] = n.histogram(dd[name][(sel)&(cen==False)], bins = bins)[0]
+			
+		f = open(join(output_dir, rootname +"_Central_hist.pkl"),'w')
+		cPickle.dump(n.sum(nnC,axis=0),f)
+		f.close()
+		f = open(join(output_dir,rootname +"_Satellite_hist.pkl"),'w')
+		cPickle.dump(n.sum(nnS,axis=0),f)
+		f.close()
+		n.savetxt(join(output_dir,rootname+"_"+name+".bins"),n.transpose([bins]))
+
 	def computeSingleDistributionFunction(self, ii, name, bins, Mfactor=10. ) :
 		"""
 		Extracts the distribution of quantity 'name' out of all snapshots of the Multidark simulation.        
