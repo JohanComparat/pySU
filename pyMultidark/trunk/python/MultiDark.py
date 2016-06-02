@@ -484,7 +484,7 @@ class MultiDarkSimulation :
 			dd = fits.open(file)[1].data
 			cen = (dd['pid']==-1)
 			#computes the histogram for each resampling of the file
-			sel = (dd['x']>0)&(dd['x']<self.Lbox)&(dd['y']>0)&(dd['y']<self.Lbox)&(dd['z']>0)&(dd['z']<self.Lbox)&(dd[name]>bins[0])&(dd[name]<bins[-1])
+			sel = (dd['x']>0)&(dd['x']<self.Lbox.value)&(dd['y']>0)&(dd['y']<self.Lbox.value)&(dd['z']>0)&(dd['z']<self.Lbox.value)&(dd[name]>bins[0])&(dd[name]<bins[-1])
 			print len(dd[name][(sel)&(cen)]), len(dd[name][(sel)&(cen==False)])
 			if len(dd[name][(sel)&(cen)])>=1:
 				nnC[jj] = n.histogram(dd[name][(sel)&(cen)], bins = bins)[0]
