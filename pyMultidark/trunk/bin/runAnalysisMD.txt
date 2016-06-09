@@ -1,44 +1,45 @@
 run 1 pt functions on taurus
 
-"C:\Users\Usuario\Documents\GitHub\pySU\pyMultidark\trunk\bin\MD04box-compute-m200c-mvir.py"
-"C:\Users\Usuario\Documents\GitHub\pySU\pyMultidark\trunk\bin\MD04box-compute-vmax-mvir.py"
-"C:\Users\Usuario\Documents\GitHub\pySU\pyMultidark\trunk\bin\MD04box-compute-vpeak-mvir.py"
-"C:\Users\Usuario\Documents\GitHub\pySU\pyMultidark\trunk\bin\MD10box-compute-m200c-mvir.py"
-"C:\Users\Usuario\Documents\GitHub\pySU\pyMultidark\trunk\bin\MD10box-compute-vmax-mvir.py"
-"C:\Users\Usuario\Documents\GitHub\pySU\pyMultidark\trunk\bin\MD10box-compute-vpeak-mvir.py"
-"C:\Users\Usuario\Documents\GitHub\pySU\pyMultidark\trunk\bin\MD25box-compute-m200c-mvir.py"
-"C:\Users\Usuario\Documents\GitHub\pySU\pyMultidark\trunk\bin\MD25box-compute-vmax-mvir.py"
-"C:\Users\Usuario\Documents\GitHub\pySU\pyMultidark\trunk\bin\MD25box-compute-vpeak-mvir.py"
-"C:\Users\Usuario\Documents\GitHub\pySU\pyMultidark\trunk\bin\MD40box-compute-m200c-mvir.py"
-"C:\Users\Usuario\Documents\GitHub\pySU\pyMultidark\trunk\bin\MD40box-compute-vmax-mvir.py"
+#!/bin/bash/
+python MD40box-compute-vmax-JK.py
+python MD40box-compute-m200c-JK.py
+python MD25box-compute-vmax-JK.py
+python MD25box-compute-m200c-JK.py
+python MD10box-compute-vmax-JK.py
+python MD10box-compute-m200c-JK.py
+python MD04box-compute-vmax-JK.py
+python MD04box-compute-m200c-JK.py
 
-Gather the results andplotthem
 
-"C:\Users\Usuario\Documents\GitHub\pySU\pyMultidark\trunk\bin\MD-all-boxes-gather-all-m200c-function.py"
-"C:\Users\Usuario\Documents\GitHub\pySU\pyMultidark\trunk\bin\MD-all-boxes-gather-all-mVir-function.py"
-"C:\Users\Usuario\Documents\GitHub\pySU\pyMultidark\trunk\bin\MD-all-boxes-gather-all-vMax-function.py"
+HERE
+
+Gather the results and plot them
+
+python MD-all-boxes-gather-all-m200c-function.py
+python MD-all-boxes-gather-all-mVir-function.py
+python MD-all-boxes-gather-all-vMax-function.py
 
 Fit models to single redshifts then all redshifts at once.
 
 For M200c
-"C:\Users\Usuario\Documents\GitHub\pySU\pyMultidark\trunk\bin\MD-all-boxes-single-fits-m200c-function.py"
-"C:\Users\Usuario\Documents\GitHub\pySU\pyMultidark\trunk\bin\MD-all-boxes-all-fit-at-once-m200c-cen-function.py"
-"C:\Users\Usuario\Documents\GitHub\pySU\pyMultidark\trunk\bin\MD-all-boxes-all-fit-at-once-m200c-sat-function.py"
+python MD-all-boxes-single-fits-m200c-function.py
+python MD-all-boxes-all-fit-at-once-m200c-cen-function.py
+python MD-all-boxes-all-fit-at-once-m200c-sat-function.py
 writes results in 
 bin/outputs
 
 For Mvir
-"C:\Users\Usuario\Documents\GitHub\pySU\pyMultidark\trunk\bin\MD-all-boxes-all-fit-at-once-mvir-cen-function.py"
-"C:\Users\Usuario\Documents\GitHub\pySU\pyMultidark\trunk\bin\MD-all-boxes-all-fit-at-once-mvir-sat-function.py"
-"C:\Users\Usuario\Documents\GitHub\pySU\pyMultidark\trunk\bin\MD-all-boxes-single-fits-mvir-function.py"
+python MD-all-boxes-all-fit-at-once-mvir-cen-function.py
+python MD-all-boxes-all-fit-at-once-mvir-sat-function.py
+python MD-all-boxes-single-fits-mvir-function.py
 writes results in 
 bin/outputs_mvir
 
 
 For vmax
-"C:\Users\Usuario\Documents\GitHub\pySU\pyMultidark\trunk\bin\MD-all-boxes-all-fit-at-once-vmax-cen-function.py"
-"C:\Users\Usuario\Documents\GitHub\pySU\pyMultidark\trunk\bin\MD-all-boxes-all-fit-at-once-vmax-sat-function.py"
-"C:\Users\Usuario\Documents\GitHub\pySU\pyMultidark\trunk\bin\MD-all-boxes-single-fits-vmax-function.py"
+python MD-all-boxes-all-fit-at-once-vmax-cen-function.py
+python MD-all-boxes-all-fit-at-once-vmax-sat-function.py
+python MD-all-boxes-single-fits-vmax-function.py
 writes results in 
 bin/outputs_vmax
 

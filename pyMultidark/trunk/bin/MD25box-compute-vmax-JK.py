@@ -5,5 +5,5 @@ box = MultiDarkSimulation(Lbox=2500.0 * uu.Mpc,wdir="/data2/DATA/eBOSS/Multidark
 for ii in n.arange(len(box.snl)):
 	fileList = glob.glob(box.snl[ii][:-5]+"*VmaxM200c*.fits")
 	rootname = box.snl[ii][:-5].split('/')[-1]
-	box.computeSingleDistributionFunctionJKresampling( fileList, rootname, "M200c", n.arange(8,16,0.01),  Ljk = 250., overlap = 1. )
+	box.computeSingleDistributionFunctionJKresampling( fileList, rootname, "vmax", n.arange(0,3.5,0.01),  Ljk = 250., overlap = 1. )
 
