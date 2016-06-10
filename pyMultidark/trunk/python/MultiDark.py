@@ -436,6 +436,7 @@ class MultiDarkSimulation :
 		X = n.ravel(Xi)
 		Y = n.ravel(Yi)
 		Z = n.ravel(Zi)	
+		print X.min(), X.max()
 		# loops over the fileList : fits files with the data
 		nnC = n.zeros((len(fileList),len(X),len(bins)-1))
 		nnS = n.zeros((len(fileList),len(X),len(bins)-1))
