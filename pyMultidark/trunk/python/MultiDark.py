@@ -432,11 +432,11 @@ class MultiDarkSimulation :
 		NBoundariesPerSide = int(overlap*self.Lbox.value/Ljk)
 		bounds = n.arange(NBoundariesPerSide+1)* Ljk / overlap
 		print "boundaries on each side: ", bounds
-		Xi, Yi, Zi = n.meshgrid(bounds[:-2],bounds[:-2],bounds[:-2])
+		Xi, Yi, Zi = n.meshgrid(bounds[:-1],bounds[:-1],bounds[:-1])
 		X = n.ravel(Xi)
 		Y = n.ravel(Yi)
 		Z = n.ravel(Zi)	
-		print X.min(), X.max()
+		print X.min(), X.max(), len(X),len(bounds)
 		# loops over the fileList : fits files with the data
 		nnC = n.zeros((len(fileList),len(X),len(bins)-1))
 		nnS = n.zeros((len(fileList),len(X),len(bins)-1))
