@@ -23,21 +23,22 @@ def produce_stacks_zQ_zCont_Z(table, ZQgrid, ZCgrid, Zgrid, nameRoot="elg270_ebo
 		for j in range(len(ZCgrid)-1):
 			for k in range(len(Zgrid)-1):
 				sel = (table['PLATE']>6000) &(table['PLATE']<8000) & (table['zQ']>ZQgrid[i])&(table['zQ']<ZQgrid[i+1]) & (table['zCont']>ZCgrid[j])&(table['zCont']<ZCgrid[j+1]) & (table['Z']>Zgrid[k])&(table['Z']<Zgrid[k+1])# &(table['Z_1']>0)&(table['Z_1']>table['Z_ERR_1'])&(table['Z_ERR_1']>0)
-				index_g[sel] = i*n.ones_like(index_g[sel])
-				index_rz[sel] = j*n.ones_like(index_g[sel])
-				index_gr[sel] = k*n.ones_like(index_g[sel])
-				
-				PLATE ,   MJD  ,  FIBERID ,   REDSHIFT , zq, zc = table['PLATE'][sel], table['MJD'][sel], table['FIBERID'][sel], table['Z'][sel], table['zQ'][sel], table['zCont'][sel]
-				zq_min = n.min(zq)
-				zq_max = n.max(zq)
-				zc_min = n.min(zc)
-				zc_max = n.max(zc)
-				z_min = n.min(REDSHIFT)
-				z_max = n.max(REDSHIFT)
-				st=SpectraStacking("-", Nspec = 100, dLambda = 0.00005)
-				suffix = "_zQ_"+str(n.round(ZQgrid[i],1))+"_zC_"+str(n.round(ZCgrid[j],1))+"_Z_"+str(n.round(Zgrid[k],1))
-				outPutFileName = join("/uufs/chpc.utah.edu/common/home/u0936736/stack_eBOSSELG", nameRoot + suffix + "_stack.fits")
-				st.stackEbossPlateSpectra(PLATE.astype(int),MJD.astype(int),FIBERID.astype(int),REDSHIFT,outPutFileName, g_min = zq_min,g_max=zq_max, gr_min=zc_min, gr_max=zc_max, rz_min= z_min, rz_max = z_max)
+				if len(table['PLATE'])>50:
+					index_g[sel] = i*n.ones_like(index_g[sel])
+					index_rz[sel] = j*n.ones_like(index_g[sel])
+					index_gr[sel] = k*n.ones_like(index_g[sel])
+					
+					PLATE ,   MJD  ,  FIBERID ,   REDSHIFT , zq, zc = table['PLATE'][sel], table['MJD'][sel], table['FIBERID'][sel], table['Z'][sel], table['zQ'][sel], table['zCont'][sel]
+					zq_min = n.min(zq)
+					zq_max = n.max(zq)
+					zc_min = n.min(zc)
+					zc_max = n.max(zc)
+					z_min = n.min(REDSHIFT)
+					z_max = n.max(REDSHIFT)
+					st=SpectraStacking("-", Nspec = 100, dLambda = 0.00005)
+					suffix = "_zQ_"+str(n.round(ZQgrid[i],1))+"_zC_"+str(n.round(ZCgrid[j],1))+"_Z_"+str(n.round(Zgrid[k],1))
+					outPutFileName = join("/uufs/chpc.utah.edu/common/home/u0936736/stack_eBOSSELG", nameRoot + suffix + "_stack.fits")
+					st.stackEbossPlateSpectra(PLATE.astype(int),MJD.astype(int),FIBERID.astype(int),REDSHIFT,outPutFileName, g_min = zq_min,g_max=zq_max, gr_min=zc_min, gr_max=zc_max, rz_min= z_min, rz_max = z_max)
 
 	summaryTableName =join("/uufs/chpc.utah.edu/common/home/u0936736/stack_eBOSSELG", nameRoot + "summaryTable_stack.fits")
 	col_index_g = fits.Column(name="index_g",format="I", array= index_g.astype(int))
