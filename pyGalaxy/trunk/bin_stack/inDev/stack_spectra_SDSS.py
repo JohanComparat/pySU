@@ -27,7 +27,7 @@ def produce_stacks_zQ_zCont_Z(table, ZQgrid, ZCgrid, Zgrid, nameRoot="elg270_ebo
 				index_rz[sel] = j*n.ones_like(index_g[sel])
 				index_gr[sel] = k*n.ones_like(index_g[sel])
 				
-				PLATE ,   MJD  ,  FIBERID ,   REDSHIFT , z, zq, zc = table['PLATE'][sel], table['MJD'][sel], table['FIBER'][sel], table['Z'][sel], table['zQ'][sel], table['zCont'][sel]
+				PLATE ,   MJD  ,  FIBERID ,   REDSHIFT , z, zq, zc = table['PLATE'][sel], table['MJD'][sel], table['FIBERID'][sel], table['Z'][sel], table['zQ'][sel], table['zCont'][sel]
 				zq_min = n.min(zq)
 				zq_max = n.max(zq)
 				zc_min = n.min(zc)
