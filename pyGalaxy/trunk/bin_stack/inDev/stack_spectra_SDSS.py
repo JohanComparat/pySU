@@ -16,9 +16,9 @@ Zgrid = n.hstack(( n.arange(0,0.6,0.1), n.arange(0.6, 1.1, 0.05), n.arange(1.1, 
 
 def produce_stacks_zQ_zCont_Z(table, ZQgrid, ZCgrid, Zgrid, nameRoot="elg270_eboss67_"):
 	print table.dtype
-	index_g = n.ones_like(table['gmag'])*-1
-	index_rz = n.ones_like(table['gmag'])*-1
-	index_gr = n.ones_like(table['gmag'])*-1
+	index_g = n.ones_like(table['Z'])*-1
+	index_rz = n.ones_like(table['Z'])*-1
+	index_gr = n.ones_like(table['Z'])*-1
 	for i in range(len(ZQgrid)-1):
 		for j in range(len(ZCgrid)-1):
 			for k in range(len(Zgrid)-1):
@@ -53,7 +53,7 @@ def produce_stacks_zQ_zCont_Z(table, ZQgrid, ZCgrid, Zgrid, nameRoot="elg270_ebo
 	thdulist.writeto(summaryTableName)
 
 
-produce_stacks_zQ_zCont_Z(hdus_ELG[1].data, nameRoot="elg_zQzCz")
+produce_stacks_zQ_zCont_Z(hdus_ELG[1].data, ZQgrid, ZCgrid, Zgrid, nameRoot="elg_zQzCz")
 
 
 sys.exit()
