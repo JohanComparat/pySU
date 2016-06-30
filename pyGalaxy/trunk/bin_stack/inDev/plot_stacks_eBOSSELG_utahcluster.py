@@ -14,6 +14,75 @@ import sys
 import os 
 from os.path import join
 import glob
+eb17_sL = n.array(glob.glob("elg_zQzCz_*_stack.fits"))
+eb17_sL.sort()
+
+
+ZQgrid  = ["-2.5", "-1.5", "-0.5", "0.5", "1.2", "1.8", "2.2", "2.8", "3.2", "3.8", "4.2"]
+zQval = ["-2", "-1", "0", "1", "1.5", "2", "2.5", "3", "3.5", "4", "4.5"]
+zq_dict = dict(zip(ZQgrid, zQval))
+	
+ZCgrid = ["-0.2", "0.2", "0.8", "1.2", "1.8", "2.2"]
+ZCval = ["0", "0.5", "1", "1.5", "2", "2.5"]
+zc_dict = dict(zip(ZCgrid, ZCval))
+
+Zgrid = n.hstack(( n.arange(0,0.6,0.1), n.arange(0.6, 1.1, 0.05), n.arange(1.1, 1.7, 0.1) ))
+ZgridS = n.round(Zgrid,1).astype('str')
+Zval = ((Zgrid[1:] + Zgrid[:-1])/2.).astype('str')
+z_dict = dict(zip(ZgridS, Zval))
+
+def getLabel(name):
+	all = name.split('_')
+	print all
+	return all[2]+"=" + zq_dict[all[3]] + ", " +all[4]+"=" + zc_dict[all[5]] + ", " +all[6]+"=" + z_dict[all[7]]
+
+for ii in range(len(eb17_sL)):
+	hd_eb17 = fits.open(eb17_sL[ii])
+	fig = p.figure(1,(11,6))
+	fig.add_subplot(211)
+	p.plot(hd_eb17[1].data['wavelength'],hd_eb17[1].data['meanStack'],'k',label=getLabel(eb17_sL[ii]))
+	p.ylabel(r'$f_\lambda \; 10^{-17}$ erg/cm2/s/A')
+	p.xlim((2250,7000))
+	p.ylim((0.05,2.))
+	p.yscale('log')
+	p.legend(loc=0)
+	p.grid()
+	fig.add_subplot(212)
+	p.plot(hd_eb17[1].data['wavelength'],hd_eb17[1].data['meanStack']/hd_eb17[1].data['jackknifStackErrors'],'k')
+	p.xlabel('wavelength [A]')
+	p.ylabel('SNR per pixel')
+	p.xlim((2250,7000))
+	p.ylim((1,1000))
+	p.yscale('log')
+	p.savefig(eb17_sL[ii][:-5]+'.png')
+	p.clf()
+
+
+for ii in range(len(eb17_sL)):
+	hd_eb17 = fits.open(eb17_sL[ii])
+	fig = p.figure(1,(11,6))
+	fig.add_subplot(211)
+	p.plot(hd_eb17[1].data['wavelength'],hd_eb17[1].data['meanStack'],'k',label=getLabel(eb17_sL[ii]))
+	p.ylabel(r'$f_\lambda \; 10^{-17}$ erg/cm2/s/A')
+	p.xlim((2200,3800))
+	p.ylim((0.05,2.))
+	p.yscale('log')
+	p.legend(loc=0)
+	p.grid()
+	fig.add_subplot(212)
+	p.plot(hd_eb17[1].data['wavelength'],hd_eb17[1].data['meanStack'],'k')
+	p.xlabel('wavelength [A]')
+	p.ylabel('SNR per pixel')
+	p.xlim((3700,5100))
+	p.ylim((0.05,2.))
+	p.yscale('log')
+	p.savefig(eb17_sL[ii][:-5]+'zoom.png')
+	p.clf()
+
+
+sys.exit()
+
+
 eb17_sL = n.array(glob.glob("elg270_eboss17*Z1*_stac*.fits"))
 eb67_sL = n.array(glob.glob("elg270_eboss67*Z1*_stac*.fits"))
 eb67_sL.sort()
