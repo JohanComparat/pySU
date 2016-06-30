@@ -14,8 +14,8 @@ from scipy.interpolate import interp1d
 import os
 from os.path import join
 
-run2d = "v5_9_1" # os.environ['RUN2D']
-run1d = "v5_9_1" # os.environ['RUN1D']
+run2d = "v5_9_0" # os.environ['RUN2D']
+run1d = "v5_9_0" # os.environ['RUN1D']
 		
 class HandleReducedELGPlate:
 	"""
