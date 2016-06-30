@@ -27,13 +27,13 @@ def produce_stacks_zQ_zCont_Z(table, ZQgrid, ZCgrid, Zgrid, nameRoot="elg270_ebo
 				index_rz[sel] = j*n.ones_like(index_g[sel])
 				index_gr[sel] = k*n.ones_like(index_g[sel])
 				
-				PLATE ,   MJD  ,  FIBERID ,   REDSHIFT , z, zq, zc = table['PLATE'][sel], table['MJD'][sel], table['FIBERID'][sel], table['Z'][sel], table['zQ'][sel], table['zCont'][sel]
+				PLATE ,   MJD  ,  FIBERID ,   REDSHIFT , zq, zc = table['PLATE'][sel], table['MJD'][sel], table['FIBERID'][sel], table['Z'][sel], table['zQ'][sel], table['zCont'][sel]
 				zq_min = n.min(zq)
 				zq_max = n.max(zq)
 				zc_min = n.min(zc)
 				zc_max = n.max(zc)
-				z_min = n.min(z)
-				z_max = n.max(z)
+				z_min = n.min(REDSHIFT)
+				z_max = n.max(REDSHIFT)
 				st=SpectraStacking("-", Nspec = 100, dLambda = 0.00005)
 				suffix = "_zQ_"+str(n.round(ZQgrid[i],1))+"_zC_"+str(n.round(ZCgrid[j],1))+"_Z_"+str(n.round(Zgrid[k],1))
 				outPutFileName = join("/uufs/chpc.utah.edu/common/home/u0936736/stack_eBOSSELG", nameRoot + suffix + "_stack.fits")
