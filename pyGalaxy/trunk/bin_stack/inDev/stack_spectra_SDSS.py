@@ -53,7 +53,7 @@ def produce_stacks_zQ_zCont_Z(table, ZQgrid, ZCgrid, Zgrid, nameRoot="elg270_ebo
 	thdulist.writeto(summaryTableName)
 
 
-produce_stacks_z(hdus_ELG[1].data, nameRoot="elg_zQzCz")
+produce_stacks_zQ_zCont_Z(hdus_ELG[1].data, nameRoot="elg_zQzCz")
 
 
 sys.exit()
