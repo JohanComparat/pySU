@@ -23,7 +23,7 @@ def produce_stacks_zQ_zCont_Z(table, ZQgrid, ZCgrid, Zgrid, nameRoot="elg270_ebo
 		for j in range(len(ZCgrid)-1):
 			for k in range(len(Zgrid)-1):
 				sel = (table['PLATE']>6000) &(table['PLATE']<8000) & (table['zQ']>ZQgrid[i])&(table['zQ']<ZQgrid[i+1]) & (table['zCont']>ZCgrid[j])&(table['zCont']<ZCgrid[j+1]) & (table['Z']>Zgrid[k])&(table['Z']<Zgrid[k+1])# &(table['Z_1']>0)&(table['Z_1']>table['Z_ERR_1'])&(table['Z_ERR_1']>0)
-				if len(table['PLATE'])>50:
+				if len(table['PLATE'][sel])>50:
 					index_g[sel] = i*n.ones_like(index_g[sel])
 					index_rz[sel] = j*n.ones_like(index_g[sel])
 					index_gr[sel] = k*n.ones_like(index_g[sel])
