@@ -14,6 +14,9 @@ from scipy.interpolate import interp1d
 import os
 from os.path import join
 
+run2d = "v5_9_1" # os.environ['RUN2D']
+run1d = "v5_9_1" # os.environ['RUN1D']
+		
 class HandleReducedELGPlate:
 	"""
 	Now outdated by the SDSS4 svn product : elgredshiftflag
@@ -32,10 +35,10 @@ class HandleReducedELGPlate:
 		"""
 		Opens the plate files: spPlate, spZbest. In the case one isworking on the Utah cluster.
 		"""
-		spfile = join( os.environ['BOSS_SPECTRO_REDUX'] , os.environ['RUN2D'] , str(self.plate) , "spPlate-"+ str(self.plate) +"-"+ str(self.mjd) +".fits" )
-		zbfile = join( os.environ['BOSS_SPECTRO_REDUX'] , os.environ['RUN2D'] , str(self.plate) , os.environ['RUN1D'] , "spZbest-" + str(self.plate) +"-"+ str(self.mjd) +".fits" )
-		self.outputFile = join(os.environ['BOSS_SPECTRO_REDUX'] , os.environ['RUN2D'] , str(self.plate) , os.environ['RUN1D'] ,"spZ_ELGflag-" + str(self.plate) +"-"+ str(self.mjd) +".fits")
-		# join(os.environ['BOSS_SPECTRO_REDUX'], os.environ['RUN2D'], str(self.plate), os.environ['RUN1D'], "spZ_ELGflag-" + str(self.plate) +"-"+ str(self.mjd) +".fits")
+		spfile = join( os.environ['BOSS_SPECTRO_REDUX'] , run2d , str(self.plate) , "spPlate-"+ str(self.plate) +"-"+ str(self.mjd) +".fits" )
+		zbfile = join( os.environ['BOSS_SPECTRO_REDUX'] , run2d , str(self.plate) , run1d , "spZbest-" + str(self.plate) +"-"+ str(self.mjd) +".fits" )
+		self.outputFile = join(os.environ['BOSS_SPECTRO_REDUX'] , run2d , str(self.plate) , run1d ,"spZ_ELGflag-" + str(self.plate) +"-"+ str(self.mjd) +".fits")
+		# join(os.environ['BOSS_SPECTRO_REDUX'], run2d, str(self.plate), run1d, "spZ_ELGflag-" + str(self.plate) +"-"+ str(self.mjd) +".fits")
 		# opens spPlate file
 		hdulist = fits.open(spfile)
 		c0 = hdulist[0].header['coeff0']
@@ -61,7 +64,7 @@ class HandleReducedELGPlate:
 		"""
 		Opens the plate files: spPlate, spZbest. In the case one isworking on the Utah cluster.
 		"""
-		spfile = join( os.environ['BOSS_SPECTRO_REDUX'] , os.environ['RUN2D'] , str(self.plate) , "spPlate-"+ str(self.plate) +"-"+ str(self.mjd) +".fits" )
+		spfile = join( os.environ['BOSS_SPECTRO_REDUX'] , run2d , str(self.plate) , "spPlate-"+ str(self.plate) +"-"+ str(self.mjd) +".fits" )
 		print spfile
 		# opens spPlate file
 		hdulist = fits.open(spfile)
