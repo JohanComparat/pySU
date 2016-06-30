@@ -6,7 +6,7 @@ import glob
 
 hdus_eb67 = fits.open("/uufs/chpc.utah.edu/common/home/u0936736/stack_eBOSSELG/elg270_eboss67summaryTable_stack_comparison.fits")
 hdus_eb17 = fits.open("/uufs/chpc.utah.edu/common/home/u0936736/stack_eBOSSELG/elg270_eboss17summaryTable_stack_comparison.fits")
-hdus_ELG = fits.open("/uufs/chpc.utah.edu/common/home/u0936736/ELG_catalogsspAll-ELG-v6.5.4.fits")
+hdus_ELG = fits.open("/uufs/chpc.utah.edu/common/home/u0936736/ELG_catalogs/spAll-ELG-v6.5.4.fits")
 
 #'PLATE', 'MJD', 'FIBER', 'gmag', 'rzcol', 'grcol', 'Z_1', 'Z_2', 'Z_3', 'Z_ERR_1', 'Z_ERR_2', 'Z_ERR_3', 'RCHI2_1', 'RCHI2_2', 'RCHI2_3', 'CLASS_1', 'CLASS_2', 'CLASS_3'
 
