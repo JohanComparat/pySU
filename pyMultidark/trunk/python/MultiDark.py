@@ -444,15 +444,16 @@ class MultiDarkSimulation :
 			print file
 			dd = fits.open(file)[1].data
 			cen = (dd['pid']==-1)
+			sat = (dd['pid']>=1)
 			#computes the histogram for each resampling of the file
 			for ii, xel in enumerate(X):
 				print ii
 				xmin, ymin, zmin, xmax, ymax, zmax = X[ii], Y[ii], Z[ii], X[ii]+Ljk, Y[ii]+Ljk, Z[ii]+Ljk
-				sel = (dd['x']>xmin)&(dd['x']<xmax)&(dd['y']>ymin)&(dd['y']<ymax)&(dd['z']>zmin)&(dd['z']<zmax)&(dd[name]>bins[0])&(dd[name]<bins[-1])
+				sel = (dd['x']>=xmin)&(dd['x']<xmax)&(dd['y']>=ymin)&(dd['y']<ymax)&(dd['z']>=zmin)&(dd['z']<zmax)&(dd[name]>bins[0])&(dd[name]<bins[-1])
 				print len(dd[name][(sel)&(cen)]), len(dd[name][(sel)&(cen==False)])
 				if len(dd[name][(sel)&(cen)])>=1:
 					nnC[jj][ii] = n.histogram(dd[name][(sel)&(cen)], bins = bins)[0]
-				if  len(dd[name][(sel)&(cen==False)])>=1:
+				if  len(dd[name][(sel)&(sat)])>=1:
 					nnS[jj][ii] = n.histogram(dd[name][(sel)&(cen==False)], bins = bins)[0]
 			
 		f = open(join(output_dir, rootname +"_Central_JKresampling.pkl"),'w')
