@@ -8,8 +8,40 @@ import numpy as n
 import mangle
 import sys
 
+d_tiled = fits.open("all-eboss21.fits")[1].data
+d_input = fits.open("elg_240_sgc.masked.fits")[1].data
+outputCatalog = "elg_240_sgc.masked.Tiled.fits"
+
+
+brickid = d_input['brickname']
+objid = d_input['objid']
+strID = n.array([ str(brickid[ii])+"_"+str(objid[ii]) for ii in range(len(objid)) ])
+
+brickidTiled =d_tiled['BRICKNAME_DECALS']
+objidTiled = d_tiled['OBJID_DECALS']
+strIDTiled = n.array([ str(brickidTiled[ii])+"_"+str(objidTiled[ii]) for ii in range(len(objidTiled)) ])
+
+
+observed = n.zeros_like(strID,dtype=bool)
+for jj in range(len(strID)):
+	if len((strID[jj] == strIDTiled).nonzero()[0])>0 :
+		observed[jj] = True 
+	else :
+		observed[jj] =False
+
+len(observed.nonzero()[0])
+
+
+
+sys.exit()
+
+
+
+
+
+
 # parameters :
-chunk = "eboss8"
+chunk = "eboss21"
 dMax = 0.05 # maximum magnitude separation for a collided galaxy to be overweighted for in its nearest neighbor.
 
 outputDir = join(os.environ['EBOSS_ROOT'],"target","elg","clusteringSample")
