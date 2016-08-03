@@ -8,7 +8,7 @@ import time
 import fortranfile
 import cPickle
 DFdir = join("/data2", "users", "gustavo", "BigMD", "1Gpc_3840_Planck1_New", "DENSFIELDS")
-mockDir = "/data1/DATA/eBOSS/Multidark-box-mocks/parts/"
+mockDir = "/data1/DATA/eBOSS/Multidark-box-mocks/v1.0/parts/"
 inFiles = n.array(["dmdens_cic_104.dat", "dmdens_cic_101.dat", "dmdens_cic_097.dat", "dmdens_cic_087.dat"])
 
 bins = n.hstack((0,n.logspace(-3, 4, 1000)))
@@ -40,7 +40,7 @@ for infi in inFiles:
 		DF = n.mean(n.array([DF0, DF1, DF2, DF3, DF4, DF5, DF6, DF7, DF8, DF9]), axis=0)
 		DFdg = n.array([ 
 		n.array([ 
-		n.mean([
+		n.mean([ 
 		DF[Nd*i][Nd*j:Nd*j+Nd], 
 		DF[Nd*i + 1][Nd*j:Nd*j+Nd], 
 		DF[Nd*i + 2][Nd*j:Nd*j+Nd], 
