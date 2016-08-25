@@ -15,6 +15,7 @@ DFfile = join(DFdir,"dmdens_cic_087.dat")
 # loads the snapshot files 
 snList= n.array(glob.glob( "/data2/DATA/eBOSS/Multidark-lightcones/MD_1Gpc_new_rockS/snapshots/hlist_0.*.fits"))#403200
 def writeDFMock(dataCat, DFfile, Lbox = 1000.):
+	print dataCat, DFfile
 	md = fits.open(dataCat)[1].data
 	path_to_outputCat = dataCat[:-4] + ".DF.fits.gz"
 	# opens the DF file
@@ -30,7 +31,8 @@ def writeDFMock(dataCat, DFfile, Lbox = 1000.):
 	#delta1 = n.empty_like(x)
 	#delta2 = n.empty_like(x)
 	# now loops over k (every line of the file) and assigns delta values.
-	for kk in range(gridx):
+	for kk in range(3):#gridx):
+		print kk
 		sel = (k==kk)
 		N = i[sel] + gridx * j[sel] 
 		DF = f.readReals()
