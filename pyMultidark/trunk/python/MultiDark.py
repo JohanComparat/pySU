@@ -99,9 +99,17 @@ class MultiDarkSimulation :
 		if self.boxDir == "MD_0.4Gpc" :
 			self.columnDict = {'scale': 0, 'id': 1, 'desc_scale': 2, 'desc_id': 3, 'num_prog': 4, 'pid': 5, 'upid': 6, 'desc_pid': 7, 'phantom': 8, 'sam_mvir': 9, 'mvir': 10, 'rvir': 11, 'rs': 12, 'vrms': 13, 'mmp?': 14, 'scale_of_last_MM': 15, 'vmax': 16, 'x': 17, 'y': 18, 'z': 19, 'vx': 20, 'vy': 21, 'vz': 22, 'Jx': 23, 'Jy': 24, 'Jz': 25, 'Spin': 26, 'Breadth_first_ID': 27, 'Depth_first_ID': 28, 'Tree_root_ID': 29, 'Orig_halo_ID': 30, 'Snap_num': 31, 'Next_coprogenitor_depthfirst_ID': 32, 'Last_progenitor_depthfirst_ID': 33, 'Last_mainleaf_depthfirst_ID': 34, 'Rs_Klypin': 35, 'Mmvir_all': 36, 'M200b': 37, 'M200c': 38, 'M500c': 39, 'M2500c': 40, 'Xoff': 41, 'Voff': 42, 'Spin_Bullock': 43, 'b_to_a': 44, 'c_to_a': 45, 'Ax': 46, 'Ay': 47, 'Az': 48, 'b_to_a500c': 49, 'c_to_a500c': 50, 'Ax500c': 51, 'Ay500c': 52, 'Az500c': 53, 'TU': 54, 'M_pe_Behroozi': 55, 'M_pe_Diemer': 56, 'Macc': 57, 'Mpeak': 58, 'Vacc': 59, 'Vpeak': 60, 'Halfmass_Scale': 61, 'Acc_Rate_Inst': 62, 'Acc_Rate_100Myr': 63, 'Acc_Rate_1Tdyn': 64, 'Acc_Rate_2Tdyn': 65, 'Acc_Rate_Mpeak': 66, 'Mpeak_Scale': 67, 'Acc_Scale': 68, 'First_Acc_Scale': 69, 'First_Acc_Mvir': 70, 'First_Acc_Vmax': 71, 'VmaxAtMpeak': 72}
 			#{'scale': 0, 'id': 1, 'desc_scale': 2, 'desc_id': 3, 'num_prog': 4, 'pid': 5, 'upid': 6, 'desc_pid': 7, 'phantom': 8, 'sam_mvir': 9, 'mvir': 10, 'rvir': 11, 'rs': 12, 'vrms': 13, 'mmp?': 14, 'scale_of_last_MM': 15, 'vmax': 16, 'x': 17, 'y': 18, 'z': 19, 'vx': 20, 'vy': 21, 'vz': 22, 'Jx': 23, 'Jy': 24, 'Jz': 25, 'Spin': 26, 'Breadth_first_ID': 27, 'Depth_first_ID': 28, 'Tree_root_ID': 29, 'Orig_halo_ID': 30, 'Snap_num': 31, 'Next_coprogenitor_depthfirst_ID': 32, 'Last_progenitor_depthfirst_ID': 33, 'Last_mainleaf_depthfirst_ID': 34, 'Rs_Klypin': 35, 'Mmvir_all': 36, 'M200b': 37, 'M200c': 38, 'M500c': 39, 'M2500c': 40, 'Xoff': 41, 'Voff': 42, 'Spin_Bullock': 43, 'b_to_a': 44, 'c_to_a': 45, 'Ax': 46, 'Ay': 47, 'Az': 48, 'b_to_a_500c': 49, 'c_to_a_500c': 50, 'Ax_500c': 51, 'Ay_500c': 52, 'Az_500c': 53, 'TU': 54, 'M_pe_Behroozi': 55, 'M_pe_Diemer': 56, 'Macc': 57, 'Mpeak': 58, 'Vacc': 59, 'Vpeak': 60, 'Halfmass_Scale': 61, 'Acc_Rate_Inst': 62, 'Acc_Rate_100Myr': 63, 'Acc_Rate_1Tdyn': 64, 'Acc_Rate_2Tdyn': 65, 'Acc_Rate_Mpeak': 66, 'Mpeak_Scale': 67, 'Acc_Scale': 68, 'First_Acc_Scale': 69, 'First_Acc_Mvir': 70, 'First_Acc_Vmax': 71, 'VmaxatMpeak': 72}
-
+		"""
 		if self.boxDir == "MD_1Gpc_new_rockS" :
 			self.columnDict = {'scale': 0, 'id': 1, 'desc_scale': 2, 'desc_id': 3, 'num_prog': 4, 'pid': 5, 'upid': 6, 'desc_pid': 7, 'phantom': 8, 'sam_mvir': 9, 'mvir': 10, 'rvir': 11, 'rs': 12, 'vrms': 13, 'mmp?': 14, 'scale_of_last_MM': 15, 'vmax': 16, 'x': 17, 'y': 18, 'z': 19, 'vx': 20, 'vy': 21, 'vz': 22, 'Jx': 23, 'Jy': 24, 'Jz': 25, 'Spin': 26, 'Breadth_first_ID': 27, 'Depth_first_ID': 28, 'Tree_root_ID': 29, 'Orig_halo_ID': 30, 'Snap_num': 31, 'Next_coprogenitor_depthfirst_ID': 32, 'Last_progenitor_depthfirst_ID': 33, 'Last_mainleaf_depthfirst_ID': 34, 'Tidal_Force': 35, 'Tidal_ID': 36, 'Rs_Klypin': 37, 'Mmvir_all': 38, 'M200b': 39, 'M200c': 40, 'M500c': 41, 'M2500c': 42, 'Xoff': 43, 'Voff': 44, 'Spin_Bullock': 45, 'b_to_a': 46, 'c_to_a': 47, 'Ax': 48, 'Ay': 49, 'Az': 50, 'b_to_a500c' : 51, 'c_to_a500c' : 52, 'Ax500c' : 53, 'Ay500c' : 54, 'Az500c' : 55, 'TU': 56, 'M_pe_Behroozi': 57, 'M_pe_Diemer': 58, 'Macc': 59, 'Mpeak': 60, 'Vacc': 61, 'Vpeak': 62, 'Halfmass_Scale': 63, 'Acc_Rate_Inst': 64, 'Acc_Rate_100Myr': 65, 'Acc_Rate_1Tdyn': 66, 'Acc_Rate_2Tdyn': 67, 'Acc_Rate_Mpeak': 68, 'Mpeak_Scale': 69, 'Acc_Scale': 70, 'First_Acc_Scale': 71, 'First_Acc_Mvir': 72, 'First_Acc_Vmax': 73, 'VmaxAtMpeak': 74, 'Tidal_Force_Tdyn': 75 }
+			#{'scale': 0, 'id': 1, 'desc_scale': 2, 'desc_id': 3, 'num_prog': 4, 'pid': 5, 'upid': 6, 'desc_pid': 7, 'phantom': 8, 'sam_mvir': 9, 'mvir': 10, 'rvir': 11, 'rs': 12, 'vrms': 13, 'mmp?': 14, 'scale_of_last_MM': 15, 'vmax': 16, 'x': 17, 'y': 18, 'z': 19, 'vx': 20, 'vy': 21, 'vz': 22, 'Jx': 23, 'Jy': 24, 'Jz': 25, 'Spin': 26, 'Breadth_first_ID': 27, 'Depth_first_ID': 28, 'Tree_root_ID': 29, 'Orig_halo_ID': 30, 'Snap_num': 31, 'Next_coprogenitor_depthfirst_ID': 32, 'Last_progenitor_depthfirst_ID': 33, 'Last_mainleaf_depthfirst_ID': 34, 'Rs_Klypin': 35, 'Mmvir_all': 36, 'M200b': 37, 'M200c': 38, 'M500c': 39, 'M2500c': 40, 'Xoff': 41, 'Voff': 42, 'Spin_Bullock': 43, 'b_to_a': 44, 'c_to_a': 45, 'Ax': 46, 'Ay': 47, 'Az': 48, 'b_to_a_500c': 49, 'c_to_a_500c': 50, 'Ax_500c': 51, 'Ay_500c': 52, 'Az_500c': 53, 'TU': 54, 'M_pe_Behroozi': 55, 'M_pe_Diemer': 56, 'Macc': 57, 'Mpeak': 58, 'Vacc': 59, 'Vpeak': 60, 'Halfmass_Scale': 61, 'Acc_Rate_Inst': 62, 'Acc_Rate_100Myr': 63, 'Acc_Rate_1Tdyn': 64, 'Acc_Rate_2Tdyn': 65, 'Acc_Rate_Mpeak': 66, 'Mpeak_Scale': 67, 'Acc_Scale': 68, 'First_Acc_Scale': 69, 'First_Acc_Mvir': 70, 'First_Acc_Vmax': 71, 'VmaxatMpeak': 72}
+			#{'id': 0, 'desc_id': 1, 'mvir': 2, 'vmax': 3, 'vrms': 4, 'rvir': 5, 'rs': 6, 'Np': 7, 'x': 8, 'y': 9, 'z': 10, 'vx': 11, 'vy': 12, 'vz': 13, 'Jx': 14, 'Jy': 15, 'Jz': 16, 'Spin':17, 'Rs_Klypin': 18, 'Mmvir_all': 19, 'M200b': 20, 'M200c': 21, 'M500c': 22, 'M2500c': 23, 'Xoff': 24, 'Voff': 25, 'Spin_Bullock': 26, 'b_to_a': 27, 'c_to_a': 28, 'Ax': 29, 'Ay': 30, 'Az': 31, 'b_to_a_500c': 32, 'c_to_a_500c': 33, 'Ax_500c': 34, 'Ay_500c': 35, 'Az_500c': 36, 'TU': 37, 'M_pe_Behroozi': 38, 'M_pe_Diemer': 39, 'pid': 40}
+			#ID DescID Mvir Vmax Vrms Rvir Rs Np X Y Z VX VY VZ JX JY JZ Spin rs_klypin Mvir_all M200b M200c M500c M2500c Xoff Voff spin_bullock b_to_a c_to_a A[x] A[y] A[z] b_to_a(500c) c_to_a(500c) A[x](500c) A[y](500c) A[z](500c) T/|U| M_pe_Behroozi M_pe_Diemer PID
+			#a = 0.403200
+		"""
+
+		if self.boxDir == "MD_1Gpc_new_rockS" :
+			self.columnDict = {'id': 0, 'desc_id': 1, 'mvir': 2, 'vmax': 3, 'vrms': 4, 'rvir': 5, 'rs': 6, 'Np': 7, 'x': 8, 'y': 9, 'z': 10, 'vx': 11, 'vy': 12, 'vz': 13, 'Jx': 14, 'Jy': 15, 'Jz': 16, 'Spin': 17, 'Rs_Klypin': 18, 'Mmvir_all': 19, 'M200b': 20, 'M200c': 21, 'M500c': 22, 'M2500c': 23, 'Xoff': 23, 'Voff': 24, 'Spin_Bullock': 25, 'b_to_a': 26, 'c_to_a': 27, 'Ax': 28, 'Ay': 29, 'Az': 30, 'b_to_a500c' : 31, 'c_to_a500c' : 32, 'Ax500c' : 33, 'Ay500c' : 34, 'Az500c' : 35, 'TU': 36, 'M_pe_Behroozi': 37, 'M_pe_Diemer': 38, 'pid': 39 }
 			#{'scale': 0, 'id': 1, 'desc_scale': 2, 'desc_id': 3, 'num_prog': 4, 'pid': 5, 'upid': 6, 'desc_pid': 7, 'phantom': 8, 'sam_mvir': 9, 'mvir': 10, 'rvir': 11, 'rs': 12, 'vrms': 13, 'mmp?': 14, 'scale_of_last_MM': 15, 'vmax': 16, 'x': 17, 'y': 18, 'z': 19, 'vx': 20, 'vy': 21, 'vz': 22, 'Jx': 23, 'Jy': 24, 'Jz': 25, 'Spin': 26, 'Breadth_first_ID': 27, 'Depth_first_ID': 28, 'Tree_root_ID': 29, 'Orig_halo_ID': 30, 'Snap_num': 31, 'Next_coprogenitor_depthfirst_ID': 32, 'Last_progenitor_depthfirst_ID': 33, 'Last_mainleaf_depthfirst_ID': 34, 'Rs_Klypin': 35, 'Mmvir_all': 36, 'M200b': 37, 'M200c': 38, 'M500c': 39, 'M2500c': 40, 'Xoff': 41, 'Voff': 42, 'Spin_Bullock': 43, 'b_to_a': 44, 'c_to_a': 45, 'Ax': 46, 'Ay': 47, 'Az': 48, 'b_to_a_500c': 49, 'c_to_a_500c': 50, 'Ax_500c': 51, 'Ay_500c': 52, 'Az_500c': 53, 'TU': 54, 'M_pe_Behroozi': 55, 'M_pe_Diemer': 56, 'Macc': 57, 'Mpeak': 58, 'Vacc': 59, 'Vpeak': 60, 'Halfmass_Scale': 61, 'Acc_Rate_Inst': 62, 'Acc_Rate_100Myr': 63, 'Acc_Rate_1Tdyn': 64, 'Acc_Rate_2Tdyn': 65, 'Acc_Rate_Mpeak': 66, 'Mpeak_Scale': 67, 'Acc_Scale': 68, 'First_Acc_Scale': 69, 'First_Acc_Mvir': 70, 'First_Acc_Vmax': 71, 'VmaxatMpeak': 72}
 			#{'id': 0, 'desc_id': 1, 'mvir': 2, 'vmax': 3, 'vrms': 4, 'rvir': 5, 'rs': 6, 'Np': 7, 'x': 8, 'y': 9, 'z': 10, 'vx': 11, 'vy': 12, 'vz': 13, 'Jx': 14, 'Jy': 15, 'Jz': 16, 'Spin':17, 'Rs_Klypin': 18, 'Mmvir_all': 19, 'M200b': 20, 'M200c': 21, 'M500c': 22, 'M2500c': 23, 'Xoff': 24, 'Voff': 25, 'Spin_Bullock': 26, 'b_to_a': 27, 'c_to_a': 28, 'Ax': 29, 'Ay': 30, 'Az': 31, 'b_to_a_500c': 32, 'c_to_a_500c': 33, 'Ax_500c': 34, 'Ay_500c': 35, 'Az_500c': 36, 'TU': 37, 'M_pe_Behroozi': 38, 'M_pe_Diemer': 39, 'pid': 40}
 
@@ -192,6 +200,85 @@ class MultiDarkSimulation :
 		os.system("rm "+self.snl[ii][:-5]+"_cornerLC_Nb_"+str(Nb)+".fits")
 		thdulist.writeto(self.snl[ii][:-5]+"_cornerLC_Nb_"+str(Nb)+".fits")
 
+	def writePositionCatalogPM(self, ii, logmmin=11, NperBatch = 10000000):
+		"""
+		Extracts the positions and velocity out of a snapshot of the Multidark simulation.        
+		:param ii: index of the snapshot in the list self.snl
+		:param vmin: name of the quantity of interest, mass, velocity.
+		:param vmax: of the quantity of interest in the snapshots.
+		:param NperBatch: number of line per fits file, default: 1000000
+		 """		
+		fl = fileinput.input(self.snl[ii])
+		nameSnapshot = self.snl[ii].split('/')[-1][:-5]
+		Nb = 0
+		count = 0
+		output = n.empty((NperBatch,6))
+		for line in fl:
+			if line[0] == "#" :
+				continue
+
+			line = line.split()
+			newline =n.array([ float(line[self.columnDict['x']]), float(line[self.columnDict['y']]), float(line[self.columnDict['z']]), float(line[self.columnDict['vmax']]), n.log10(float(line[self.columnDict['M200c']])), float(line[self.columnDict['pid']]),  n.log10(float(line[self.columnDict['mvir']])), float(line[self.columnDict['Rs_Klypin']]), n.log10(float(line[self.columnDict['Mmvir_all']])) ])
+			if newline[6]>logmmin:# and newline[3]<vmax :
+				output[count] = newline
+				count+=1
+				
+			if count == NperBatch  :
+				print "count",count
+				print output
+				print output.shape
+				print output.T[0].shape
+				#define the columns
+				col0 = fits.Column(name='x',format='D', array=output.T[0] )
+				col1 = fits.Column(name='y',format='D', array= output.T[1] )
+				col2 = fits.Column(name='z',format='D', array= output.T[2] )
+				col3 = fits.Column(name='vmax',format='D', array= output.T[3] )
+				col4 = fits.Column(name='M200c',format='D', array= output.T[4] )
+				col5 = fits.Column(name='pid',format='D', array= output.T[5] )
+				col6 = fits.Column(name='mvir',format='D', array=output.T[6] )
+				col7 = fits.Column(name='Rs_Klypin',format='D', array= output.T[7] )
+				col8 = fits.Column(name='Mmvir_all',format='D', array= output.T[8] )
+				#define the table hdu 
+				hdu_cols  = fits.ColDefs([col0, col1, col2, col3, col4, col5, col6, col7, col8])
+				tb_hdu = fits.BinTableHDU.from_columns( hdu_cols )
+				#define the header
+				prihdr = fits.Header()
+				prihdr['HIERARCH nameSnapshot'] = nameSnapshot
+				prihdr['count'] = count
+				prihdr['batchN'] = Nb
+				prihdu = fits.PrimaryHDU(header=prihdr)
+				#writes the file
+				thdulist = fits.HDUList([prihdu, tb_hdu])
+				os.system("rm "+self.snl[ii][:-5]+"_PM_Nb_"+str(Nb)+".fits")
+				thdulist.writeto(self.snl[ii][:-5]+"_PM_Nb_"+str(Nb)+".fits")
+				Nb+=1
+				count=0
+				output = n.empty((NperBatch,6))
+
+		# and for the last batch :
+		col0 = fits.Column(name='x',format='D', array=output.T[0] )
+		col1 = fits.Column(name='y',format='D', array= output.T[1] )
+		col2 = fits.Column(name='z',format='D', array= output.T[2] )
+		col3 = fits.Column(name='vmax',format='D', array= output.T[3] )
+		col4 = fits.Column(name='M200c',format='D', array= output.T[4] )
+		col5 = fits.Column(name='pid',format='D', array= output.T[5] )
+		col6 = fits.Column(name='mvir',format='D', array=output.T[6] )
+		col7 = fits.Column(name='Rs_Klypin',format='D', array= output.T[7] )
+		col8 = fits.Column(name='Mmvir_all',format='D', array= output.T[8] )
+		#define the table hdu 
+		hdu_cols  = fits.ColDefs([col0, col1, col2, col3, col4, col5, col6, col7, col8])
+		tb_hdu = fits.BinTableHDU.from_columns( hdu_cols )
+		#define the header
+		prihdr = fits.Header()
+		prihdr['HIERARCH nameSnapshot'] = nameSnapshot
+		prihdr['count'] = count
+		prihdr['batchN'] = Nb
+		prihdu = fits.PrimaryHDU(header=prihdr)
+		#writes the file
+		thdulist = fits.HDUList([prihdu, tb_hdu])
+		os.system("rm "+self.snl[ii][:-5]+"_PM_Nb_"+str(Nb)+".fits")
+		thdulist.writeto(self.snl[ii][:-5]+"_PM_Nb_"+str(Nb)+".fits")
+	
 	def writePositionCatalogVmaxM200c(self, ii, vmin=190, vmax=10000, NperBatch = 10000000):
 		"""
 		Extracts the positions and velocity out of a snapshot of the Multidark simulation.        
