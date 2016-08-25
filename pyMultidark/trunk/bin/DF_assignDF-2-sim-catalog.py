@@ -13,11 +13,11 @@ DFdir = join("/data2", "users", "gustavo", "BigMD", "1Gpc_3840_Planck1_New", "DE
 DFfile = join(DFdir,"dmdens_cic_087.dat")
 
 # loads the snapshot files 
-snList= n.array(glob.glob( "/data2/DATA/eBOSS/Multidark-lightcones/MD_1Gpc_new_rockS/snapshots/hlist_0.*.fits"))#403200
+snList= n.array(glob.glob( "/data2/DATA/eBOSS/Multidark-lightcones/MD_1Gpc_new_rockS/snapshots/hlist_0.403200*.fits"))#
 def writeDFMock(dataCat, DFfile, Lbox = 1000.):
 	print dataCat, DFfile
 	md = fits.open(dataCat)[1].data
-	path_to_outputCat = dataCat[:-4] + ".DF.fits.gz"
+	path_to_outputCat = dataCat[:-4] + "DF.fits.gz"
 	# opens the DF file
 	f = fortranfile.FortranFile(DFfile)
 	gridx, gridy, gridz = f.readInts()
