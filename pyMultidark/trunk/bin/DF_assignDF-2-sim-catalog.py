@@ -47,4 +47,5 @@ def writeDFMock(dataCat, DFfile, Lbox = 1000.):
 	os.system("rm -rf "+path_to_outputCat)
 	hdu.writeto(path_to_outputCat)
 
-writeDFMock(snList[0], DFfile, Lbox = 1000.)
+for el in snList:
+	writeDFMock(el, DFfile, Lbox = 1000.)
