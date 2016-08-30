@@ -13,7 +13,9 @@ DFdir = join("/data2", "users", "gustavo", "BigMD", "1Gpc_3840_Planck1_New", "DE
 DFfile = join(DFdir,"dmdens_cic_087.dat")
 
 # loads the snapshot files 
-snList= n.array(glob.glob( "/data2/DATA/eBOSS/Multidark-lightcones/MD_1Gpc_new_rockS/snapshots/hlist_0.403200_PM_Nb_?.fits"))#
+snList= n.array(glob.glob( "/data2/DATA/eBOSS/Multidark-lightcones/MD_1Gpc_new_rockS/snapshots/hlist_0.403200_PM_Nb_?.fits"))
+snList.sort()
+
 def writeDFMock(dataCat, DFfile, Lbox = 1000.):
 	print dataCat, DFfile
 	md = fits.open(dataCat)[1].data
@@ -26,10 +28,10 @@ def writeDFMock(dataCat, DFfile, Lbox = 1000.):
 	i = ( ( md['x'] / dx ) // 1 ).astype( 'int' )
 	j = ( ( md['y'] / dx ) // 1 ).astype( 'int' )
 	k= ( ( md['z'] / dx ) // 1 ).astype( 'int' )
-	print md['x'] 
-	print md['x'] / dx 
-	print ( md['x'] / dx ) // 1 
-	print i, j, k
+	#print md['x'] 
+	#print md['x'] / dx 
+	#print ( md['x'] / dx ) // 1 
+	#print i, j, k
 	#init the output array :
 	delta = n.ones_like(i)*-1.
 	#delta1 = n.empty_like(x)
@@ -38,12 +40,13 @@ def writeDFMock(dataCat, DFfile, Lbox = 1000.):
 	for kk in range(gridx):
 		print kk
 		sel = (k==kk)
-		N = i[sel] + gridx * j[sel] 
-		DF = f.readReals()
-		print DF[N]
-		delta[sel] = DF[N]
-		print delta[sel]
-		
+		if len(sel.nonzero()[0])>0:
+			N = i[sel] + gridx * j[sel] 
+			DF = f.readReals()
+			print DF[N]
+			delta[sel] = DF[N]
+			print delta[sel]
+			
 	f.close()
 
 	c0 = fits.Column(name="DF",format='D', array=delta )
