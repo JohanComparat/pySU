@@ -26,6 +26,9 @@ def writeDFMock(dataCat, DFfile, Lbox = 1000.):
 	i = ( ( md['x'] / gridx ) // 1 ).astype( 'int' )
 	j = ( ( md['y'] / gridx ) // 1 ).astype( 'int' )
 	k= ( ( md['z'] / gridx ) // 1 ).astype( 'int' )
+	print md['x'] 
+	print md['x'] / gridx 
+	print ( md['x'] / gridx ) // 1 
 	print i, j, k
 	#init the output array :
 	delta = n.ones_like(i)*-1.
