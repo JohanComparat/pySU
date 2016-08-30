@@ -13,7 +13,7 @@ DFdir = join("/data2", "users", "gustavo", "BigMD", "1Gpc_3840_Planck1_New", "DE
 DFfile = join(DFdir,"dmdens_cic_087.dat")
 
 # loads the snapshot files 
-snList= n.array(glob.glob( "/data2/DATA/eBOSS/Multidark-lightcones/MD_1Gpc_new_rockS/snapshots/hlist_0.403200_PM_Nb_?.fits"))
+snList= n.array(glob.glob( "/data2/DATA/eBOSS/Multidark-lightcones/MD_1Gpc_new_rockS/snapshots/hlist_0.40320_PM_Nb_?.fits"))
 snList.sort()
 
 def writeDFMock(dataCat, DFfile, Lbox = 1000.):
