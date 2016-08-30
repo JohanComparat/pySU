@@ -26,17 +26,20 @@ def writeDFMock(dataCat, DFfile, Lbox = 1000.):
 	i = ( ( md['x'] / gridx ) // 1 ).astype( 'int' )
 	j = ( ( md['y'] / gridx ) // 1 ).astype( 'int' )
 	k= ( ( md['z'] / gridx ) // 1 ).astype( 'int' )
+	print i, j, k
 	#init the output array :
 	delta = n.ones_like(i)*-1.
 	#delta1 = n.empty_like(x)
 	#delta2 = n.empty_like(x)
 	# now loops over k (every line of the file) and assigns delta values.
-	for kk in range(gridx):
+	for kk in range(3):#gridx):
 		print kk
 		sel = (k==kk)
 		N = i[sel] + gridx * j[sel] 
 		DF = f.readReals()
+		print DF[N]
 		delta[sel] = DF[N]
+		print delta[sel]
 		
 	f.close()
 
