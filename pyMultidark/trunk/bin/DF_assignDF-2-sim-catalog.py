@@ -23,19 +23,19 @@ def writeDFMock(dataCat, DFfile, Lbox = 1000.):
 	gridx, gridy, gridz = f.readInts()
 	dx = Lbox/gridx
 	# convert QSO positions into indexes
-	i = ( ( md['x'] / gridx ) // 1 ).astype( 'int' )
-	j = ( ( md['y'] / gridx ) // 1 ).astype( 'int' )
-	k= ( ( md['z'] / gridx ) // 1 ).astype( 'int' )
+	i = ( ( md['x'] / dx ) // 1 ).astype( 'int' )
+	j = ( ( md['y'] / dx ) // 1 ).astype( 'int' )
+	k= ( ( md['z'] / dx ) // 1 ).astype( 'int' )
 	print md['x'] 
-	print md['x'] / gridx 
-	print ( md['x'] / gridx ) // 1 
+	print md['x'] / dx 
+	print ( md['x'] / dx ) // 1 
 	print i, j, k
 	#init the output array :
 	delta = n.ones_like(i)*-1.
 	#delta1 = n.empty_like(x)
 	#delta2 = n.empty_like(x)
 	# now loops over k (every line of the file) and assigns delta values.
-	for kk in range(3):#gridx):
+	for kk in range(gridx):
 		print kk
 		sel = (k==kk)
 		N = i[sel] + gridx * j[sel] 
