@@ -9,6 +9,7 @@ import fortranfile
 import glob
 
 # loads the density field
+# in hydra home as wel 
 DFdir = join("/data2", "users", "gustavo", "BigMD", "1Gpc_3840_Planck1_New", "DENSFIELDS")
 DFfile = join(DFdir,"dmdens_cic_087.dat")
 
