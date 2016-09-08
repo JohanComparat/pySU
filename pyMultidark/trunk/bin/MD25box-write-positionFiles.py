@@ -1,6 +1,6 @@
 from MultiDark import *
 
-snList =  n.array(["/data2/DATA/eBOSS/Multidark-lightcones/MD_2.5Gpc/snapshots/hlist_10.list"
+snList =  n.array(["/data2/DATA/eBOSS/Multidark-lightcones/MD_2.5Gpc/snapshots/hlist_10.list",
 "/data2/DATA/eBOSS/Multidark-lightcones/MD_2.5Gpc/snapshots/hlist_74.list",  
 "/data2/DATA/eBOSS/Multidark-lightcones/MD_2.5Gpc/snapshots/hlist_7.list",  
 "/data2/DATA/eBOSS/Multidark-lightcones/MD_2.5Gpc/snapshots/hlist_9.list" ])
