@@ -203,7 +203,7 @@ class MultiDarkSimulation :
 				continue
 
 			line = line.split()
-			newline =n.array([ float(line[self.columnDict['x']]), float(line[self.columnDict['y']]), float(line[self.columnDict['z']]), float(line[self.columnDict['vmax']]), n.log10(float(line[self.columnDict['M200c']])), float(line[self.columnDict['pid']]),  n.log10(float(line[self.columnDict['mvir']])), float(line[self.columnDict['Rs_Klypin']])) ])
+			newline =n.array([ float(line[self.columnDict['x']]), float(line[self.columnDict['y']]), float(line[self.columnDict['z']]), float(line[self.columnDict['vmax']]), n.log10(float(line[self.columnDict['M200c']])), float(line[self.columnDict['pid']]),  n.log10(float(line[self.columnDict['mvir']])), float(line[self.columnDict['Rs_Klypin']]) ])
 			if  newline[3]>vmin : # newline[6]>logmmin:# and
 				output[count] = newline
 				count+=1
