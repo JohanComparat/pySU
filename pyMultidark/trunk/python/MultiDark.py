@@ -243,10 +243,6 @@ class MultiDarkSimulation :
 		
 		
 		# and for the last batch :
-		print "-2+2",output.T[0][count-2:count+2]
-		print "-1",output.T[0][count-1]
-		print "0",output.T[0][count]
-		print "+1",output.T[0][count+1]
 		col0 = fits.Column(name='x',format='D', array=output.T[0][:count] )
 		col1 = fits.Column(name='y',format='D', array= output.T[1][:count] )
 		col2 = fits.Column(name='z',format='D', array= output.T[2][:count] )
@@ -520,7 +516,7 @@ class MultiDarkSimulation :
 			print file
 			dd = fits.open(file)[1].data
 			cen = (dd['pid']==-1)
-			sat = (dd['pid']>=1)
+			sat = (cen==False) # (dd['pid']>=1)
 			#computes the histogram for each resampling of the file
 			for ii, xel in enumerate(X):
 				print ii
