@@ -35,8 +35,8 @@ def computeSlice(NN=4, massRange=[11,12], sliceNum=0, 	logbinsDelta = n.arange(-
 	n_slices_total = grid/NN 
 	n_slices = 1 # grid/NN 
 
-	path_to_outputSlice = join(DF_results_dir, "slice"+str(NN), "occupationDATA_raw", Halofile.split('/')[:-8] + ".slice"+str(sliceNum)+"."+str(massMin)+".M."+str(massMax)+".pkl")
-	path_to_outputMatrix = join(DF_results_dir, "slice"+str(NN), "occupationDATA", Halofile.split('/')[:-8] + ".slice"+str(sliceNum)+"."+str(massMin)+".M."+str(massMax)+".matrix")
+	path_to_outputSlice = join(DF_results_dir, "slice"+str(NN), "occupationDATA_raw", Halofile.split('/')[-1][:-8] + ".slice"+str(sliceNum)+"."+str(massMin)+".M."+str(massMax)+".pkl")
+	path_to_outputMatrix = join(DF_results_dir, "slice"+str(NN), "occupationDATA", Halofile.split('/')[-1][:-8] + ".slice"+str(sliceNum)+"."+str(massMin)+".M."+str(massMax)+".matrix")
 	
 	#open halo file
 	md = fits.open(Halofile)[1].data
@@ -89,14 +89,14 @@ def computeSlice(NN=4, massRange=[11,12], sliceNum=0, 	logbinsDelta = n.arange(-
 	p.imshow(n.log10(0.0001+NH), vmin=-0.5, vmax=1.5)
 	p.colorbar()
 	p.title("log10(Nhalo)")
-	p.savefig(join(DF_results_dir, "slice"+str(NN), "Nhalo_plot", Halofile.split('/')[:-8] + ".Nhalo.slice"+str(sliceNum)+"."+str(massMin)+".M."+str(massMax)+".png"))
+	p.savefig(join(DF_results_dir, "slice"+str(NN), "Nhalo_plot", Halofile.split('/')[-1][:-8] + ".Nhalo.slice"+str(sliceNum)+"."+str(massMin)+".M."+str(massMax)+".png"))
 	
 	#figure delta
 	p.figure(1)
 	p.imshow(n.log10(0.0001+DF_rs), vmin=-0.5, vmax=1.5)
 	p.colorbar()
 	p.title("log10(1+delta DM)")
-	p.savefig(join(DF_results_dir, "slice"+str(NN), "DF_plot", Halofile.split('/')[:-8] + ".DF.slice"+str(sliceNum)+"."+str(massMin)+".M."+str(massMax)+".png"))
+	p.savefig(join(DF_results_dir, "slice"+str(NN), "DF_plot", Halofile.split('/')[-1][:-8] + ".DF.slice"+str(sliceNum)+"."+str(massMin)+".M."+str(massMax)+".png"))
 	p.clf()
 	
 	#compute occupation
@@ -117,7 +117,7 @@ def computeSlice(NN=4, massRange=[11,12], sliceNum=0, 	logbinsDelta = n.arange(-
 	p.ylabel('mean number of halos with '+str(massMin)+".M."+str(massMax))
 	p.title("cell="+str(dxN)+"Mpc/h")
 	p.grid()
-	p.savefig(join(DF_results_dir, "slice"+str(NN), "meanOccupation_plot", Halofile.split('/')[:-8] + ".meanOccupation.slice"+str(sliceNum)+"."+str(massMin)+".M."+str(massMax)+".png"))
+	p.savefig(join(DF_results_dir, "slice"+str(NN), "meanOccupation_plot", Halofile.split('/')[-1][:-8] + ".meanOccupation.slice"+str(sliceNum)+"."+str(massMin)+".M."+str(massMax)+".png"))
 	p.clf()
 	# save occupation statistics
 	n.savetxt(path_to_outputMatrix, n.transpose([xDelta,deltaMass, deltaMassSTD]), fmt='%10.5f', header="log10(1+delta) meanOccupation STDdev")
@@ -131,7 +131,7 @@ def computeSlice(NN=4, massRange=[11,12], sliceNum=0, 	logbinsDelta = n.arange(-
 	
 	for numBin, bin in enumerate(binsNH[:-1]):
 		ids = n.where( (NH>=binsNH[numBin])&(NH<binsNH[numBin+1]) )
-		print bin, len(DF_rs[ids])
+		#print bin, len(DF_rs[ids])
 		deltaMass[numBin] = n.mean(DF_rs[ids], axis=0)
 		deltaMassSTD[numBin] = n.std(DF_rs[ids], axis=0)
 
@@ -144,7 +144,7 @@ def computeSlice(NN=4, massRange=[11,12], sliceNum=0, 	logbinsDelta = n.arange(-
 	p.ylabel('mean value of DF')
 	p.title("cell="+str(dxN)+"Mpc/h")
 	p.grid()
-	p.savefig(join(DF_results_dir, "slice"+str(NN), "meanDelta_plot", Halofile.split('/')[:-8] + ".meanDelta.slice"+str(sliceNum)+"."+str(massMin)+".M."+str(massMax)+".png"))
+	p.savefig(join(DF_results_dir, "slice"+str(NN), "meanDelta_plot", Halofile.split('/')[-1][:-8] + ".meanDelta.slice"+str(sliceNum)+"."+str(massMin)+".M."+str(massMax)+".png"))
 	p.clf()
 
 	p.figure(1)
@@ -152,7 +152,7 @@ def computeSlice(NN=4, massRange=[11,12], sliceNum=0, 	logbinsDelta = n.arange(-
 		ids = n.where( (NH>=binsNH[numBin])&(NH<binsNH[numBin+1]) )
 		#print numBin, len(DF_rs[ids]), DF_rs[ids]
 		if len(DF_rs[ids])>10 :
-			print
+			#print
 			p.hist(DF_rs[ids], normed=True, label=str(xNH[numBin]), histtype='step', bins=20)
 
 	
@@ -161,7 +161,7 @@ def computeSlice(NN=4, massRange=[11,12], sliceNum=0, 	logbinsDelta = n.arange(-
 	p.ylabel('normed histogram')
 	p.title("cell="+str(dxN)+"Mpc/h")
 	p.grid()
-	p.savefig(join(DF_results_dir, "slice"+str(NN), "distrDelta_plot", Halofile.split('/')[:-8] + ".distrDelta.slice"+str(sliceNum)+"."+str(massMin)+".M."+str(massMax)+".png"))
+	p.savefig(join(DF_results_dir, "slice"+str(NN), "distrDelta_plot", Halofile.split('/')[-1][:-8] + ".distrDelta.slice"+str(sliceNum)+"."+str(massMin)+".M."+str(massMax)+".png"))
 	p.clf()
 
 
