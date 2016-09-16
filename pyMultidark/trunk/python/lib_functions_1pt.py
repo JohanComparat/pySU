@@ -51,13 +51,13 @@ def convert_pkl_mass(fileC, fileS, binFile, zList_files,z0, z0short, qty):
 	bins = n.loadtxt(binFile)
 	dX = ( 10**bins[1:]  - 10**bins[:-1] ) #* n.log(10)
 	dlnbin = dX / (10**(( bins[1:]  + bins[:-1] )/2.))
-
+	print boxName
 	if boxName=='MD_0.4Gpc' :
 		boxLength = 400.
 		boxRedshift = 1./boxZN - 1.
 		logmp = n.log10(9.63 * 10**7)
 		
-	if boxName=='MD_1Gpc' :
+	if boxName=='MD_1Gpc_new_rockS' :
 		boxLength = 1000.
 		boxRedshift = 1./boxZN - 1.
 		logmp = n.log10(1.51 * 10**9)
@@ -171,13 +171,13 @@ def convert_pkl_velocity(fileC, fileS, binFile, zList_files, qty):
 	#10**n.arange(0,3.5,0.01)
 	dX = ( bins[1:]  - bins[:-1] ) #* n.log(10)
 	dlnbin = dX / (( bins[1:]  + bins[:-1] )/2.)
-
+	print boxName
 	if boxName=='MD_0.4Gpc' :
 		boxLength = 400.
 		boxRedshift = 1./boxZN - 1.
 		logmp = n.log10(9.63 * 10**7)
 		
-	if boxName=='MD_1Gpc' :
+	if boxName=='MD_1Gpc_new_rockS' :
 		boxLength = 1000.
 		boxRedshift = 1./boxZN - 1.
 		logmp = n.log10(1.51 * 10**9)
