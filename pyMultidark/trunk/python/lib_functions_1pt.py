@@ -91,7 +91,7 @@ def convert_pkl_mass(fileC, fileS, binFile, zList_files,z0, z0short, qty):
 		logmp = n.log10(9.6 * 10**10)
 
 	index = int(n.argwhere( abs(z0-n.round(boxRedshift, 6))<0.00001)[0] )
-	msigmaFile=join("..", "Pk_DM_CLASS", "hmf_highz_medz_lowz_planck", "mVector_z_"+str(z0short[index])+".txt")
+	msigmaFile=join(os.environ['PYSU_MD_DIR'], "data", "Pk_DM_CLASS", "hmf_highz_medz_lowz_planck", "mVector_z_"+str(z0short[index])+".txt")
 	# print boxRedshift
 	# print msigmaFile
 	DATA = n.loadtxt(msigmaFile,unpack=True)
@@ -158,8 +158,8 @@ def convert_pkl_mass(fileC, fileS, binFile, zList_files,z0, z0short, qty):
 
 
 	hdu2 = fits.BinTableHDU.from_columns([col000, col1, col2, col3, col4, col4_2, col5, col6, col7, col8, col9, col10, col11, col12, col5_s, col6_s, col7_s, col8_s, col9_s, col10_s, col11_s, col12_s, col0, col00, col01])
-	if os.path.isfile(join("..", qty, "data", "MD_"+boxName+"_"+str(boxRedshift)+"_"+qty+".fits"))==False :
-		hdu2.writeto( join("..", qty, "data", "MD_"+boxName+"_"+str(boxRedshift)+"_"+qty+".fits") )
+	if os.path.isfile(join(os.environ['MULTIDARK_LIGHTCONE_DIR'], qty, "data", "MD_"+boxName+"_"+str(boxRedshift)+"_"+qty+".fits"))==False :
+		hdu2.writeto( join(os.environ['MULTIDARK_LIGHTCONE_DIR'], qty, "data", "MD_"+boxName+"_"+str(boxRedshift)+"_"+qty+".fits") )
 
 
 def convert_pkl_velocity(fileC, fileS, binFile, zList_files, qty):
@@ -244,6 +244,6 @@ def convert_pkl_velocity(fileC, fileS, binFile, zList_files, qty):
 
 
 	hdu2 = fits.BinTableHDU.from_columns([col0, col1, col2, col3, col4, col4_2, col5, col6, col7, col8, col9, col10, col11, col12, col5_s, col6_s, col7_s, col8_s, col9_s, col10_s, col11_s, col12_s])
-	if os.path.isfile(join("..", qty, "data", "MD_"+boxName+"_"+str(boxRedshift)+"_"+qty+".fits"))==False :
-		hdu2.writeto( join("..", qty, "data", "MD_"+boxName+"_"+str(boxRedshift)+"_"+qty+".fits") )
+	if os.path.isfile(join(os.environ['MULTIDARK_LIGHTCONE_DIR'], qty, "data", "MD_"+boxName+"_"+str(boxRedshift)+"_"+qty+".fits"))==False :
+		hdu2.writeto( join(os.environ['MULTIDARK_LIGHTCONE_DIR'], qty, "data", "MD_"+boxName+"_"+str(boxRedshift)+"_"+qty+".fits") )
 
