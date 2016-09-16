@@ -2,7 +2,7 @@ import glob
 from os.path import join
 import numpy as n
 import astropy.io.fits as fits
-import lib_functions as lib
+import lib_functions_1pt as lib
 import os
 
 dir_boxes =  n.array([os.environ['MD04_DIR'], os.environ['MD10_DIR'], os.environ['MD25_DIR'], os.environ['MD40_DIR'], os.environ['MD25NW_DIR'], os.environ['MD40NW_DIR']])
