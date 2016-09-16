@@ -36,7 +36,7 @@ def computeSlice(NN=4, massRange=[11,12], sliceNum=0, 	logbinsDelta = n.arange(-
 	n_slices = 1 # grid/NN 
 
 	path_to_outputSlice = join(DF_results_dir, "slice"+str(NN), "occupationDATA_raw", Halofile[:-8] + ".slice"+str(sliceNum)+"."+str(massMin)+".M."+str(massMax)+".pkl")
-	path_to_outputSlice = join(DF_results_dir, "slice"+str(NN), "occupationDATA", Halofile[:-8] + ".slice"+str(sliceNum)+"."+str(massMin)+".M."+str(massMax)+".matrix")
+	path_to_outputMatrix = join(DF_results_dir, "slice"+str(NN), "occupationDATA", Halofile[:-8] + ".slice"+str(sliceNum)+"."+str(massMin)+".M."+str(massMax)+".matrix")
 	
 	#open halo file
 	md = fits.open(Halofile)[1].data
