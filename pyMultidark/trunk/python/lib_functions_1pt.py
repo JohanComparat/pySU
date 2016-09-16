@@ -91,7 +91,7 @@ def convert_pkl_mass(fileC, fileS, binFile, zList_files,z0, z0short, qty):
 		logmp = n.log10(9.6 * 10**10)
 
 	index = int(n.argwhere( abs(z0-n.round(boxRedshift, 6))<0.00001)[0] )
-	msigmaFile=join(os.environ['PYSU_MD_DIR'], "data", "Pk_DM_CLASS", "hmf_highz_medz_lowz_planck", "mVector_z_"+str(z0short[index])+".txt")
+	msigmaFile=join(os.environ['PYSU_MD_DIR'], "data", "PK_DM_CLASS", "hmf_highz_medz_lowz_planck", "mVector_z_"+str(z0short[index])+".txt")
 	# print boxRedshift
 	# print msigmaFile
 	DATA = n.loadtxt(msigmaFile,unpack=True)
