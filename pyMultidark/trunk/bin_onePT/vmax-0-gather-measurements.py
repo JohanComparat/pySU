@@ -5,25 +5,28 @@ import astropy.io.fits as fits
 import lib_functions_1pt as lib
 import os
 
+#Quantity studied
+qty = "vmax"
+
+# General information
+zList_all =  join(os.environ['PYSU_MD_DIR'], "data", "z-list-all-boxes.txt") 
+z0 = n.loadtxt(zList_all,unpack=True)
+zList_all2 =  join(os.environ['PYSU_MD_DIR'], "data", "z-list-2LINEAR-COSMO.txt") 
+z0short = n.loadtxt(zList_all2,unpack=True,dtype='S')
+
+# redshift lists
 dir_boxes =  n.array([os.environ['MD04_DIR'], os.environ['MD10_DIR'], os.environ['MD25_DIR'], os.environ['MD40_DIR'], os.environ['MD25NW_DIR'], os.environ['MD40NW_DIR']])
 zList_files = n.array([ join(dir_box,"redshift-list.txt") for dir_box in dir_boxes])
 
-zList_all =  join(dir, "z-list-all-boxes.txt") 
-z0 = n.loadtxt(zList_all,unpack=True)
-zList_all2 =  join(dir, "z-list-2LINEAR-COSMO.txt") 
-z0short = n.loadtxt(zList_all2,unpack=True,dtype='S')
-
-
-qty = "vmax"
-
-
+# one point function lists
 fileC = n.array(glob.glob( join(os.environ['MULTIDARK_LIGHTCONE_DIR'],"MD_*Gpc*",qty,"*t_*_Central_JKresampling.pkl")))
 fileB = n.array(glob.glob( join( os.environ['MULTIDARK_LIGHTCONE_DIR'],"MD_*Gpc*",qty,"*t_*_"+qty+"_JKresampling.bins")))
 fileS = n.array(glob.glob( join( os.environ['MULTIDARK_LIGHTCONE_DIR'],"MD_*Gpc*",qty,"*t_*_Satellite_JKresampling.pkl")))
 
-print len(fileC)
+print "considers ",len(fileC), qty , " function files"
 
 for ii, el in enumerate(fileC):
+	print '========================'
 	print el
 	print fileS[ii]
 	print fileB[ii]
