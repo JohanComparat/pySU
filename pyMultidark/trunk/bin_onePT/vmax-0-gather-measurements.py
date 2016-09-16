@@ -19,9 +19,11 @@ dir_boxes =  n.array([os.environ['MD04_DIR'], os.environ['MD10_DIR'], os.environ
 zList_files = n.array([ join(dir_box,"redshift-list.txt") for dir_box in dir_boxes])
 
 # one point function lists
-fileC = n.array(glob.glob( join(os.environ['MULTIDARK_LIGHTCONE_DIR'],"MD_*Gpc*",qty,"*t_*_Central_JKresampling.pkl")))
-fileB = n.array(glob.glob( join( os.environ['MULTIDARK_LIGHTCONE_DIR'],"MD_*Gpc*",qty,"*t_*_"+qty+"_JKresampling.bins")))
-fileS = n.array(glob.glob( join( os.environ['MULTIDARK_LIGHTCONE_DIR'],"MD_*Gpc*",qty,"*t_*_Satellite_JKresampling.pkl")))
+fileC = n.array(glob.glob( join(os.environ['MULTIDARK_LIGHTCONE_DIR'],"MD_*Gpc*", "properties", qty,"*t_*_Central_JKresampling.pkl")))
+fileB = n.array(glob.glob( join( os.environ['MULTIDARK_LIGHTCONE_DIR'],"MD_*Gpc*","properties", qty,"*t_*_"+qty+"_JKresampling.bins")))
+fileS = n.array(glob.glob( join( os.environ['MULTIDARK_LIGHTCONE_DIR'],"MD_*Gpc*","properties", qty,"*t_*_Satellite_JKresampling.pkl")))
+
+print "considers ",len(fileC), qty , " function files"
 
 print "considers ",len(fileC), qty , " function files"
 

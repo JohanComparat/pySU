@@ -43,12 +43,11 @@ def getStat(file,volume,unitVolume):
 	# print Nall[sel]/mean90[sel]
 	return Ncounts, Ncounts_c, Nall, Nall_c, mean90, std90, mean90_c, std90_c
 
-def convert_pkl_mass(fileC, fileS, binFile, zList_files,z0, z0short, name):
+def convert_pkl_mass(fileC, fileS, binFile, zList_files,z0, z0short, qty):
 	"""returns a fits table containing the histograms
 	"""
-	boxName = fileC.split('\\')[1]
-	boxZN = float(fileC.split('\\')[-1].split('_')[1])
-	qty = fileC.split('\\')[2]
+	boxName = fileC.split('/')[5]
+	boxZN = float(fileC.split('/')[-1].split('_')[1])
 	bins = n.loadtxt(binFile)
 	dX = ( 10**bins[1:]  - 10**bins[:-1] ) #* n.log(10)
 	dlnbin = dX / (10**(( bins[1:]  + bins[:-1] )/2.))
@@ -159,16 +158,15 @@ def convert_pkl_mass(fileC, fileS, binFile, zList_files,z0, z0short, name):
 
 
 	hdu2 = fits.BinTableHDU.from_columns([col000, col1, col2, col3, col4, col4_2, col5, col6, col7, col8, col9, col10, col11, col12, col5_s, col6_s, col7_s, col8_s, col9_s, col10_s, col11_s, col12_s, col0, col00, col01])
-	if os.path.isfile(join("..", qty, "data", "MD_"+boxName+"_"+str(boxRedshift)+"_"+name+".fits"))==False :
-		hdu2.writeto( join("..", qty, "data", "MD_"+boxName+"_"+str(boxRedshift)+"_"+name+".fits") )
+	if os.path.isfile(join("..", qty, "data", "MD_"+boxName+"_"+str(boxRedshift)+"_"+qty+".fits"))==False :
+		hdu2.writeto( join("..", qty, "data", "MD_"+boxName+"_"+str(boxRedshift)+"_"+qty+".fits") )
 
 
-def convert_pkl_velocity(fileC, fileS, binFile, zList_files, name):
+def convert_pkl_velocity(fileC, fileS, binFile, zList_files, qty):
 	"""returns a fits table containing the histograms
 	"""
-	boxName = fileC.split('\\')[1]
-	boxZN = float(fileC.split('\\')[-1].split('_')[1])
-	qty = fileC.split('\\')[2]
+	boxName = fileC.split('/')[5]
+	boxZN = float(fileC.split('/')[-1].split('_')[1])
 	bins = n.loadtxt(binFile)
 	#10**n.arange(0,3.5,0.01)
 	dX = ( bins[1:]  - bins[:-1] ) #* n.log(10)
@@ -246,6 +244,6 @@ def convert_pkl_velocity(fileC, fileS, binFile, zList_files, name):
 
 
 	hdu2 = fits.BinTableHDU.from_columns([col0, col1, col2, col3, col4, col4_2, col5, col6, col7, col8, col9, col10, col11, col12, col5_s, col6_s, col7_s, col8_s, col9_s, col10_s, col11_s, col12_s])
-	if os.path.isfile(join("..", qty, "data", "MD_"+boxName+"_"+str(boxRedshift)+"_"+name+".fits"))==False :
-		hdu2.writeto( join("..", qty, "data", "MD_"+boxName+"_"+str(boxRedshift)+"_"+name+".fits") )
+	if os.path.isfile(join("..", qty, "data", "MD_"+boxName+"_"+str(boxRedshift)+"_"+qty+".fits"))==False :
+		hdu2.writeto( join("..", qty, "data", "MD_"+boxName+"_"+str(boxRedshift)+"_"+qty+".fits") )
 
