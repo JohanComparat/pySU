@@ -90,6 +90,7 @@ def computeSlice(NN=4, massRange=[11,12], sliceNum=0, 	logbinsDelta = n.arange(-
 	p.colorbar()
 	p.title("log10(Nhalo)")
 	p.savefig(join(DF_results_dir, "slice"+str(NN), "Nhalo_plot", Halofile.split('/')[-1][:-8] + ".Nhalo.slice"+str(sliceNum)+"."+str(massMin)+".M."+str(massMax)+".png"))
+	p.clf()
 	
 	#figure delta
 	p.figure(1)
