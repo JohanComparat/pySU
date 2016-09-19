@@ -24,7 +24,7 @@ zSelection = lambda data, zmin, zmax : (data["redshift"]>zmin)&(data["redshift"]
 nSelection = lambda data, NminCount : (data['dN_counts_'+cos]>NminCount)
 
 # VMAX 1point FUNCTION 
-def plot_vmax_function_jackknife_poisson_error(x, y, MD04, MD10, MD25, MD25NW, MD40, MD40NW, cos = "cen", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], qty), qty = 'vmax'):
+def plot_vmax_function_jackknife_poisson_error(x, y, MD04, MD10, MD25, MD25NW, MD40, MD40NW, cos = "cen", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'vmax'), qty = 'vmax'):
 	"""
 	:param x: x coordinates
 	:param y: y coordinates
@@ -56,7 +56,7 @@ def plot_vmax_function_jackknife_poisson_error(x, y, MD04, MD10, MD25, MD25NW, M
 	p.savefig(join(dir,qty,"vmax-"+cos+"-jackknife-countsSqrt.png"))
 	p.clf()
 
-def plot_vmax_function_data_error(log_vmax, error, redshift, label, zmin, zmax, cos = "cen", figName="vmax-cen-data04-uncertainty.png", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], qty), qty = 'vmax'):
+def plot_vmax_function_data_error(log_vmax, error, redshift, label, zmin, zmax, cos = "cen", figName="vmax-cen-data04-uncertainty.png", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'vmax'), qty = 'vmax'):
 	"""
 	:param log_vmax: x coordinates
 	:param error: y coordinates
@@ -85,7 +85,7 @@ def plot_vmax_function_data_error(log_vmax, error, redshift, label, zmin, zmax, 
 	p.savefig(join(dir,qty,figName))
 	p.clf()
 
-def plot_vmax_function_data(log_vmax, log_VF, redshift, zmin, zmax, cos = "cen", figName="", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], qty), qty = 'vmax'):
+def plot_vmax_function_data(log_vmax, log_VF, redshift, zmin, zmax, cos = "cen", figName="", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'vmax'), qty = 'vmax'):
 	"""
 	:param log_vmax: x coordinates
 	:param log_VF: y coordinates
@@ -131,7 +131,7 @@ def plot_vmax_function_data(log_vmax, log_VF, redshift, zmin, zmax, cos = "cen",
 	p.savefig(join(dir,qty,"vmax-"+figName+cos+"-cumulative-function-data.png"))
 	p.clf()
 
-def fit_vmax_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, cos = "cen", mode = "curve_fit", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], qty), qty = 'vmax'):
+def fit_vmax_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, cos = "cen", mode = "curve_fit", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'vmax'), qty = 'vmax'):
 	"""
 	Fits a function to the vmax data
 	:param data: data table of the selected points for the fit
