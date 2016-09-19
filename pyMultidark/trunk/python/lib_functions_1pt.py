@@ -131,7 +131,7 @@ def plot_vmax_function_data(log_vmax, log_VF, redshift, zmin, zmax, cos = "cen",
 	p.savefig(join(dir,qty,"vmax-"+figName+cos+"-cumulative-function-data.png"))
 	p.clf()
 
-def fit_vmax_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, cos = "cen", mode = "curve_fit", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], qty), qty = 'vmax')
+def fit_vmax_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, cos = "cen", mode = "curve_fit", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], qty), qty = 'vmax'):
 	"""
 	Fits a function to the vmax data
 	:param data: data table of the selected points for the fit
