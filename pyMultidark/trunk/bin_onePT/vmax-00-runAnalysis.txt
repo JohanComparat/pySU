@@ -1,0 +1,9 @@
+#routines for the Vmax function
+#===================
+
+# Data in $MD_VMAX_DIR
+
+python vmax-0-gather-measurements.py
+python vmax-1A-plotData.py
+python vmax-1C-fit-z0.py
+python vmax-2A-ztrend-cen.py
