@@ -147,13 +147,13 @@ def fit_vmax_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, co
 	:return: result of the fit: best parameter array and covariance matrix
 	produces a plot of the residuals
 	"""
-	if mode = "curve_fit":
+	if mode == "curve_fit":
 		print "mode: curve_fit"
 		pOpt, pCov=curve_fit(vf, x_data, y_data, p0, y_err)#, bounds=boundaries)
 		print "best params=",pOpt[0], pOpt[1], pOpt[2], pOpt[3]
 		print "err=",pCov[0][0]**0.5, pCov[1][1]**0.5, pCov[2][2]**0.5, pCov[3][3]**0.5
 		
-	if mode = "minimize":
+	if mode == "minimize":
 		print "mode: minimize"
 		chi2fun = lambda ps : n.sum( (vf(x_data, ps) - y_data)**2. / (y_err)**2. )/(len(y_data) - len(ps))
 		res = minimize(chi2fun, p0, method='Powell',options={'xtol': 1e-8, 'disp': True, 'maxiter' : 5000000000000})
