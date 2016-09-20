@@ -25,7 +25,8 @@ vf = lambda v, A, v0, alpha, beta : n.log10( 10**A * (10**v/10**v0)**(-beta) * n
 # sheth and tormen function
 delta_c = 1.686
 f_ST01 = lambda sigma, A, a, p: A * ((2. * a * (delta_c/sigma)**2.) / (  n.pi))**(0.5) * ( 1 + (a*(delta_c/sigma)**2.) **(-p) ) * n.e**( - a * (delta_c/sigma)**2. / 2.)
-log_f_ST01 = lambda logSigma, p : n.log10( f_ST01(10.**logSigma, p[0], p[1], p[2]) )
+log_f_ST01 = lambda logSigma, A, a, p : n.log10( f_ST01(10.**logSigma, A, a, p) )
+loglog_f_ST01 = lambda logSigma, p : n.log10( f_ST01(10.**logSigma, p[0], p[1], p[2]) )
 
 # MULTIDARK TABLE GENERIC FUNCTIONS
 mSelection = lambda data, qty, limits_04, limits_10, limits_25, limits_40 : ((data["boxLength"]==400.)&(data["log_"+qty+"_min"]>limits_04[0]) &(data["log_"+qty+"_max"]<limits_04[1])) | ((data["boxLength"]==1000.)&(data["log_"+qty+"_min"]>limits_10[0]) &(data["log_"+qty+"_max"]<limits_10[1])) |  ((data["boxLength"]==2500.)&(data["log_"+qty+"_min"]>limits_25[0]) &(data["log_"+qty+"_max"]<limits_25[1])) |  ((data["boxLength"]==4000.)&(data["log_"+qty+"_min"]>limits_40[0])&(data["log_"+qty+"_max"]<limits_40[1])) 
@@ -209,7 +210,7 @@ def fit_mvir_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, co
 		
 	if mode == "minimize":
 		print "mode: minimize"
-		chi2fun = lambda ps : n.sum( (log_f_ST01(x_data, ps) - y_data)**2. / (y_err)**2. )/(len(y_data) - len(ps))
+		chi2fun = lambda ps : n.sum( (loglog_f_ST01(x_data, ps) - y_data)**2. / (y_err)**2. )/(len(y_data) - len(ps))
 		res = minimize(chi2fun, p0, method='Powell',options={'xtol': 1e-8, 'disp': True, 'maxiter' : 5000000000000})
 		pOpt = res.x
 		pCov = res.direc

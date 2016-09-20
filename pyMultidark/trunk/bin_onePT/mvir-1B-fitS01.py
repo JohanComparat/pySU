@@ -14,6 +14,7 @@ import matplotlib.pyplot as p
 
 from scipy.interpolate import interp1d
 from scipy.misc import derivative
+import astropy.units as uu
 
 
 sigma = n.arange(0.05,10,0.05)
@@ -30,14 +31,14 @@ dir = join(os.environ['MULTIDARK_LIGHTCONE_DIR'], qty)
 # loads summary file
 data = fits.open( join(dir, "MD_"+qty+"_summary.fits"))[1].data
 
-NminCount = 1000
-Npmin = 1# 300
+NminCount = 100 # 1000
+Npmin =  300 # 1
 nolim = [0,1e17]
-limits_04 =  [Npmin*9.63 * 10**7, 5e12]
-limits_10 =  [Npmin*1.51 * 10**9., 5e13]
-limits_25 =  [Npmin*2.359 * 10**10., 5e14]
-limits_40 =  [Npmin* 9.6 * 10**10. , 5e15]
-MPART = n.array([9.63 * 10**7, 1.51 * 10**9, 2.359 * 10**10, 9.6 * 10**10])
+limits_04 =  n.log10([Npmin*9.63 * 10**7, 5e12])
+limits_10 =  n.log10([Npmin*1.51 * 10**9., 5e13])
+limits_25 =  n.log10([Npmin*2.359 * 10**10., 5e14])
+limits_40 =  n.log10([Npmin* 9.6 * 10**10. , 5e15])
+#MPART = n.array([9.63 * 10**7, 1.51 * 10**9, 2.359 * 10**10, 9.6 * 10**10])
 
 zmin = -0.01
 zmax = 2.3
