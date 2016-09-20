@@ -202,7 +202,7 @@ p.ylabel(r'data / model')
 #p.ylim((-0.9, 1.1))
 #p.yscale('log')
 p.grid()
-p.savefig(join(dir,qty,"vmax-"+cos+"-differential-function-redshift-trend-residual.png"))
+p.savefig(join(dir,"vmax-"+cos+"-differential-function-redshift-trend-residual.png"))
 p.clf()
 
 """
