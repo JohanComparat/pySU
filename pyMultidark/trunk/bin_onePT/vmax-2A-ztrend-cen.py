@@ -18,6 +18,8 @@ from scipy.optimize import curve_fit
 
 from scipy.interpolate import interp1d
 from scipy.misc import derivative
+
+import scipy.stats as st
 #Quantity studied
 #=================
 qty = "vmax"
@@ -92,41 +94,115 @@ A0, v0, a0, b0 = outCF[0]
 print "----------------------------------------------------------"
 print A0, v0, a0, b0
 print "----------------------------------------------------------"
-Az = lambda z, A1 : A0 + z*A1# + z**2 *A2
-#vz = lambda z, v1, v2: v0 + z*v1 + v2*z**2.
-vz = lambda z, v3 : v0 +v3*z**3.
-az = lambda z, a3 : a0 + a3*z**1.
-#bz = lambda z, b1, b2 : b0 +z*b1 + z**2.*b2
-bz = lambda z, b1, b3 : b0 +z*b1 +b3*z**3.
+Az = lambda z, A1 : A0 + A1*z**1.# + z**2 *A2
+vz = lambda z, v1 : v0 + v1*z**1.
+az = lambda z, a1 : a0 + a1*z**1.
+bz = lambda z, b1 : b0 + b1*z**1. # +b3*z**3.
 
+ps = [ -1.5, -0.1, 0., 0.1]
+
+vf = lambda v, z, A1,  v1, a1, b1: n.log10( 10**Az(z, A1) * (10**v/10**vz(z,  v1))**(-bz(z, b1)) * n.e**(- (10**v/10**vz(z,  v1))**(az(z,a1) ) ) )
+logFun = lambda v, z, ps : vf(v, z, ps[0], ps[1], ps[2], ps[3])#, ps[4])#, ps[5], ps[6])
+
+chi2fun = lambda ps : n.sum( abs(logFun(x_data, z_data, ps) - y_data) / (y_err) )/(len(y_data) - len(ps))
+
+res = minimize(chi2fun, ps, method='Powell',options={'xtol': 1e-8, 'disp': True, 'maxiter' : 50000000000000})
+pOpt = res.x
+cov = res.direc
+outchi2red = chi2fun(pOpt)
+outndof=(len(y_data) - len(ps))
+print "----------------------------------------------------------"
+print "chi2 / ndof = ",outchi2red
+print n.round(pOpt,3)
+print n.round(abs(cov.diagonal())**0.5,3)
+print "----------------------------------------------------------"
+
+outfile=open(join(dir, "vmax-"+cos+"-diff-function-z1-params.pkl"), 'w')
+cPickle.dump([pOpt, cov], outfile)
+outfile.close()
+
+param_z0_file=open(join(dir, "vmax-"+cos+"-diff-function-z1-params.pkl"), 'r')
+outCF = cPickle.load(param_z0_file)
+param_z0_file.close()
+A1, v1, a1, b1 = outCF[0]
+
+Az = lambda z, A2 : A0 + A1*z**1 + A2*z**2 
+vz = lambda z, v2 : v0 + v1*z**1. + v2*z**2 
+az = lambda z, a2 : a0 + a1*z**1. + a2*z**2 
+bz = lambda z, b2 : b0 + b1*z**1. +b2*z**2.
+
+ps = [ -1.5, -0.1, 0., 0.1]
+
+vf = lambda v, z, A2,  v2, a2, b2: n.log10( 10**Az(z, A2) * (10**v/10**vz(z,  v2))**(-bz(z, b2)) * n.e**(- (10**v/10**vz(z,  v2))**(az(z,a2) ) ) )
+logFun = lambda v, z, ps : vf(v, z, ps[0], ps[1], ps[2], ps[3])#, ps[4])#, ps[5], ps[6])
+
+chi2fun = lambda ps : n.sum( abs(logFun(x_data, z_data, ps) - y_data) / (y_err) )/(len(y_data) - len(ps))
+
+res = minimize(chi2fun, ps, method='Powell',options={'xtol': 1e-8, 'disp': True, 'maxiter' : 50000000000000})
+pOpt = res.x
+cov = res.direc
+outchi2red = chi2fun(pOpt)
+outndof=(len(y_data) - len(ps))
+print "----------------------------------------------------------"
+print "chi2 / ndof = ",outchi2red
+print n.round(pOpt,3)
+print n.round(abs(cov.diagonal())**0.5,3)
+print "----------------------------------------------------------"
+
+outfile=open(join(dir, "vmax-"+cos+"-diff-function-z2-params.pkl"), 'w')
+cPickle.dump([pOpt, cov], outfile)
+outfile.close()
+
+
+param_z0_file=open(join(dir, "vmax-"+cos+"-diff-function-z2-params.pkl"), 'r')
+outCF = cPickle.load(param_z0_file)
+param_z0_file.close()
+A2, v2, a2, b2 = outCF[0]
+
+Az = lambda z, A3 : A0 + A1*z**1 + A2*z**2  + A3*z**3 
+vz = lambda z, v3 : v0 + v1*z**1. + v2*z**2  + v3*z**3 
+az = lambda z, a3 : a0 + a1*z**1. + a2*z**2  + a3*z**3 
+bz = lambda z, b3 : b0 + b1*z**1. +b2*z**2. + b3*z**3
+
+ps = [ -1.5, -0.1, 0., 0.1]
+
+vf = lambda v, z, A2,  v2, a2, b2: n.log10( 10**Az(z, A2) * (10**v/10**vz(z,  v2))**(-bz(z, b2)) * n.e**(- (10**v/10**vz(z,  v2))**(az(z,a2) ) ) )
+logFun = lambda v, z, ps : vf(v, z, ps[0], ps[1], ps[2], ps[3])#, ps[4])#, ps[5], ps[6])
+
+chi2fun = lambda ps : n.sum( abs(logFun(x_data, z_data, ps) - y_data) / (y_err) )/(len(y_data) - len(ps))
+
+res = minimize(chi2fun, ps, method='Powell',options={'xtol': 1e-8, 'disp': True, 'maxiter' : 50000000000000})
+pOpt = res.x
+cov = res.direc
+outchi2red = chi2fun(pOpt)
+outndof=(len(y_data) - len(ps))
+print "----------------------------------------------------------"
+print "chi2 / ndof = ",outchi2red
+print n.round(pOpt,3)
+print n.round(abs(cov.diagonal())**0.5,3)
+print "----------------------------------------------------------"
+
+outfile=open(join(dir, "vmax-"+cos+"-diff-function-z3-params.pkl"), 'w')
+cPickle.dump([pOpt, cov], outfile)
+outfile.close()
+
+sys.exit()
+#bz = lambda z, b1, b2 : b0 +z*b1 + z**2.*b2
+#vz = lambda z, v1, v2: v0 + z*v1 + v2*z**2.
 #4.97 2.99 0.35 -0.17
 #5.11 2.8 0.268 -0.15
 
-ps = [ 0., 0., 0., 0., 0.]
 """
 vf = lambda v, z, A1, v1, v2, a1, b1, b2 : n.log10( 10**Az(z, A1) * (10**v/10**vz(z, v1,v2))**(-bz(z, b1, b2)) * n.e**(- (10**v/10**vz(z, v1,v2))**(10**az(z, a1)) ) )
 logFun = lambda v, z, ps : vf(v, z, ps[0], ps[1], ps[2], ps[3], ps[4], ps[5]) 
 """
 
-vf = lambda v, z, A1,  v3, a3, b1, b3: n.log10( 10**Az(z, A1) * (10**v/10**vz(z,  v3))**(-bz(z, b1,b3)) * n.e**(- (10**v/10**vz(z,  v3))**(az(z,a3) ) ) )
-logFun = lambda v, z, ps : vf(v, z, ps[0], ps[1], ps[2], ps[3], ps[4])#, ps[5], ps[6])
 
 # chi2fun = lambda ps : n.sum( (logFun(x_data, ps) - y_data)**2. / (y_err)**2. )/(len(y_data) - len(ps))
-chi2fun = lambda ps : n.sum( abs(logFun(x_data, z_data, ps) - y_data) / (y_err) )/(len(y_data) - len(ps))
 
-
-
-res = minimize(chi2fun, ps, method='Powell',options={'xtol': 1e-8, 'disp': True, 'maxiter' : 50000000000000})
-pOpt = res.x
-cov = res.direc
-print "chi2 / ndof = ", chi2fun(pOpt)
 #chi2perpoint = lambda ps : (funG(lg_vmax, lg_1pz, ps) - lg_MF_c)**2. / (errorLog)**2. 
 #chi2pp = chi2perpoint(pOpt)
 #|print pOpt, cov
-print "----------------------------------------------------------"
-print n.round(pOpt,3)
-print n.round(abs(cov.diagonal())**0.5,3)
-print "----------------------------------------------------------"
 
 outfile=open(join(dir, "vmax-"+cos+"-diff-function-z1-params.pkl"), 'w')
 cPickle.dump(res, outfile)
