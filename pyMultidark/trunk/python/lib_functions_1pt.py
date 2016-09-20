@@ -21,7 +21,7 @@ mSelection = lambda data, qty, limits_04, limits_10, limits_25, limits_40 : ((da
 
 zSelection = lambda data, zmin, zmax : (data["redshift"]>zmin)&(data["redshift"]<zmax)
 
-nSelection = lambda data, NminCount : (data['dN_counts_'+cos]>NminCount)
+nSelection = lambda data, NminCount, cos : (data['dN_counts_'+cos]>NminCount)
 
 # VMAX 1point FUNCTION 
 def plot_vmax_function_jackknife_poisson_error(x, y, MD04, MD10, MD25, MD25NW, MD40, MD40NW, cos = "cen", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'vmax'), qty = 'vmax'):

@@ -40,6 +40,7 @@ systError = 0.01
 zmin = -0.01
 zmax = 2.3
 
+cos = "cen"
 
 #=================
 # DATA
@@ -51,11 +52,10 @@ zSel = lib.zSelection( data, zmin, zmax )
 # mass selection
 mSel = lib.mSelection(data, qty, limits_04, limits_10, limits_25,limits_40) 
 # minimum number counts selection
-nSel = lib.nSelection(data, NminCount )
+nSel = lib.nSelection(data, NminCount, cos)
 # altogether
 ok = (zSel) & (mSel) & (nSel)
 
-cos = "cen"
 
 # x coordinates definition
 #=================

@@ -40,6 +40,8 @@ systError = 0.01
 zmin = -0.01
 zmax = 0.001
 
+cos = 'cen'
+
 #=================
 # DATA
 #=================
@@ -50,16 +52,10 @@ zSel = lib.zSelection( data, zmin, zmax )
 # mass selection
 mSel = lib.mSelection(data, qty, limits_04, limits_10, limits_25,limits_40) 
 # minimum number counts selection
-nSel = lib.nSelection(data, NminCount )
+nSel = lib.nSelection(data, NminCount, cos)
 # altogether
 ok = (zSel) & (mSel) & (nSel)
 
-
-#=================
-#=================
-cos = 'cen'
-#=================
-#=================
 
 # x coordinates definition
 #=================
@@ -87,6 +83,10 @@ pOpt, pCov = lib.fit_vmax_function_z0(data[ok], x_data = log_vmax[ok], y_data = 
 cos = 'sat'
 #=================
 #=================
+# minimum number counts selection
+nSel = lib.nSelection(data, NminCount, cos )
+# altogether
+ok = (zSel) & (mSel) & (nSel)
 
 # x coordinates definition
 #=================

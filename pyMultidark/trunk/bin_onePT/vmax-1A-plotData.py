@@ -29,7 +29,7 @@ zSel = lib.zSelection( data, zmin, zmax )
 # mass selection
 mSel = lib.mSelection(data, qty, limits_04, limits_10, limits_25,limits_40) 
 # minimum number counts selection
-nSel = lib.nSelection(data, NminCount )
+nSel = lib.nSelection(data, NminCount, cos )
 # altogether
 ok = (zSel) & (mSel) & (nSel)
 # selection per box :
@@ -71,6 +71,11 @@ lib.plot_vmax_function_data_error(log_vmax[ok & MD40], data['std90_pc_'+cos][ok 
 lib.plot_vmax_function_data_error(log_vmax[ok & MD40NW], data['std90_pc_'+cos][ok & MD40NW], data["redshift"][ok & MD40NW], label='MD40NW', zmin = -0.01, zmax = 2.3, cos=cos, figName="vmax-"+cos+"-data40NW-uncertainty.png")
 """
 cos = 'sat'
+
+# minimum number counts selection
+nSel = lib.nSelection(data, NminCount, cos )
+# altogether
+ok = (zSel) & (mSel) & (nSel)
 
 # y coordinates
 #log_VF_a = n.log10( vmax**4. * data["dNdVdlnM_"+cos][ok])
