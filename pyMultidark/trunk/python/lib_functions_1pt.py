@@ -206,7 +206,7 @@ def fit_mvir_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, co
 		print "mode: curve_fit"
 		pOpt, pCov=curve_fit(log_f_ST01, x_data, y_data, p0, y_err, maxfev=500000)#, bounds=boundaries)
 		print "best params=", pOpt
-		print "err=", pCov.diag()**0.5
+		print "err=", pCov.diagonal()**0.5
 		
 	if mode == "minimize":
 		print "mode: minimize"
