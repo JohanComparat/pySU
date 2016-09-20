@@ -396,7 +396,8 @@ def convert_pkl_velocity(fileC, fileS, binFile, zList_files, qty='vmax'):
 	:param zList_files: list of file with linking snapshot number and redshift
 	:return: a fits table containing the one point function histograms
 	"""
-	boxName = fileC.split('/')[5]
+	print fileC.split('/')[6]
+	boxName = fileC.split('/')[6]
 	boxZN = float(fileC.split('/')[-1].split('_')[1])
 	bins = n.loadtxt(binFile)
 	#10**n.arange(0,3.5,0.01)
