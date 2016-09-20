@@ -210,26 +210,25 @@ def fit_vmax_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, co
 	MD40=(data["boxName"]=='MD_4Gpc')
 	MD25NW=(data["boxName"]=='MD_2.5GpcNW')
 	MD40NW=(data["boxName"]=='MD_4GpcNW')
-
-	f_diff_04 =  y_data[MD04] - vf(x_data[MD04], pOpt[0], pOpt[1], pOpt[2], pOpt[3])
-	f_diff_10 =  y_data[MD10] - vf(x_data[MD10], pOpt[0], pOpt[1], pOpt[2], pOpt[3])
-	f_diff_25 =  y_data[MD25] - vf(x_data[MD25], pOpt[0], pOpt[1], pOpt[2], pOpt[3])
-	f_diff_25NW =  y_data[MD25NW] - vf(x_data[MD25NW], pOpt[0], pOpt[1], pOpt[2], pOpt[3])
-	f_diff_40 =  y_data[MD40] - vf(x_data[MD40], pOpt[0], pOpt[1], pOpt[2], pOpt[3])
-	f_diff_40NW =  y_data[MD40NW] - vf(x_data[MD40NW], pOpt[0], pOpt[1], pOpt[2], pOpt[3])
-	f_diffs = [f_diff_04, f_diff_10,f_diff_25, f_diff_25NW, f_diff_40, f_diff_40NW]
+	
+	MDsels=[MD04,MD10,MD25,MD40,MD35NW, MD40NW]
+	
+	f_diff_fun = lambda MDs:  y_data[MDs] - vf(x_data[MDs], pOpt[0], pOpt[1], pOpt[2], pOpt[3])
+	
+	f_diffs = [f_diff_fun(MD04), f_diff_fun(MD10), f_diff_fun(MD25), f_diff_fun(MD40), f_diff_fun(MD25NW), f_diff_fun(MD40NW)]
 	
 	print "================================"
-	for index, fd in enumerate(f_diffs):
-		in04 = (abs(10**fd-1)<tolerance)
-		print index
-		if len(fd)>0:
-			print len(in04.nonzero()[0]), len(fd), 100.*len(in04.nonzero()[0])/ len(fd)
 	
 	# now the plots
 	p.figure(0,(6,6))
 	p.axes([0.17,0.17,0.75,0.75])
-	p.errorbar(x_data[MD04], 10**f_diff_04, yerr = y_err[MD04] , rasterized=True, fmt='none', label="MD04")
+	for index, fd in enumerate(f_diffs):
+		in04 = (abs(10**fd-1)<tolerance)
+		print index
+		if len(fd)>0:
+			p.errorbar(x_data[MDsel[index]], 10**f_diff_04, yerr = y_err[MD04] , rasterized=True, fmt='none', label="MD04")
+			print len(in04.nonzero()[0]), len(fd), 100.*len(in04.nonzero()[0])/ len(fd)
+
 	p.errorbar(x_data[MD10], 10**f_diff_10, yerr = y_err[MD10] , rasterized=True, fmt='none', label="MD10")
 	p.errorbar(x_data[MD25], 10**f_diff_25, yerr = y_err[MD25] , rasterized=True, fmt='none', label="MD25")
 	p.errorbar(x_data[MD40], 10**f_diff_40, yerr = y_err[MD40] , rasterized=True, fmt='none', label="MD40")
