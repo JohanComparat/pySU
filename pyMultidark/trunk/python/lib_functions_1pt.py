@@ -223,11 +223,6 @@ def fit_vmax_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, co
 			p.errorbar(x_data[MDsels[index]], 10**fd, yerr = y_err[MDsels[index]] , rasterized=True, fmt='none', label=MDnames[index])
 			print len(inTol.nonzero()[0]), len(fd), 100.*len(inTol.nonzero()[0])/ len(fd)
 
-	p.errorbar(x_data[MD10], 10**f_diff_10, yerr = y_err[MD10] , rasterized=True, fmt='none', label="MD10")
-	p.errorbar(x_data[MD25], 10**f_diff_25, yerr = y_err[MD25] , rasterized=True, fmt='none', label="MD25")
-	p.errorbar(x_data[MD40], 10**f_diff_40, yerr = y_err[MD40] , rasterized=True, fmt='none', label="MD40")
-	p.errorbar(x_data[MD25NW], 10**f_diff_25NW, yerr = y_err[MD25NW] , rasterized=True, fmt='none', label="MD25")
-	p.errorbar(x_data[MD40NW], 10**f_diff_40NW, yerr = y_err[MD40NW] , rasterized=True, fmt='none', label="MD40")
 	p.axhline(1.01,c='k',ls='--',label=r'syst $\pm1\%$')
 	p.axhline(0.99,c='k',ls='--')
 	p.xlabel(r'$log(V_{max})$')
