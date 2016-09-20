@@ -220,9 +220,11 @@ def fit_vmax_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, co
 	f_diffs = [f_diff_04, f_diff_10,f_diff_25, f_diff_25NW, f_diff_40, f_diff_40NW]
 	
 	print "================================"
-	for fd in f_diffs:
+	for index, fd in enumerate(f_diffs):
 		in04 = (abs(10**fd-1)<tolerance)
-		print len(in04.nonzero()[0]), len(fd), 100.*len(in04.nonzero()[0])/ len(fd)
+		print 
+		if len(fd)>0:
+			print len(in04.nonzero()[0]), len(fd), 100.*len(in04.nonzero()[0])/ len(fd)
 	
 	# now the plots
 	p.figure(0,(6,6))
