@@ -116,7 +116,7 @@ def plot_vmax_function_data(log_vmax, log_VF, log_VF_c, redshift, zmin, zmax, co
 	
 	p.figure(0,(6,6))
 	p.axes([0.17,0.17,0.75,0.75])
-	sc1=p.scatter(log_vmax, log_VF_c, c=redshift, s=5, marker='o',label="data", rasterized=True, vmin=zmin, vmax = zmax)
+	sc1=p.scatter(log_vmax, log_VF_c, c=redshift, s=5, marker='o',label="MD "+cos+" data", rasterized=True, vmin=zmin, vmax = zmax)
 	sc1.set_edgecolor('face')
 	cb = p.colorbar(shrink=0.8)
 	cb.set_label("redshift")
