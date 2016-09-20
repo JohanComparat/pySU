@@ -218,7 +218,7 @@ def fit_mvir_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, co
 		print "err=",pCov[0][0]**0.5, pCov[1][1]**0.5, pCov[2][2]**0.5
 		
 	x_model = n.arange(n.min(x_data),n.max(x_data),0.005)
-	y_model = vf(x_model, pOpt[0], pOpt[1], pOpt[2])
+	y_model = log_f_ST01(x_model, pOpt[0], pOpt[1], pOpt[2])
 	n.savetxt(join(dir,"mvir-"+cos+"-differential-function-z0-model-pts.txt"),n.transpose([x_model, y_model]) )
 	outfile=open(join(dir,"mvir-"+cos+"-diff-function-z0-params.pkl"), 'w')
 	cPickle.dump([pOpt, pCov], outfile)
