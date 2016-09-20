@@ -196,7 +196,7 @@ def fit_vmax_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, co
 		print "err=",pCov[0][0]**0.5, pCov[1][1]**0.5, pCov[2][2]**0.5, pCov[3][3]**0.5
 		
 	x_model = n.arange(n.min(x_data),n.max(x_data),0.005)
-	y_model = vf(x_model, outCF[0][0], outCF[0][1], outCF[0][2], outCF[0][3])
+	y_model = vf(x_model, pOpt[0], pOpt[1], pOpt[2], pOpt[3])
 	n.savetxt(join(dir,"vmax-"+cos+"-differential-function-z0-model-pts.txt"),n.transpose([x_model, y_model]) )
 	outfile=open(join(dir,"vmax-"+cos+"-diff-function-z0-params.pkl"), 'w')
 	cPickle.dump([pOpt, pCov], outfile)
