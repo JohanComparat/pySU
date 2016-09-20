@@ -35,7 +35,7 @@ limits_40 = [1200, 1600]
 
 p0 = n.array([-3, 3., 0.3, 1.])
 errorFactor = 3.
-systError = 0.01
+systError = 0.02
 
 zmin = -0.01
 zmax = 2.3
@@ -119,6 +119,7 @@ chi2fun = lambda ps : n.sum( abs(logFun(x_data, z_data, ps) - y_data) / (y_err) 
 res = minimize(chi2fun, ps, method='Powell',options={'xtol': 1e-8, 'disp': True, 'maxiter' : 50000000000000})
 pOpt = res.x
 cov = res.direc
+print "chi2 / ndof = ", chi2fun(pOpt)
 #chi2perpoint = lambda ps : (funG(lg_vmax, lg_1pz, ps) - lg_MF_c)**2. / (errorLog)**2. 
 #chi2pp = chi2perpoint(pOpt)
 #|print pOpt, cov
@@ -137,15 +138,13 @@ x_model, z_model = n.meshgrid(X, Z)
 
 p.figure(0,(6,6))
 p.axes([0.17,0.17,0.75,0.75])
-
-#sc1=p.scatter(-n.hstack((x_model)), logFun(n.hstack((x_model)), n.hstack((z_model)), pOpt) , c=n.hstack((z_model)), s=2, marker='o',label="model", rasterized=True, vmin=zmin, vmax=zmax)
-
 sc1=p.scatter(x_data, logFun(x_data, z_data, pOpt) , c=z_data, s=5, marker='o',label="model", rasterized=True, vmin=zmin, vmax = zmax)
 sc1.set_edgecolor('face')
 cb = p.colorbar(shrink=0.8)
 cb.set_label("redshift")
 p.xlabel(r'log$_{10}[V_{max}/(km \; s^{-1})]$')
 p.ylabel(r'log$_{10} V^4 dn(V)/dlnV$') # log$_{10}[ n(>M)]')
+p.ylim((-5.5,0))
 gl = p.legend(loc=3,fontsize=10)
 gl.set_frame_on(False)
 #p.yscale('log')
@@ -199,7 +198,6 @@ gl.set_frame_on(False)
 p.xlabel(r'log$_{10}[V_{max}/(km \; s^{-1})]$')
 p.ylabel(r'data / model') 
 #p.xlim((-0.6, 0.4))
-p.ylim((-5.5,0))
 #p.yscale('log')
 p.grid()
 p.savefig(join(dir,"vmax-"+cos+"-differential-function-redshift-trend-residual.png"))
