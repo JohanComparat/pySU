@@ -85,7 +85,7 @@ def plot_vmax_function_data_error(log_vmax, error, redshift, label, zmin, zmax, 
 	p.savefig(join(dir,figName))
 	p.clf()
 
-def plot_vmax_function_data(log_vmax, log_VF, redshift, zmin, zmax, cos = "cen", figName="", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'vmax')):
+def plot_vmax_function_data(log_vmax, log_VF, log_VF_c, redshift, zmin, zmax, cos = "cen", figName="", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'vmax')):
 	"""
 	:param log_vmax: x coordinates
 	:param log_VF: y coordinates
