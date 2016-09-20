@@ -19,9 +19,15 @@ matplotlib.use('pdf')
 matplotlib.rcParams['font.size']=12
 import matplotlib.pyplot as p
 
-# MULTIDARK TABLE GENERIC FUNCTIONS
+# Fitting functions
+# velocity function
 vf = lambda v, A, v0, alpha, beta : n.log10( 10**A * (10**v/10**v0)**(-beta) * n.e**(- (10**v/10**v0)**(alpha) ) )
+# sheth and tormen function
+delta_c = 1.686
+f_ST01 = lambda sigma, A, a, p: A * ((2. * a * (delta_c/sigma)**2.) / (  n.pi))**(0.5) * ( 1 + (a*(delta_c/sigma)**2.) **(-p) ) * n.e**( - a * (delta_c/sigma)**2. / 2.)
+log_f_ST01 = lambda logSigma, p : n.log10( f_ST01(10.**logSigma, p[0], p[1], p[2]) )
 
+# MULTIDARK TABLE GENERIC FUNCTIONS
 mSelection = lambda data, qty, limits_04, limits_10, limits_25, limits_40 : ((data["boxLength"]==400.)&(data["log_"+qty+"_min"]>limits_04[0]) &(data["log_"+qty+"_max"]<limits_04[1])) | ((data["boxLength"]==1000.)&(data["log_"+qty+"_min"]>limits_10[0]) &(data["log_"+qty+"_max"]<limits_10[1])) |  ((data["boxLength"]==2500.)&(data["log_"+qty+"_min"]>limits_25[0]) &(data["log_"+qty+"_max"]<limits_25[1])) |  ((data["boxLength"]==4000.)&(data["log_"+qty+"_min"]>limits_40[0])&(data["log_"+qty+"_max"]<limits_40[1])) 
 
 zSelection = lambda data, zmin, zmax : (data["redshift"]>zmin)&(data["redshift"]<zmax)
@@ -178,6 +184,7 @@ def plot_mvir_function_data_error(log_mvir, error, redshift, label, zmin, zmax, 
 	p.grid()
 	p.savefig(join(dir,figName))
 	p.clf()
+
 def fit_mvir_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, cos = "cen", mode = "curve_fit", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir')):
 	"""
 	Fits a function to the mvir data
@@ -196,33 +203,33 @@ def fit_mvir_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, co
 	"""
 	if mode == "curve_fit":
 		print "mode: curve_fit"
-		pOpt, pCov=curve_fit(vf, x_data, y_data, p0, y_err, maxfev=500000)#, bounds=boundaries)
-		print "best params=",pOpt[0], pOpt[1], pOpt[2], pOpt[3]
-		print "err=",pCov[0][0]**0.5, pCov[1][1]**0.5, pCov[2][2]**0.5, pCov[3][3]**0.5
+		pOpt, pCov=curve_fit(log_f_ST01, x_data, y_data, p0, y_err, maxfev=500000)#, bounds=boundaries)
+		print "best params=", pOpt
+		print "err=", pCov.diag()**0.5
 		
 	if mode == "minimize":
 		print "mode: minimize"
-		chi2fun = lambda ps : n.sum( (vf(x_data, ps) - y_data)**2. / (y_err)**2. )/(len(y_data) - len(ps))
+		chi2fun = lambda ps : n.sum( (log_f_ST01(x_data, ps) - y_data)**2. / (y_err)**2. )/(len(y_data) - len(ps))
 		res = minimize(chi2fun, p0, method='Powell',options={'xtol': 1e-8, 'disp': True, 'maxiter' : 5000000000000})
 		pOpt = res.x
 		pCov = res.direc
-		print "best params=",pOpt[0], pOpt[1], pOpt[2], pOpt[3]
-		print "err=",pCov[0][0]**0.5, pCov[1][1]**0.5, pCov[2][2]**0.5, pCov[3][3]**0.5
+		print "best params=",pOpt[0], pOpt[1], pOpt[2]
+		print "err=",pCov[0][0]**0.5, pCov[1][1]**0.5, pCov[2][2]**0.5
 		
 	x_model = n.arange(n.min(x_data),n.max(x_data),0.005)
-	y_model = vf(x_model, pOpt[0], pOpt[1], pOpt[2], pOpt[3])
+	y_model = vf(x_model, pOpt[0], pOpt[1], pOpt[2])
 	n.savetxt(join(dir,"mvir-"+cos+"-differential-function-z0-model-pts.txt"),n.transpose([x_model, y_model]) )
 	outfile=open(join(dir,"mvir-"+cos+"-diff-function-z0-params.pkl"), 'w')
 	cPickle.dump([pOpt, pCov], outfile)
 	outfile.close()
 			
-	f_diff =  y_data - vf(x_data, pOpt[0], pOpt[1], pOpt[2], pOpt[3])
+	f_diff =  y_data - vf(x_data, pOpt[0], pOpt[1], pOpt[2])
 	
 	MD_sel_fun=lambda name : (data["boxName"]==name)
 	MDnames= n.array(['MD_0.4Gpc', 'MD_1Gpc_new_rockS', 'MD_2.5Gpc','MD_4Gpc','MD_2.5GpcNW','MD_4GpcNW'])
 	MDsels=n.array([MD_sel_fun(name) for name in MDnames])
 	
-	f_diff_fun = lambda MDs:  y_data[MDs] - vf(x_data[MDs], pOpt[0], pOpt[1], pOpt[2], pOpt[3])
+	f_diff_fun = lambda MDs:  y_data[MDs] - vf(x_data[MDs], pOpt[0], pOpt[1], pOpt[2])
 	f_diffs = n.array([f_diff_fun(MD) for MD in MDsels])
 	
 	print "================================"
