@@ -211,7 +211,7 @@ def fit_vmax_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, co
 	MD25NW=(data["boxName"]=='MD_2.5GpcNW')
 	MD40NW=(data["boxName"]=='MD_4GpcNW')
 	
-	MDsels=[MD04,MD10,MD25,MD40,MD35NW, MD40NW]
+	MDsels=[MD04,MD10,MD25,MD40,MD25NW, MD40NW]
 	
 	f_diff_fun = lambda MDs:  y_data[MDs] - vf(x_data[MDs], pOpt[0], pOpt[1], pOpt[2], pOpt[3])
 	
