@@ -24,7 +24,7 @@ zSelection = lambda data, zmin, zmax : (data["redshift"]>zmin)&(data["redshift"]
 nSelection = lambda data, NminCount, cos : (data['dN_counts_'+cos]>NminCount)
 
 # VMAX 1point FUNCTION 
-def plot_vmax_function_jackknife_poisson_error(x, y, MD04, MD10, MD25, MD25NW, MD40, MD40NW, cos = "cen", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'vmax'), qty = 'vmax'):
+def plot_vmax_function_jackknife_poisson_error(x, y, MD04, MD10, MD25, MD25NW, MD40, MD40NW, cos = "cen", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'vmax')):
 	"""
 	:param x: x coordinates
 	:param y: y coordinates
@@ -53,10 +53,10 @@ def plot_vmax_function_jackknife_poisson_error(x, y, MD04, MD10, MD25, MD25NW, M
 	gl = p.legend(loc=0,fontsize=10)
 	gl.set_frame_on(False)
 	p.grid()
-	p.savefig(join(dir,qty,"vmax-"+cos+"-jackknife-countsSqrt.png"))
+	p.savefig(join(dir,"vmax-"+cos+"-jackknife-countsSqrt.png"))
 	p.clf()
 
-def plot_vmax_function_data_error(log_vmax, error, redshift, label, zmin, zmax, cos = "cen", figName="vmax-cen-data04-uncertainty.png", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'vmax'), qty = 'vmax'):
+def plot_vmax_function_data_error(log_vmax, error, redshift, label, zmin, zmax, cos = "cen", figName="vmax-cen-data04-uncertainty.png", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'vmax')):
 	"""
 	:param log_vmax: x coordinates
 	:param error: y coordinates
@@ -82,10 +82,10 @@ def plot_vmax_function_data_error(log_vmax, error, redshift, label, zmin, zmax, 
 	#p.xlim((1.5, 3.5))
 	p.yscale('log')
 	p.grid()
-	p.savefig(join(dir,qty,figName))
+	p.savefig(join(dir,figName))
 	p.clf()
 
-def plot_vmax_function_data(log_vmax, log_VF, redshift, zmin, zmax, cos = "cen", figName="", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'vmax'), qty = 'vmax'):
+def plot_vmax_function_data(log_vmax, log_VF, redshift, zmin, zmax, cos = "cen", figName="", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'vmax')):
 	"""
 	:param log_vmax: x coordinates
 	:param log_VF: y coordinates
@@ -111,7 +111,7 @@ def plot_vmax_function_data(log_vmax, log_VF, redshift, zmin, zmax, cos = "cen",
 	#p.xlim((1.5, 3.5))
 	#p.ylim((-3.5,-1))
 	p.grid()
-	p.savefig(join(dir,qty,"vmax-"+figName+cos+"-differential-function-data.png"))
+	p.savefig(join(dir,"vmax-"+figName+cos+"-differential-function-data.png"))
 	p.clf()
 	
 	p.figure(0,(6,6))
@@ -128,10 +128,10 @@ def plot_vmax_function_data(log_vmax, log_VF, redshift, zmin, zmax, cos = "cen",
 	#p.xlim((1.5, 3.5))
 	#p.yscale('log')
 	p.grid()
-	p.savefig(join(dir,qty,"vmax-"+figName+cos+"-cumulative-function-data.png"))
+	p.savefig(join(dir,"vmax-"+figName+cos+"-cumulative-function-data.png"))
 	p.clf()
 
-def fit_vmax_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, cos = "cen", mode = "curve_fit", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'vmax'), qty = 'vmax'):
+def fit_vmax_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, cos = "cen", mode = "curve_fit", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'vmax')):
 	"""
 	Fits a function to the vmax data
 	:param data: data table of the selected points for the fit
@@ -164,8 +164,8 @@ def fit_vmax_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, co
 		
 	x_model = n.arange(n.min(x_data),n.max(x_data),0.005)
 	y_model = vf(x_model, outCF[0][0], outCF[0][1], outCF[0][2], outCF[0][3])
-	n.savetxt(join(dir,qty,"vmax-"+cos+"-differential-function-z0-model-pts.txt"),n.transpose([x_model, y_model]) )
-	outfile=open(join(dir,qty,"vmax-"+cos+"-diff-function-z0-params.pkl"), 'w')
+	n.savetxt(join(dir,"vmax-"+cos+"-differential-function-z0-model-pts.txt"),n.transpose([x_model, y_model]) )
+	outfile=open(join(dir,"vmax-"+cos+"-diff-function-z0-params.pkl"), 'w')
 	cPickle.dump([pOpt, pCov], outfile)
 	outfile.close()
 			
@@ -210,7 +210,7 @@ def fit_vmax_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, co
 	#p.ylim((-0.05,0.05))
 	#p.yscale('log')
 	p.grid()
-	p.savefig(join(dir,qty,"vmax-"+cos+"-differential-function-fit-residual-log.png"))
+	p.savefig(join(dir,"vmax-"+cos+"-differential-function-fit-residual-log.png"))
 	p.clf()
 	return pOpt, pCov
 
