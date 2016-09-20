@@ -224,13 +224,13 @@ def fit_mvir_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, co
 	cPickle.dump([pOpt, pCov], outfile)
 	outfile.close()
 			
-	f_diff =  y_data - vf(x_data, pOpt[0], pOpt[1], pOpt[2])
+	f_diff =  y_data - log_f_ST01(x_data, pOpt[0], pOpt[1], pOpt[2])
 	
 	MD_sel_fun=lambda name : (data["boxName"]==name)
 	MDnames= n.array(['MD_0.4Gpc', 'MD_1Gpc_new_rockS', 'MD_2.5Gpc','MD_4Gpc','MD_2.5GpcNW','MD_4GpcNW'])
 	MDsels=n.array([MD_sel_fun(name) for name in MDnames])
 	
-	f_diff_fun = lambda MDs:  y_data[MDs] - vf(x_data[MDs], pOpt[0], pOpt[1], pOpt[2])
+	f_diff_fun = lambda MDs:  y_data[MDs] - log_f_ST01(x_data[MDs], pOpt[0], pOpt[1], pOpt[2])
 	f_diffs = n.array([f_diff_fun(MD) for MD in MDsels])
 	
 	print "================================"
