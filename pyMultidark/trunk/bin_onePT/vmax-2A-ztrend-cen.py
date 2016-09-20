@@ -20,7 +20,6 @@ from scipy.misc import derivative
 #Quantity studied
 #=================
 qty = "vmax"
-
 # working directory
 #=================
 dir = join(os.environ['MULTIDARK_LIGHTCONE_DIR'], qty)

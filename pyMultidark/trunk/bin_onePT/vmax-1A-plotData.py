@@ -56,7 +56,7 @@ log_VF_c = n.log10( norm * vmax**3. * data["dNdVdlnM_"+cos+"_c"])
 # NOW PLOTTING ALL THE DATA
 lib.plot_vmax_function_data(log_vmax[ok], log_VF[ok], log_VF_c[ok], data["redshift"][ok], zmin = -0.01, zmax = 2.3, cos=cos)
 
-lib.plot_vmax_function_data_perBox(log_vmax[ok], log_VF[ok], log_VF_c[ok], data["redshift"][ok], zmin = -0.01, zmax = 2.3, MD04, MD10, MD25, MD25NW, MD40, MD40NW, cos=cos)
+lib.plot_vmax_function_data_perBox(log_vmax, log_VF, log_VF_c, MD04, MD10, MD25, MD25NW, MD40, MD40NW, cos=cos)
 
 """
 # PLOTTING THE ERROR PER BOX

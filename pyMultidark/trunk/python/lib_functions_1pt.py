@@ -1,3 +1,4 @@
+# data modules
 import glob
 import sys
 import astropy.io.fits as fits
@@ -5,10 +6,14 @@ import os
 from os.path import join
 import cPickle
 
+# numerical modules
 import numpy as n
 from scipy.interpolate import interp1d
 from scipy.misc import derivative
+from scipy.optimize import minimize
+from scipy.optimize import curve_fit
 
+# plotting modules
 import matplotlib
 matplotlib.use('pdf')
 matplotlib.rcParams['font.size']=12
@@ -142,8 +147,8 @@ def plot_vmax_function_data_perBox(log_vmax, log_VF, log_VF_c, MD04, MD10, MD25,
 	# now the plots
 	p.figure(0,(6,6))
 	p.axes([0.17,0.17,0.75,0.75])
-	p.plot(log_vmax[MD04], log_VF[MD04],marker='o',label="MD04",ls='')
-	p.plot(log_vmax[MD10], log_VF[MD10],marker='s',label="MD10",ls='')
+	p.plot(log_vmax[MD04], log_VF[MD04],marker='1',label="MD04",ls='')
+	p.plot(log_vmax[MD10], log_VF[MD10],marker='2',label="MD10",ls='')
 	p.plot(log_vmax[MD25], log_VF[MD25],marker='|',label="MD25",ls='')
 	p.plot(log_vmax[MD40], log_VF[MD40],marker='_',label="MD40",ls='')
 	p.plot(log_vmax[MD25NW], log_VF[MD25NW],marker='+',label="MD25NW",ls='')

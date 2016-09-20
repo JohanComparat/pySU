@@ -12,18 +12,14 @@ import matplotlib
 matplotlib.rcParams['font.size']=12
 import matplotlib.pyplot as p
 
-from scipy.optimize import minimize
-from scipy.optimize import curve_fit
-
 from scipy.interpolate import interp1d
 from scipy.misc import derivative
-# working directory
-#=================
-dir = join(os.environ['MULTIDARK_LIGHTCONE_DIR'], qty)
-
 #Quantity studied
 #=================
 qty = "vmax"
+# working directory
+#=================
+dir = join(os.environ['MULTIDARK_LIGHTCONE_DIR'], qty)
 
 # fitting function parameters
 #=================
