@@ -2,7 +2,7 @@ from os.path import join
 import numpy as n
 import astropy.io.fits as fits
 import os
-
+import lib_functions_1pt as lib
 import astropy.cosmology as co
 cosmo = co.Planck13
 

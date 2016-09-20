@@ -270,7 +270,7 @@ def convert_pkl_mass(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir')
 	:param z0short: same as z0 but shorter
 	:return: a fits table containing the one point function histograms
 	"""
-	boxName = fileC.split('/')[5]
+	boxName = fileC.split('/')[6]
 	boxZN = float(fileC.split('/')[-1].split('_')[1])
 	bins = n.loadtxt(binFile)
 	dX = ( 10**bins[1:]  - 10**bins[:-1] ) #* n.log(10)

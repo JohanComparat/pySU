@@ -2,6 +2,8 @@
 #===================
 
 # Data in $MD_VMAX_DIR
+# functions in:
+# import lib_functions_1pt as lib
 
 python vmax-0-gather-measurements.py
 python vmax-1A-plotData.py
