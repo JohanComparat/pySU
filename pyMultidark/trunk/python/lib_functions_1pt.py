@@ -204,18 +204,12 @@ def fit_vmax_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, co
 			
 	f_diff =  y_data - vf(x_data, pOpt[0], pOpt[1], pOpt[2], pOpt[3])
 	
-	MD04=(data["boxName"]=='MD_0.4Gpc')
-	MD10=(data["boxName"]=='MD_1Gpc_new_rockS')
-	MD25=(data["boxName"]=='MD_2.5Gpc')
-	MD40=(data["boxName"]=='MD_4Gpc')
-	MD25NW=(data["boxName"]=='MD_2.5GpcNW')
-	MD40NW=(data["boxName"]=='MD_4GpcNW')
-	
-	MDsels=[MD04,MD10,MD25,MD40,MD25NW, MD40NW]
+	MD_sel_fun=lambda name : (data["boxName"]==name)
+	MDnames= n.array(['MD_0.4Gpc', 'MD_1Gpc_new_rockS', 'MD_2.5Gpc','MD_4Gpc','MD_2.5GpcNW','MD_4GpcNW'])
+	MDsels=n.array([MD_sel_fun(name) for name in MDnames])
 	
 	f_diff_fun = lambda MDs:  y_data[MDs] - vf(x_data[MDs], pOpt[0], pOpt[1], pOpt[2], pOpt[3])
-	
-	f_diffs = [f_diff_fun(MD04), f_diff_fun(MD10), f_diff_fun(MD25), f_diff_fun(MD40), f_diff_fun(MD25NW), f_diff_fun(MD40NW)]
+	f_diffs = n.array([f_diff_fun(MD) for MD in MDsels])
 	
 	print "================================"
 	
@@ -223,11 +217,11 @@ def fit_vmax_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, co
 	p.figure(0,(6,6))
 	p.axes([0.17,0.17,0.75,0.75])
 	for index, fd in enumerate(f_diffs):
-		in04 = (abs(10**fd-1)<tolerance)
+		inTol = (abs(10**fd-1)<tolerance)
 		print index
 		if len(fd)>0:
-			p.errorbar(x_data[MDsel[index]], 10**f_diff_04, yerr = y_err[MD04] , rasterized=True, fmt='none', label="MD04")
-			print len(in04.nonzero()[0]), len(fd), 100.*len(in04.nonzero()[0])/ len(fd)
+			p.errorbar(x_data[MDsels[index]], 10**fd, yerr = y_err[MDsels[index]] , rasterized=True, fmt='none', label=MDnames[index])
+			print len(inTol.nonzero()[0]), len(fd), 100.*len(inTol.nonzero()[0])/ len(fd)
 
 	p.errorbar(x_data[MD10], 10**f_diff_10, yerr = y_err[MD10] , rasterized=True, fmt='none', label="MD10")
 	p.errorbar(x_data[MD25], 10**f_diff_25, yerr = y_err[MD25] , rasterized=True, fmt='none', label="MD25")
