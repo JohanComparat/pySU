@@ -3,6 +3,7 @@ import numpy as n
 import astropy.io.fits as fits
 import os
 import lib_functions_1pt as lib
+import cPickle 
 
 import astropy.cosmology as co
 cosmo = co.Planck13
@@ -40,6 +41,8 @@ zmin = -0.01
 zmax = 2.3
 
 cos = "cen"
+
+tolerance = 0.06
 
 #=================
 # DATA
@@ -82,9 +85,9 @@ y_err = error[ok]
 
 # FITTING THE TREND with REDSHIFT
 #=======================
-param_z0_file=open(join(dir,qty,"vmax-"+cos+"-diff-function-z0-params.pkl"), 'r')
+param_z0_file=open(join(dir, "vmax-"+cos+"-diff-function-z0-params.pkl"), 'r')
 outCF = cPickle.load(param_z0_file)
-outfile.close()
+param_z0_file.close()
 A0, v0, a0, b0 = outCF[0]
 print "----------------------------------------------------------"
 print A0, v0, a0, b0
@@ -124,7 +127,7 @@ print n.round(pOpt,3)
 print n.round(abs(cov.diagonal())**0.5,3)
 print "----------------------------------------------------------"
 
-outfile=open(join(dir,qty,"vmax-"+cos+"-diff-function-z1-params.pkl"), 'w')
+outfile=open(join(dir, "vmax-"+cos+"-diff-function-z1-params.pkl"), 'w')
 cPickle.dump(res, outfile)
 outfile.close()
 
@@ -147,7 +150,7 @@ gl = p.legend(loc=3,fontsize=10)
 gl.set_frame_on(False)
 #p.yscale('log')
 p.grid()
-p.savefig(join(dir,qty,"vmax-"+cos+"-differential-function-redshift-trend-model.png"))
+p.savefig(join(dir, "vmax-"+cos+"-differential-function-redshift-trend-model.png"))
 p.clf()
 
 """
@@ -171,18 +174,23 @@ p.savefig(join(dir,qty,"vmax-"+cos+"-differential-function-redshift-trend-data.p
 p.clf()
 
 """
-f_diff_04 = y_data_04 - logFun(x_data_04, z_data_04, pOpt) 
-f_diff_10 = y_data_10 - logFun(x_data_10, z_data_10, pOpt) 
-f_diff_25 = y_data_25 - logFun(x_data_25, z_data_25, pOpt) 
-f_diff_40 = y_data_40 - logFun(x_data_40, z_data_40, pOpt) 
-f_diff = y_data - logFun(x_data, z_data, pOpt) 
+
+MD_sel_fun=lambda name : (data["boxName"]==name)
+MDnames= n.array(['MD_0.4Gpc', 'MD_1Gpc_new_rockS', 'MD_2.5Gpc','MD_4Gpc','MD_2.5GpcNW','MD_4GpcNW'])
+MDsels=n.array([MD_sel_fun(name)[ok] for name in MDnames])
+
+f_diff_fun = lambda MDs:  y_data[MDs] - logFun(x_data[MDs], z_data[MDs], pOpt)
+f_diffs = n.array([f_diff_fun(MD) for MD in MDsels])
 
 p.figure(0,(6,6))
 p.axes([0.17,0.17,0.75,0.75])
-p.errorbar(x_data_04, 10**f_diff_04, yerr = y_err_04 , rasterized=True, fmt='none', label="MD04")
-p.errorbar(x_data_10, 10**f_diff_10, yerr = y_err_10 , rasterized=True, fmt='none', label="MD10")
-p.errorbar(x_data_25, 10**f_diff_25, yerr = y_err_25 , rasterized=True, fmt='none', label="MD25")
-p.errorbar(x_data_40, 10**f_diff_40, yerr = y_err_40 , rasterized=True, fmt='none', label="MD40")
+for index, fd in enumerate(f_diffs):
+	inTol = (abs(10**fd-1)<tolerance)
+	print index
+	if len(fd)>0:
+		p.errorbar(x_data[MDsels[index]], 10**fd, yerr = y_err[MDsels[index]] , rasterized=True, fmt='none', label=MDnames[index])
+		print len(inTol.nonzero()[0]), len(fd), 100.*len(inTol.nonzero()[0])/ len(fd)
+
 p.axhline(1.01,c='k',ls='--',label=r'syst $\pm1\%$')
 p.axhline(0.99,c='k',ls='--')
 gl = p.legend(loc=3,fontsize=10)
@@ -197,7 +205,7 @@ p.grid()
 p.savefig(join(dir,qty,"vmax-"+cos+"-differential-function-redshift-trend-residual.png"))
 p.clf()
 
-
+"""
 p.figure(0,(6,6))
 p.axes([0.17,0.17,0.75,0.75])
 sc1=p.scatter(x_data, f_diff , c=z_data, s=5, marker='o',label="model reiduals", rasterized=True, vmin=zmin, vmax = zmax)
@@ -230,3 +238,4 @@ print len(in40.nonzero()[0]), len(f_diff_40), 100.*len(in40.nonzero()[0])/ len(f
 tolerance = 0.08
 inall = (abs(10**f_diff-1)<tolerance)
 print len(inall.nonzero()[0]), len(f_diff), 100.*len(inall.nonzero()[0])/ len(f_diff)
+"""
