@@ -131,6 +131,34 @@ def plot_vmax_function_data(log_vmax, log_VF, log_VF_c, redshift, zmin, zmax, co
 	p.savefig(join(dir,"vmax-"+figName+cos+"-cumulative-function-data.png"))
 	p.clf()
 
+def plot_vmax_function_data_perBox(log_vmax, log_VF, log_VF_c, MD04, MD10, MD25, MD25NW, MD40, MD40NW, cos = "cen", figName="", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'vmax')):
+	"""
+	:param log_vmax: x coordinates
+	:param log_VF: y coordinates
+	:param cos: centra or satelitte. Default: "cen"
+	:param figName: string to be added to the figure name. Default:=""
+	:param dir: working directory. Default: join( os.environ['MULTIDARK_LIGHTCONE_DIR'], qty), :param qty: quantity studied. Default: 'vmax'
+	"""
+	# now the plots
+	p.figure(0,(6,6))
+	p.axes([0.17,0.17,0.75,0.75])
+	p.plot(log_vmax[MD04], log_VF[MD04],marker='o',label="MD04",ls='')
+	p.plot(log_vmax[MD10], log_VF[MD10],marker='s',label="MD10",ls='')
+	p.plot(log_vmax[MD25], log_VF[MD25],marker='|',label="MD25",ls='')
+	p.plot(log_vmax[MD40], log_VF[MD40],marker='_',label="MD40",ls='')
+	p.plot(log_vmax[MD25NW], log_VF[MD25NW],marker='+',label="MD25NW",ls='')
+	p.plot(log_vmax[MD40NW], log_VF[MD40NW],marker='x',label="MD40NW",ls='')
+	p.xlabel(r'log$_{10}[V_{max}/(km \; s^{-1})]$')
+	p.ylabel(r'log$_{10} [(V^3/H^3(z)\; dn(V)/dlnV]$') # log$_{10}[ n(>M)]')
+	gl = p.legend(loc=3,fontsize=10)
+	gl.set_frame_on(False)
+	#p.ylim((-8,1))
+	#p.xlim((1.5, 3.5))
+	#p.ylim((-3.5,-1))
+	p.grid()
+	p.savefig(join(dir,"vmax-"+figName+cos+"-differential-function-data-perBox.png"))
+	p.clf()
+
 def fit_vmax_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, cos = "cen", mode = "curve_fit", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'vmax')):
 	"""
 	Fits a function to the vmax data

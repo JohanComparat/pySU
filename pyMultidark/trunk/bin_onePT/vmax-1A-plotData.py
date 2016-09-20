@@ -29,9 +29,9 @@ zSel = lib.zSelection( data, zmin, zmax )
 # mass selection
 mSel = lib.mSelection(data, qty, limits_04, limits_10, limits_25,limits_40) 
 # minimum number counts selection
-nSel = lib.nSelection(data, NminCount, cos )
+nSelCen = lib.nSelection(data, NminCount, cos )
 # altogether
-ok = (zSel) & (mSel) & (nSel)
+ok = (zSel) & (mSel) & (nSelCen)
 # selection per box :
 MD04=(data["boxName"]=='MD_0.4Gpc')
 MD10=(data["boxName"]=='MD_1Gpc_new_rockS')
@@ -48,7 +48,6 @@ vmax = 10**log_vmax
 
 
 # y coordinates
-#log_VF_a = n.log10( vmax**4. * data["dNdVdlnM_"+cos][ok])
 norm = (100)**3. /(cosmo.H(data["redshift"]).value)**6.
 log_VF = n.log10( norm * vmax**3. * data["dNdVdlnM_"+cos])
 log_VF_c = n.log10( norm * vmax**3. * data["dNdVdlnM_"+cos+"_c"])
@@ -56,6 +55,9 @@ log_VF_c = n.log10( norm * vmax**3. * data["dNdVdlnM_"+cos+"_c"])
 
 # NOW PLOTTING ALL THE DATA
 lib.plot_vmax_function_data(log_vmax[ok], log_VF[ok], log_VF_c[ok], data["redshift"][ok], zmin = -0.01, zmax = 2.3, cos=cos)
+
+lib.plot_vmax_function_data_perBox(log_vmax[ok], log_VF[ok], log_VF_c[ok], data["redshift"][ok], zmin = -0.01, zmax = 2.3, MD04, MD10, MD25, MD25NW, MD40, MD40NW, cos=cos)
+
 """
 # PLOTTING THE ERROR PER BOX
 lib.plot_vmax_function_data_error(log_vmax[ok & MD04], data['std90_pc_'+cos][ok & MD04], data["redshift"][ok & MD04], label='MD04', zmin = -0.01, zmax = 2.3, cos=cos, figName="vmax-"+cos+"-data04-uncertainty.png")
@@ -73,13 +75,11 @@ lib.plot_vmax_function_data_error(log_vmax[ok & MD40NW], data['std90_pc_'+cos][o
 cos = 'sat'
 
 # minimum number counts selection
-nSel = lib.nSelection(data, NminCount, cos )
+nSelSat = lib.nSelection(data, NminCount, cos )
 # altogether
-ok = (zSel) & (mSel) & (nSel)
+ok = (zSel) & (mSel) & (nSelSat)
 
 # y coordinates
-#log_VF_a = n.log10( vmax**4. * data["dNdVdlnM_"+cos][ok])
-norm = (100)**3. /(cosmo.H(data["redshift"]).value)**6.
 log_VF = n.log10( norm * vmax**3. * data["dNdVdlnM_"+cos])
 log_VF_c = n.log10( norm * vmax**3. * data["dNdVdlnM_"+cos+"_c"])
 #print n.min(log_VF), n.max(log_VF)
