@@ -27,7 +27,7 @@ zmax = 2.3
 # redshift selection
 zSel = lib.zSelection( data, zmin, zmax )
 # mass selection
-mSel = lib.mSelection(data, limits_04, limits_10, limits_25,limits_40) 
+mSel = lib.mSelection(data, qty, limits_04, limits_10, limits_25,limits_40) 
 # minimum number counts selection
 nSel = lib.nSelection(data, NminCount )
 # altogether
