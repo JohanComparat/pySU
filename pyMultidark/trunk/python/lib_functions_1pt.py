@@ -182,7 +182,7 @@ def fit_vmax_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, co
 	"""
 	if mode == "curve_fit":
 		print "mode: curve_fit"
-		pOpt, pCov=curve_fit(vf, x_data, y_data, p0, y_err)#, bounds=boundaries)
+		pOpt, pCov=curve_fit(vf, x_data, y_data, p0, y_err, maxfev=500000)#, bounds=boundaries)
 		print "best params=",pOpt[0], pOpt[1], pOpt[2], pOpt[3]
 		print "err=",pCov[0][0]**0.5, pCov[1][1]**0.5, pCov[2][2]**0.5, pCov[3][3]**0.5
 		
