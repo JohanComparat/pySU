@@ -28,6 +28,234 @@ zSelection = lambda data, zmin, zmax : (data["redshift"]>zmin)&(data["redshift"]
 
 nSelection = lambda data, NminCount, cos : (data['dN_counts_'+cos]>NminCount)
 
+# MVIR 1point FUNCTION 
+
+def plot_mvir_function_data(log_mvir, logsigM1, log_MF, log_MF_c, redshift, zmin, zmax, cos = "cen", figName="", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir')):
+	"""
+	:param log_mvir: x coordinates
+	:param log_VF: y coordinates
+	:param redshift: color coordinate
+	:param zmin: minimum redshift
+	:param zmax: maximum redshift
+	:param cos: centra or satelitte. Default: "cen"
+	:param figName: string to be added to the figure name. Default:=""
+	:param dir: working directory. Default: join( os.environ['MULTIDARK_LIGHTCONE_DIR'], qty), :param qty: quantity studied. Default: 'mvir'
+	"""
+	# now the plots
+	p.figure(0,(6,6))
+	p.axes([0.17,0.17,0.75,0.75])
+	sc1=p.scatter(log_mvir, log_MF, c=redshift, s=5, marker='o',label="MD "+cos+" data", rasterized=True, vmin=zmin, vmax = zmax)
+	sc1.set_edgecolor('face')
+	cb = p.colorbar(shrink=0.8)
+	cb.set_label("redshift")
+	p.xlabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
+	p.ylabel(r'log$_{10} (M^2/\rho_m) dn(M)/dM$') 
+	 # log$_{10}[ n(>M)]')
+	gl = p.legend(loc=3,fontsize=10)
+	gl.set_frame_on(False)
+	p.ylim((-4.5,-2))
+	p.xlim((9.5,16))
+	#p.xlim((1.5, 3.5))
+	#p.ylim((-3.5,-1))
+	p.grid()
+	p.savefig(join(dir,"mvir-"+figName+cos+"-differential-function-data-xMass.png"))
+	p.clf()
+	
+	p.figure(0,(6,6))
+	p.axes([0.17,0.17,0.75,0.75])
+	sc1=p.scatter(logsigM1, log_MF, c=redshift, s=5, marker='o',label="MD "+cos+" data", rasterized=True, vmin=zmin, vmax = zmax)
+	sc1.set_edgecolor('face')
+	cb = p.colorbar(shrink=0.8)
+	cb.set_label("redshift")
+	p.xlabel(r'$ln(\sigma^{-1})$')
+	p.ylabel(r'log$_{10} (M^2/\rho_m) dn(M)/dM$') 
+	 # log$_{10}[ n(>M)]')
+	gl = p.legend(loc=3,fontsize=10)
+	gl.set_frame_on(False)
+	p.ylim((-4.5,-2))
+	#p.xlim((1.5, 3.5))
+	#p.ylim((-3.5,-1))
+	p.grid()
+	p.savefig(join(dir,"mvir-"+figName+cos+"-differential-function-data-xSigma.png"))
+	p.clf()
+	
+	p.figure(0,(6,6))
+	p.axes([0.17,0.17,0.75,0.75])
+	sc1=p.scatter(log_mvir, log_VF_c, c=redshift, s=5, marker='o',label="MD "+cos+" data", rasterized=True, vmin=zmin, vmax = zmax)
+	sc1.set_edgecolor('face')
+	cb = p.colorbar(shrink=0.8)
+	cb.set_label("redshift")
+	p.xlabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
+	p.ylabel(r'log$_{10} (M^2/\rho_m) dn(M)/dM$') 
+	log$_{10}[ n(>M)]')
+	gl = p.legend(loc=3,fontsize=10)
+	gl.set_frame_on(False)
+	#p.ylim((-8,1))
+	#p.xlim((1.5, 3.5))
+	#p.yscale('log')
+	p.grid()
+	p.savefig(join(dir,"mvir-"+figName+cos+"-cumulative-function-data-xMass.png"))
+	p.clf()
+
+def plot_mvir_function_data_perBox(log_mvir, log_VF, MD04, MD10, MD25, MD25NW, MD40, MD40NW, cos = "cen", figName="", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir')):
+	"""
+	:param log_mvir: x coordinates
+	:param log_VF: y coordinates
+	:param cos: centra or satelitte. Default: "cen"
+	:param figName: string to be added to the figure name. Default:=""
+	:param dir: working directory. Default: join( os.environ['MULTIDARK_LIGHTCONE_DIR'], qty), :param qty: quantity studied. Default: 'mvir'
+	"""
+	p.figure(0,(6,6))
+	p.axes([0.17,0.17,0.75,0.75])
+	p.plot(log_mvir[MD04], log_VF[MD04],marker='1',label="MD04",ls='')
+	p.plot(log_mvir[MD10], log_VF[MD10],marker='2',label="MD10",ls='')
+	p.plot(log_mvir[MD25], log_VF[MD25],marker='|',label="MD25",ls='')
+	p.plot(log_mvir[MD40], log_VF[MD40],marker='_',label="MD40",ls='')
+	p.plot(log_mvir[MD25NW], log_VF[MD25NW],marker='+',label="MD25NW",ls='')
+	p.plot(log_mvir[MD40NW], log_VF[MD40NW],marker='x',label="MD40NW",ls='')
+	p.xlabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
+	p.ylabel(r'log$_{10} (M^2/\rho_m) dn(M)/dM$') 
+	gl = p.legend(loc=3,fontsize=10)
+	gl.set_frame_on(False)
+	p.ylim((-4.5,-2))
+	p.grid()
+	p.savefig(join(dir,"mvir-"+figName+cos+"-differential-function-data-perBox.png"))
+	p.clf()
+
+
+def plot_mvir_function_jackknife_poisson_error(x, y, MD04, MD10, MD25, MD25NW, MD40, MD40NW, cos = "cen", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir')):
+	"""
+	:param x: x coordinates
+	:param y: y coordinates
+	:param cos: centra or satelitte. Default: "cen"
+	:param dir: working directory. Default: join( os.environ['MULTIDARK_LIGHTCONE_DIR'], qty), :param qty: quantity studied. Default: 'mvir'
+	"""
+	p.figure(0,(6,6))
+	p.axes([0.17,0.17,0.75,0.75])
+	p.plot(x, y, 'ko', label='all', alpha=0.01)
+	p.plot(x[MD04], y[MD04],marker='x',label="MD04",ls='')
+	p.plot(x[MD10], y[MD10],marker='+',label="MD10",ls='')
+	p.plot(x[MD25], y[MD25],marker='^',label="MD25",ls='')
+	p.plot(x[MD40], y[MD40],marker='v',label="MD40",ls='')
+	p.plot(x[MD25NW], y[MD25NW],marker='^',label="MD25NW",ls='')
+	p.plot(x[MD40NW], y[MD40NW],marker='v',label="MD40NW",ls='')
+	xx = n.logspace(-4,0,20)
+	p.plot(xx, xx*3., ls='--', label='y=3x')
+	#p.axhline(Npmin**-0.5, c='r', ls='--', label='min counts cut')#r'$1/\sqrt{10^3}$')
+	#p.axhline((10**6.87)**-0.5, c='k', ls='--', label='min mvir cut')#r'$1/\sqrt{10^{4.87}}$')
+	#p.xlim((2e-4,4e-1))
+	#p.ylim((2e-4,4e-1))
+	p.ylabel(r'$1/\sqrt{count} \; [\%]$')
+	p.xlabel(r'Jackknife  Resampling Error [%]')
+	p.yscale('log')
+	p.xscale('log')
+	gl = p.legend(loc=0,fontsize=10)
+	gl.set_frame_on(False)
+	p.grid()
+	p.savefig(join(dir,"mvir-"+cos+"-jackknife-countsSqrt.png"))
+	p.clf()
+
+def plot_mvir_function_data_error(log_mvir, error, redshift, label, zmin, zmax, cos = "cen", figName="mvir-cen-data04-uncertainty.png", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir')):
+	"""
+	:param log_mvir: x coordinates
+	:param error: y coordinates
+	:param redshift: color coordinate
+	:param label: label in the caption
+	:param zmin: minimum redshift
+	:param zmax: maximum redshift
+	:param cos: centra or satelitte. Default: "cen"
+	:param figName: string to be added to the figure name. Default:=""
+	:param dir: working directory. Default: join( os.environ['MULTIDARK_LIGHTCONE_DIR'], qty), :param qty: quantity studied. Default: 'mvir'
+	"""
+	p.figure(0,(6,6))
+	p.axes([0.17,0.17,0.75,0.75])
+	sc1=p.scatter(log_mvir, 100*error, c=redshift, s=5, marker='o',label=label, rasterized=True, vmin=zmin, vmax = zmax)
+	sc1.set_edgecolor('face')
+	cb = p.colorbar(shrink=0.8)
+	cb.set_label("redshift")
+	p.xlabel(r'log$_{10}[V_{max}/(km \; s^{-1})]$')
+	p.ylabel(r'JK relative error [%]') 
+	gl = p.legend(loc=3,fontsize=10)
+	gl.set_frame_on(False)
+	p.ylim((2e-2,30))
+	#p.xlim((1.5, 3.5))
+	p.yscale('log')
+	p.grid()
+	p.savefig(join(dir,figName))
+	p.clf()
+def fit_mvir_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, cos = "cen", mode = "curve_fit", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir')):
+	"""
+	Fits a function to the mvir data
+	:param data: data table of the selected points for the fit
+	:param x_data: x coordinate
+	:param y_data: y coordinate
+	:param y_err: error
+	:param p0: first guess
+	:param tolerance: percentage error tolerance to compute how many points are outside of the fit
+	:param cos: central or satelitte
+	:param mode: fitting mode, "curve_fit" or "minimize"
+	:param dir: working dir
+	:param qty: mvir here
+	:return: result of the fit: best parameter array and covariance matrix
+	produces a plot of the residuals
+	"""
+	if mode == "curve_fit":
+		print "mode: curve_fit"
+		pOpt, pCov=curve_fit(vf, x_data, y_data, p0, y_err, maxfev=500000)#, bounds=boundaries)
+		print "best params=",pOpt[0], pOpt[1], pOpt[2], pOpt[3]
+		print "err=",pCov[0][0]**0.5, pCov[1][1]**0.5, pCov[2][2]**0.5, pCov[3][3]**0.5
+		
+	if mode == "minimize":
+		print "mode: minimize"
+		chi2fun = lambda ps : n.sum( (vf(x_data, ps) - y_data)**2. / (y_err)**2. )/(len(y_data) - len(ps))
+		res = minimize(chi2fun, p0, method='Powell',options={'xtol': 1e-8, 'disp': True, 'maxiter' : 5000000000000})
+		pOpt = res.x
+		pCov = res.direc
+		print "best params=",pOpt[0], pOpt[1], pOpt[2], pOpt[3]
+		print "err=",pCov[0][0]**0.5, pCov[1][1]**0.5, pCov[2][2]**0.5, pCov[3][3]**0.5
+		
+	x_model = n.arange(n.min(x_data),n.max(x_data),0.005)
+	y_model = vf(x_model, pOpt[0], pOpt[1], pOpt[2], pOpt[3])
+	n.savetxt(join(dir,"mvir-"+cos+"-differential-function-z0-model-pts.txt"),n.transpose([x_model, y_model]) )
+	outfile=open(join(dir,"mvir-"+cos+"-diff-function-z0-params.pkl"), 'w')
+	cPickle.dump([pOpt, pCov], outfile)
+	outfile.close()
+			
+	f_diff =  y_data - vf(x_data, pOpt[0], pOpt[1], pOpt[2], pOpt[3])
+	
+	MD_sel_fun=lambda name : (data["boxName"]==name)
+	MDnames= n.array(['MD_0.4Gpc', 'MD_1Gpc_new_rockS', 'MD_2.5Gpc','MD_4Gpc','MD_2.5GpcNW','MD_4GpcNW'])
+	MDsels=n.array([MD_sel_fun(name) for name in MDnames])
+	
+	f_diff_fun = lambda MDs:  y_data[MDs] - vf(x_data[MDs], pOpt[0], pOpt[1], pOpt[2], pOpt[3])
+	f_diffs = n.array([f_diff_fun(MD) for MD in MDsels])
+	
+	print "================================"
+	
+	# now the plots
+	p.figure(0,(6,6))
+	p.axes([0.17,0.17,0.75,0.75])
+	for index, fd in enumerate(f_diffs):
+		inTol = (abs(10**fd-1)<tolerance)
+		print index
+		if len(fd)>0:
+			p.errorbar(x_data[MDsels[index]], 10**fd, yerr = y_err[MDsels[index]] , rasterized=True, fmt='none', label=MDnames[index])
+			print len(inTol.nonzero()[0]), len(fd), 100.*len(inTol.nonzero()[0])/ len(fd)
+
+	p.axhline(1.01,c='k',ls='--',label=r'syst $\pm1\%$')
+	p.axhline(0.99,c='k',ls='--')
+	p.xlabel(r'$log(V_{max})$')
+	p.ylabel(r'data/model') 
+	gl = p.legend(loc=0,fontsize=10)
+	gl.set_frame_on(False)
+	#p.xlim((-0.7,0.6))
+	#p.ylim((-0.05,0.05))
+	#p.yscale('log')
+	p.grid()
+	p.savefig(join(dir,"mvir-"+cos+"-differential-function-fit-residual-log.png"))
+	p.clf()
+	return pOpt, pCov
+
 # VMAX 1point FUNCTION 
 def plot_vmax_function_jackknife_poisson_error(x, y, MD04, MD10, MD25, MD25NW, MD40, MD40NW, cos = "cen", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'vmax')):
 	"""
