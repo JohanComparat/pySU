@@ -227,7 +227,7 @@ def fit_mvir_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, co
 	f_diff =  y_data - log_f_ST01(x_data, pOpt[0], pOpt[1], pOpt[2])
 	
 	MD_sel_fun=lambda name : (data["boxName"]==name)
-	MDnames= n.array(['MD_0.4Gpc', 'MD_1Gpc_new_rockS', 'MD_2.5Gpc','MD_4Gpc','MD_2.5GpcNW','MD_4GpcNW'])
+	MDnames= n.array(['MD_0.4Gpc', 'MD_1Gpc', 'MD_2.5Gpc','MD_4Gpc','MD_2.5GpcNW','MD_4GpcNW'])
 	MDsels=n.array([MD_sel_fun(name) for name in MDnames])
 	
 	f_diff_fun = lambda MDs:  y_data[MDs] - log_f_ST01(x_data[MDs], pOpt[0], pOpt[1], pOpt[2])
@@ -436,7 +436,7 @@ def fit_vmax_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, co
 	f_diff =  y_data - vf(x_data, pOpt[0], pOpt[1], pOpt[2], pOpt[3])
 	
 	MD_sel_fun=lambda name : (data["boxName"]==name)
-	MDnames= n.array(['MD_0.4Gpc', 'MD_1Gpc_new_rockS', 'MD_2.5Gpc','MD_4Gpc','MD_2.5GpcNW','MD_4GpcNW'])
+	MDnames= n.array(['MD_0.4Gpc', 'MD_1Gpc', 'MD_2.5Gpc','MD_4Gpc','MD_2.5GpcNW','MD_4GpcNW'])
 	MDsels=n.array([MD_sel_fun(name) for name in MDnames])
 	
 	f_diff_fun = lambda MDs:  y_data[MDs] - vf(x_data[MDs], pOpt[0], pOpt[1], pOpt[2], pOpt[3])
@@ -535,7 +535,7 @@ def convert_pkl_mass(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir')
 		boxRedshift = 1./boxZN - 1.
 		logmp = n.log10(9.63 * 10**7)
 		
-	if boxName=='MD_1Gpc_new_rockS' :
+	if boxName=='MD_1Gpc' :
 		boxLength = 1000.
 		boxRedshift = 1./boxZN - 1.
 		logmp = n.log10(1.51 * 10**9)
@@ -663,7 +663,7 @@ def convert_pkl_velocity(fileC, fileS, binFile, zList_files, qty='vmax'):
 		boxRedshift = 1./boxZN - 1.
 		logmp = n.log10(9.63 * 10**7)
 		
-	if boxName=='MD_1Gpc_new_rockS' :
+	if boxName=='MD_1Gpc' :
 		boxLength = 1000.
 		boxRedshift = 1./boxZN - 1.
 		logmp = n.log10(1.51 * 10**9)
