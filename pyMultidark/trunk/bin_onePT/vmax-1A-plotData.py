@@ -76,6 +76,10 @@ lib.plot_vmax_function_data_error(log_vmax[ok & MD40NW], data['std90_pc_'+cos][o
 """
 cos = 'sat'
 
+# redshift selection
+zSel = lib.zSelection( data, zmin, zmax )
+# mass selection
+mSel = lib.mSelection(data, qty, limits_04, limits_10, limits_25,limits_40) 
 # minimum number counts selection
 nSelSat = lib.nSelection(data, NminCount, cos )
 # altogether
