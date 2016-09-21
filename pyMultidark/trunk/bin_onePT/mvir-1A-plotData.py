@@ -17,7 +17,7 @@ dir = join(os.environ['MULTIDARK_LIGHTCONE_DIR'], qty)
 data = fits.open( join(dir, "MD_"+qty+"_summary.fits"))[1].data
 
 NminCount = 1000
-Npmin = 1# 300
+Npmin = 300
 nolim = [0,1e17]
 limits_04 =  [Npmin*9.63 * 10**7, 5e12]
 limits_10 =  [Npmin*1.51 * 10**9., 5e13]
