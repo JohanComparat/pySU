@@ -41,6 +41,7 @@ for ii in range(1,len(af),1):
 	d0 = n.hstack((d0,d1))
 
 hdu2 = fits.BinTableHDU.from_columns(d0)
+os.system("rm "+join(os.environ['MULTIDARK_LIGHTCONE_DIR'], qty, "MD_"+qty+"_summary.fits"))
 hdu2.writeto( join(os.environ['MULTIDARK_LIGHTCONE_DIR'], qty, "MD_"+qty+"_summary.fits") )
 
 
