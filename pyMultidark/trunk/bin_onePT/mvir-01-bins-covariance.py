@@ -28,7 +28,7 @@ print "considers ",len(fileC), qty , " function files"
 
 iis = [-1, -2, -3, 3]
 for ii in iis:
-	lib.plot_CRCoef_mvir(fileC[ii], fileS[ii], fileB[ii],zList_files, z0, z0short, qty,rebin=True)
+	lib.plot_CRCoef_mvir(fileC[ii], fileS[ii], fileB[ii],zList_files, z0, z0short, qty,rebin=False)
 
 sys.exit()
 

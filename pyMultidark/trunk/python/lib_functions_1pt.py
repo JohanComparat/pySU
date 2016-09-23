@@ -513,7 +513,7 @@ def getStat(file,volume,unitVolume):
 	# print Nall[sel]/mean90[sel]
 	return Ncounts, Ncounts_c, Nall, Nall_c, mean90, std90, mean90_c, std90_c
 
-def plot_CRCoef_mvir(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir', rebin=False):
+def plot_CRCoef_mvir(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir', rebin=False, resamp=5):
 	"""
 	From the pickle file output by the Multidark class, we output the number counts (differential and cumulative) per unit volume per mass bin.
 	:param file: filename
@@ -576,6 +576,12 @@ def plot_CRCoef_mvir(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir',
 	Nall = Ncounts / volume
 	ok= ( logmass> logmp-0.5) & (Ncounts>2)
 	
+	index=n.arange(int(data.shape[0]))
+	n.random.shuffle( index )
+	Ntotal = int(data.shape[0])
+	
+	dataS = n.array([n.sum(data[id:id+Ntotal/resamp:1], axis=0) for id in n.arange(0,Ntotal,Ntotal/resamp)])
+	
 	if rebin :
 		dataR = n.array([dt[2::2]+dt[1::2] for dt in data])
 		binsR = bins[1::2]
@@ -609,6 +615,9 @@ def plot_CRCoef_mvir(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir',
 		cv = n.cov(data.T[ok])
 		cr = n.corrcoef(data.T[ok])
 		mm = logmass[ok]
+
+		cvS = n.cov(dataS.T[ok])
+		crS = n.corrcoef(dataS.T[ok])
 		
 		mass2X = interp1d(mm, n.arange(len(mm)))
 		
@@ -628,6 +637,21 @@ def plot_CRCoef_mvir(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir',
 		p.savefig(join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir',"mvir-cr-0_"+boxName[3:]+".png"))
 		p.clf()
 
+fig = p.figure(0,(6,6))
+		mat = p.matshow(crS)
+		p.xticks(n.arange(0,len(mm),5), mm[n.arange(0,len(mm),5)],rotation=45)
+		p.yticks(n.arange(0,len(mm),5), mm[n.arange(0,len(mm),5)])
+		p.axvline(mass2X(logmp+3), lw=2, color='k')
+		p.axhline(mass2X(logmp+3), lw=2, color='k')
+		p.axvline(mass2X(logmp+1), lw=2, color='k')
+		p.axhline(mass2X(logmp+1), lw=2, color='k')
+		cb = p.colorbar(shrink=0.8)
+		cb.set_label("corrCoef Mvir Counts "+boxName[3:])
+		p.xlabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
+		p.ylabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
+		p.grid()
+		p.savefig(join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir',"mvir-cr-S_"+boxName[3:]+".png"))
+		p.clf()
 
 def convert_pkl_mass(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir'):
 	"""
