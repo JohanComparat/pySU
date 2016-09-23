@@ -523,7 +523,9 @@ def plot_CRCoef_mvir(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir')
 	"""
 	boxName = fileC.split('/')[6]
 	boxZN = float(fileC.split('/')[-1].split('_')[1])
+	
 	bins = n.loadtxt(binFile)
+	
 	dX = ( 10**bins[1:]  - 10**bins[:-1] ) #* n.log(10)
 	dlnbin = dX / (10**(( bins[1:]  + bins[:-1] )/2.))
 	print boxName
