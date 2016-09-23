@@ -6,6 +6,19 @@ import lib_functions_1pt as lib
 import os
 import sys
 
+delta_c = 1.686
+bh_all = lambda nu, a, b, c : 1+(a**1.5 *nu**2 + a**0.5*b*(a*nu**2)**(1-c) - (a*nu**2)**c/( (a*nu**2)**c+b*(1-c)*(1-c/2)) )/(a**0.5*delta_c)
+a=2**(-0.5)
+b=0.35
+c=0.8
+bh = lambda nu : bh_all(nu, a, b, c)
+
+xi_mod= lambda R,R0,delta : (R/R0)**(-delta)
+xi = lambda R : xi_mod(R, 4, 1.8)
+
+nu = delta_c / sigma_M
+
+
 #Quantity studied
 qty = "mvir"
 
@@ -26,9 +39,9 @@ fileS = n.array(glob.glob( join( os.environ['MULTIDARK_LIGHTCONE_DIR'],"MD_*Gpc*
 
 print "considers ",len(fileC), qty , " function files"
 
-iis = [-1, -2, -3, 3]
+iis = [-1, -2, -4, -9, -22, 3]
 for ii in iis:
-	lib.plot_CRCoef_mvir(fileC[ii], fileS[ii], fileB[ii],zList_files, z0, z0short, qty,rebin=False)
+	mm, sigma, nu = lib.plot_CRCoef_mvir(fileC[ii], fileS[ii], fileB[ii],zList_files, z0, z0short, qty,rebin=False)
 
 sys.exit()
 

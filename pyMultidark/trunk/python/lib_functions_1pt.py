@@ -568,6 +568,16 @@ def plot_CRCoef_mvir(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir',
 		boxRedshift =  conversion[boxZN] 
 		logmp = n.log10(9.6 * 10**10)
 
+		index = int(n.argwhere( abs(z0-n.round(boxRedshift, 6))<0.00001)[0] )
+	
+	msigmaFile=join(os.environ['PYSU_MD_DIR'], "data", "PK_DM_CLASS", "hmf_highz_medz_lowz_planck", "mVector_z_"+str(z0short[index])+".txt")
+	DATA = n.loadtxt(msigmaFile,unpack=True)
+	M=DATA[0]
+	sigma = DATA[1]
+	m2sigma = interp1d(M, sigma)
+	sig = m2sigma( 10**((bins[:-1]+bins[1:])/2.) )
+	nus = delta_c/sig
+	
 	unitVolume =  (boxLength*0.10)**3.
 	volume = (boxLength)**3.
 	
@@ -615,7 +625,9 @@ def plot_CRCoef_mvir(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir',
 		cv = n.cov(data.T[ok])
 		cr = n.corrcoef(data.T[ok])
 		mm = logmass[ok]
-
+		sigma = sig[ok]
+		nu = nus[ok]
+		
 		cvS = n.cov(dataS.T[ok])
 		crS = n.corrcoef(dataS.T[ok])
 		
@@ -636,6 +648,22 @@ def plot_CRCoef_mvir(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir',
 		p.grid()
 		p.savefig(join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir',"mvir-cr-0_"+boxName[3:]+".png"))
 		p.clf()
+		
+		fig = p.figure(0,(6,6))
+		mat = p.matshow(cr)
+		p.xticks(n.arange(0,len(nu),5), nu[n.arange(0,len(nu),5)],rotation=45)
+		p.yticks(n.arange(0,len(nu),5), nu[n.arange(0,len(nu),5)])
+		#p.axvline(mass2X(logmp+3), lw=2, color='k')
+		#p.axhline(mass2X(logmp+3), lw=2, color='k')
+		#p.axvline(mass2X(logmp+1), lw=2, color='k')
+		#p.axhline(mass2X(logmp+1), lw=2, color='k')
+		cb = p.colorbar(shrink=0.8)
+		cb.set_label("corrCoef Mvir Counts "+boxName[3:])
+		p.xlabel(r'$\nu$')
+		p.ylabel(r'$\nu$')
+		p.grid()
+		p.savefig(join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir',"mvir-cr-0-nu_"+boxName[3:]+".png"))
+		p.clf()
 
 		fig = p.figure(0,(6,6))
 		mat = p.matshow(crS)
@@ -652,6 +680,8 @@ def plot_CRCoef_mvir(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir',
 		p.grid()
 		p.savefig(join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir',"mvir-cr-S_"+boxName[3:]+".png"))
 		p.clf()
+		
+		return mm, sigma, nu
 
 def convert_pkl_mass(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir'):
 	"""
