@@ -637,7 +637,7 @@ def plot_CRCoef_mvir(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir',
 		p.savefig(join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir',"mvir-cr-0_"+boxName[3:]+".png"))
 		p.clf()
 
-fig = p.figure(0,(6,6))
+		fig = p.figure(0,(6,6))
 		mat = p.matshow(crS)
 		p.xticks(n.arange(0,len(mm),5), mm[n.arange(0,len(mm),5)],rotation=45)
 		p.yticks(n.arange(0,len(mm),5), mm[n.arange(0,len(mm),5)])
