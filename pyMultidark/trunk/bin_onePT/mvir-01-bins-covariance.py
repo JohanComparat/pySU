@@ -16,7 +16,7 @@ bh = lambda nu : bh_all(nu, a, b, c)
 xi_mod= lambda R,R0,delta : (R/R0)**(-delta)
 xi = lambda R : xi_mod(R, 4, 1.8)
 
-nu = delta_c / sigma_M
+# nu = delta_c / sigma_M
 
 
 #Quantity studied

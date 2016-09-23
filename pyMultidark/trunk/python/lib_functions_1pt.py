@@ -568,8 +568,7 @@ def plot_CRCoef_mvir(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir',
 		boxRedshift =  conversion[boxZN] 
 		logmp = n.log10(9.6 * 10**10)
 
-		index = int(n.argwhere( abs(z0-n.round(boxRedshift, 6))<0.00001)[0] )
-	
+	index = int(n.argwhere( abs(z0-n.round(boxRedshift, 6))<0.00001)[0] )
 	msigmaFile=join(os.environ['PYSU_MD_DIR'], "data", "PK_DM_CLASS", "hmf_highz_medz_lowz_planck", "mVector_z_"+str(z0short[index])+".txt")
 	DATA = n.loadtxt(msigmaFile,unpack=True)
 	M=DATA[0]
