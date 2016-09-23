@@ -523,11 +523,12 @@ def plot_CRCoef_mvir(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir')
 	"""
 	boxName = fileC.split('/')[6]
 	boxZN = float(fileC.split('/')[-1].split('_')[1])
-	
 	bins = n.loadtxt(binFile)
 	
 	dX = ( 10**bins[1:]  - 10**bins[:-1] ) #* n.log(10)
 	dlnbin = dX / (10**(( bins[1:]  + bins[:-1] )/2.))
+	logmass = ( bins[1:]  + bins[:-1] )/2.
+
 	print boxName
 	if boxName=='MD_0.4Gpc' :
 		boxLength = 400.
@@ -569,11 +570,6 @@ def plot_CRCoef_mvir(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir')
 
 	unitVolume =  (boxLength*0.10)**3.
 	volume = (boxLength)**3.
-
-	bins = n.loadtxt(fileB)
-	dX = ( 10**bins[1:]  - 10**bins[:-1] ) #* n.log(10)
-	dlnbin = dX / (10**(( bins[1:]  + bins[:-1] )/2.))
-	logmass = ( bins[1:]  + bins[:-1] )/2.
 	
 	data=cPickle.load(open(fileC,'r'))
 	Ncounts = data.sum(axis=0) 
