@@ -513,6 +513,92 @@ def getStat(file,volume,unitVolume):
 	# print Nall[sel]/mean90[sel]
 	return Ncounts, Ncounts_c, Nall, Nall_c, mean90, std90, mean90_c, std90_c
 
+def plot_CRCoef_mvir(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir'):
+	"""
+	From the pickle file output by the Multidark class, we output the number counts (differential and cumulative) per unit volume per mass bin.
+	:param file: filename
+	:param volume: total volume of the box
+	:param unitVolume: sub volume used in the jackknife
+	:return: Number counts, cumulative number counts, count density, cumulative count density, jackknife mean, jackknife std, cumulative jackknife mean, cumulative jackknife std
+	"""
+	boxName = fileC.split('/')[6]
+	boxZN = float(fileC.split('/')[-1].split('_')[1])
+	bins = n.loadtxt(binFile)
+	dX = ( 10**bins[1:]  - 10**bins[:-1] ) #* n.log(10)
+	dlnbin = dX / (10**(( bins[1:]  + bins[:-1] )/2.))
+	print boxName
+	if boxName=='MD_0.4Gpc' :
+		boxLength = 400.
+		boxRedshift = 1./boxZN - 1.
+		logmp = n.log10(9.63 * 10**7)
+		
+	if boxName=='MD_1Gpc' :
+		boxLength = 1000.
+		boxRedshift = 1./boxZN - 1.
+		logmp = n.log10(1.51 * 10**9)
+
+	if boxName=='MD_2.5Gpc' :
+		boxLength = 2500.
+		nSN, aSN = n.loadtxt(zList_files[2], unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
+		conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
+		boxRedshift =  conversion[boxZN] 
+		logmp = n.log10(2.359 * 10**10)
+
+	if boxName=='MD_4Gpc' :
+		boxLength = 4000.
+		nSN, aSN = n.loadtxt(zList_files[3], unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
+		conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
+		boxRedshift =  conversion[boxZN] 
+		logmp = n.log10(9.6 * 10**10)
+
+	if boxName=='MD_2.5GpcNW' :
+		boxLength = 2500.
+		nSN, aSN = n.loadtxt(zList_files[4], unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
+		conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
+		boxRedshift =  conversion[boxZN] 
+		logmp = n.log10(2.359 * 10**10)
+
+	if boxName=='MD_4GpcNW' :
+		boxLength = 4000.
+		nSN, aSN = n.loadtxt(zList_files[5], unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
+		conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
+		boxRedshift =  conversion[boxZN] 
+		logmp = n.log10(9.6 * 10**10)
+
+	unitVolume =  (boxLength*0.10)**3.
+	volume = (boxLength)**3.
+
+	bins = n.loadtxt(fileB)
+	dX = ( 10**bins[1:]  - 10**bins[:-1] ) #* n.log(10)
+	dlnbin = dX / (10**(( bins[1:]  + bins[:-1] )/2.))
+	logmass = ( bins[1:]  + bins[:-1] )/2.
+	
+	data=cPickle.load(open(fileC,'r'))
+	Ncounts = data.sum(axis=0) 
+	Nall = Ncounts / volume
+	ok= ( logmass> logmp-0.5) & (Ncounts>2)
+	
+	cv = n.cov(data.T[ok])
+	cr = n.corrcoef(data.T[ok])
+	mm = logmass[ok]
+	
+	mass2X = interp1d(mm, n.arange(len(mm)))
+	
+	fig = p.figure(0,(6,6))
+	mat = p.matshow(cr)
+	p.xticks(n.arange(0,len(mm),5), mm[n.arange(0,len(mm),5)],rotation=45)
+	p.yticks(n.arange(0,len(mm),5), mm[n.arange(0,len(mm),5)])
+	p.axvline(mass2X(logmp+3), lw=2, color='k')
+	p.axhline(mass2X(logmp+3), lw=2, color='k')
+	cb = p.colorbar(shrink=0.8)
+	cb.set_label("corrCoef Mvir Counts "+boxName[3:])
+	p.xlabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
+	p.ylabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
+	p.grid()
+	p.savefig(join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir',"mvir-cr-0_"+boxName[3:]+".png"))
+	p.clf()
+
+
 def convert_pkl_mass(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir'):
 	"""
 	:param qty: one point function variable.Default: mvir.
