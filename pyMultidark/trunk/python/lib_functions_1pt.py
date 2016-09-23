@@ -649,7 +649,7 @@ def plot_CRCoef_mvir(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir',
 		p.clf()
 		
 		fig = p.figure(0,(6,6))
-		mat = p.matshow(cr)
+		mat = p.matshow(cv)
 		p.xticks(n.arange(0,len(nu),5), n.round(nu[n.arange(0,len(nu),5)],3),rotation=45)
 		p.yticks(n.arange(0,len(nu),5), n.round(nu[n.arange(0,len(nu),5)],3))
 		#p.axvline(mass2X(logmp+3), lw=2, color='k')
@@ -680,7 +680,7 @@ def plot_CRCoef_mvir(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir',
 		p.savefig(join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir',"mvir-cr-S_"+boxName[3:]+".png"))
 		p.clf()
 		
-		return mm, sigma, nu
+		return mm, sigma, nu, cr, cv
 
 def convert_pkl_mass(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir'):
 	"""

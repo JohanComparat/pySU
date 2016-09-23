@@ -16,6 +16,10 @@ bh = lambda nu : bh_all(nu, a, b, c)
 xi_mod= lambda R,R0,delta : (R/R0)**(-delta)
 xi = lambda R : xi_mod(R, 4, 1.8)
 
+xi(40)
+
+xi(40.)*bh(0.64)*bh(0.749)
+
 # nu = delta_c / sigma_M
 #ss
 
@@ -41,7 +45,7 @@ print "considers ",len(fileC), qty , " function files"
 
 iis = [-1, -2, -4, -9, -22, 3]
 for ii in iis:
-	mm, sigma, nu = lib.plot_CRCoef_mvir(fileC[ii], fileS[ii], fileB[ii],zList_files, z0, z0short, qty,rebin=False)
+	mm, sigma, nu,cr,cv = lib.plot_CRCoef_mvir(fileC[ii], fileS[ii], fileB[ii],zList_files, z0, z0short, qty,rebin=False)
 	print mm, nu
 
 sys.exit()
