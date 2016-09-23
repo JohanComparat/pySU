@@ -513,7 +513,7 @@ def getStat(file,volume,unitVolume):
 	# print Nall[sel]/mean90[sel]
 	return Ncounts, Ncounts_c, Nall, Nall_c, mean90, std90, mean90_c, std90_c
 
-def plot_CRCoef_mvir(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir'):
+def plot_CRCoef_mvir(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir', rebin=False):
 	"""
 	From the pickle file output by the Multidark class, we output the number counts (differential and cumulative) per unit volume per mass bin.
 	:param file: filename
@@ -576,25 +576,57 @@ def plot_CRCoef_mvir(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir')
 	Nall = Ncounts / volume
 	ok= ( logmass> logmp-0.5) & (Ncounts>2)
 	
-	cv = n.cov(data.T[ok])
-	cr = n.corrcoef(data.T[ok])
-	mm = logmass[ok]
-	
-	mass2X = interp1d(mm, n.arange(len(mm)))
-	
-	fig = p.figure(0,(6,6))
-	mat = p.matshow(cr)
-	p.xticks(n.arange(0,len(mm),5), mm[n.arange(0,len(mm),5)],rotation=45)
-	p.yticks(n.arange(0,len(mm),5), mm[n.arange(0,len(mm),5)])
-	p.axvline(mass2X(logmp+3), lw=2, color='k')
-	p.axhline(mass2X(logmp+3), lw=2, color='k')
-	cb = p.colorbar(shrink=0.8)
-	cb.set_label("corrCoef Mvir Counts "+boxName[3:])
-	p.xlabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
-	p.ylabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
-	p.grid()
-	p.savefig(join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir',"mvir-cr-0_"+boxName[3:]+".png"))
-	p.clf()
+	if rebin :
+		dataR = n.array([dt[2::2]+dt[1::2] for dt in data])
+		binsR = bins[1::2]
+		logmassR = ( binsR[1:]  + binsR[:-1] )/2.
+		NcountsR = dataR.sum(axis=0) 
+		okR= ( logmassR> logmp-0.5) & (NcountsR>2)
+
+		cvR = n.cov(dataR.T[okR])
+		crR = n.corrcoef(dataR.T[okR])
+		mmR = logmassR[okR]
+
+		mass2XR = interp1d(mmR, n.arange(len(mmR)))
+
+		fig = p.figure(0,(6,6))
+		mat = p.matshow(crR)
+		p.xticks(n.arange(0,len(mmR),5), mm[n.arange(0,len(mmR),5)],rotation=45)
+		p.yticks(n.arange(0,len(mmR),5), mm[n.arange(0,len(mmR),5)])
+		p.axvline(mass2XR(logmp+3), lw=2, color='k')
+		p.axhline(mass2XR(logmp+3), lw=2, color='k')
+		p.axvline(mass2XR(logmp), lw=2, color='k')
+		p.axhline(mass2XR(logmp), lw=2, color='k')
+		cb = p.colorbar(shrink=0.8)
+		cb.set_label("corrCoef Mvir Hist Counts")
+		p.xlabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
+		p.ylabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
+		p.grid()
+		p.savefig(join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir',"mvir-cr-2_"+boxName[3:]+".png"))
+		p.clf()
+
+	else :
+		cv = n.cov(data.T[ok])
+		cr = n.corrcoef(data.T[ok])
+		mm = logmass[ok]
+		
+		mass2X = interp1d(mm, n.arange(len(mm)))
+		
+		fig = p.figure(0,(6,6))
+		mat = p.matshow(cr)
+		p.xticks(n.arange(0,len(mm),5), mm[n.arange(0,len(mm),5)],rotation=45)
+		p.yticks(n.arange(0,len(mm),5), mm[n.arange(0,len(mm),5)])
+		p.axvline(mass2X(logmp+3), lw=2, color='k')
+		p.axhline(mass2X(logmp+3), lw=2, color='k')
+		p.axvline(mass2X(logmp), lw=2, color='k')
+		p.axhline(mass2X(logmp), lw=2, color='k')
+		cb = p.colorbar(shrink=0.8)
+		cb.set_label("corrCoef Mvir Counts "+boxName[3:])
+		p.xlabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
+		p.ylabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
+		p.grid()
+		p.savefig(join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir',"mvir-cr-0_"+boxName[3:]+".png"))
+		p.clf()
 
 
 def convert_pkl_mass(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir'):
