@@ -650,8 +650,8 @@ def plot_CRCoef_mvir(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir',
 		
 		fig = p.figure(0,(6,6))
 		mat = p.matshow(cr)
-		p.xticks(n.arange(0,len(nu),5), nu[n.arange(0,len(nu),5)],rotation=45)
-		p.yticks(n.arange(0,len(nu),5), nu[n.arange(0,len(nu),5)])
+		p.xticks(n.arange(0,len(nu),5), n.round(nu[n.arange(0,len(nu),5)],3),rotation=45)
+		p.yticks(n.arange(0,len(nu),5), n.round(nu[n.arange(0,len(nu),5)],3))
 		#p.axvline(mass2X(logmp+3), lw=2, color='k')
 		#p.axhline(mass2X(logmp+3), lw=2, color='k')
 		#p.axvline(mass2X(logmp+1), lw=2, color='k')
