@@ -28,6 +28,7 @@ fileC.sort()
 fileS.sort()
 fileB.sort()
 print len(fileC), len(fileB), len(fileS)
+
 print "considers ",len(fileC), qty , " function files"
 
 
