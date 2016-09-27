@@ -24,6 +24,10 @@ fileC = n.array(glob.glob( join(os.environ['MULTIDARK_LIGHTCONE_DIR'],"MD_*Gpc*"
 fileB = n.array(glob.glob( join( os.environ['MULTIDARK_LIGHTCONE_DIR'],"MD_*Gpc*","properties", qty,"*t_*_"+qty+"_JKresampling.bins")))
 fileS = n.array(glob.glob( join( os.environ['MULTIDARK_LIGHTCONE_DIR'],"MD_*Gpc*","properties", qty,"*t_*_Satellite_JKresampling.pkl")))
 
+fileC.sort()
+fileS.sort()
+fileB.sort()
+print len(fileC), len(fileB), len(fileS)
 print "considers ",len(fileC), qty , " function files"
 
 
