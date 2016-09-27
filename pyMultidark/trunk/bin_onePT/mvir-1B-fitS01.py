@@ -71,15 +71,14 @@ log_mvir = (data["log_"+qty+"_min"]+data["log_"+qty+"_max"])/2.
 mvir = 10**log_mvir
 
 # y coordinates
-rhom = cosmo.critical_density(data["redshift"]).to(uu.solMass/(uu.Mpc)**3.)/(cosmo.H(data["redshift"])/(100*uu.km/(uu.Mpc*uu.s)))**1.
-log_MF = n.log10( mvir * data["dNdVdlnM_"+cos]/ rhom.value )
+log_MF = n.log10( mvir * data["dNdVdlnM_"+cos]/ data["rhom"] )
 log_MF_c = n.log10(  data["dNdVdlnM_"+cos+"_c"])
-log_f =  n.log10(mvir * data["dNdVdlnM_"+cos]/ rhom.value  / abs(data["dlnsigmaM1_o_dlnM"]))
-log_f_c =  n.log10(mvir * data["dNdVdlnM_"+cos+"_c"]/ rhom.value  / abs(data["dlnsigmaM1_o_dlnM"]))
+log_f =  n.log10(mvir * data["dNdVdlnM_"+cos]/ data["rhom"]  / abs(data["dlnsigmaM1_o_dlnM"]))
+log_f_c =  n.log10(mvir * data["dNdVdlnM_"+cos+"_c"]/ data["rhom"]  / abs(data["dlnsigmaM1_o_dlnM"]))
 
 # error on y position
 #=================
-error = data["dN_counts_"+cos]**(-0.5)+0.01
+error = data["dN_counts_"+cos]**(-0.5)+0.005
 
 
 pOpt, pCov = lib.fit_mvir_function_z0(data[ok], x_data = logsig[ok], y_data = log_MF[ok], y_err = error[ok], p0 = p0, cos = cos, mode = "curve_fit")

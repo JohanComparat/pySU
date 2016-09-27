@@ -24,6 +24,7 @@ from hmf import MassFunction
 from astropy.cosmology import FlatLambdaCDM
 import astropy.units as u
 cosmo = FlatLambdaCDM(H0=67.77*u.km/u.s/u.Mpc, Om0=0.307115, Ob0=0.048206)
+
 # Fitting functions
 # velocity function
 vf = lambda v, A, v0, alpha, beta : n.log10( 10**A * (10**v/10**v0)**(-beta) * n.e**(- (10**v/10**v0)**(alpha) ) )
@@ -757,25 +758,7 @@ def convert_pkl_mass(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir',
 		logmp = n.log10(9.6 * 10**10)
 		hmf = get_hmf(0.8228, boxRedshift)
 
-
-	#index = int(n.argwhere( abs(z0-n.round(boxRedshift, 6))<0.00001)[0] )
-	#msigmaFile=join(os.environ['PYSU_MD_DIR'], "data", "PK_DM_CLASS", "hmf_highz_medz_lowz_planck", "mVector_z_"+str(z0short[index])+".txt")
-	# print boxRedshift
-	# print msigmaFile
-	#DATA = n.loadtxt(msigmaFile,unpack=True)
-	# [1] m:            [M_sun/h] 
-	# [2] sigma 
-	# [3] ln(1/sigma) 
-	# [4] n_eff 
-	# [5] f(sigma) 
-	# [6] dn/dm:        [h^4/(Mpc^3*M_sun)] 
-	# [7] dn/dlnm:      [h^3/Mpc^3] 
-	# [8] dn/dlog10m:   [h^3/Mpc^3] 
-	# [9] n(>m):        [h^3/Mpc^3] 
-	# [11] rho(>m):     [M_sun*h^2/Mpc^3] 
-	# [11] rho(<m):     [M_sun*h^2/Mpc^3] 
-	# [12] Lbox(N=1):   [Mpc/h]
-	# print index, z0[ int(index) ], boxRedshift
+	# m sigma relation
 	m2sigma = interp1d(hmf.M, hmf.sigma )
 	toderive = interp1d(n.log(hmf.M), hmf.lnsigma)
 	
@@ -784,6 +767,10 @@ def convert_pkl_mass(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir',
 	
 	dlnsigdm = derivative(toderive, n.log(10**((bins[:-1][ok]+bins[1:][ok])/2.)))
 
+	#normalization by average universedensity at this redshift in the right cosmo
+	rhom_units = hmf.cosmo.critical_density(boxRedshift).to(u.solMass/(u.Mpc)**3.)/(hmf.cosmo.H(data["redshift"])/(100*u.km/(u.Mpc*u.s)))**1.
+	rhom = rhom_units.value
+	
 	col000 = fits.Column( name="boxName",format="14A", array= n.array([boxName for i in range(len(bins[:-1]))]))
 	col0 = fits.Column( name="sigmaM",format="D", array= sig )
 	col00 = fits.Column( name="nuM",format="D", array= hmf.delta_c/sig )
@@ -793,7 +780,8 @@ def convert_pkl_mass(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir',
 	col3 = fits.Column( name="redshift",format="D", array= boxRedshift * n.ones_like(bins[:-1][ok]) )
 	col4 = fits.Column( name="boxLength",format="D", array= boxLength * n.ones_like(bins[:-1][ok]) )
 	col4_2 = fits.Column( name="Mpart",format="D", array=  logmp* n.ones_like(bins[:-1][ok]) )
-
+	col4_3 = fits.Column( name="rhom",format="D", array= rhom[ok] )
+	
 	unitVolume =  (boxLength*0.10)**3.
 	volume = (boxLength)**3.
 
@@ -820,7 +808,7 @@ def convert_pkl_mass(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir',
 	col12_s = fits.Column( name="std90_pc_sat_c",format="D", array= std90_c[ok] )
 
 
-	hdu2 = fits.BinTableHDU.from_columns([col000, col1, col2, col3, col4, col4_2, col5, col6, col7, col8, col9, col10, col11, col12, col5_s, col6_s, col7_s, col8_s, col9_s, col10_s, col11_s, col12_s, col0, col00, col01])
+	hdu2 = fits.BinTableHDU.from_columns([col000, col1, col2, col3, col4, col4_2, col4_3, col5, col6, col7, col8, col9, col10, col11, col12, col5_s, col6_s, col7_s, col8_s, col9_s, col10_s, col11_s, col12_s, col0, col00, col01])
 	
 	writeName = join(os.environ['MULTIDARK_LIGHTCONE_DIR'], qty, "data", boxName+"_"+str(boxRedshift)+"_"+qty+".fits")
 	os.system("rm -rf "+ writeName)
