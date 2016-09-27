@@ -257,7 +257,7 @@ def fit_mvir_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, co
 	gl = p.legend(loc=0,fontsize=10)
 	gl.set_frame_on(False)
 	#p.xlim((-0.7,0.6))
-	#p.ylim((-0.05,0.05))
+	p.ylim((0.9,1.1))
 	#p.yscale('log')
 	p.grid()
 	p.savefig(join(dir,"mvir-"+cos+"-differential-function-fit-residual-log.png"))
