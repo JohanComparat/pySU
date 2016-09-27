@@ -530,6 +530,8 @@ def plot_CRCoef_mvir(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir',
 	boxName = fileC.split('/')[6]
 	boxZN = float(fileC.split('/')[-1].split('_')[1])
 	bins = n.loadtxt(binFile)
+	extraName =  fileS.split('/')[-1][:-27]
+	figName = boxName[3:]+"_"+extraName
 	
 	dX = ( 10**bins[1:]  - 10**bins[:-1] ) #* n.log(10)
 	dlnbin = dX / (10**(( bins[1:]  + bins[:-1] )/2.))
@@ -623,8 +625,9 @@ def plot_CRCoef_mvir(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir',
 		p.xlabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
 		p.ylabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
 		p.grid()
-		p.savefig(join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir',"mvir-cr-2_"+boxName[3:]+".png"))
+		p.savefig(join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir',"covariance","mvir-cr-2_"+figName+".png"))
 		p.clf()
+		
 
 	else :
 		cv = n.cov(data.T[ok])
@@ -647,11 +650,11 @@ def plot_CRCoef_mvir(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir',
 		p.axvline(mass2X(logmp+1), lw=2, color='k')
 		p.axhline(mass2X(logmp+1), lw=2, color='k')
 		cb = p.colorbar(shrink=0.8)
-		cb.set_label("corrCoef Mvir Counts "+boxName[3:])
+		cb.set_label("corrCoef Mvir Counts "+figName)
 		p.xlabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
 		p.ylabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
 		p.grid()
-		p.savefig(join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir',"mvir-cr-0_"+boxName[3:]+".png"))
+		p.savefig(join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir',"covariance","mvir-cr-0_"+figName+".png"))
 		p.clf()
 		
 		fig = p.figure(0,(6,6))
@@ -663,11 +666,11 @@ def plot_CRCoef_mvir(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir',
 		#p.axvline(mass2X(logmp+1), lw=2, color='k')
 		#p.axhline(mass2X(logmp+1), lw=2, color='k')
 		cb = p.colorbar(shrink=0.8)
-		cb.set_label("corrCoef Mvir Counts "+boxName[3:])
+		cb.set_label("corrCoef Mvir Counts "+figName)
 		p.xlabel(r'$\nu$')
 		p.ylabel(r'$\nu$')
 		p.grid()
-		p.savefig(join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir',"mvir-cr-0-nu_"+boxName[3:]+".png"))
+		p.savefig(join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir',"covariance","mvir-cr-0-nu_"+figName+".png"))
 		p.clf()
 
 		fig = p.figure(0,(6,6))
@@ -679,11 +682,11 @@ def plot_CRCoef_mvir(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir',
 		p.axvline(mass2X(logmp+1), lw=2, color='k')
 		p.axhline(mass2X(logmp+1), lw=2, color='k')
 		cb = p.colorbar(shrink=0.8)
-		cb.set_label("corrCoef Mvir Counts "+boxName[3:])
+		cb.set_label("corrCoef Mvir Counts "+figName)
 		p.xlabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
 		p.ylabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
 		p.grid()
-		p.savefig(join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir',"mvir-cr-S_"+boxName[3:]+".png"))
+		p.savefig(join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir',"covariance","mvir-cr-S_"+figName+".png"))
 		p.clf()
 		
 		return mm, sigma, nu, cr, cv
