@@ -19,6 +19,9 @@ matplotlib.use('pdf')
 matplotlib.rcParams['font.size']=12
 import matplotlib.pyplot as p
 
+# mass function theory
+from hmf import MassFunction
+
 # Fitting functions
 # velocity function
 vf = lambda v, A, v0, alpha, beta : n.log10( 10**A * (10**v/10**v0)**(-beta) * n.e**(- (10**v/10**v0)**(alpha) ) )
@@ -682,7 +685,7 @@ def plot_CRCoef_mvir(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir',
 		
 		return mm, sigma, nu, cr, cv
 
-def convert_pkl_mass(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir'):
+def convert_pkl_mass(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir', delta_wrt='mean'):
 	"""
 	:param qty: one point function variable.Default: mvir.
 	:param fileC: file with the central halo statistics
@@ -698,16 +701,27 @@ def convert_pkl_mass(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir')
 	bins = n.loadtxt(binFile)
 	dX = ( 10**bins[1:]  - 10**bins[:-1] ) #* n.log(10)
 	dlnbin = dX / (10**(( bins[1:]  + bins[:-1] )/2.))
+	def get_hmf(sigma_val=0.8228, boxRedshift=0.):
+		hmf = MassFunction(cosmo_model=cosmo.Planck13, sigma_8=sigma_val, z=boxRedshift)
+		omega = lambda zz: hmfMD.cosmo.Om0*(1+zz)**3. / hmfMD.cosmo.efunc(zz)**2
+		DeltaVir_bn98 = lambda zz : (18.*np.pi**2. + 82.*(omega(zz)-1)- 39.*(omega(zz)-1)**2.)/omega(zz)
+		hmf = MassFunction(cosmo_model=cosmo.Planck13, sigma_8=sigma_val, z=boxRedshift, delta_h=DeltaVir_bn98(boxRedshift), delta_wrt=delta_wrt, Mmin=7, Mmax=16.5)
+		return hmf
+
+
 	print boxName
 	if boxName=='MD_0.4Gpc' :
 		boxLength = 400.
 		boxRedshift = 1./boxZN - 1.
 		logmp = n.log10(9.63 * 10**7)
-		
+		hmf = get_hmf(0.8228, boxRedshift)
+
 	if boxName=='MD_1Gpc' :
 		boxLength = 1000.
 		boxRedshift = 1./boxZN - 1.
 		logmp = n.log10(1.51 * 10**9)
+		hmf = get_hmf(0.8228*1.004**0.5, boxRedshift)
+		
 
 	if boxName=='MD_2.5Gpc' :
 		boxLength = 2500.
@@ -715,6 +729,7 @@ def convert_pkl_mass(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir')
 		conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
 		boxRedshift =  conversion[boxZN] 
 		logmp = n.log10(2.359 * 10**10)
+		hmf = get_hmf(0.8228*1.01**0.5, boxRedshift)
 
 	if boxName=='MD_4Gpc' :
 		boxLength = 4000.
@@ -722,6 +737,7 @@ def convert_pkl_mass(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir')
 		conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
 		boxRedshift =  conversion[boxZN] 
 		logmp = n.log10(9.6 * 10**10)
+		hmf = get_hmf(0.8228*1.006**0.5, boxRedshift)
 
 	if boxName=='MD_2.5GpcNW' :
 		boxLength = 2500.
@@ -729,6 +745,7 @@ def convert_pkl_mass(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir')
 		conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
 		boxRedshift =  conversion[boxZN] 
 		logmp = n.log10(2.359 * 10**10)
+		hmf = get_hmf(0.8228, boxRedshift)
 
 	if boxName=='MD_4GpcNW' :
 		boxLength = 4000.
@@ -736,12 +753,14 @@ def convert_pkl_mass(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir')
 		conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
 		boxRedshift =  conversion[boxZN] 
 		logmp = n.log10(9.6 * 10**10)
+		hmf = get_hmf(0.8228, boxRedshift)
 
-	index = int(n.argwhere( abs(z0-n.round(boxRedshift, 6))<0.00001)[0] )
-	msigmaFile=join(os.environ['PYSU_MD_DIR'], "data", "PK_DM_CLASS", "hmf_highz_medz_lowz_planck", "mVector_z_"+str(z0short[index])+".txt")
+
+	#index = int(n.argwhere( abs(z0-n.round(boxRedshift, 6))<0.00001)[0] )
+	#msigmaFile=join(os.environ['PYSU_MD_DIR'], "data", "PK_DM_CLASS", "hmf_highz_medz_lowz_planck", "mVector_z_"+str(z0short[index])+".txt")
 	# print boxRedshift
 	# print msigmaFile
-	DATA = n.loadtxt(msigmaFile,unpack=True)
+	#DATA = n.loadtxt(msigmaFile,unpack=True)
 	# [1] m:            [M_sun/h] 
 	# [2] sigma 
 	# [3] ln(1/sigma) 
@@ -755,22 +774,17 @@ def convert_pkl_mass(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir')
 	# [11] rho(<m):     [M_sun*h^2/Mpc^3] 
 	# [12] Lbox(N=1):   [Mpc/h]
 	# print index, z0[ int(index) ], boxRedshift
-	M=DATA[0]
-	sigma = DATA[1]
-	m2sigma = interp1d(M, sigma)
-	toderive = interp1d(n.log(M), DATA[2])
+	m2sigma = interp1d(hmf.M, hmf.sigma )
+	toderive = interp1d(n.log(hmf.M), hmf.lnsigma)
 	
-	# print n.min(M),n.max(M), n.min(bins), n.max(bins)
-	ok = (bins[1:] > logmp+1.0)&(bins[1:]<15.2)
+	ok = (bins[1:] > logmp+1.0)&(bins[1:]<16.)
 	sig = m2sigma( 10**((bins[:-1][ok]+bins[1:][ok])/2.) )
-	# print '================='
-	# print n.min(n.log(10**((bins[:-1][ok]+bins[1:][ok])/2.))),n.max(n.log(10**((bins[:-1][ok]+bins[1:][ok])/2.))), n.min(n.log(M)), n.max(n.log(M))
-	#selX = (M > 5.*n.min(M)) &(M<n.max(M)/5.)
+	
 	dlnsigdm = derivative(toderive, n.log(10**((bins[:-1][ok]+bins[1:][ok])/2.)))
 
 	col000 = fits.Column( name="boxName",format="14A", array= n.array([boxName for i in range(len(bins[:-1]))]))
 	col0 = fits.Column( name="sigmaM",format="D", array= sig )
-	col00 = fits.Column( name="nuM",format="D", array= 1.686/sig )
+	col00 = fits.Column( name="nuM",format="D", array= hmf.delta_c/sig )
 	col01 = fits.Column( name="dlnsigmaM1_o_dlnM",format="D", array= dlnsigdm )
 	col1 = fits.Column( name="log_"+qty+"_min",format="D", array= bins[:-1][ok] )
 	col2 = fits.Column( name="log_"+qty+"_max",format="D", array= bins[1:][ok] )
