@@ -21,7 +21,9 @@ import matplotlib.pyplot as p
 
 # mass function theory
 from hmf import MassFunction
-
+import astropy.cosmology as co
+import astropy.units as u
+cosmo = co.Planck13
 # Fitting functions
 # velocity function
 vf = lambda v, A, v0, alpha, beta : n.log10( 10**A * (10**v/10**v0)**(-beta) * n.e**(- (10**v/10**v0)**(alpha) ) )
@@ -702,7 +704,7 @@ def convert_pkl_mass(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir',
 	dX = ( 10**bins[1:]  - 10**bins[:-1] ) #* n.log(10)
 	dlnbin = dX / (10**(( bins[1:]  + bins[:-1] )/2.))
 	def get_hmf(sigma_val=0.8228, boxRedshift=0.):
-		hmf = MassFunction(cosmo_model=cosmo.Planck13, sigma_8=sigma_val, z=boxRedshift)
+		hmf = MassFunction(cosmo_model=cosmo, sigma_8=sigma_val, z=boxRedshift)
 		omega = lambda zz: hmfMD.cosmo.Om0*(1+zz)**3. / hmfMD.cosmo.efunc(zz)**2
 		DeltaVir_bn98 = lambda zz : (18.*np.pi**2. + 82.*(omega(zz)-1)- 39.*(omega(zz)-1)**2.)/omega(zz)
 		hmf = MassFunction(cosmo_model=cosmo.Planck13, sigma_8=sigma_val, z=boxRedshift, delta_h=DeltaVir_bn98(boxRedshift), delta_wrt=delta_wrt, Mmin=7, Mmax=16.5)
