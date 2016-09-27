@@ -21,7 +21,7 @@ import matplotlib.pyplot as p
 
 # mass function theory
 from hmf import MassFunction
-import astropy.cosmology as FlatLambdaCDM
+from astropy.cosmology import FlatLambdaCDM
 import astropy.units as u
 cosmo = FlatLambdaCDM(H0=67.77*u.km/u.s/u.Mpc, Om0=0.307115, Ob0=0.048206)
 # Fitting functions
