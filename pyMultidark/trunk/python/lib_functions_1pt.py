@@ -30,9 +30,13 @@ cosmo = FlatLambdaCDM(H0=67.77*u.km/u.s/u.Mpc, Om0=0.307115, Ob0=0.048206)
 vf = lambda v, A, v0, alpha, beta : n.log10( 10**A * (10**v/10**v0)**(-beta) * n.e**(- (10**v/10**v0)**(alpha) ) )
 # sheth and tormen function
 delta_c = 1.686
+
+f_SMT = lambda sigma, A, a, p: A * (2.*a/n.pi)**(0.5) * * (delta_c/sigma) * ( 1 + ((delta_c/sigma)**2./a) **(p) ) * n.e**( - a * (delta_c/sigma)**2. / 2.)
+
 f_ST01 = lambda sigma, A, a, p: A * ((2. * a * (delta_c/sigma)**2.) / (  n.pi))**(0.5) * ( 1 + (a*(delta_c/sigma)**2.) **(-p) ) * n.e**( - a * (delta_c/sigma)**2. / 2.)
-log_f_ST01 = lambda logSigma, A, a, p : n.log10( f_ST01(10.**logSigma, A, a, p) )
-loglog_f_ST01 = lambda logSigma, p : n.log10( f_ST01(10.**logSigma, p[0], p[1], p[2]) )
+
+log_f_ST01 = lambda logSigma, A, a, p : n.log10( f_SMT(10.**logSigma, A, a, p) )
+loglog_f_ST01 = lambda logSigma, p : n.log10( f_SMT(10.**logSigma, p[0], p[1], p[2]) )
 
 # MULTIDARK TABLE GENERIC FUNCTIONS
 mSelection = lambda data, qty, limits_04, limits_10, limits_25, limits_40 : ((data["boxLength"]==400.)&(data["log_"+qty+"_min"]>limits_04[0]) &(data["log_"+qty+"_max"]<limits_04[1])) | ((data["boxLength"]==1000.)&(data["log_"+qty+"_min"]>limits_10[0]) &(data["log_"+qty+"_max"]<limits_10[1])) |  ((data["boxLength"]==2500.)&(data["log_"+qty+"_min"]>limits_25[0]) &(data["log_"+qty+"_max"]<limits_25[1])) |  ((data["boxLength"]==4000.)&(data["log_"+qty+"_min"]>limits_40[0])&(data["log_"+qty+"_max"]<limits_40[1])) 
@@ -656,7 +660,7 @@ def plot_CRCoef_mvir(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir',
 		p.grid()
 		p.savefig(join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir',"covariance","mvir-cr-0_"+figName+".png"))
 		p.clf()
-		
+		"""
 		fig = p.figure(0,(6,6))
 		mat = p.matshow(cv)
 		p.xticks(n.arange(0,len(nu),5), n.round(nu[n.arange(0,len(nu),5)],3),rotation=45)
@@ -672,7 +676,7 @@ def plot_CRCoef_mvir(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir',
 		p.grid()
 		p.savefig(join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir',"covariance","mvir-cr-0-nu_"+figName+".png"))
 		p.clf()
-
+		
 		fig = p.figure(0,(6,6))
 		mat = p.matshow(crS)
 		p.xticks(n.arange(0,len(mm),5), mm[n.arange(0,len(mm),5)],rotation=45)
@@ -688,7 +692,7 @@ def plot_CRCoef_mvir(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir',
 		p.grid()
 		p.savefig(join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir',"covariance","mvir-cr-S_"+figName+".png"))
 		p.clf()
-		
+		"""
 		return mm, sigma, nu, cr, cv
 
 def convert_pkl_mass(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir', delta_wrt='mean'):
