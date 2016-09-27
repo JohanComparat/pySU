@@ -32,7 +32,7 @@ dir = join(os.environ['MULTIDARK_LIGHTCONE_DIR'], qty)
 data = fits.open( join(dir, "MD_"+qty+"_summary.fits"))[1].data
 
 NminCount = 100 # 1000
-Npmin =  300 # 1
+Npmin =  1000 # 1
 nolim = [0,1e17]
 limits_04 =  n.log10([Npmin*9.63 * 10**7, 5e12])
 limits_10 =  n.log10([Npmin*1.51 * 10**9., 5e13])
@@ -79,7 +79,7 @@ log_f_c =  n.log10(mvir * data["dNdVdlnM_"+cos+"_c"]/ rhom.value  / abs(data["dl
 
 # error on y position
 #=================
-error = data["dN_counts_"+cos]**(-0.5)
+error = data["dN_counts_"+cos]**(-0.5)+0.03
 
 
 pOpt, pCov = lib.fit_mvir_function_z0(data[ok], x_data = logsig[ok], y_data = log_MF[ok], y_err = error[ok], p0 = p0, cos = cos, mode = "curve_fit")

@@ -21,9 +21,9 @@ import matplotlib.pyplot as p
 
 # mass function theory
 from hmf import MassFunction
-import astropy.cosmology as co
+import astropy.cosmology as FlatLambdaCDM
 import astropy.units as u
-cosmo = co.Planck13
+cosmo = FlatLambdaCDM(H0=67.77*u.km/u.s/u.Mpc, Om0=0.307115, Ob0=0.048206)
 # Fitting functions
 # velocity function
 vf = lambda v, A, v0, alpha, beta : n.log10( 10**A * (10**v/10**v0)**(-beta) * n.e**(- (10**v/10**v0)**(alpha) ) )
@@ -252,7 +252,7 @@ def fit_mvir_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, co
 
 	p.axhline(1.01,c='k',ls='--',label=r'syst $\pm1\%$')
 	p.axhline(0.99,c='k',ls='--')
-	p.xlabel(r'$log(V_{max})$')
+	p.xlabel(r'$log_{10}(\sigma)$')
 	p.ylabel(r'data/model') 
 	gl = p.legend(loc=0,fontsize=10)
 	gl.set_frame_on(False)
