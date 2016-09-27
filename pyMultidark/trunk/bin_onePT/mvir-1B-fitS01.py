@@ -17,12 +17,13 @@ from scipy.misc import derivative
 import astropy.units as uu
 
 
+p0 = [0.3, 0.7, 0.2]
+
+
 sigma = n.arange(0.05,10,0.05)
 delta_c = 1.686
-f_ST01 = lambda sigma, A, a, p: A * ((2. * a * (delta_c/sigma)**2.) / (  n.pi))**(0.5) * ( 1 + (a*(delta_c/sigma)**2.) **(-p) ) * n.e**( - a * (delta_c/sigma)**2. / 2.)
-log_f_ST01 = lambda logSigma, p : n.log10( f_ST01(10.**logSigma, p[0], p[1], p[2]) )
-
-p0 = [0.287, 0.903, 0.322]
+#f_ST01 = lambda sigma, A, a, p: A * ((2. * a * (delta_c/sigma)**2.) / (  n.pi))**(0.5) * ( 1 + (a*(delta_c/sigma)**2.) **(-p) ) * n.e**( - a * (delta_c/sigma)**2. / 2.)
+#log_f_ST01 = lambda logSigma, p : n.log10( f_ST01(10.**logSigma, p[0], p[1], p[2]) )
 
 #Quantity studied
 qty = "mvir"
