@@ -79,7 +79,7 @@ log_f_c =  n.log10(mvir * data["dNdVdlnM_"+cos+"_c"]/ rhom.value  / abs(data["dl
 
 # error on y position
 #=================
-error = data["dN_counts_"+cos]**(-0.5)+0.03
+error = data["dN_counts_"+cos]**(-0.5)+0.01
 
 
 pOpt, pCov = lib.fit_mvir_function_z0(data[ok], x_data = logsig[ok], y_data = log_MF[ok], y_err = error[ok], p0 = p0, cos = cos, mode = "curve_fit")
