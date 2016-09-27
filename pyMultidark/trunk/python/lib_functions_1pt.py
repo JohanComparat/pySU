@@ -706,7 +706,7 @@ def convert_pkl_mass(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir',
 	def get_hmf(sigma_val=0.8228, boxRedshift=0.):
 		hmf = MassFunction(cosmo_model=cosmo, sigma_8=sigma_val, z=boxRedshift)
 		omega = lambda zz: hmfMD.cosmo.Om0*(1+zz)**3. / hmfMD.cosmo.efunc(zz)**2
-		DeltaVir_bn98 = lambda zz : (18.*np.pi**2. + 82.*(omega(zz)-1)- 39.*(omega(zz)-1)**2.)/omega(zz)
+		DeltaVir_bn98 = lambda zz : (18.*n.pi**2. + 82.*(omega(zz)-1)- 39.*(omega(zz)-1)**2.)/omega(zz)
 		hmf = MassFunction(cosmo_model=cosmo, sigma_8=sigma_val, z=boxRedshift, delta_h=DeltaVir_bn98(boxRedshift), delta_wrt=delta_wrt, Mmin=7, Mmax=16.5)
 		return hmf
 
