@@ -768,7 +768,7 @@ def convert_pkl_mass(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir',
 	dlnsigdm = derivative(toderive, n.log(10**((bins[:-1][ok]+bins[1:][ok])/2.)))
 
 	#normalization by average universedensity at this redshift in the right cosmo
-	rhom_units = hmf.cosmo.critical_density(boxRedshift).to(u.solMass/(u.Mpc)**3.)/(hmf.cosmo.H(data["redshift"])/(100*u.km/(u.Mpc*u.s)))**1.
+	rhom_units = hmf.cosmo.critical_density(boxRedshift).to(u.solMass/(u.Mpc)**3.)/(hmf.cosmo.H(boxRedshift)/(100*u.km/(u.Mpc*u.s)))**1.
 	rhom = rhom_units.value
 	
 	col000 = fits.Column( name="boxName",format="14A", array= n.array([boxName for i in range(len(bins[:-1]))]))
@@ -780,7 +780,7 @@ def convert_pkl_mass(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir',
 	col3 = fits.Column( name="redshift",format="D", array= boxRedshift * n.ones_like(bins[:-1][ok]) )
 	col4 = fits.Column( name="boxLength",format="D", array= boxLength * n.ones_like(bins[:-1][ok]) )
 	col4_2 = fits.Column( name="Mpart",format="D", array=  logmp* n.ones_like(bins[:-1][ok]) )
-	col4_3 = fits.Column( name="rhom",format="D", array= rhom[ok] )
+	col4_3 = fits.Column( name="rhom",format="D", array= rhom* n.ones_like(bins[:-1][ok]) )
 	
 	unitVolume =  (boxLength*0.10)**3.
 	volume = (boxLength)**3.
