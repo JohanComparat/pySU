@@ -1,14 +1,13 @@
 ﻿# list of exports to make
 
-export PYTHONPATH=$PYTHONPATH:/users/jcomparat/skies_universes_production/pySU/pyClusteringEstimation/trunk/python/
-export PYTHONPATH=$PYTHONPATH:/users/jcomparat/skies_universes_production/pySU/pyGalaxy/trunk/python/
-export PYTHONPATH=$PYTHONPATH:/users/jcomparat/skies_universes_production/pySU/pySimulations/trunk/python/
-export PYTHONPATH=$PYTHONPATH:/users/jcomparat/skies_universes_production/pySU/pyMultidark/trunk/python/
-export PYTHONPATH=$PYTHONPATH:/users/jcomparat/skies_universes_production/pySU/pySimulations/trunk/python/
-export PYTHONPATH=$PYTHONPATH:/users/jcomparat/skies_universes_production/pySU/pySPM/trunk/python/
-export PYTHONPATH=$PYTHONPATH:/users/jcomparat/skies_universes_production/pySU/pyTargetSelection/trunk/python/
+export PYTHONPATH=$PYTHONPATH:/users/jcomparat/skies_universes_production/pySU/galaxy/python/
+export PYTHONPATH=$PYTHONPATH:/users/jcomparat/skies_universes_production/pySU/simulations/python/
+export PYTHONPATH=$PYTHONPATH:/users/jcomparat/skies_universes_production/pySU/multidark/python/
+export PYTHONPATH=$PYTHONPATH:/users/jcomparat/skies_universes_production/pySU/spm/python/
+export PYTHONPATH=$PYTHONPATH:/users/jcomparat/skies_universes_production/pySU/targetselection/python/
 
 export DATA_DIR='/users/jcomparat/skies_universes_production/’
 export PYSU_DIR='/users/jcomparat/skies_universes_production/pySU/'
 
 export PYTHONPATH=$PYTHONPATH:/users/jcomparat/.local/
+
