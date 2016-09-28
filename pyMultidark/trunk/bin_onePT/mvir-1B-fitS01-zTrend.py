@@ -17,7 +17,7 @@ from scipy.misc import derivative
 import astropy.units as uu
 
 
-p0 = [0.3, 0.7, 0.2]
+p0 = [0., 0., 0.]
 
 
 sigma = n.arange(0.05,10,0.05)

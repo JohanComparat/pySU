@@ -303,7 +303,7 @@ def plot_vmax_function_jackknife_poisson_error(x, y, MD04, MD10, MD25, MD25NW, M
 	p.clf()
 
 
-def fit_mvir_function_zTrend(data, x_data, y_data, z_data , y_err, p0, 	tolerance = 0.03, cos = "cen", mode = "curve_fit", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir')):
+def fit_mvir_function_zTrend(data, x_data, y_data, z_data , y_err, ps0=[0., 0., 0.], 	tolerance = 0.03, cos = "cen", mode = "curve_fit", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir')):
 	"""
 	Fits a function to the mvir data
 	:param data: data table of the selected points for the fit
@@ -311,7 +311,7 @@ def fit_mvir_function_zTrend(data, x_data, y_data, z_data , y_err, p0, 	toleranc
 	:param y_data: y coordinate
 	:param z_data: redshift coordinate
 	:param y_err: error
-	:param p0: first guess
+	:param ps0: first guess
 	:param tolerance: percentage error tolerance to compute how many points are outside of the fit
 	:param cos: central or satelitte
 	:param mode: fitting mode, "curve_fit" or "minimize"
@@ -329,15 +329,13 @@ def fit_mvir_function_zTrend(data, x_data, y_data, z_data , y_err, p0, 	toleranc
 	az = lambda z, a1 : a0*(1+z)**a1
 	pz = lambda z, p1 : p0*(1+z)**p1
 
-	p0 = [0., 0., 0.]
-
 	f_SMT_z = lambda sigma, z, A1, a1, p1: Az(z, A1) * (2.*az(z, a1)/n.pi)**(0.5) * ( 1 + ((delta_c/sigma)**2./az(z, a1)) **(pz(z, p1)) ) * n.e**( - az(z, a1) * (delta_c/sigma)**2. / 2.) * (delta_c/sigma)
 
 	log_f_ST01_zt_ps = lambda logSigma, z, ps : n.log10( f_SMT_z(10.**logSigma, z, ps[0], ps[1], ps[2]) )
 
 	print "mode: minimize"
-	chi2fun = lambda ps : n.sum( (log_f_ST01_zt_ps(x_data, z_data, ps) - y_data)**2. / (y_err)**2. )/(len(y_data) - len(p0))
-	res = minimize(chi2fun, p0, method='Powell',options={'xtol': 1e-8, 'disp': True, 'maxiter' : 5000000000000})
+	chi2fun = lambda ps : n.sum( (log_f_ST01_zt_ps(x_data, z_data, ps) - y_data)**2. / (y_err)**2. )/(len(y_data) - len(ps0))
+	res = minimize(chi2fun, ps0, method='Powell',options={'xtol': 1e-8, 'disp': True, 'maxiter' : 5000000000000})
 	pOpt = res.x
 	pCov = res.direc
 	print "best params=",pOpt[0], pOpt[1], pOpt[2]
