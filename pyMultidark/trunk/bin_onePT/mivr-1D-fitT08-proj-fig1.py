@@ -21,59 +21,27 @@ from scipy.optimize import curve_fit
 from scipy.interpolate import interp1d
 from scipy.misc import derivative
 
-dir='..'
-dir_04 = join(dir,"MD_0.4Gpc")
-dir_10 = join(dir,"MD_1Gpc")
-dir_25 = join(dir,"MD_2.5Gpc")
-dir_40 = join(dir,"MD_4Gpc")
-dir_25N = join(dir,"MD_2.5GpcNW")
-dir_40N = join(dir,"MD_4GpcNW")
+delta_c = 1.686
 
-data = fits.open( join("..", "M200c", "MD_M200c_summary.fits") )[1].data
+f_SMT = lambda sigma, A, a, p: A * (2.*a/n.pi)**(0.5) * ( 1 + ((delta_c/sigma)**2./a) **(p) ) * n.e**( - a * (delta_c/sigma)**2. / 2.) * (delta_c/sigma)
 
-errorFactor = 3.
-systError = 0.01
-NminCount = 10
-Npmin = 1000
-limits_04 = [Npmin*9.63 * 10**7, 5e12]
-limits_10 = [Npmin*1.51 * 10**9., 5e13]
-limits_25 = [Npmin*2.359 * 10**10., 5e14]
-limits_40 = [Npmin* 9.6 * 10**10. , 5e15]
-MPART = n.array([9.63 * 10**7, 1.51 * 10**9, 2.359 * 10**10, 9.6 * 10**10])
-names = n.array(["SMD", "MDPL", "BigMD", "HMD", "BigMDNW", "HMDNW"])
+log_f_ST01 = lambda logSigma, A, a, p : n.log10( f_SMT(10.**logSigma, A, a, p) )
 
-zmin = -0.001
-zmax = 0.001
-qty = 'M200c'
-cos = "cen"
-
-outfile=open(join(dir,qty,"M200c-"+cos+"-diff-function-z0-params.pkl"), 'r')
+outfile=open(join("..","mvir","mvir-cen-diff-function-z0-params.pkl"), 'r')
 outCF = cPickle.load(outfile)
 outfile.close()
-A0, a0, b0, c0 = outCF[0]
-
-frho = lambda sigma : A0*( (sigma/b0)**(-a0) + 1 )*n.e**(-c0/sigma**2.) * rhom.value
-X = n.arange(-0.4, 0.6, 0.01)
+pOpt, pCov = outCF
+A0, a0, p0 = outCF[0]
 
 rhom = cosmo.critical_density(0.).to(uu.solMass/(uu.Mpc)**3.)/(cosmo.H(0.)/(100*uu.km/(uu.Mpc*uu.s)))**1.
 
-msigmaFile=join(dir, "Pk_DM_CLASS", "hmf_highz_medz_lowz_planck", "mVector_z_0.0.txt")
+frho = lambda sigma : f_SMT(sigma, A0, a0, p0) * rhom.value
+
+X = n.arange(-0.4, 0.6, 0.01)
+
+msigmaFile=join("..", "Pk_DM_CLASS", "hmf_highz_medz_lowz_planck", "mVector_z_0.0.txt")
 DATA = n.loadtxt(msigmaFile,unpack=True)
-# [1] m:            [M_sun/h] 
-# [2] sigma 
-# [3] ln(1/sigma) 
-# [4] n_eff 
-# [5] f(sigma) 
-# [6] dn/dm:        [h^4/(Mpc^3*M_sun)] 
-# [7] dn/dlnm:      [h^3/Mpc^3] 
-# [8] dn/dlog10m:   [h^3/Mpc^3] 
-# [9] n(>m):        [h^3/Mpc^3] 
-# [11] rho(>m):     [M_sun*h^2/Mpc^3] 
-# [11] rho(<m):     [M_sun*h^2/Mpc^3] 
-# [12] Lbox(N=1):   [Mpc/h]
-#"D:\data\MultiDark\PK_DM_CLASS\hmf_highz_medz_lowz_planck\mVector_z_0.09.txt"
-#R, M, sigma = n.loadtxt(join(dir, "Pk_DM_CLASS", "MD_z"+str(z0[ int(index) - 1])+"_Msigma.dat"),unpack=True)
-# converts to M200c
+
 M=DATA[0]
 sigma = DATA[1]
 m2sigma = interp1d(M, sigma)
@@ -104,6 +72,8 @@ for ii, volume in enumerate(volumes): # = 1e9
 	if n.min(counts_c)<1000000 :
 		mass1M[ii] = c2m(1000000)
 
+sys.exit()
+		
 n.savetxt(join("..",qty,"volume-number.txt"), n.transpose([n.arange(5,13.1,0.1), mass100, mass10k, mass1M]), fmt='%2.2f', header=" logVol massN100 massN10k massN1M ")
 
 

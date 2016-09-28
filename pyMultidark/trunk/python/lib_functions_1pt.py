@@ -36,7 +36,7 @@ f_SMT = lambda sigma, A, a, p: A * (2.*a/n.pi)**(0.5) * ( 1 + ((delta_c/sigma)**
 f_ST01 = lambda sigma, A, a, p: A * ((2. * a * (delta_c/sigma)**2.) / (  n.pi))**(0.5) * ( 1 + (a*(delta_c/sigma)**2.) **(-p) ) * n.e**( - a * (delta_c/sigma)**2. / 2.)
 
 log_f_ST01 = lambda logSigma, A, a, p : n.log10( f_SMT(10.**logSigma, A, a, p) )
-loglog_f_ST01 = lambda logSigma, p : n.log10( f_SMT(10.**logSigma, p[0], p[1], p[2]) )
+log_f_ST01_ps = lambda logSigma, p : n.log10( f_SMT(10.**logSigma, p[0], p[1], p[2]) )
 
 # MULTIDARK TABLE GENERIC FUNCTIONS
 mSelection = lambda data, qty, limits_04, limits_10, limits_25, limits_40 : ((data["boxLength"]==400.)&(data["log_"+qty+"_min"]>limits_04[0]) &(data["log_"+qty+"_max"]<limits_04[1])) | ((data["boxLength"]==1000.)&(data["log_"+qty+"_min"]>limits_10[0]) &(data["log_"+qty+"_max"]<limits_10[1])) |  ((data["boxLength"]==2500.)&(data["log_"+qty+"_min"]>limits_25[0]) &(data["log_"+qty+"_max"]<limits_25[1])) |  ((data["boxLength"]==4000.)&(data["log_"+qty+"_min"]>limits_40[0])&(data["log_"+qty+"_max"]<limits_40[1])) 
@@ -220,7 +220,7 @@ def fit_mvir_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, co
 		
 	if mode == "minimize":
 		print "mode: minimize"
-		chi2fun = lambda ps : n.sum( (loglog_f_ST01(x_data, ps) - y_data)**2. / (y_err)**2. )/(len(y_data) - len(ps))
+		chi2fun = lambda ps : n.sum( (log_f_ST01_ps(x_data, ps) - y_data)**2. / (y_err)**2. )/(len(y_data) - len(ps))
 		res = minimize(chi2fun, p0, method='Powell',options={'xtol': 1e-8, 'disp': True, 'maxiter' : 5000000000000})
 		pOpt = res.x
 		pCov = res.direc
@@ -301,6 +301,89 @@ def plot_vmax_function_jackknife_poisson_error(x, y, MD04, MD10, MD25, MD25NW, M
 	p.grid()
 	p.savefig(join(dir,"vmax-"+cos+"-jackknife-countsSqrt.png"))
 	p.clf()
+
+
+def fit_mvir_function_zTrend(data, x_data, y_data, z_data , y_err, p0, 	tolerance = 0.03, cos = "cen", mode = "curve_fit", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir')):
+	"""
+	Fits a function to the mvir data
+	:param data: data table of the selected points for the fit
+	:param x_data: x coordinate
+	:param y_data: y coordinate
+	:param z_data: redshift coordinate
+	:param y_err: error
+	:param p0: first guess
+	:param tolerance: percentage error tolerance to compute how many points are outside of the fit
+	:param cos: central or satelitte
+	:param mode: fitting mode, "curve_fit" or "minimize"
+	:param dir: working dir
+	:param qty: mvir here
+	:return: result of the fit: best parameter array and covariance matrix
+	produces a plot of the residuals
+	"""
+	outfile=open(join(dir,"mvir-"+cos+"-diff-function-z0-params.pkl"), 'w')
+	pOpt, pCov = cPickle.load(outfile)
+	outfile.close()
+	A0, a0, p0 = pOpt
+	
+	Az = lambda z, A1 : A0*(1+z)**A1
+	az = lambda z, a1 : a0*(1+z)**a1
+	pz = lambda z, p1 : p0*(1+z)**p1
+
+	p0 = [0., 0., 0.]
+
+	f_SMT_z = lambda sigma, z, A1, a1, p1: Az(z, A1) * (2.*az(z, a1)/n.pi)**(0.5) * ( 1 + ((delta_c/sigma)**2./az(z, a1)) **(pz(z, p1)) ) * n.e**( - az(z, a1) * (delta_c/sigma)**2. / 2.) * (delta_c/sigma)
+
+	log_f_ST01_zt_ps = lambda logSigma, z, ps : n.log10( f_SMT_z(10.**logSigma, z, ps[0], ps[1], ps[2]) )
+
+	print "mode: minimize"
+	chi2fun = lambda ps : n.sum( (log_f_ST01_zt_ps(x_data, z_data, ps) - y_data)**2. / (y_err)**2. )/(len(y_data) - len(p0))
+	res = minimize(chi2fun, p0, method='Powell',options={'xtol': 1e-8, 'disp': True, 'maxiter' : 5000000000000})
+	pOpt = res.x
+	pCov = res.direc
+	print "best params=",pOpt[0], pOpt[1], pOpt[2]
+	print "err=",pCov.diagonal()**0.5 
+		
+	#x_model = n.arange(n.min(x_data),n.max(x_data),0.005)
+	#y_model = log_f_ST01_zt_ps(x_model, pOpt)
+	#n.savetxt(join(dir,"mvir-"+cos+"-differential-function-zTrend-model-pts.txt"),n.transpose([x_model, y_model]) )
+	outfile=open(join(dir,"mvir-"+cos+"-diff-function-zTrend-params.pkl"), 'w')
+	cPickle.dump([pOpt, pCov], outfile)
+	outfile.close()
+			
+	f_diff =  y_data - log_f_ST01_zt_ps(x_data, z_data, pOpt)
+	
+	MD_sel_fun=lambda name : (data["boxName"]==name)
+	MDnames= n.array(['MD_0.4Gpc', 'MD_1Gpc', 'MD_2.5Gpc','MD_4Gpc','MD_2.5GpcNW','MD_4GpcNW'])
+	MDsels=n.array([MD_sel_fun(name) for name in MDnames])
+	
+	f_diff_fun = lambda MDs:  y_data[MDs] - log_f_ST01_zt_ps(x_data[MDs], z_data[MDs], pOpt)
+	f_diffs = n.array([f_diff_fun(MD) for MD in MDsels])
+	
+	print "================================"
+	
+	# now the plots
+	p.figure(0,(6,6))
+	p.axes([0.17,0.17,0.75,0.75])
+	for index, fd in enumerate(f_diffs):
+		inTol = (abs(10**fd-1)<tolerance)
+		print index
+		if len(fd)>0:
+			p.errorbar(x_data[MDsels[index]], 10**fd, yerr = y_err[MDsels[index]] , rasterized=True, fmt='none', label=MDnames[index])
+			print len(inTol.nonzero()[0]), len(fd), 100.*len(inTol.nonzero()[0])/ len(fd)
+
+	p.axhline(1.01,c='k',ls='--',label=r'syst $\pm1\%$')
+	p.axhline(0.99,c='k',ls='--')
+	p.xlabel(r'$log_{10}(\sigma)$')
+	p.ylabel(r'data/model') 
+	gl = p.legend(loc=0,fontsize=10)
+	gl.set_frame_on(False)
+	#p.xlim((-0.7,0.6))
+	p.ylim((0.9,1.1))
+	#p.yscale('log')
+	p.grid()
+	p.savefig(join(dir,"mvir-"+cos+"-differential-function-fit-ztrend-residual-log.png"))
+	p.clf()
+	return pOpt, pCov
 
 def plot_vmax_function_data_error(log_vmax, error, redshift, label, zmin, zmax, cos = "cen", figName="vmax-cen-data04-uncertainty.png", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'vmax')):
 	"""
