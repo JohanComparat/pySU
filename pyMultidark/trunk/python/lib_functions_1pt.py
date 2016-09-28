@@ -381,6 +381,19 @@ def fit_mvir_function_zTrend(data, x_data, y_data, z_data , y_err, ps0=[0., 0., 
 	p.grid()
 	p.savefig(join(dir,"mvir-"+cos+"-differential-function-fit-ztrend-residual-log.png"))
 	p.clf()
+	p.figure(1,(6,6))
+	p.axes([0.17,0.17,0.75,0.75])
+	sc1=p.scatter(x_data, log_f_ST01_zt_ps(x_data, z_data, pOpt), c=redshift, s=5, marker='o',label="MD "+cos+" model", rasterized=True, vmin=zmin, vmax = zmax)
+	sc1.set_edgecolor('face')
+	cb = p.colorbar(shrink=0.8)
+	cb.set_label("redshift")
+	p.xlabel(r'$log_{10}(\sigma)$')
+	p.ylabel(r'model Mvir Function') 
+	gl = p.legend(loc=0,fontsize=10)
+	gl.set_frame_on(False)
+	p.grid()
+	p.savefig(join(dir,"mvir-"+cos+"-differential-function-fit-ztrend-model.png"))
+	p.clf()
 	return pOpt, pCov
 
 def plot_vmax_function_data_error(log_vmax, error, redshift, label, zmin, zmax, cos = "cen", figName="vmax-cen-data04-uncertainty.png", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'vmax')):
