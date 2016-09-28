@@ -325,9 +325,9 @@ def fit_mvir_function_zTrend(data, x_data, y_data, z_data , y_err, ps0=[0., 0., 
 	outfile.close()
 	A0, a0, p0 = pOpt
 	
-	Az = lambda z, A1 : A0*(1+z)**A1
-	az = lambda z, a1 : a0*(1+z)**a1
-	pz = lambda z, p1 : p0*(1+z)**p1
+	Az = lambda z, A1 : A0+z*A1
+	az = lambda z, a1 : a0+z*a1
+	pz = lambda z, p1 : p0+z*p1
 
 	f_SMT_z = lambda sigma, z, A1, a1, p1: Az(z, A1) * (2.*az(z, a1)/n.pi)**(0.5) * ( 1 + ((delta_c/sigma)**2./az(z, a1)) **(pz(z, p1)) ) * n.e**( - az(z, a1) * (delta_c/sigma)**2. / 2.) * (delta_c/sigma)
 
@@ -338,7 +338,7 @@ def fit_mvir_function_zTrend(data, x_data, y_data, z_data , y_err, ps0=[0., 0., 
 	res = minimize(chi2fun, ps0, method='Powell',options={'xtol': 1e-8, 'disp': True, 'maxiter' : 5000000000000})
 	pOpt = res.x
 	pCov = res.direc
-	print "best params=",pOpt[0], pOpt[1], pOpt[2]
+	print "best params=",pOpt
 	print "err=",pCov.diagonal()**0.5 
 		
 	#x_model = n.arange(n.min(x_data),n.max(x_data),0.005)
