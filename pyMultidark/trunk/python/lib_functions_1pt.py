@@ -31,7 +31,7 @@ vf = lambda v, A, v0, alpha, beta : n.log10( 10**A * (10**v/10**v0)**(-beta) * n
 # sheth and tormen function
 delta_c = 1.686
 
-f_SMT = lambda sigma, A, a, p: A * (2.*a/n.pi)**(0.5) * ( 1 + ((delta_c/sigma)**2./a) **(p) ) * n.e**( - a * (delta_c/sigma)**2. / 2.) # * (delta_c/sigma)
+f_SMT = lambda sigma, A, a, p: A * (2.*a/n.pi)**(0.5) * ( 1 + ((delta_c/sigma)**2./a) **(p) ) * n.e**( - a * (delta_c/sigma)**2. / 2.) * (delta_c/sigma)
 
 f_ST01 = lambda sigma, A, a, p: A * ((2. * a * (delta_c/sigma)**2.) / (  n.pi))**(0.5) * ( 1 + (a*(delta_c/sigma)**2.) **(-p) ) * n.e**( - a * (delta_c/sigma)**2. / 2.)
 
