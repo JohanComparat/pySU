@@ -320,7 +320,7 @@ def fit_mvir_function_zTrend(data, x_data, y_data, z_data , y_err, p0, 	toleranc
 	:return: result of the fit: best parameter array and covariance matrix
 	produces a plot of the residuals
 	"""
-	outfile=open(join(dir,"mvir-"+cos+"-diff-function-z0-params.pkl"), 'w')
+	outfile=open(join(dir,"mvir-"+cos+"-diff-function-z0-params.pkl"), 'r')
 	pOpt, pCov = cPickle.load(outfile)
 	outfile.close()
 	A0, a0, p0 = pOpt
