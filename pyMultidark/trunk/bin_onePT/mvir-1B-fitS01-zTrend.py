@@ -17,7 +17,7 @@ from scipy.misc import derivative
 import astropy.units as uu
 
 
-p0 = [0., 0., 0.]
+ps0 = [0., 0., 0.]
 
 
 sigma = n.arange(0.05,10,0.05)
@@ -82,5 +82,5 @@ log_f_c =  n.log10(mvir * data["dNdVdlnM_"+cos+"_c"]/ data["rhom"]  / abs(data["
 error = data["dN_counts_"+cos]**(-0.5)+0.005
 
 
-pOpt, pCov = lib.fit_mvir_function_zTrend(data[ok], x_data = logsig[ok], y_data = log_MF[ok], z_data=data['redshift'][ok], y_err = error[ok], p0 = p0, cos = cos, mode = "curve_fit")
+pOpt, pCov = lib.fit_mvir_function_zTrend(data[ok], x_data = logsig[ok], y_data = log_MF[ok], z_data=data['redshift'][ok], y_err = error[ok], ps0 = ps0, cos = cos, mode = "curve_fit")
 
