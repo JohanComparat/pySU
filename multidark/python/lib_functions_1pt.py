@@ -28,18 +28,31 @@ cosmo = FlatLambdaCDM(H0=67.77*u.km/u.s/u.Mpc, Om0=0.307115, Ob0=0.048206)
 # Fitting functions
 # velocity function
 vf = lambda v, A, v0, alpha, beta : n.log10( 10**A * (10**v/10**v0)**(-beta) * n.e**(- (10**v/10**v0)**(alpha) ) )
+
 # sheth and tormen function
-delta_c = 1.686
+fnu_ST = lambda nu, A, a, p: A * (2./n.pi)**(0.5) * (a*nu) * ( 1 + (a * nu) **(-2.*p) ) * n.e**( -( a * nu )**2. / 2.) 
+log_fnu_ST = lambda logNu, Anorm, a, q : n.log10( fnu_ST(10.**logNu, Anorm, a, q) )
+log_fnu_ST_ps = lambda logNu, ps : n.log10( fnu_ST(10.**logNu, ps[0], ps[1], ps[2]) )
 
-f_SMT = lambda sigma, A, a, p: A * (2.*a/n.pi)**(0.5) * ( 1 + ((delta_c/sigma)**2./a) **(p) ) * n.e**( - a * (delta_c/sigma)**2. / 2.) * (delta_c/sigma)
+p_ST_despali = [0.333, 0.794, 0.247]
+p_ST_sheth = [0.3222, 0.707, 0.3]
+p_T08_klypin = [0.224, 1.67, 1.80, 1.48]
+p_T08_RP = [0.144, 1.351, 3.113, 1.187]
 
-f_ST01 = lambda sigma, A, a, p: A * ((2. * a * (delta_c/sigma)**2.) / (  n.pi))**(0.5) * ( 1 + (a*(delta_c/sigma)**2.) **(-p) ) * n.e**( - a * (delta_c/sigma)**2. / 2.)
+# tinker function 
+fsigma_T08 = lambda sigma, A, a, b, c :  A *(1+ (b/sigma)**a) * n.e**(-c/sigma**2.)
+log_fsigma_T08 = lambda  logsigma, A, a, b, c :  n.log10(A *(1+ (b/(10**logsigma))**a) * n.e**(-c/(10**logsigma)**2.))
+log_fsigma_T08_ps = lambda logsigma, ps : log_fsigma_T08(logsigma, ps[0], ps[1], ps[2], ps[3])
 
-log_f_ST01 = lambda logSigma, A, a, p : n.log10( f_SMT(10.**logSigma, A, a, p) )
-log_f_ST01_ps = lambda logSigma, p : n.log10( f_SMT(10.**logSigma, p[0], p[1], p[2]) )
+#fnu_SMT = lambda nu, Anorm, a, q : Anorm * (2./n.pi)**(0.5) * (a*nu) * ( 1 + (a*nu) **(-2*q) ) * n.e**( - (a*nu)**2. / 2.) # 
+#fnu_SMT = lambda nu, Anorm, a, q : Anorm *a * (2.*n.pi)**(-0.5) *  ( 1 + (a**2*nu) **(-q) ) * n.e**( - a**2*nu / 2.)
+#log_fnu_ST01 = lambda logNu, Anorm, a, q : n.log10( fnu_SMT(10.**logNu, Anorm, a, q) )
+#log_fnu_ST01_ps = lambda logNu, ps : n.log10( fnu_SMT(10.**logNu, ps[0], ps[1], ps[2]) )
 
 # MULTIDARK TABLE GENERIC FUNCTIONS
-mSelection = lambda data, qty, limits_04, limits_10, limits_25, limits_40 : ((data["boxLength"]==400.)&(data["log_"+qty+"_min"]>limits_04[0]) &(data["log_"+qty+"_max"]<limits_04[1])) | ((data["boxLength"]==1000.)&(data["log_"+qty+"_min"]>limits_10[0]) &(data["log_"+qty+"_max"]<limits_10[1])) |  ((data["boxLength"]==2500.)&(data["log_"+qty+"_min"]>limits_25[0]) &(data["log_"+qty+"_max"]<limits_25[1])) |  ((data["boxLength"]==4000.)&(data["log_"+qty+"_min"]>limits_40[0])&(data["log_"+qty+"_max"]<limits_40[1])) 
+mSelection = lambda data, qty, logNpmin : (data["log_"+qty]>data["logMpart"]+logNpmin)
+#, limits_04, limits_10, limits_25, limits_40
+#((data["boxLength"]==400.)&(data["log_"+qty+"_min"]>limits_04[0]) &(data["log_"+qty+"_max"]<limits_04[1])) | ((data["boxLength"]==1000.)&(data["log_"+qty+"_min"]>limits_10[0]) &(data["log_"+qty+"_max"]<limits_10[1])) |  ((data["boxLength"]==2500.)&(data["log_"+qty+"_min"]>limits_25[0]) &(data["log_"+qty+"_max"]<limits_25[1])) |  ((data["boxLength"]==4000.)&(data["log_"+qty+"_min"]>limits_40[0])&(data["log_"+qty+"_max"]<limits_40[1])) 
 
 zSelection = lambda data, zmin, zmax : (data["redshift"]>zmin)&(data["redshift"]<zmax)
 
@@ -47,7 +60,7 @@ nSelection = lambda data, NminCount, cos : (data['dN_counts_'+cos]>NminCount)
 
 # MVIR 1point FUNCTION 
 
-def plot_mvir_function_data(log_mvir, logsigM1, log_MF, log_MF_c, redshift, zmin, zmax, cos = "cen", figName="", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir')):
+def plot_mvir_function_data(log_mvir, logsigM1, logNu, log_MF, log_MF_c, redshift, zmin, zmax, cos = "cen", figName="", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir')):
 	"""
 	:param log_mvir: x coordinates
 	:param log_VF: y coordinates
@@ -59,6 +72,45 @@ def plot_mvir_function_data(log_mvir, logsigM1, log_MF, log_MF_c, redshift, zmin
 	:param dir: working directory. Default: join( os.environ['MULTIDARK_LIGHTCONE_DIR'], qty), :param qty: quantity studied. Default: 'mvir'
 	"""
 	# now the plots
+	p.figure(0,(6,6))
+	p.axes([0.17,0.17,0.75,0.75])
+	sc1=p.scatter(logsigM1, log_MF, c=redshift, s=5, marker='o',label="MD "+cos+" data", rasterized=True, vmin=zmin, vmax = zmax)
+	sc1.set_edgecolor('face')
+	cb = p.colorbar(shrink=0.8)
+	cb.set_label("redshift")
+	sigs = n.arange(-0.5,.6, 0.01)
+	#p.plot(-sigs, log_fsigma_T08_ps(sigs, p_T08_klypin), 'k--', label='K 16 M200c')
+	p.plot(-sigs, log_fsigma_T08_ps(sigs, p_T08_RP), 'b--', label='RP 16')
+	p.xlabel(r'$ln(\sigma^{-1})$')
+	p.ylabel(r'$\log_{10}\left[ \frac{M}{\rho_m} \frac{dn}{d\ln M} \left|\frac{d\ln M }{d\ln \sigma}\right|\right] $') 
+	 # log$_{10}[ n(>M)]')
+	gl = p.legend(loc=3,fontsize=10)
+	gl.set_frame_on(False)
+	p.ylim((-3.5,0))
+	p.grid()
+	p.savefig(join(dir,"mvir-"+figName+cos+"-differential-function-data-xSigma.png"))
+	p.clf()
+	
+	p.figure(0,(6,6))
+	p.axes([0.17,0.17,0.75,0.75])
+	sc1=p.scatter(logNu, log_MF, c=redshift, s=5, marker='o',label="MD "+cos+" data", rasterized=True, vmin=zmin, vmax = zmax)
+	sc1.set_edgecolor('face')
+	cb = p.colorbar(shrink=0.8)
+	cb.set_label("redshift")
+	nus = n.arange(-0.3,1., 0.05)
+	p.plot(nus, log_fnu_ST_ps(nus, p_ST_despali), 'k--', label='Despali 16')
+	p.plot(nus, log_fnu_ST_ps(nus, p_ST_sheth), 'b--', label='Sheth 01')
+	p.xlabel(r'$ln(\nu)$')
+	p.ylabel(r'$\log_{10}\left[ \frac{M}{\rho_m} \frac{dn}{d\ln M} \left|\frac{d\ln M }{d\ln \sigma}\right|\right] $') 
+	 # log$_{10}[ n(>M)]')
+	gl = p.legend(loc=3,fontsize=10)
+	gl.set_frame_on(False)
+	p.ylim((-3.5,0))
+	p.xlim((-0.3, 0.8))
+	p.grid()
+	p.savefig(join(dir,"mvir-"+figName+cos+"-differential-function-data-xNu.png"))
+	p.clf()
+	"""
 	p.figure(0,(6,6))
 	p.axes([0.17,0.17,0.75,0.75])
 	sc1=p.scatter(log_mvir, log_MF, c=redshift, s=5, marker='o',label="MD "+cos+" data", rasterized=True, vmin=zmin, vmax = zmax)
@@ -107,7 +159,8 @@ def plot_mvir_function_data(log_mvir, logsigM1, log_MF, log_MF_c, redshift, zmin
 	p.grid()
 	p.savefig(join(dir,"mvir-"+figName+cos+"-cumulative-function-data-xMass.png"))
 	p.clf()
-
+	"""
+	
 def plot_mvir_function_data_perBox(log_mvir, log_VF, MD04, MD10, MD25, MD25NW, MD40, MD40NW, cos = "cen", figName="", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir')):
 	"""
 	:param log_mvir: x coordinates
@@ -124,11 +177,11 @@ def plot_mvir_function_data_perBox(log_mvir, log_VF, MD04, MD10, MD25, MD25NW, M
 	p.plot(log_mvir[MD40], log_VF[MD40],marker='_',label="MD40",ls='')
 	p.plot(log_mvir[MD25NW], log_VF[MD25NW],marker='+',label="MD25NW",ls='')
 	p.plot(log_mvir[MD40NW], log_VF[MD40NW],marker='x',label="MD40NW",ls='')
-	p.xlabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
-	p.ylabel(r'log$_{10} (M^2/\rho_m) dn(M)/dM$') 
+	p.xlabel(r'log$_{10}[M_{vir}/(M_\odot)]$')
+	p.ylabel(r'$\log_{10}\left[ \frac{M}{\rho_m} \frac{dn}{d\ln M} \left|\frac{d\ln M }{d\ln \sigma}\right|\right] $') 
 	gl = p.legend(loc=3,fontsize=10)
 	gl.set_frame_on(False)
-	p.ylim((-4.5,-1))
+	p.ylim((-4.5,0))
 	p.xlim((9.5,16))
 	p.grid()
 	p.savefig(join(dir,"mvir-"+figName+cos+"-differential-function-data-perBox.png"))
@@ -196,7 +249,7 @@ def plot_mvir_function_data_error(log_mvir, error, redshift, label, zmin, zmax, 
 	p.savefig(join(dir,figName))
 	p.clf()
 
-def fit_mvir_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, cos = "cen", mode = "curve_fit", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir')):
+def fit_mvir_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, cos = "cen", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir')):
 	"""
 	Fits a function to the mvir data
 	:param data: data table of the selected points for the fit
@@ -212,39 +265,28 @@ def fit_mvir_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, co
 	:return: result of the fit: best parameter array and covariance matrix
 	produces a plot of the residuals
 	"""
-	if mode == "curve_fit":
-		print "mode: curve_fit"
-		pOpt, pCov=curve_fit(log_f_ST01, x_data, y_data, p0, y_err, maxfev=500000)#, bounds=boundaries)
-		print "best params=", pOpt
-		print "err=", pCov.diagonal()**0.5
-		
-	if mode == "minimize":
-		print "mode: minimize"
-		chi2fun = lambda ps : n.sum( (log_f_ST01_ps(x_data, ps) - y_data)**2. / (y_err)**2. )/(len(y_data) - len(ps))
-		res = minimize(chi2fun, p0, method='Powell',options={'xtol': 1e-8, 'disp': True, 'maxiter' : 5000000000000})
-		pOpt = res.x
-		pCov = res.direc
-		print "best params=",pOpt[0], pOpt[1], pOpt[2]
-		print "err=",pCov[0][0]**0.5, pCov[1][1]**0.5, pCov[2][2]**0.5
+	pOpt, pCov=curve_fit(log_fnu_ST, x_data, y_data, p0, y_err, maxfev=500000)#, bounds=boundaries)
+	print "best params=", pOpt
+	print "err=", pCov.diagonal()**0.5
 		
 	x_model = n.arange(n.min(x_data),n.max(x_data),0.005)
-	y_model = log_f_ST01(x_model, pOpt[0], pOpt[1], pOpt[2])
+	y_model = log_fnu_ST(x_model, pOpt[0], pOpt[1], pOpt[2])
 	n.savetxt(join(dir,"mvir-"+cos+"-differential-function-z0-model-pts.txt"),n.transpose([x_model, y_model]) )
 	outfile=open(join(dir,"mvir-"+cos+"-diff-function-z0-params.pkl"), 'w')
 	cPickle.dump([pOpt, pCov], outfile)
 	outfile.close()
 			
-	f_diff =  y_data - log_f_ST01(x_data, pOpt[0], pOpt[1], pOpt[2])
-	
+	f_diff =  y_data - log_fnu_ST(x_data, pOpt[0], pOpt[1], pOpt[2])
+
 	MD_sel_fun=lambda name : (data["boxName"]==name)
 	MDnames= n.array(['MD_0.4Gpc', 'MD_1Gpc', 'MD_2.5Gpc','MD_4Gpc','MD_2.5GpcNW','MD_4GpcNW'])
 	MDsels=n.array([MD_sel_fun(name) for name in MDnames])
-	
-	f_diff_fun = lambda MDs:  y_data[MDs] - log_f_ST01(x_data[MDs], pOpt[0], pOpt[1], pOpt[2])
+
+	f_diff_fun = lambda MDs:  y_data[MDs] - log_fnu_ST(x_data[MDs], pOpt[0], pOpt[1], pOpt[2])
 	f_diffs = n.array([f_diff_fun(MD) for MD in MDsels])
-	
+
 	print "================================"
-	
+
 	# now the plots
 	p.figure(0,(6,6))
 	p.axes([0.17,0.17,0.75,0.75])
@@ -257,20 +299,20 @@ def fit_mvir_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, co
 
 	p.axhline(1.01,c='k',ls='--',label=r'syst $\pm1\%$')
 	p.axhline(0.99,c='k',ls='--')
-	p.xlabel(r'$log_{10}(\sigma)$')
+	p.xlabel(r'$log_{10}(\nu)$')
 	p.ylabel(r'data/model') 
 	gl = p.legend(loc=0,fontsize=10)
 	gl.set_frame_on(False)
 	#p.xlim((-0.7,0.6))
-	p.ylim((0.9,1.1))
+	p.ylim((0.92,1.08))
 	#p.yscale('log')
 	p.grid()
-	p.savefig(join(dir,"mvir-"+cos+"-differential-function-fit-residual-log.png"))
+	p.savefig(join(dir,"fit-"+cos+"-differential-function-residual-log.png"))
 	p.clf()
 	return pOpt, pCov
 
 # VMAX 1point FUNCTION 
-def plot_vmax_function_jackknife_poisson_error(x, y, MD04, MD10, MD25, MD25NW, MD40, MD40NW, cos = "cen", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'vmax')):
+def plot_jackknife_poisson_error(x, y, MD04, MD10, MD25, MD25NW, MD40, MD40NW, cos = "cen", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'vmax')):
 	"""
 	:param x: x coordinates
 	:param y: y coordinates
@@ -290,8 +332,8 @@ def plot_vmax_function_jackknife_poisson_error(x, y, MD04, MD10, MD25, MD25NW, M
 	p.plot(xx, xx*3., ls='--', label='y=3x')
 	#p.axhline(Npmin**-0.5, c='r', ls='--', label='min counts cut')#r'$1/\sqrt{10^3}$')
 	#p.axhline((10**6.87)**-0.5, c='k', ls='--', label='min vmax cut')#r'$1/\sqrt{10^{4.87}}$')
-	#p.xlim((2e-4,4e-1))
-	#p.ylim((2e-4,4e-1))
+	p.xlim((1e-4,1))
+	p.ylim((1e-4,1))
 	p.ylabel(r'$1/\sqrt{count} \; [\%]$')
 	p.xlabel(r'Jackknife  Resampling Error [%]')
 	p.yscale('log')
@@ -299,11 +341,11 @@ def plot_vmax_function_jackknife_poisson_error(x, y, MD04, MD10, MD25, MD25NW, M
 	gl = p.legend(loc=0,fontsize=10)
 	gl.set_frame_on(False)
 	p.grid()
-	p.savefig(join(dir,"vmax-"+cos+"-jackknife-countsSqrt.png"))
+	p.savefig(join(dir,"jackknife-countsSqrt-"+cos+".png"))
 	p.clf()
 
 
-def fit_mvir_function_zTrend(data, x_data, y_data, z_data , y_err, ps0=[0., 0., 0.], 	tolerance = 0.03, cos = "cen", mode = "curve_fit", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir')):
+def fit_mvir_function_zTrend(data, x_data, y_data, z_data , y_err, ps0=[0., 0., 0.], 	tolerance = 0.03, cos = "cen", mode = "curve_fit", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir'), zmin=0, zmax=2.5):
 	"""
 	Fits a function to the mvir data
 	:param data: data table of the selected points for the fit
@@ -328,7 +370,12 @@ def fit_mvir_function_zTrend(data, x_data, y_data, z_data , y_err, ps0=[0., 0., 
 	Az = lambda z, A1 : A0+z*A1
 	az = lambda z, a1 : a0+z*a1
 	pz = lambda z, p1 : p0+z*p1
-
+	delta_c=1.686
+	Anorm0=0.333
+	fnu_SMT = lambda nu, Anorm, a, q : Anorm * (2./n.pi)**(0.5) * (a*nu) * ( 1 + (a*nu) **(-2*q) ) * n.e**( - (a*nu)**2. / 2.) 
+	log_fnu_ST01 = lambda logNu, Anorm, a, q : n.log10( fnu_SMT(10.**logNu, Anorm, a, q) )
+	log_fnu_ST01_ps = lambda logSigma, ps : n.log10( fnu_SMT(10.**logNu, ps[0], ps[1], ps[2]) )
+	
 	f_SMT_z = lambda sigma, z, A1, a1, p1: Az(z, A1) * (2.*az(z, a1)/n.pi)**(0.5) * ( 1 + ((delta_c/sigma)**2./az(z, a1)) **(pz(z, p1)) ) * n.e**( - az(z, a1) * (delta_c/sigma)**2. / 2.) * (delta_c/sigma)
 
 	log_f_ST01_zt_ps = lambda logSigma, z, ps : n.log10( f_SMT_z(10.**logSigma, z, ps[0], ps[1], ps[2]) )
@@ -383,7 +430,7 @@ def fit_mvir_function_zTrend(data, x_data, y_data, z_data , y_err, ps0=[0., 0., 
 	p.clf()
 	p.figure(1,(6,6))
 	p.axes([0.17,0.17,0.75,0.75])
-	sc1=p.scatter(x_data, log_f_ST01_zt_ps(x_data, z_data, pOpt), c=redshift, s=5, marker='o',label="MD "+cos+" model", rasterized=True, vmin=zmin, vmax = zmax)
+	sc1=p.scatter(x_data, log_f_ST01_zt_ps(x_data, z_data, pOpt), c=z_data, s=5, marker='o',label="MD "+cos+" model", rasterized=True, vmin=zmin, vmax = zmax)
 	sc1.set_edgecolor('face')
 	cb = p.colorbar(shrink=0.8)
 	cb.set_label("redshift")
@@ -636,6 +683,7 @@ def plot_CRCoef_mvir(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir',
 	logmass = ( bins[1:]  + bins[:-1] )/2.
 
 	print boxName
+
 	if boxName=='MD_0.4Gpc' :
 		boxLength = 400.
 		boxRedshift = 1./boxZN - 1.
@@ -789,131 +837,165 @@ def plot_CRCoef_mvir(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir',
 		"""
 		return mm, sigma, nu, cr, cv
 
-def convert_pkl_mass(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir', delta_wrt='mean'):
+def convert_pkl_mass(fileC, fileS, binFile, zList_files, qty='mvir', delta_wrt='mean'):
 	"""
 	:param qty: one point function variable.Default: mvir.
 	:param fileC: file with the central halo statistics
 	:param fileS: file with the satelitte halo statistics
 	:param binFile: file with the bins
 	:param zList_files: list of file with linking snapshot number and redshift
-	:param z0: redshift - number relation to link to the files containing the linear theory (sigma M relation, P(k) ...)
-	:param z0short: same as z0 but shorter
 	:return: a fits table containing the one point function histograms
 	"""
-	boxName = fileC.split('/')[6]
-	boxZN = float(fileC.split('/')[-1].split('_')[1])
-	bins = n.loadtxt(binFile)
-	dX = ( 10**bins[1:]  - 10**bins[:-1] ) #* n.log(10)
-	dlnbin = dX / (10**(( bins[1:]  + bins[:-1] )/2.))
-	def get_hmf(sigma_val=0.8228, boxRedshift=0.):
-		hmf = MassFunction(cosmo_model=cosmo, sigma_8=sigma_val, z=boxRedshift)
+	
+	def get_hf(sigma_val=0.8228, boxRedshift=0.):
+		#hf0 = MassFunction(cosmo_model=cosmo, sigma_8=sigma_val, z=boxRedshift)
 		omega = lambda zz: cosmo.Om0*(1+zz)**3. / cosmo.efunc(zz)**2
 		DeltaVir_bn98 = lambda zz : (18.*n.pi**2. + 82.*(omega(zz)-1)- 39.*(omega(zz)-1)**2.)/omega(zz)
-		hmf = MassFunction(cosmo_model=cosmo, sigma_8=sigma_val, z=boxRedshift, delta_h=DeltaVir_bn98(boxRedshift), delta_wrt=delta_wrt, Mmin=7, Mmax=16.5)
-		return hmf
+		print "DeltaVir", DeltaVir_bn98(boxRedshift), " at z",boxRedshift
+		hf1 = MassFunction(cosmo_model=cosmo, sigma_8=sigma_val, z=boxRedshift, delta_h=DeltaVir_bn98(boxRedshift), delta_wrt=delta_wrt, Mmin=7, Mmax=16.5)
+		return hf1
 
+	boxZN = float(os.path.basename(fileC).split('_')[1])
+	print boxZN
+	extraName =  os.path.basename(fileS)[:-27]
+	
+	def get_basic_info(fileC, boxZN):
+		if fileC.find('MD_0.4Gpc')>0:
+			boxName='MD_0.4Gpc'
+			boxRedshift = 1./boxZN - 1.
+			hf = get_hf(0.8228*0.953**0.5, boxRedshift)
+			logmp = n.log10(9.63 * 10**7/cosmo.h)
+			boxLength = 400./cosmo.h/cosmo.efunc(boxRedshift)
+			
+		elif fileC.find('MD_1Gpc')>0 :
+			boxName='MD_1Gpc'
+			boxRedshift = 1./boxZN - 1.
+			hf = get_hf(0.8228*1.004**0.5, boxRedshift)
+			logmp = n.log10(1.51 * 10**9/cosmo.h)
+			boxLength = 1000./cosmo.h/cosmo.efunc(boxRedshift)
 
-	print boxName
-	if boxName=='MD_0.4Gpc' :
-		boxLength = 400.
-		boxRedshift = 1./boxZN - 1.
-		logmp = n.log10(9.63 * 10**7)
-		hmf = get_hmf(0.8228, boxRedshift)
+		elif fileC.find('MD_2.5GpcNW')>0 :
+			boxName='MD_2.5GpcNW'
+			nSN, aSN = n.loadtxt(join(os.environ['MD25NW_DIR'],"redshift-list.txt"), unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
+			conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
+			boxRedshift =  conversion[boxZN] 
+			hf = get_hf(0.8228*1.01**0.5, boxRedshift)
+			hz = 1.# hf.cosmo.H( boxRedshift ).value / 100.
+			logmp = n.log10(2.359 * 10**10/cosmo.h )
+			boxLength = 2500./cosmo.h/cosmo.efunc(boxRedshift)
 
-	if boxName=='MD_1Gpc' :
-		boxLength = 1000.
-		boxRedshift = 1./boxZN - 1.
-		logmp = n.log10(1.51 * 10**9)
-		hmf = get_hmf(0.8228*1.004**0.5, boxRedshift)
+		elif fileC.find('MD_4GpcNW')>0 :
+			boxName='MD_4GpcNW'
+			
+			nSN, aSN = n.loadtxt(join(os.environ['MD40NW_DIR'],"redshift-list.txt"), unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
+			conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
+			boxRedshift =  conversion[boxZN] 
+			hf = get_hf(0.8228*1.008**0.5, boxRedshift)
+			hz = 1.# hf.cosmo.H( boxRedshift ).value / 100. 
+			logmp = n.log10(9.6 * 10**10/cosmo.h )
+			boxLength = 4000./cosmo.h/cosmo.efunc(boxRedshift)
 		
+		elif fileC.find('MD_2.5Gpc')>0 :
+			boxName='MD_2.5Gpc'
+			nSN, aSN = n.loadtxt(join(os.environ['MD25_DIR'],"redshift-list.txt"), unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
+			conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
+			boxRedshift =  conversion[boxZN] 
+			hf = get_hf(0.8228*1.01**0.5, boxRedshift)
+			hz = 1.# hf.cosmo.H( boxRedshift ).value / 100.
+			logmp = n.log10(2.359 * 10**10/cosmo.h)
+			boxLength = 2500./cosmo.h/cosmo.efunc(boxRedshift)
 
-	if boxName=='MD_2.5Gpc' :
-		boxLength = 2500.
-		nSN, aSN = n.loadtxt(zList_files[2], unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
-		conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
-		boxRedshift =  conversion[boxZN] 
-		logmp = n.log10(2.359 * 10**10)
-		hmf = get_hmf(0.8228*1.01**0.5, boxRedshift)
+		elif fileC.find('MD_4Gpc')>0 :
+			boxName='MD_4Gpc'
+			nSN, aSN = n.loadtxt(join(os.environ['MD40_DIR'],"redshift-list.txt"), unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
+			conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
+			boxRedshift =  conversion[boxZN] 
+			hf = get_hf(0.8228*1.008**0.5, boxRedshift)
+			hz = 1.# hf.cosmo.H( boxRedshift ).value / 100.
+			logmp = n.log10(9.6 * 10**10 /cosmo.h )
+			boxLength = 4000./cosmo.h/cosmo.efunc(boxRedshift)
+		
+		boxLengthComoving = boxLength * cosmo.efunc(boxRedshift)
+		return hf, boxLength, boxName, boxRedshift, logmp, boxLengthComoving
 
-	if boxName=='MD_4Gpc' :
-		boxLength = 4000.
-		nSN, aSN = n.loadtxt(zList_files[3], unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
-		conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
-		boxRedshift =  conversion[boxZN] 
-		logmp = n.log10(9.6 * 10**10)
-		hmf = get_hmf(0.8228*1.006**0.5, boxRedshift)
-
-	if boxName=='MD_2.5GpcNW' :
-		boxLength = 2500.
-		nSN, aSN = n.loadtxt(zList_files[4], unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
-		conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
-		boxRedshift =  conversion[boxZN] 
-		logmp = n.log10(2.359 * 10**10)
-		hmf = get_hmf(0.8228, boxRedshift)
-
-	if boxName=='MD_4GpcNW' :
-		boxLength = 4000.
-		nSN, aSN = n.loadtxt(zList_files[5], unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
-		conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
-		boxRedshift =  conversion[boxZN] 
-		logmp = n.log10(9.6 * 10**10)
-		hmf = get_hmf(0.8228, boxRedshift)
-
-	# m sigma relation
-	m2sigma = interp1d(hmf.M, hmf.sigma )
-	toderive = interp1d(n.log(hmf.M), hmf.lnsigma)
-	
-	ok = (bins[1:] > logmp+1.0)&(bins[1:]<16.)
-	sig = m2sigma( 10**((bins[:-1][ok]+bins[1:][ok])/2.) )
-	
-	dlnsigdm = derivative(toderive, n.log(10**((bins[:-1][ok]+bins[1:][ok])/2.)))
-
+	hf, boxLength, boxName, boxRedshift, logmp, boxLengthComoving = get_basic_info(fileC, boxZN)
+	print boxName
+	bins = n.loadtxt(binFile)
+	#bins = n.log10( 10**bins_in / hz )
+	#bins = n.loadtxt(binFile)
+	logmass = ( bins[1:]  + bins[:-1] )/2.
+	mass = 10**logmass
+	dX = ( 10**bins[1:]  - 10**bins[:-1] )
+	#dlnbin = dX / mass
+	dlnbin = (bins[1:]  - bins[:-1])*n.log(10)
+	#print dX / mass, dlnbin
+	#selects meaningful masses 10 times particle mass
+	ok = (logmass > logmp+1.0)&(logmass<16.1)
+	hz = cosmo.H( boxRedshift ).value / 100.
+	# m sigma relation using the sigma8 corrected power spectrum
+	m2sigma = interp1d(hf.M, hf.sigma )
+	sig = m2sigma( mass )
+	# m nu relation: nu = (delta_c / sigma_m)**2
+	m2nu = interp1d(hf.M, hf.nu )
+	nnu = m2nu( mass )
+	# jacobian
+	toderive = interp1d(n.log(hf.M), n.log(hf.sigma))
+	dlnsigmadlnm = derivative(toderive, n.log(mass) )
 	#normalization by average universedensity at this redshift in the right cosmo
-	rhom_units = hmf.cosmo.critical_density(boxRedshift).to(u.solMass/(u.Mpc)**3.)/(hmf.cosmo.H(boxRedshift)/(100*u.km/(u.Mpc*u.s)))**1.
-	rhom = rhom_units.value
+	rhom_units = cosmo.Om(boxRedshift)*cosmo.critical_density(boxRedshift).to(u.solMass/(u.Mpc)**3.)#/(cosmo.h)**2.
+	# in units (Msun/h) / (Mpc/h)**3
+	rhom = rhom_units.value # hf.mean_density#/(hz)**2. 
+	print hf.mean_density, rhom / (hf.mean_density*(cosmo.h)**2.)
 	
-	col000 = fits.Column( name="boxName",format="14A", array= n.array([boxName for i in range(len(bins[:-1]))]))
-	col0 = fits.Column( name="sigmaM",format="D", array= sig )
-	col00 = fits.Column( name="nuM",format="D", array= hmf.delta_c/sig )
-	col01 = fits.Column( name="dlnsigmaM1_o_dlnM",format="D", array= dlnsigdm )
-	col1 = fits.Column( name="log_"+qty+"_min",format="D", array= bins[:-1][ok] )
-	col2 = fits.Column( name="log_"+qty+"_max",format="D", array= bins[1:][ok] )
-	col3 = fits.Column( name="redshift",format="D", array= boxRedshift * n.ones_like(bins[:-1][ok]) )
-	col4 = fits.Column( name="boxLength",format="D", array= boxLength * n.ones_like(bins[:-1][ok]) )
-	col4_2 = fits.Column( name="Mpart",format="D", array=  logmp* n.ones_like(bins[:-1][ok]) )
-	col4_3 = fits.Column( name="rhom",format="D", array= rhom* n.ones_like(bins[:-1][ok]) )
+	col0 = fits.Column( name="boxName",format="14A", array= n.array([boxName for i in range(len(bins[:-1]))]))
+	col1 = fits.Column( name="redshift",format="D", array= boxRedshift * n.ones_like(bins[:-1][ok]) )
+	col1b = fits.Column( name="h",format="D", array= hz * n.ones_like(bins[:-1][ok]) )
+	col2a = fits.Column( name="boxLengthProper",format="D", array= boxLength * n.ones_like(bins[:-1][ok]) )
+	col2b = fits.Column( name="boxLengthComoving",format="D", array= boxLengthComoving * n.ones_like(bins[:-1][ok]) )
+	col3 = fits.Column( name="logMpart",format="D", array=  logmp* n.ones_like(bins[:-1][ok]) )
+	col4 = fits.Column( name="rhom",format="D", array= rhom* n.ones_like(bins[:-1][ok]) )
+
+	col5_0 = fits.Column( name="log_"+qty+"_min",format="D", array= bins[:-1][ok] )
+	col5_1 = fits.Column( name="log_"+qty+"_max",format="D", array= bins[1:][ok] )
+	col5_2 = fits.Column( name="log_"+qty,format="D", array= logmass[ok])
+	col5_3 = fits.Column( name="sigmaM",format="D", array= sig[ok] )
+	col5_4 = fits.Column( name="nu2",format="D", array= nnu[ok])#hf.delta_c/sig ) # hf.growth_factor/
+	col5_5 = fits.Column( name="dlnsigmaMdlnM",format="D", array= dlnsigmadlnm[ok] )
 	
-	unitVolume =  (boxLength*0.10)**3.
+	unitVolume =  (boxLength *0.10)**3. # /cosmo.H(boxRedshift)
 	volume = (boxLength)**3.
 
 	Ncounts, Ncounts_c, Nall, Nall_c, mean90, std90, mean90_c, std90_c = getStat(fileC,volume,unitVolume)
 
-	col5 = fits.Column( name="dN_counts_cen",format="D", array= Ncounts[ok] )
-	col6 = fits.Column( name="dN_counts_cen_c",format="D", array= Ncounts_c[ok])
-	col7 = fits.Column( name="dNdV_cen",format="D", array= Nall[ok] )
-	col8 = fits.Column( name="dNdV_cen_c",format="D", array= Nall_c[ok] )
-	col9 = fits.Column( name="dNdVdlnM_cen",format="D", array= Nall[ok]/dlnbin[ok] )
-	col10 = fits.Column( name="dNdVdlnM_cen_c",format="D", array= Nall_c[ok]/dlnbin[ok] )
-	col11 = fits.Column( name="std90_pc_cen",format="D", array= std90[ok] )
-	col12 = fits.Column( name="std90_pc_cen_c",format="D", array= std90_c[ok] )
+	col6c = fits.Column( name="dN_counts_cen",format="D", array= Ncounts[ok] )
+	col6cc = fits.Column( name="dN_counts_cen_c",format="D", array= Ncounts_c[ok])
+	col7c = fits.Column( name="dNdV_cen",format="D", array= Nall[ok] )
+	col7cc = fits.Column( name="dNdV_cen_c",format="D", array= Nall_c[ok] )
+	col8c = fits.Column( name="dNdlnM_cen",format="D", array= Nall[ok]/dlnbin[ok] )
+	col8cc = fits.Column( name="dNdlnM_cen_c",format="D", array= Nall_c[ok]/dlnbin[ok] )
+	col9c = fits.Column( name="std90_pc_cen",format="D", array= std90[ok] )
+	col9cc = fits.Column( name="std90_pc_cen_c",format="D", array= std90_c[ok] )
 
 	Ncounts, Ncounts_c, Nall, Nall_c, mean90, std90, mean90_c, std90_c = getStat(fileS,volume,unitVolume)
 
-	col5_s = fits.Column( name="dN_counts_sat",format="D", array= Ncounts[ok] )
-	col6_s = fits.Column( name="dN_counts_sat_c",format="D", array= Ncounts_c[ok])
-	col7_s = fits.Column( name="dNdV_sat",format="D", array= Nall[ok] )
-	col8_s = fits.Column( name="dNdV_sat_c",format="D", array= Nall_c[ok] )
-	col9_s = fits.Column( name="dNdVdlnM_sat",format="D", array= Nall[ok]/dlnbin[ok] )
-	col10_s = fits.Column( name="dNdVdlnM_sat_c",format="D", array= Nall_c[ok] / dlnbin[ok] )
-	col11_s = fits.Column( name="std90_pc_sat",format="D", array= std90[ok] )
-	col12_s = fits.Column( name="std90_pc_sat_c",format="D", array= std90_c[ok] )
+	col6s = fits.Column( name="dN_counts_sat",format="D", array= Ncounts[ok] )
+	col6sc = fits.Column( name="dN_counts_sat_c",format="D", array= Ncounts_c[ok])
+	col7s = fits.Column( name="dNdV_sat",format="D", array= Nall[ok] )
+	col7sc = fits.Column( name="dNdV_sat_c",format="D", array= Nall_c[ok] )
+	col8s = fits.Column( name="dNdlnM_sat",format="D", array= Nall[ok]/dlnbin[ok] )
+	col8sc = fits.Column( name="dNdlnM_sat_c",format="D", array= Nall_c[ok] / dlnbin[ok] )
+	col9s = fits.Column( name="std90_pc_sat",format="D", array= std90[ok] )
+	col9sc = fits.Column( name="std90_pc_sat_c",format="D", array= std90_c[ok] )
 
 
-	hdu2 = fits.BinTableHDU.from_columns([col000, col1, col2, col3, col4, col4_2, col4_3, col5, col6, col7, col8, col9, col10, col11, col12, col5_s, col6_s, col7_s, col8_s, col9_s, col10_s, col11_s, col12_s, col0, col00, col01])
+	hdu2 = fits.BinTableHDU.from_columns([col0, col1,col1b, col2a, col2b, col3, col4, col5_0, col5_1, col5_2, col5_3, col5_4, col5_5, col6c, col7c, col8c, col9c, col6cc, col7cc, col8cc, col9cc, col6s, col7s, col8s, col9s, col6sc, col7sc, col8sc, col9sc ])
 	
 	writeName = join(os.environ['MULTIDARK_LIGHTCONE_DIR'], qty, "data", boxName+"_"+str(boxRedshift)+"_"+qty+".fits")
-	os.system("rm -rf "+ writeName)
+	if os.path.isfile(writeName):
+		os.remove(writeName)
+	
 	hdu2.writeto(writeName)
+	return hf
 
 def convert_pkl_velocity(fileC, fileS, binFile, zList_files, qty='vmax'):
 	"""
@@ -986,8 +1068,8 @@ def convert_pkl_velocity(fileC, fileS, binFile, zList_files, qty='vmax'):
 	col6 = fits.Column( name="dN_counts_cen_c",format="D", array= Ncounts_c)
 	col7 = fits.Column( name="dNdV_cen",format="D", array= Nall )
 	col8 = fits.Column( name="dNdV_cen_c",format="D", array= Nall_c )
-	col9 = fits.Column( name="dNdVdlnM_cen",format="D", array= Nall/dlnbin )
-	col10 = fits.Column( name="dNdVdlnM_cen_c",format="D", array= Nall_c/dlnbin )
+	col9 = fits.Column( name="dNdlnM_cen",format="D", array= Nall/dlnbin )
+	col10 = fits.Column( name="dNdlnM_cen_c",format="D", array= Nall_c/dlnbin )
 	col11 = fits.Column( name="std90_pc_cen",format="D", array= std90 )
 	col12 = fits.Column( name="std90_pc_cen_c",format="D", array= std90_c )
 
@@ -997,8 +1079,8 @@ def convert_pkl_velocity(fileC, fileS, binFile, zList_files, qty='vmax'):
 	col6_s = fits.Column( name="dN_counts_sat_c",format="D", array= Ncounts_c)
 	col7_s = fits.Column( name="dNdV_sat",format="D", array= Nall )
 	col8_s = fits.Column( name="dNdV_sat_c",format="D", array= Nall_c )
-	col9_s = fits.Column( name="dNdVdlnM_sat",format="D", array= Nall/dlnbin )
-	col10_s = fits.Column( name="dNdVdlnM_sat_c",format="D", array= Nall_c / dlnbin )
+	col9_s = fits.Column( name="dNdlnM_sat",format="D", array= Nall/dlnbin )
+	col10_s = fits.Column( name="dNdlnM_sat_c",format="D", array= Nall_c / dlnbin )
 	col11_s = fits.Column( name="std90_pc_sat",format="D", array= std90 )
 	col12_s = fits.Column( name="std90_pc_sat_c",format="D", array= std90_c )
 
