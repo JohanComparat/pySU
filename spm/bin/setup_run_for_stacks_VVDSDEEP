@@ -5,9 +5,9 @@ import os
 import glob
 
 # list of all VVDS spectra
-stackList = glob.glob(join(os.environ['SPECTRASTACKS_DIR'],"data","??_????","*VVDS*R_8686*.fits"))
+stackList = glob.glob(join(os.environ['SPECTRASTACKS_DIR'],"data","??_????","*VVDS*R_*.fits"))
 
 for el in stackList:
-	os.system("python stellarpop_for_stacks "+el)
+	os.system("python stellarpop_stacks "+el)
 
 	

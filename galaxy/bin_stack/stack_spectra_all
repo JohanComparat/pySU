@@ -90,11 +90,11 @@ selection = (survey =="VVDSDEEPI24") | (survey == "VVDSWIDEI22.5")
 
 for ii, el in enumerate(dataList[selection]):
 		print el, "stacks !"
-		st=SpectraStacking(el, Nspec = 100, dLambda = 0.002)
+		st=SpectraStacking(el, Nspec = 100, dLambda = 0.001)
 		st.stackSpectra()
-		st=SpectraStacking(el, Nspec = 200, dLambda = 0.002)
+		st=SpectraStacking(el, Nspec = 200, dLambda = 0.001)
 		st.stackSpectra()
-		st=SpectraStacking(el, Nspec = 400, dLambda = 0.002)
+		st=SpectraStacking(el, Nspec = 400, dLambda = 0.001)
 		st.stackSpectra()
 
 selection = (survey =="DEEP2R24.2")

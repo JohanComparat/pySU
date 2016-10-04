@@ -9,7 +9,6 @@ python stack_spectra_all
 # MODEL
 # copy the stacks of interest to $SPECTRASTACKS_DIR/data/
 cp $VVDS_DIR/products/spectraStacks/O2_3728/*.fits  $SPECTRASTACKS_DIR/data/O2_3728/
-cp $VVDS_DIR/products/spectraStacks/O3_5007/*.fits  $SPECTRASTACKS_DIR/data/O3_5007/
 cp $DEEP2_DIR/products/spectraStacks/H1_4862/*.fits  $SPECTRASTACKS_DIR/data/H1_4862/
 cp $DEEP2_DIR/products/spectraStacks/O2_3728/*.fits  $SPECTRASTACKS_DIR/data/O2_3728/
 cp $DEEP2_DIR/products/spectraStacks/O3_5007/*.fits  $SPECTRASTACKS_DIR/data/O3_5007/
@@ -25,11 +24,12 @@ cp $DEEP2_DIR/products/spectraStacks/O3_5007/*.fits  $SPECTRASTACKS_DIR/data/O3_
 #rm  $SPECTRASTACKS_DIR/data/O3_5007/O3_5007-VVDSDEEPI24-z0.741*
 
 cd $SPECTRASTACKS_DIR/scripts/
+#NEEDS TO BE FIXED
 python presentationPlot.py
 #produces the first two figures of the paper presenting the data.
 
 # fit firefly stellar population continuum models
-cd $PYSU_DIR/pySPM/trunk/bin
+cd $PYSU_GAL_DIR/spm/bin
 screen python setup_run_for_stacks_VVDSDEEP
 screen python setup_run_for_stacks_DEEP2
 # writes to to $SPECTRASTACKS_DIR/fits/
