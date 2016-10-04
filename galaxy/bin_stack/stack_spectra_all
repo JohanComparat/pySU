@@ -86,18 +86,24 @@ for ii, el in enumerate(dataList):
 	hd = fits.open(el)
 	lcomp[ii] = n.log10(hd[0].header['COMPLETENESS'])
 
-#selection = ((survey =="DEEP2R24.2") )#&((LFname=="H1_4862-DEEP2R24.2-z0.516.txt")|(LFname == "H1_4862-DEEP2R24.2-z0.802.txt"))) #(survey =="VVDSDEEPI24") | 
+selection = (survey =="VVDSDEEPI24") | (survey == "VVDSWIDEI22.5")
 
-
-for ii in n.arange(2):#n.arange(len(dataList)): #[selection]:
-		el = dataList[ii]
-		#if lcomp[ii] > dictLmin[LFname[ii]] :
+for ii, el in enumerate(dataList[selection]):
 		print el, "stacks !"
-		st=SpectraStacking(el, Nspec = 100, dLambda = 0.00005)
+		st=SpectraStacking(el, Nspec = 100, dLambda = 0.002)
 		st.stackSpectra()
-		st=SpectraStacking(el, Nspec = 200, dLambda = 0.00005)
+		st=SpectraStacking(el, Nspec = 200, dLambda = 0.002)
 		st.stackSpectra()
-		st=SpectraStacking(el, Nspec = 400, dLambda = 0.00005)
+		st=SpectraStacking(el, Nspec = 400, dLambda = 0.002)
 		st.stackSpectra()
 
-	
+selection = (survey =="DEEP2R24.2")
+for ii, el in enumerate(dataList[selection]):
+		print el, "stacks !"
+		st=SpectraStacking(el, Nspec = 100, dLambda = 0.00007)
+		st.stackSpectra()
+		st=SpectraStacking(el, Nspec = 200, dLambda = 0.00007)
+		st.stackSpectra()
+		st=SpectraStacking(el, Nspec = 400, dLambda = 0.00007)
+		st.stackSpectra()
+
