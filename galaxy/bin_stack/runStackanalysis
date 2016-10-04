@@ -29,12 +29,15 @@ python presentationPlot.py
 #produces the first two figures of the paper presenting the data.
 
 # fit firefly stellar population continuum models
-cd $PYSU_GAL_DIR/spm/bin
+-------------
+RUNNING
+-------------
+cd $PYSU_DIR/spm/bin
 screen python setup_run_for_stacks_VVDSDEEP
 screen python setup_run_for_stacks_DEEP2
 # writes to to $SPECTRASTACKS_DIR/fits/
 
-cd $PYSU_DIR/pyGalaxy/trunk/bin_stack
+cd $PYSU_GAL_DIR/bin_stack
 screen python model_stacked_spectra_DEEP2
 screen python model_stacked_spectra_VVDS
 # writes to to $SPECTRASTACKS_DIR/model/
