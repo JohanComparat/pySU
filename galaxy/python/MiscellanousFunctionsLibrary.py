@@ -21,6 +21,6 @@ def CalzettiLaw(ll):
 	if ll<=6300:
 		return kla(ll)
 
-dat = n.loadtxt(join(os.environ['PYSU_DIR'],"pyGalaxy","trunk","data","calzettiLaw.txt"),unpack=True)
+dat = n.loadtxt(join(os.environ['PYSU_GAL_DIR'],"data","calzettiLaw.txt"),unpack=True)
 calzettiLaw = interp1d(dat[0],dat[1])
 

@@ -2,11 +2,13 @@ import numpy as np
 import warnings
 import math
 import os
+import scipy.interpolate as interpolate
+from astropy.io import fits
+
 from firefly_fitter import *
 from firefly_library import *
 from firefly_instrument import *
-import scipy.interpolate as interpolate
-from astropy.io import fits
+
 # Calzetti curves, and other general attenuation curves are computed
 # here, along with (in dust_calzetti) applying to spectra directly.
 
@@ -15,6 +17,8 @@ def curve_smoother(x, y, smoothing_length):
 	Smoothes a curve y = f(x) with a running median over a given smoothing length.
 
 	Returns the smoothed array.
+	
+	Used internally in function determine_attenuation
 
 	:param x: x
 	:param y: y
@@ -27,7 +31,9 @@ def curve_smoother(x, y, smoothing_length):
 	return y_out
 
 def reddening_ccm(wave, ebv=None, a_v=None, r_v=3.1, model='ccm89'):
-    """Determines a CCM reddening curve.
+    """
+	Not used in FIREFLY
+	Determines a CCM reddening curve.
 
     Parameters
     ----------

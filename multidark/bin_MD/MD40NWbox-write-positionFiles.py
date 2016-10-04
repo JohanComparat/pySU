@@ -11,8 +11,9 @@ snList=  n.array([
 snList=  n.array(["/home2/jcomparat/eBOSS-LC/Multidark-lightcones/MD_4GpcNW/snapshots/out_7.list", 
 "/home2/jcomparat/eBOSS-LC/Multidark-lightcones/MD_4GpcNW/snapshots/out_8.list", 
 "/home2/jcomparat/eBOSS-LC/Multidark-lightcones/MD_4GpcNW/snapshots/out_9.list",
-"/home2/jcomparat/eBOSS-LC/Multidark-lightcones/MD_4GpcNW/snapshots/out_10.list","/home2/jcomparat/eBOSS-LC/Multidark-lightcones/MD_4GpcNW/snapshots/out_11.list",
-"/home2/jcomparat/eBOSS-LC/Multidark-lightcones/MD_4GpcNW/snapshots/out_12.list", 
+"/home2/jcomparat/eBOSS-LC/Multidark-lightcones/MD_4GpcNW/snapshots/out_10.list"])
+
+snList=  n.array(["/home2/jcomparat/eBOSS-LC/Multidark-lightcones/MD_4GpcNW/snapshots/out_11.list","/home2/jcomparat/eBOSS-LC/Multidark-lightcones/MD_4GpcNW/snapshots/out_12.list", 
 "/home2/jcomparat/eBOSS-LC/Multidark-lightcones/MD_4GpcNW/snapshots/out_13.list", 
 "/home2/jcomparat/eBOSS-LC/Multidark-lightcones/MD_4GpcNW/snapshots/out_14.list", 
 "/home2/jcomparat/eBOSS-LC/Multidark-lightcones/MD_4GpcNW/snapshots/out_15.list"])

@@ -1,9 +1,6 @@
 import numpy as np
 from scipy.stats import sigmaclip
 import copy
-import time
-
-from IPython.core.debugger import Tracer
 
 def fitter(wavelength_in,data_in,error_in,models_in,SPM):
 
@@ -101,7 +98,7 @@ def fitter(wavelength_in,data_in,error_in,models_in,SPM):
 				self.clipped_arr 	= clipped_arr
 			else:
 				chi_clip_sq 		= np.square(chi_arr[clipped_arr])
-			#print time.time()-time_begin
+
 			chi_squared 		= np.sum(chi_clip_sq)
 			#print chi_squared
 			self.chi_squared 	= chi_squared 

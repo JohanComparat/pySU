@@ -79,8 +79,6 @@ def star_formation_rate(age_in,prob_in):
 				else:
 					prob_inter[a] = (prob_big[a-1]+prob_big[a]+prob_big[a+1]) / 3.0
 
-			# plt.plot(age_inter,prob_inter)
-			# plt.draw()
 			popt,pcov,loopnum_out = loop_curve_fit(func,age_inter,prob_inter,guess,loopnum+1)
 			return popt,pcov,loopnum_out
 

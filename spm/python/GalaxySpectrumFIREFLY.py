@@ -10,10 +10,7 @@ The class GalaxySpectrumFIREFLY is dedicated to handling spectra to be fed to FI
 	import numpy as np
 	import astropy.io.fits as pyfits
 	import glob
-	from firefly_instrument import *
-	from firefly_dust import *
-	from firefly_fitter import *
-	from firefly_library import *
+	from firefly_dust import get_dust_radec
 
 
 """
@@ -21,11 +18,7 @@ import numpy as np
 import astropy.io.fits as pyfits
 import glob
 
-from firefly_instrument import *
-from firefly_dust import *
-from firefly_fitter import *
-from firefly_library import *
-
+from firefly_dust import get_dust_radec
 
 class GalaxySpectrumFIREFLY:
 	"""

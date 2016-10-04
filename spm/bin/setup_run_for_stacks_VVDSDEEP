@@ -2,12 +2,9 @@
 
 from os.path import join
 import os
-import time
 import glob
-import numpy as np
-import astropy.cosmology as co
-cosmo = co.Planck15
 
+# list of all VVDS spectra
 stackList = glob.glob(join(os.environ['SPECTRASTACKS_DIR'],"data","??_????","*VVDS*R_8686*.fits"))
 
 for el in stackList:

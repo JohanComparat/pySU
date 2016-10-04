@@ -30,10 +30,12 @@ import os
 from os.path import join
 #from scipy.stats import sigmaclip
 
-from firefly_instrument import *
-from firefly_dust import *
-from firefly_fitter import *
-from firefly_library import *
+#from firefly_dust import *
+#import firefly_dust as f_dust
+from firefly_dust import hpf, unred, determine_attenuation
+from firefly_instrument import downgrade 
+from firefly_fitter import fitter
+from firefly_library import airtovac, convert_chis_to_probs, light_weights_to_mass, calculate_averages_pdf, normalise_spec, match_data_models
 
 
 class StellarPopulationModel:
@@ -133,13 +135,27 @@ class StellarPopulationModel:
 		If they aren't downgraded to the correct resolution / velocity dispersion,
 		takes the base models in their native form and converts to downgraded files.
 
-		:param model_used: list of models to be used, for example ['m11', 'bc03', 'm09'].
+		:param model_used: list of models to be used, for example ['m11', 'm09'].
 		:param imf_used: list of imf to be used, for example ['ss', 'cha'].
 		:param deltal: delta lambda in the models.
 		:param vdisp: velocity dispersion observed in the galaxy.
 		:param wave_instrument: wavelength array from the observations
 		:param r_instrument: resolution array from the observations
 		:param  ebv_mw: E(B-V) from the dust maps for the galaxy.
+		
+		Workflow
+		----------		
+			A. loads the models m11 or m09: maps parameters to the right files. Then it constructs the model array. Finally converts wavelengths to air or vacuum.
+			B. downgrades the model to match data resolution
+			C. applies attenuation
+			D. stores models in 
+				self.model_wavelength, 
+				self.model_flux, 
+				self.age_model, 
+				self.metal_model 
+			
+			and returns it as well
+			
 		"""
 		# first the m11 case
 		if self.models == 'm11':
@@ -230,10 +246,10 @@ class StellarPopulationModel:
 		elif self.models == 'm09':
 			first_file  = True 
 			model_files = []
-			if self.downgrade_models:
-				model_path 		= join(os.environ['STELLARPOPMODELS_DIR'],'data', 'UVmodels_Marastonetal08b')
+			if self.use_downgraded_models:
+				model_path = join(os.environ['STELLARPOPMODELS_DIR'],'data', 'UVmodels_Marastonetal08b_downgraded')
 			else:
-				model_path 		= join(os.environ['STELLARPOPMODELS_DIR'],'data', 'UVmodels_Marastonetal08b_downgraded')
+				model_path = join(os.environ['STELLARPOPMODELS_DIR'],'data', 'UVmodels_Marastonetal08b')
 			# Gathers the list of models with metallicities and ages of interest:
 			all_metal_files = glob.glob(model_path+'*')
 			metal_files 	= []
@@ -409,6 +425,7 @@ class StellarPopulationModel:
 			prihdu = pyfits.PrimaryHDU(header=prihdr)
 
 			thdulist = pyfits.HDUList([prihdu, tbhdu])
-			os.system('rm '+self.outputFile + self.suffix )
+			if os.path.isfile(self.outputFile + self.suffix ):
+				os.remove(self.outputFile + self.suffix )
 			#print self.outputFile + self.suffix , thdulist, thdulist[1].data, thdulist[0].header
 			thdulist.writeto(self.outputFile + self.suffix )
