@@ -91,9 +91,9 @@ class ModelSpectraStacks:
 		self.mode = mode
 		self.lineName = os.path.basename(self.stack_file)[:7]
 		if self.mode=="MILES":
-			self.stack_model_file = join( os.environ['SPECTRASTACKS_DIR'], "fits", self.lineName, self.stack_file + "-SPM-MILES.fits")
+			self.stack_model_file = os.path.join( os.environ['SPECTRASTACKS_DIR'], "fits", self.lineName, self.stack_file + "-SPM-MILES.fits")
 		if self.mode=="STELIB":
-			self.stack_model_file = join( os.environ['SPECTRASTACKS_DIR'], "fits", self.lineName, self.stack_file + "-SPM-STELIB.fits")
+			self.stack_model_file = os.path.join( os.environ['SPECTRASTACKS_DIR'], "fits", self.lineName, self.stack_file + "-SPM-STELIB.fits")
 
 		self.cosmo = cosmo
 		self.firefly_max_wavelength	= firefly_max_wavelength
