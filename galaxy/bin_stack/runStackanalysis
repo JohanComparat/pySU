@@ -24,19 +24,24 @@ cp $DEEP2_DIR/products/spectraStacks/O3_5007/*.fits  $SPECTRASTACKS_DIR/data/O3_
 #rm  $SPECTRASTACKS_DIR/data/O3_5007/O3_5007-VVDSDEEPI24-z0.741*
 
 cd $SPECTRASTACKS_DIR/scripts/
-#NEEDS TO BE FIXED
+-----------------------------
+NEEDS TO BE FIXED
+-----------------------------
 python presentationPlot.py
 #produces the first two figures of the paper presenting the data.
 
 # fit firefly stellar population continuum models
 cd $PYSU_DIR/spm/bin
-screen python setup_run_for_stacks_VVDSDEEP
-screen python setup_run_for_stacks_DEEP2
+python setup_run_for_stacks_VVDSDEEP
+python setup_run_for_stacks_DEEP2
 # writes to to $SPECTRASTACKS_DIR/fits/
 
+-----------------------
+RUNNING
+-----------------------
 cd $PYSU_GAL_DIR/bin_stack
-screen python model_stacked_spectra_DEEP2
-screen python model_stacked_spectra_VVDS
+python model_stacked_spectra_DEEP2
+python model_stacked_spectra_VVDS
 # writes to to $SPECTRASTACKS_DIR/model/
 # model files hdus :
 # hdu[0] : header : contains LF information (no data)
