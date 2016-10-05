@@ -29,9 +29,6 @@ python presentationPlot.py
 #produces the first two figures of the paper presenting the data.
 
 # fit firefly stellar population continuum models
--------------
-RUNNING
--------------
 cd $PYSU_DIR/spm/bin
 screen python setup_run_for_stacks_VVDSDEEP
 screen python setup_run_for_stacks_DEEP2

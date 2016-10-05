@@ -90,9 +90,9 @@ class ModelSpectraStacks:
 		self.stack_file = stack_file
 		self.mode = mode
 		if self.mode=="MILES":
-			self.stack_model_file = n.core.defchararray.replace(self.stack_file[:-5], "data", "fits").item() + "-SPM-MILES.fits"
+			self.stack_model_file = self.stack_file + "-SPM-MILES.fits"
 		if self.mode=="STELIB":
-			self.stack_model_file = n.core.defchararray.replace(self.stack_file[:-5], "data", "fits").item() + "-SPM-STELIB.fits"
+			self.stack_model_file = self.stack_file + "-SPM-STELIB.fits"
 
 		self.cosmo = cosmo
 		self.firefly_max_wavelength	= firefly_max_wavelength
