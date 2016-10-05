@@ -1,6 +1,27 @@
 run 1 pt functions on taurus
 
 #!/bin/bash/
+
+# copy all out files of interest in $MDXXXX_DIR/snapshots/
+
+# change naming convention :
+mv out_97p.list.bz2 out_97.list.bz2
+# parallel uncompress files :
+pbzip2 -dc out_105.list.bz2 > out_105.list
+# track redshift, snapshot number and expansion factor in the output.list file : three columns n z a
+
+#converts out files from rockstar + find parent into fits files containing only positions and a few quantities.
+python MD25box-write-positionFiles.py
+python MD25NWbox-write-positionFiles.py
+python MD40box-write-positionFiles.py
+python MD40NWbox-write-positionFiles.py
+
+# in progress
+python MD10box-write-positionFiles.py
+
+python MD04box-write-positionFiles.py
+
+
 python MD40box-compute-vmax-JK.py
 python MD40box-compute-m200c-JK.py
 python MD25box-compute-vmax-JK.py
