@@ -87,13 +87,14 @@ class ModelSpectraStacks:
 	:param N_spectra_limitFraction: If the stack was made with N spectra. N_spectra_limitFraction selects the points that have were computed using more thant N_spectra_limitFraction * N spectra. (default : 0.8)
 	"""
 	def __init__(self, stack_file, mode="MILES", cosmo=cosmo, firefly_min_wavelength= 1000., firefly_max_wavelength=7500., dV=-9999.99, N_spectra_limitFraction=0.8):
-		self.stack_file = os.path.basename(stack_file)
+		self.stack_file = stack_file
+		self.stack_file_base = os.path.basename(stack_file)
 		self.mode = mode
 		self.lineName = os.path.basename(self.stack_file)[:7]
 		if self.mode=="MILES":
-			self.stack_model_file = os.path.join( os.environ['SPECTRASTACKS_DIR'], "fits", self.lineName, self.stack_file + "-SPM-MILES.fits")
+			self.stack_model_file = os.path.join( os.environ['SPECTRASTACKS_DIR'], "fits", self.lineName, self.stack_file_base + "-SPM-MILES.fits")
 		if self.mode=="STELIB":
-			self.stack_model_file = os.path.join( os.environ['SPECTRASTACKS_DIR'], "fits", self.lineName, self.stack_file + "-SPM-STELIB.fits")
+			self.stack_model_file = os.path.join( os.environ['SPECTRASTACKS_DIR'], "fits", self.lineName, self.stack_file_base + "-SPM-STELIB.fits")
 
 		self.cosmo = cosmo
 		self.firefly_max_wavelength	= firefly_max_wavelength
