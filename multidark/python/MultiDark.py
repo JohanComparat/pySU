@@ -184,7 +184,7 @@ class MultiDarkSimulation :
 		os.system("rm "+self.snl[ii][:-5]+"_cornerLC_Nb_"+str(Nb)+".fits")
 		thdulist.writeto(self.snl[ii][:-5]+"_cornerLC_Nb_"+str(Nb)+".fits")
 
-	def writePositionCatalogPM(self, ii, vmin, mmin=10**8, NperBatch = 20000000):
+	def writePositionCatalogPM(self, ii, vmin=30., mmin=10**8, NperBatch = 20000000):
 		"""
 		Extracts the positions and velocity out of a snapshot of the Multidark simulation.        
 		:param ii: index of the snapshot in the list self.snl
@@ -196,7 +196,7 @@ class MultiDarkSimulation :
 		nameSnapshot = self.snl[ii].split('/')[-1][:-5]
 		Nb = 0
 		count = 0
-		output = n.zeros((NperBatch,8))
+		output = n.zeros((NperBatch,7))
 		for line in fl:
 			if line[0] == "#" :
 				continue
