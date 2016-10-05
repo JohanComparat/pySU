@@ -232,7 +232,7 @@ class MultiDarkSimulation :
 				Nb+=1
 				count=0
 				#resest the output matrix
-				output = n.zeros((NperBatch,8))
+				output = n.zeros((NperBatch,7))
 		
 		
 		# and for the last batch :		
