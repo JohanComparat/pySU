@@ -36,9 +36,6 @@ python setup_run_for_stacks_VVDSDEEP
 python setup_run_for_stacks_DEEP2
 # writes to to $SPECTRASTACKS_DIR/fits/
 
------------------------
-RUNNING
------------------------
 cd $PYSU_GAL_DIR/bin_stack
 python model_stacked_spectra_DEEP2
 python model_stacked_spectra_VVDS
@@ -52,6 +49,11 @@ python model_stacked_spectra_VVDS
 # hdu[5] : emissiion line fit to the stack
 # hdu 
 # generate data sanity check oriented plots 
+
+-----------------------
+START HERE AGAIN
+EVERYTHING IS ON THE LAPTOP
+-----------------------
 
 python plot_firefly_model
 
