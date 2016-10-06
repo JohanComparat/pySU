@@ -9,28 +9,42 @@ mv out_97p.list.bz2 out_97.list.bz2
 # parallel uncompress files :
 pbzip2 -dc out_105.list.bz2 > out_105.list
 # track redshift, snapshot number and expansion factor in the output.list file : three columns n z a
+# check headers are correct 
 
 #converts out files from rockstar + find parent into fits files containing only positions and a few quantities.
+python MD04box-write-positionFiles.py
+python MD10box-write-positionFiles.py
 python MD25box-write-positionFiles.py
 python MD25NWbox-write-positionFiles.py
 python MD40box-write-positionFiles.py
 python MD40NWbox-write-positionFiles.py
 
-# in progress
-python MD10box-write-positionFiles.py
-python MD04box-write-positionFiles.py
+# copy data to hydra
+rsync -avz /data2/DATA/eBOSS/Multidark-lightcones/MD_4Gpc/snapshots/out_4*  jcomparat@hydra.ift.uam-csic.es:/users/jcomparat/skies_universes_production/MultiDark/DATA/MD_4Gpc/snapshots/
 
 
-python MD40box-compute-vmax-JK.py
-python MD40box-compute-m200c-JK.py
-python MD25box-compute-vmax-JK.py
-python MD25box-compute-m200c-JK.py
-python MD10box-compute-vmax-JK.py
-python MD10box-compute-m200c-JK.py
-python MD04box-compute-vmax-JK.py
-python MD04box-compute-m200c-JK.py
+# estimate mvir and vmax functions with:
+"D:\documents\GitHub\pySU\multidark\bin_MD\mvir-MD04box-JK.py"
+"D:\documents\GitHub\pySU\multidark\bin_MD\mvir-MD10box-JK.py"
+"D:\documents\GitHub\pySU\multidark\bin_MD\mvir-MD25box-JK.py"
+"D:\documents\GitHub\pySU\multidark\bin_MD\mvir-MD25NWbox-JK.py"
+"D:\documents\GitHub\pySU\multidark\bin_MD\mvir-MD40box-JK.py"
+"D:\documents\GitHub\pySU\multidark\bin_MD\mvir-MD40NWbox-JK.py"
+"D:\documents\GitHub\pySU\multidark\bin_MD\mvir-MD40NWbox-JK-tests.py"
 
+"D:\documents\GitHub\pySU\multidark\bin_MD\vmax-MD04box-JK.py"
+"D:\documents\GitHub\pySU\multidark\bin_MD\vmax-MD10box-JK.py"
+"D:\documents\GitHub\pySU\multidark\bin_MD\vmax-MD25box-JK.py"
+"D:\documents\GitHub\pySU\multidark\bin_MD\vmax-MD25NWbox-JK.py"
+"D:\documents\GitHub\pySU\multidark\bin_MD\vmax-MD40box-JK.py"
+"D:\documents\GitHub\pySU\multidark\bin_MD\vmax-MD40NWbox-JK.py"
 
+# copy data to hydra
+rsync -avz /data2/DATA/eBOSS/Multidark-lightcones/mvir  jcomparat@hydra.ift.uam-csic.es:/users/jcomparat/skies_universes_production/MultiDark/DATA/mvir
+
+rsync -avz /data2/DATA/eBOSS/Multidark-lightcones/vmax  jcomparat@hydra.ift.uam-csic.es:/users/jcomparat/skies_universes_production/MultiDark/DATA/vmax
+
+# work on the results
 HERE
 
 Gather the results and plot them
