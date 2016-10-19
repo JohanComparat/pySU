@@ -453,66 +453,14 @@ class StellarPopulationModel:
 			
 			tbhdu.header['HIERARCH ssp_number'] =len(order)
 			# quantities per SSP
-			if len(order)==3:
-				tbhdu.header['HIERARCH stellar_mass_ssp_0'] = np.log10(mass_per_ssp[order])[0]
-				tbhdu.header['HIERARCH stellar_mass_ssp_1'] = np.log10(mass_per_ssp[order])[1]
-				tbhdu.header['HIERARCH stellar_mass_ssp_2'] = np.log10(mass_per_ssp[order])[2]
-				tbhdu.header['HIERARCH age_ssp_0'] = np.log10(age_per_ssp[order][0])
-				tbhdu.header['HIERARCH age_ssp_1'] = np.log10(age_per_ssp[order][1])
-				tbhdu.header['HIERARCH age_ssp_2'] = np.log10(age_per_ssp[order][2])
-				tbhdu.header['HIERARCH metal_ssp_0'] = metal_per_ssp[order][0]
-				tbhdu.header['HIERARCH metal_ssp_1'] = metal_per_ssp[order][1]
-				tbhdu.header['HIERARCH metal_ssp_2'] = metal_per_ssp[order][2]
-				tbhdu.header['HIERARCH SFR_ssp_0'] = mass_per_ssp[order][0]/age_per_ssp[order][0]
-				tbhdu.header['HIERARCH SFR_ssp_1'] = mass_per_ssp[order][1]/age_per_ssp[order][1]
-				tbhdu.header['HIERARCH SFR_ssp_2'] = mass_per_ssp[order][2]/age_per_ssp[order][2]
-				tbhdu.header['HIERARCH weightMass_ssp_0'] = weight_mass_per_ssp[order][0]
-				tbhdu.header['HIERARCH weightMass_ssp_1'] = weight_mass_per_ssp[order][1]
-				tbhdu.header['HIERARCH weightMass_ssp_2'] = weight_mass_per_ssp[order][2]
-				tbhdu.header['HIERARCH weightLight_ssp_0'] = weight_light_per_ssp[order][0]
-				tbhdu.header['HIERARCH weightLight_ssp_1'] = weight_light_per_ssp[order][1]
-				tbhdu.header['HIERARCH weightLight_ssp_2'] = weight_light_per_ssp[order][2]
-
-			if len(order)==2:
-				tbhdu.header['HIERARCH stellar_mass_ssp_0'] = np.log10(mass_per_ssp[order])[0]
-				tbhdu.header['HIERARCH stellar_mass_ssp_1'] = np.log10(mass_per_ssp[order])[1]
-				tbhdu.header['HIERARCH stellar_mass_ssp_2'] = 0.
-				tbhdu.header['HIERARCH age_ssp_0'] = np.log10(age_per_ssp[order][0])
-				tbhdu.header['HIERARCH age_ssp_1'] = np.log10(age_per_ssp[order][1])
-				tbhdu.header['HIERARCH age_ssp_2'] = 0.
-				tbhdu.header['HIERARCH metal_ssp_0'] = metal_per_ssp[order][0]
-				tbhdu.header['HIERARCH metal_ssp_1'] = metal_per_ssp[order][1]
-				tbhdu.header['HIERARCH metal_ssp_2'] = 0.
-				tbhdu.header['HIERARCH SFR_ssp_0'] = mass_per_ssp[order][0]/age_per_ssp[order][0]
-				tbhdu.header['HIERARCH SFR_ssp_1'] = mass_per_ssp[order][1]/age_per_ssp[order][1]
-				tbhdu.header['HIERARCH SFR_ssp_2'] = 0.
-				tbhdu.header['HIERARCH weightMass_ssp_0'] = weight_mass_per_ssp[order][0]
-				tbhdu.header['HIERARCH weightMass_ssp_1'] = weight_mass_per_ssp[order][1]
-				tbhdu.header['HIERARCH weightMass_ssp_2'] = 0.
-				tbhdu.header['HIERARCH weightLight_ssp_0'] = weight_light_per_ssp[order][0]
-				tbhdu.header['HIERARCH weightLight_ssp_1'] = weight_light_per_ssp[order][1]
-				tbhdu.header['HIERARCH weightLight_ssp_2'] = 0.
+			for iii in range(len(order)):
+				tbhdu.header['HIERARCH stellar_mass_ssp_'+str(iii)] = np.log10(mass_per_ssp[order])[iii]
+				tbhdu.header['HIERARCH age_ssp_'+str(iii)] = np.log10(age_per_ssp[order][iii])
+				tbhdu.header['HIERARCH metal_ssp_'+str(iii)] = metal_per_ssp[order][iii]
+				tbhdu.header['HIERARCH SFR_ssp_'+str(iii)] = mass_per_ssp[order][iii]/age_per_ssp[order][iii]
+				tbhdu.header['HIERARCH weightMass_ssp_'+str(iii)] = weight_mass_per_ssp[order][iii]
+				tbhdu.header['HIERARCH weightLight_ssp_'+str(iii)] = weight_light_per_ssp[order][iii]
 				
-			if len(order)==1:
-				tbhdu.header['HIERARCH stellar_mass_ssp_0'] = np.log10(mass_per_ssp[order])[0]
-				tbhdu.header['HIERARCH stellar_mass_ssp_1'] = 0.
-				tbhdu.header['HIERARCH stellar_mass_ssp_2'] = 0.
-				tbhdu.header['HIERARCH age_ssp_0'] = np.log10(age_per_ssp[order][0])
-				tbhdu.header['HIERARCH age_ssp_1'] = 0.
-				tbhdu.header['HIERARCH age_ssp_2'] = 0.
-				tbhdu.header['HIERARCH metal_ssp_0'] = metal_per_ssp[order][0]
-				tbhdu.header['HIERARCH metal_ssp_1'] = 0.
-				tbhdu.header['HIERARCH metal_ssp_2'] = 0.
-				tbhdu.header['HIERARCH SFR_ssp_0'] = mass_per_ssp[order][0]/age_per_ssp[order][0]
-				tbhdu.header['HIERARCH SFR_ssp_1'] = 0.
-				tbhdu.header['HIERARCH SFR_ssp_2'] = 0.
-				tbhdu.header['HIERARCH weightMass_ssp_0'] = weight_mass_per_ssp[order][0]
-				tbhdu.header['HIERARCH weightMass_ssp_1'] = 0.
-				tbhdu.header['HIERARCH weightMass_ssp_2'] = 0.
-				tbhdu.header['HIERARCH weightLight_ssp_0'] = weight_light_per_ssp[order][0]
-				tbhdu.header['HIERARCH weightLight_ssp_1'] = 0.
-				tbhdu.header['HIERARCH weightLight_ssp_2'] = 0.
-
 			prihdr = pyfits.Header()
 			prihdr['file'] = self.specObs.path_to_spectrum
 			prihdr['model'] = self.models

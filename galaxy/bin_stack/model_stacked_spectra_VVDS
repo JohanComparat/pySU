@@ -16,7 +16,7 @@ for file in stack_files:
 	#	print( file, "out" )
 	#	continue
 
-	mm=ModelSpectraStacks(file)
+	mm=ModelSpectraStacks(file,mode="MILES")
 	#mm.plot_fit()
 	mm.fit_lines_to_fullSpectrum()
 	mm.fit_lines_to_lineSpectrum()
