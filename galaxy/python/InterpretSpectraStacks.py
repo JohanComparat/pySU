@@ -106,17 +106,18 @@ class InterpretSpectraStacks:
 		self.cosmo = cosmo
 		self.dV = dV
 		# define global quantities 
+		self.baseN = os.path.basename(self.stack_file)
 		self.redshift = float(self.stack_file.split('-')[2].split('_')[0][1:])
-		self.lineWave = int(self.stack_file.split('/')[-1].split('_')[1][:4])
-		self.N_in_stack = int(self.stack_file.split('/')[-1].split('_')[4])
-		self.R_stack = int(self.stack_file.split('/')[-1].split('_')[6])
-		if  self.stack_file.split('/')[-1].split('_')[1].split('-')[1] == "DEEP2R24.2":
+		self.lineWave = int(self.baseN.split('_')[1][:4])
+		self.N_in_stack = int(self.baseN.split('_')[4])
+		self.R_stack = int(self.baseN.split('_')[6])
+		if  self.baseN.split('_')[1].split('-')[1] == "DEEP2R24.2":
 			self.survey = int(1)
-		if  self.stack_file.split('/')[-1].split('_')[1].split('-')[1] == "VVDSDEEPI24":
+		if  self.baseN.split('_')[1].split('-')[1] == "VVDSDEEPI24":
 			self.survey = int(2)
 		
 		# opens the stack
-		print " loads the stack :"
+		print " loads the stack :", self.stack_file
 		hduList = fits.open(self.stack_file)
 		self.head = hduList[0]
 		self.hduStack = hduList[1]
@@ -429,7 +430,7 @@ class InterpretSpectraStacks:
 		p.grid()
 
 		fig.add_subplot(4,1,4,frame_on=False)
-		p.text(0,1,self.stack_file.split('/')[-1]+ ", redshift="+str(n.round(self.redshift,3)) )
+		p.text(0,1,self.baseN+ ", redshift="+str(n.round(self.redshift,3)) )
 		p.text(0,0.8,r' ' + age)
 		p.text(0,0.6,metallicity)
 		p.text(0,0.4,mass)
@@ -469,7 +470,7 @@ class InterpretSpectraStacks:
 		p.grid()
 
 		fig.add_subplot(3,1,3,frame_on=False)
-		p.text(0,0,self.stack_file.split('/')[-1])
+		p.text(0,0,self.baseN)
 		tx="BD_4862_4341 = "+str(n.round(self.hdR["BD_4862_4341"],4))+r'$\pm$'+ str(n.round(self.hdR["BD_4862_4341_err"],4))
 		p.text(0,0.2,tx)
 		tx="EBV_4862_4341 = "+ str(n.round(self.hdR["EBV_4862_4341"],4))+" pm"+ str(n.round(self.hdR["EBV_4862_4341_err"],4))

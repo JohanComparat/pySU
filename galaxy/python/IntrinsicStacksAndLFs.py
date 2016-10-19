@@ -43,14 +43,15 @@ class IntrinsicStacksAndLFs:
 	:param zmin: minimum redshift included
 	:param zmax: maximum redshift included
 	"""
-	def __init__(self, LF_file, fireflyModel = "MarastonUVext"):
+	def __init__(self, LF_file, fireflyModel = "SPM-MILES"):
 		self.LF_file = LF_file
-		self.database_dir = os.environ['DATA_DIR']
-		self.stackList = n.array(glob.glob( join(self.database_dir,"LFstacks" , self.LF_file.split('/')[-1][:-5] + "_stack_*"+fireflyModel +"-modeled.fits") ))
+		self.baseN = os.path.basename(LF_file)
+		self.survey=self.baseN.split('-')[1]
+		self.line=self.baseN.split('-')[0]
+		
+		self.stackList = n.array(glob.glob( join(os.environ['SPECTRASTACKS_DIR'], 'model', self.line , self.baseN[:-5] + "_stack_*"+fireflyModel +".model") ))
 		self.LF_measurement = self.LF_file[:-5] + ".txt"
 
-		self.survey=LF_file.split('/')[-1].split('-')[1]
-		self.line=LF_file.split('/')[-1].split('-')[0]
 		self.lineDict = {'O2_3728' : r'$[O^{3728}_{II}]$', 'O3_5007' : r'$[O^{5007}_{III}]$', 'H1_4862' : r'$H^{4861}_{\beta}$', 'H1_6564': r'$H^{6564}_{\alpha}$'}
 		self.lineLabel = self.lineDict[self.line]
 		self.lineDictCorr4341 = {'O2_3728' : 'EBV_4862_4341_CORRO2', 'O3_5007' : 'EBV_4862_4341_CORRO3', 'H1_4862' : 'EBV_4862_4341_CORRHb'}
@@ -74,13 +75,16 @@ class IntrinsicStacksAndLFs:
 		"""
 		correction=[]
 		for el in self.stackList:
-			names = el.split('_')
-			luminosity = float(names[-2])
+			names = el.split('_')[-1]
+			#print names,names[:-22]
+			luminosity = float(names[:-22])
+			print luminosity, self.completeness
 			if luminosity > self.completeness:
 				stackModel=fits.open(el)
-				#print el, stackModel[0].header
+				#print el, stackModel[4].header
 				try:
-					correction.append([luminosity, stackModel[0].header["flux_" + self.line + "_intrinsic"]/ stackModel[0].header[self.line + "_flux_nc"], stackModel[0].header["flux_" + self.line + "_intrinsic_err"]/ stackModel[0].header["flux_" + self.line + "_intrinsic"] ])		
+					print stackModel[4].header
+					correction.append([luminosity, stackModel[4].header["flux_" + self.line + "_intrinsic"]/ stackModel[4].header[self.line + "_flux_nc"], stackModel[4].header["flux_" + self.line + "_intrinsic_err"]/ stackModel[4].header["flux_" + self.line + "_intrinsic"] ])		
 				except KeyError :
 					pass
 
@@ -102,7 +106,7 @@ class IntrinsicStacksAndLFs:
 			Lmin_c = Lmin[1:-1] / corr(Lmin[1:-1]) 
 			Lmax_c = Lmax[1:-1] / corr(Lmax[1:-1]) 
 			Lmean_c = Lmean[1:-1] / corr(Lmean[1:-1]) 
-
+			print self.LF_measurement[:-4] + "_intrinsic.txt"
 			f=open(self.LF_measurement[:-4] + "_intrinsic.txt",'w')
 			n.savetxt(f, n.transpose([Lmin_c, Lmax_c, Lmean_c, phi[1:-1], phiErr[1:-1], phiErr_poisson[1:-1], ngals[1:-1]]), header = " Lmin Lmax Lmean phi phiErr phiErr_poisson Ngalaxy")
 			f.close()

@@ -328,25 +328,25 @@ class StellarPopulationModel:
 				# A. gets the models
 				print "getting the models"
 				deltal = self.deltal_libs[mi]
-				model_wave_int, model_flux_int, age,metal = self.get_model( mm, ii, deltal, self.specObs.vdisp, self.specObs.restframe_wavelength, self.specObs.r_instrument, self.specObs.ebv_mw)
+				model_wave_int, model_flux_int, age, metal = self.get_model( mm, ii, deltal, self.specObs.vdisp, self.specObs.restframe_wavelength, self.specObs.r_instrument, self.specObs.ebv_mw)
 				# B. matches the model and data to the same resolution
 				print "Matching models to data"
-				wave,data_flux,error_flux,model_flux_raw = match_data_models( self.specObs.restframe_wavelength, self.specObs.flux, self.specObs.bad_flags, self.specObs.error, model_wave_int, model_flux_int, self.wave_limits[0], self.wave_limits[1], saveDowngradedModel = False)
+				wave, data_flux, error_flux, model_flux_raw = match_data_models( self.specObs.restframe_wavelength, self.specObs.flux, self.specObs.bad_flags, self.specObs.error, model_wave_int, model_flux_int, self.wave_limits[0], self.wave_limits[1], saveDowngradedModel = False)
 				# C. normalises the models to the median value of the data
 				print "Normalising the models"
-				model_flux,mass_factors = normalise_spec(data_flux,model_flux_raw)
+				model_flux, mass_factors = normalise_spec(data_flux, model_flux_raw)
 
 			# 3. Corrects from dust attenuation
 			if self.hpf_mode=='on':
 				# 3.1. Determining attenuation curve through HPF fitting, apply attenuation curve to models and renormalise spectra
-				best_ebv, attenuation_curve = determine_attenuation(wave,data_flux, error_flux, model_flux, self, age, metal)
+				best_ebv, attenuation_curve = determine_attenuation(wave, data_flux, error_flux, model_flux, self, age, metal)
 				model_flux_atten = np.zeros(np.shape(model_flux_raw))
 				for m in range(len(model_flux_raw)):
 					model_flux_atten[m] = attenuation_curve * model_flux_raw[m]
 
-				model_flux,mass_factors = normalise_spec(data_flux,model_flux_atten)
+				model_flux, mass_factors = normalise_spec(data_flux, model_flux_atten)
 				# 4. Fits the models to the data
-				light_weights,chis,branch = fitter(wave,data_flux,error_flux,model_flux ,self)
+				light_weights, chis, branch = fitter(wave, data_flux, error_flux, model_flux, self)
 			
 			elif self.hpf_mode == 'hpf_only':
 
@@ -368,17 +368,19 @@ class StellarPopulationModel:
 				best_ebv = -99
 				hpf_models,mass_factors = normalise_spec(hpf_data,hpf_models)
 				# 4. Fits the models to the data
-				light_weights,chis,branch = fitter(wave, hpf_data,hpf_error, hpf_models, self)
+				light_weights, chis, branch = fitter(wave, hpf_data,hpf_error, hpf_models, self)
 			
 			# 5. Get mass-weighted SSP contributions using saved M/L ratio.
-			unnorm_mass,mass_weights = light_weights_to_mass(light_weights,mass_factors)
+			unnorm_mass, mass_weights = light_weights_to_mass(light_weights, mass_factors)
+			print "Fitting complete"
 
-			print "Fitting complete! Calculating average properties and outputting."
+
+			print "Calculating average properties and outputting"
 			# 6. Convert chis into probabilities and calculates all average properties and errors
-			dof = len(wave)
-			probs = convert_chis_to_probs(chis,dof)
+			self.dof = len(wave)
+			probs = convert_chis_to_probs(chis, self.dof)
 			dist_lum	= self.cosmo.luminosity_distance( self.specObs.redshift).to( u.cm ).value
-			averages = calculate_averages_pdf(probs,light_weights,mass_weights, unnorm_mass, age,metal, self.pdf_sampling, dist_lum)
+			averages = calculate_averages_pdf(probs, light_weights, mass_weights, unnorm_mass, age, metal, self.pdf_sampling, dist_lum)
 			unique_ages 				= np.unique(age)
 			marginalised_age_weights 	= np.zeros(np.shape(unique_ages))
 			marginalised_age_weights_int = np.sum(mass_weights.T,1)
@@ -388,32 +390,128 @@ class StellarPopulationModel:
 			best_fit_index = [np.argmin(chis)]
 			best_fit = np.dot(light_weights[best_fit_index],model_flux)[0]
 
+			# stores outputs in the object
+			self.best_fit_index = best_fit_index 
+			self.best_fit = best_fit
+			self.model_flux = model_flux
+			self.dist_lum = dist_lum
+			self.age = np.array(age)
+			self.metal = np.array(metal)
+			self.mass_weights = mass_weights
+			self.light_weights = light_weights
+			self.chis = chis
+			self.branch = branch
+			self.unnorm_mass = unnorm_mass
+			self.probs = probs
 			self.wave = wave
 			self.best_fit = best_fit
 			self.averages = averages
 
+			bf_mass = (self.mass_weights[self.best_fit_index]>0)[0]
+			bf_light = (self.light_weights[self.best_fit_index]>0)[0]
+			mass_per_ssp = self.unnorm_mass[self.best_fit_index[0]][bf_mass]*10.0**(-17) * 4 * np.pi * self.dist_lum**2.0
+			age_per_ssp = self.age[bf_mass]*10**9
+			metal_per_ssp = self.metal[bf_mass]
+			weight_mass_per_ssp = self.mass_weights[self.best_fit_index[0]][bf_mass]
+			weight_light_per_ssp = self.light_weights[self.best_fit_index[0]][bf_light]
+			order = np.argsort(weight_light_per_ssp)
+
+			print "M Msun", self.averages['stellar_mass'], np.log10(mass_per_ssp[order])
+			print "age Gyr", 10**self.averages['light_age'], 10**self.averages['mass_age'], age_per_ssp[order]/1e9
+			print "Z", self.averages['light_metal'], self.averages['mass_metal'], metal_per_ssp[order]
+			print "SFR Msun/yr", mass_per_ssp[order]/age_per_ssp[order]
+			print "wm", weight_mass_per_ssp[order]
+			print "wl", weight_light_per_ssp[order]
+			print "z, age Gyr", self.specObs.redshift, self.cosmo.age(self.specObs.redshift).value
+			
 			# 8. It writes the output file
 			waveCol = pyfits.Column(name="wavelength",format="D", unit="Angstrom", array= wave)
 			best_fitCol = pyfits.Column(name="firefly_model",format="D", unit="1e-17erg/s/cm2/Angstrom", array= best_fit)
 			cols = pyfits.ColDefs([ waveCol, best_fitCol]) 
 			tbhdu = pyfits.BinTableHDU.from_columns(cols)
+			
+			tbhdu.header['HIERARCH age_universe'] = np.log10(self.cosmo.age(self.specObs.redshift).value*10**9)
+			tbhdu.header['HIERARCH redshift'] = self.specObs.redshift
 
-			tbhdu.header['HIERARCH light_age'] = averages['light_age'] # log(Gyrs)
-			tbhdu.header['HIERARCH light_age_up'] = averages['light_age_1_sig_plus'] # log(Gyrs)
-			tbhdu.header['HIERARCH light_age_low'] = averages['light_age_1_sig_minus'] # log(Gyrs)
-			tbhdu.header['HIERARCH light_metallicity'] = averages['light_metal']
-			tbhdu.header['HIERARCH light_metallicity_up'] = averages['light_metal_1_sig_plus']
-			tbhdu.header['HIERARCH light_metallicity_low'] = averages['light_metal_1_sig_minus']
-			tbhdu.header['HIERARCH mass_age'] = averages['mass_age'] # log(Gyrs)
-			tbhdu.header['HIERARCH mass_age_up'] = averages['mass_age_1_sig_plus'] # log(Gyrs)
-			tbhdu.header['HIERARCH mass_age_low'] = averages['mass_age_1_sig_minus'] # log(Gyrs)
-			tbhdu.header['HIERARCH mass_metallicity'] = averages['mass_metal']
-			tbhdu.header['HIERARCH mass_metallicity_up'] = averages['mass_metal_1_sig_plus']
-			tbhdu.header['HIERARCH mass_metallicity_low'] = averages['mass_metal_1_sig_minus']
+			# mean quantities
+			tbhdu.header['HIERARCH age_lightW_mean'] = np.log10(10**9 * 10**averages['light_age']) # log(Gyrs)
+			tbhdu.header['HIERARCH age_lightW_mean_up'] = np.log10(10**9 * 10**averages['light_age_1_sig_plus']) # log(Gyrs)
+			tbhdu.header['HIERARCH age_lightW_mean_low'] = np.log10(10**9 * 10**averages['light_age_1_sig_minus']) # log(Gyrs)
+			tbhdu.header['HIERARCH metallicity_lightW_mean'] = averages['light_metal']
+			tbhdu.header['HIERARCH metallicity_lightW_mean_up'] = averages['light_metal_1_sig_plus']
+			tbhdu.header['HIERARCH metallicity_lightW_mean_low'] = averages['light_metal_1_sig_minus']
+			tbhdu.header['HIERARCH age_massW_mean'] = np.log10(10**9 * 10**averages['mass_age']) # log(Gyrs)
+			tbhdu.header['HIERARCH age_massW_mean_up'] = np.log10(10**9 * 10**averages['mass_age_1_sig_plus']) # log(Gyrs)
+			tbhdu.header['HIERARCH age_massW_mean_low'] = np.log10(10**9 * 10**averages['mass_age_1_sig_minus']) # log(Gyrs)
+			tbhdu.header['HIERARCH metallicity_massW_mean'] = averages['mass_metal']
+			tbhdu.header['HIERARCH metallicity_massW_mean_up'] = averages['mass_metal_1_sig_plus']
+			tbhdu.header['HIERARCH metallicity_massW_mean_low'] = averages['mass_metal_1_sig_minus']
 			tbhdu.header['HIERARCH EBV'] = best_ebv
-			tbhdu.header['HIERARCH stellar_mass'] = averages['stellar_mass']
-			tbhdu.header['HIERARCH stellar_mass_up'] = averages['stellar_mass_1_sig_plus']
-			tbhdu.header['HIERARCH stellar_mass_low'] = averages['stellar_mass_1_sig_minus']
+			tbhdu.header['HIERARCH stellar_mass_mean'] = averages['stellar_mass']
+			tbhdu.header['HIERARCH stellar_mass_mean_up'] = averages['stellar_mass_1_sig_plus']
+			tbhdu.header['HIERARCH stellar_mass_mean_low'] = averages['stellar_mass_1_sig_minus']
+			
+			tbhdu.header['HIERARCH ssp_number'] =len(order)
+			# quantities per SSP
+			if len(order)==3:
+				tbhdu.header['HIERARCH stellar_mass_ssp_0'] = np.log10(mass_per_ssp[order])[0]
+				tbhdu.header['HIERARCH stellar_mass_ssp_1'] = np.log10(mass_per_ssp[order])[1]
+				tbhdu.header['HIERARCH stellar_mass_ssp_2'] = np.log10(mass_per_ssp[order])[2]
+				tbhdu.header['HIERARCH age_ssp_0'] = np.log10(age_per_ssp[order][0])
+				tbhdu.header['HIERARCH age_ssp_1'] = np.log10(age_per_ssp[order][1])
+				tbhdu.header['HIERARCH age_ssp_2'] = np.log10(age_per_ssp[order][2])
+				tbhdu.header['HIERARCH metal_ssp_0'] = metal_per_ssp[order][0]
+				tbhdu.header['HIERARCH metal_ssp_1'] = metal_per_ssp[order][1]
+				tbhdu.header['HIERARCH metal_ssp_2'] = metal_per_ssp[order][2]
+				tbhdu.header['HIERARCH SFR_ssp_0'] = mass_per_ssp[order][0]/age_per_ssp[order][0]
+				tbhdu.header['HIERARCH SFR_ssp_1'] = mass_per_ssp[order][1]/age_per_ssp[order][1]
+				tbhdu.header['HIERARCH SFR_ssp_2'] = mass_per_ssp[order][2]/age_per_ssp[order][2]
+				tbhdu.header['HIERARCH weightMass_ssp_0'] = weight_mass_per_ssp[order][0]
+				tbhdu.header['HIERARCH weightMass_ssp_1'] = weight_mass_per_ssp[order][1]
+				tbhdu.header['HIERARCH weightMass_ssp_2'] = weight_mass_per_ssp[order][2]
+				tbhdu.header['HIERARCH weightLight_ssp_0'] = weight_light_per_ssp[order][0]
+				tbhdu.header['HIERARCH weightLight_ssp_1'] = weight_light_per_ssp[order][1]
+				tbhdu.header['HIERARCH weightLight_ssp_2'] = weight_light_per_ssp[order][2]
+
+			if len(order)==2:
+				tbhdu.header['HIERARCH stellar_mass_ssp_0'] = np.log10(mass_per_ssp[order])[0]
+				tbhdu.header['HIERARCH stellar_mass_ssp_1'] = np.log10(mass_per_ssp[order])[1]
+				tbhdu.header['HIERARCH stellar_mass_ssp_2'] = 0.
+				tbhdu.header['HIERARCH age_ssp_0'] = np.log10(age_per_ssp[order][0])
+				tbhdu.header['HIERARCH age_ssp_1'] = np.log10(age_per_ssp[order][1])
+				tbhdu.header['HIERARCH age_ssp_2'] = 0.
+				tbhdu.header['HIERARCH metal_ssp_0'] = metal_per_ssp[order][0]
+				tbhdu.header['HIERARCH metal_ssp_1'] = metal_per_ssp[order][1]
+				tbhdu.header['HIERARCH metal_ssp_2'] = 0.
+				tbhdu.header['HIERARCH SFR_ssp_0'] = mass_per_ssp[order][0]/age_per_ssp[order][0]
+				tbhdu.header['HIERARCH SFR_ssp_1'] = mass_per_ssp[order][1]/age_per_ssp[order][1]
+				tbhdu.header['HIERARCH SFR_ssp_2'] = 0.
+				tbhdu.header['HIERARCH weightMass_ssp_0'] = weight_mass_per_ssp[order][0]
+				tbhdu.header['HIERARCH weightMass_ssp_1'] = weight_mass_per_ssp[order][1]
+				tbhdu.header['HIERARCH weightMass_ssp_2'] = 0.
+				tbhdu.header['HIERARCH weightLight_ssp_0'] = weight_light_per_ssp[order][0]
+				tbhdu.header['HIERARCH weightLight_ssp_1'] = weight_light_per_ssp[order][1]
+				tbhdu.header['HIERARCH weightLight_ssp_2'] = 0.
+				
+			if len(order)==1:
+				tbhdu.header['HIERARCH stellar_mass_ssp_0'] = np.log10(mass_per_ssp[order])[0]
+				tbhdu.header['HIERARCH stellar_mass_ssp_1'] = 0.
+				tbhdu.header['HIERARCH stellar_mass_ssp_2'] = 0.
+				tbhdu.header['HIERARCH age_ssp_0'] = np.log10(age_per_ssp[order][0])
+				tbhdu.header['HIERARCH age_ssp_1'] = 0.
+				tbhdu.header['HIERARCH age_ssp_2'] = 0.
+				tbhdu.header['HIERARCH metal_ssp_0'] = metal_per_ssp[order][0]
+				tbhdu.header['HIERARCH metal_ssp_1'] = 0.
+				tbhdu.header['HIERARCH metal_ssp_2'] = 0.
+				tbhdu.header['HIERARCH SFR_ssp_0'] = mass_per_ssp[order][0]/age_per_ssp[order][0]
+				tbhdu.header['HIERARCH SFR_ssp_1'] = 0.
+				tbhdu.header['HIERARCH SFR_ssp_2'] = 0.
+				tbhdu.header['HIERARCH weightMass_ssp_0'] = weight_mass_per_ssp[order][0]
+				tbhdu.header['HIERARCH weightMass_ssp_1'] = 0.
+				tbhdu.header['HIERARCH weightMass_ssp_2'] = 0.
+				tbhdu.header['HIERARCH weightLight_ssp_0'] = weight_light_per_ssp[order][0]
+				tbhdu.header['HIERARCH weightLight_ssp_1'] = 0.
+				tbhdu.header['HIERARCH weightLight_ssp_2'] = 0.
 
 			prihdr = pyfits.Header()
 			prihdr['file'] = self.specObs.path_to_spectrum

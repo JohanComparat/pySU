@@ -3,8 +3,9 @@
 """
 This script produces the stacks for emission line luminosity limited samples.
 """
+import sys
 import matplotlib
-matplotlib.use('pdf')
+#matplotlib.use('pdf')
 import matplotlib.pyplot as p
 import numpy as n
 import os
@@ -52,7 +53,7 @@ p.errorbar(data['spm_EBV'][ok], data['EBV_4862_4341'][ok], yerr=data['EBV_4862_4
 ok = (datL['H1_4862_flux']>3*datL['H1_4862_fluxErr'])  & (datL['H1_4862_flux']>0) & (datL['H1_4862_fluxErr']>0)  & (datL['H1_4341_flux']>3*datL['H1_4341_fluxErr'])& (datL['H1_4341_flux']>0)&(datL['H1_4341_fluxErr']>0)& (datL['EBV_4862_4341']!=-9999.99) &  (datL['EBV_4862_4341_err']!=-9999.99)
 p.errorbar(datL['spm_EBV'][ok], datL['EBV_4862_4341'][ok], yerr=datL['EBV_4862_4341_err'][ok],fmt='o',elinewidth=1, mfc='none',label='GP')
 p.plot([-0.1,1.5],[-0.1,1.5],'k--')
-p.legend(loc=4)
+p.legend(loc=0)
 p.xlabel('E(B-V) SPM')
 p.ylabel(r'E(B-V) GP $H\beta -H\delta$')
 p.xlim((-0.1,1.5))
@@ -65,16 +66,19 @@ p.clf()
 
 p.figure(0,(6,6))
 p.axes([0.17,0.17,0.8,0.8])
+
 ok1 = (data['H1_4862_flux']>3*data['H1_4862_fluxErr'])  & (data['H1_4862_flux']>0) & (data['H1_4862_fluxErr']>0)  & (data['H1_4341_flux']>3*data['H1_4341_fluxErr'])& (data['H1_4341_flux']>0)&(data['H1_4341_fluxErr']>0)& (data['EBV_4862_4341']!=-9999.99) &  (data['EBV_4862_4341_err']!=-9999.99)
 ok2 = (data['H1_4862_flux']>3*data['H1_4862_fluxErr'])  & (data['H1_4862_flux']>0) & (data['H1_4862_fluxErr']>0)  & (data['H1_4102_flux']>3*data['H1_4102_fluxErr'])& (data['H1_4102_flux']>0)&(data['H1_4102_fluxErr']>0)& (data['EBV_4862_4102']!=-9999.99) &  (data['EBV_4862_4102_err']!=-9999.99)
 ok=(ok1)&(ok2)
 p.errorbar(data['EBV_4862_4102'][ok], data['EBV_4862_4341'][ok], xerr=data['EBV_4862_4102_err'][ok], yerr=data['EBV_4862_4341_err'][ok],fmt='o',elinewidth=1, mfc='none',label='full')
+
 ok1 = (datL['H1_4862_flux']>3*datL['H1_4862_fluxErr'])  & (datL['H1_4862_flux']>0) & (datL['H1_4862_fluxErr']>0)  & (datL['H1_4341_flux']>3*datL['H1_4341_fluxErr'])& (datL['H1_4341_flux']>0)&(datL['H1_4341_fluxErr']>0)& (datL['EBV_4862_4341']!=-9999.99) &  (datL['EBV_4862_4341_err']!=-9999.99)
 ok2 = (datL['H1_4862_flux']>3*datL['H1_4862_fluxErr'])  & (datL['H1_4862_flux']>0) & (datL['H1_4862_fluxErr']>0)  & (datL['H1_4102_flux']>3*datL['H1_4102_fluxErr'])& (datL['H1_4102_flux']>0)&(datL['H1_4102_fluxErr']>0)& (datL['EBV_4862_4102']!=-9999.99) &  (datL['EBV_4862_4102_err']!=-9999.99)
 ok=(ok1)&(ok2)
 p.errorbar(datL['EBV_4862_4102'][ok], datL['EBV_4862_4341'][ok], xerr=datL['EBV_4862_4102_err'][ok], yerr=datL['EBV_4862_4341_err'][ok],fmt='o',elinewidth=1, mfc='none',label='GP')
+
 p.plot([-0.1,1.5],[-0.1,1.5],'k--')
-p.legend(loc=4)
+p.legend(loc=0)
 p.xlabel(r'E(B-V) GP $H\beta -H\gamma$')
 p.ylabel(r'E(B-V) GP $H\beta -H\delta$')
 p.xlim((-0.1,1.5))
@@ -84,7 +88,7 @@ p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "ebv-comparison-2.png"
 p.clf()
 
 
-Nst = (data['N_in_stack']==200)&(data['Survey']==2)
+Nst = (data['N_in_stack']==200)#&(data['Survey']==2)
 EBvok = (Nst)&(data['H1_4862_flux']>data['H1_4862_fluxErr'])  & (data['H1_4862_flux']>0) & (data['H1_4862_fluxErr']>0)  & (data['H1_4341_flux']>data['H1_4341_fluxErr'])& (data['H1_4341_flux']>0)&(data['H1_4341_fluxErr']>0)& (data['EBV_4862_4341']!=-9999.99) &  (data['EBV_4862_4341_err']!=-9999.99)
 O2 = (data['lineWavelength']== 3728.) & (EBvok)
 O3  = (data['lineWavelength']== 5007.)& (EBvok)
@@ -107,7 +111,7 @@ p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "ebv-line-o2.png"))
 p.clf()
 
 
-Nst = (datL['N_in_stack']==200)&(datL['Survey']==2)
+Nst = (datL['N_in_stack']==200)#&(datL['Survey']==2)
 EBvok = (Nst)&(datL['H1_4862_flux']>datL['H1_4862_fluxErr'])  & (datL['H1_4862_flux']>0) & (datL['H1_4862_fluxErr']>0)  & (datL['H1_4341_flux']>datL['H1_4341_fluxErr'])& (datL['H1_4341_flux']>0)&(datL['H1_4341_fluxErr']>0)& (datL['EBV_4862_4341']!=-9999.99) &  (datL['EBV_4862_4341_err']!=-9999.99)
 O2 = (datL['lineWavelength']== 3728.) & (EBvok)
 O3  = (datL['lineWavelength']== 5007.)& (EBvok)
@@ -133,27 +137,16 @@ p.clf()
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 p.figure(0,(6,6))
 p.axes([0.17,0.17,0.8,0.8])
+
 ok = (data['logOH_tremonti04']!=-9999.99) &  (data['logOH_tremonti04_err']!=-9999.99)
+
 p.errorbar(x=data['spm_light_metallicity'][ok], xerr=[data['spm_light_metallicity_err_plus'][ok], data['spm_light_metallicity_err_minus'][ok]], y=data['logOH_tremonti04'][ok], yerr=data['logOH_tremonti04_err'][ok],fmt='o',elinewidth=2, mfc='none',label='full')
 ok = (datL['logOH_tremonti04']!=-9999.99) &  (datL['logOH_tremonti04_err']!=-9999.99)
 p.errorbar(x=datL['spm_light_metallicity'][ok], xerr=[datL['spm_light_metallicity_err_plus'][ok], datL['spm_light_metallicity_err_minus'][ok]], y=datL['logOH_tremonti04'][ok], yerr=datL['logOH_tremonti04_err'][ok],fmt='o',elinewidth=2, mfc='none',label='GP')
 #p.plot([-1,2],[-1,2],'k--')
-p.legend(loc=2)
+#p.legend(loc=0)
 p.xlabel('log(Z/Zsun) SPM')
 p.ylabel(r'12+log(O/H) (line ratios Tremonti 04 estimator)')
 #p.xlim((-1,2))
@@ -194,7 +187,7 @@ cb.set_label('redshift')
 p.ylabel(r'$log([Z/H])$')
 p.xlabel('$\log(M_*)$')
 #p.title(r'$0.7<z<0.85$ ELG')
-p.legend(loc=3)
+p.legend(loc=0)
 p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "mass-metallicity-redshift-all-hb-o2-o3-400.png"))
 p.clf()
 
@@ -218,7 +211,7 @@ cb.set_label('redshift')
 p.ylabel(r'$log([Z/H])$')
 p.xlabel('$\log(M_*)$')
 #p.title(r'$0.7<z<0.85$ ELG')
-p.legend(loc=3)
+p.legend(loc=0)
 p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "mass-metallicity-redshift-all-hb-o2-o3-100.png"))
 p.clf()
 
@@ -242,7 +235,7 @@ cb.set_label('redshift')
 p.ylabel(r'$log([Z/H])$')
 p.xlabel('$\log(M_*)$')
 #p.title(r'$0.7<z<0.85$ ELG')
-p.legend(loc=3)
+p.legend(loc=0)
 p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "mass-metallicity-redshift-all-hb-o2-o3-200.png"))
 p.clf()
 
@@ -265,7 +258,7 @@ cb.set_label('log(SFR)')
 p.ylabel(r'$log([Z/H])$')
 p.xlabel('$\log(M_*)$')
 #p.title(r'$0.7<z<0.85$ ELG')
-p.legend(loc=3)
+p.legend(loc=0)
 p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "mass-metallicity-sfr-all-hb-o2-200.png"))
 p.clf()
 
@@ -287,7 +280,7 @@ cb.set_label('log(SFR)')
 p.ylabel(r'$log([Z/H])$')
 p.xlabel('$\log(M_*)$')
 #p.title(r'$0.7<z<0.85$ ELG')
-p.legend(loc=3)
+p.legend(loc=0)
 p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "mass-metallicity-sfr-all-hb-o2-400.png"))
 p.clf()
 
@@ -309,7 +302,7 @@ cb.set_label('log(SFR)')
 p.ylabel(r'$log([Z/H])$')
 p.xlabel('$\log(M_*)$')
 #p.title(r'$0.7<z<0.85$ ELG')
-p.legend(loc=3)
+p.legend(loc=0)
 p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "mass-metallicity-sfr-all-hb-o2-100.png"))
 p.clf()
 
@@ -335,7 +328,7 @@ cb.set_label('log(SFR)')
 p.ylabel(r'$log([Z/H])$')
 p.xlabel('$\log(M_*)$')
 p.title(r'$0.7<z<0.85$ ELG')
-p.legend(loc=3)
+p.legend(loc=0)
 p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "mass-metallicity-sfr-07z085-hb-o2-100.png"))
 p.clf()
 
@@ -357,7 +350,7 @@ cb.set_label('log(SFR)')
 p.ylabel(r'$log([Z/H])$')
 p.xlabel('$\log(M_*)$')
 p.title(r'$0.7<z<0.85$ ELG')
-p.legend(loc=3)
+p.legend(loc=0)
 p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "mass-metallicity-sfr-07z085-hb-o2-200.png"))
 p.clf()
 
@@ -380,7 +373,7 @@ cb.set_label('log(SFR)')
 p.ylabel(r'$log([Z/H])$')
 p.xlabel('$\log(M_*)$')
 p.title(r'$0.7<z<0.85$ ELG')
-p.legend(loc=3)
+p.legend(loc=0)
 p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "mass-metallicity-sfr-07z085-hb-o2-400.png"))
 p.clf()
 
@@ -411,7 +404,9 @@ p.plot(x_rel, y_pr, label='Manucci 2010')
 p.ylabel(r'$12+log(OH)$')
 p.xlabel('$\log(M_*)-0.32 log(SFR) - 10$')
 p.title(r'$0.7<z<0.85$ ELG')
-p.legend(loc=2)
+p.legend(loc=0)
+p.ylim((8.2,9.5))
+p.grid()
 p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "manucci-2010-relation-all-hb-o2.png"))
 p.clf()
 
@@ -434,7 +429,9 @@ p.plot(x_rel, y_pr, label='Manucci 2010')
 p.ylabel(r'$12+log(OH)$')
 p.xlabel('$\log(M_*)-0.32 log(SFR) - 10$')
 p.title(r'$0.7<z<0.85$ ELG')
-p.legend(loc=2)
+p.ylim((8.2,9.5))
+p.legend(loc=0)
+p.grid()
 p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "manucci-2010-GP-relation-all-hb-o2.png"))
 p.clf()
 
@@ -452,16 +449,16 @@ p.clf()
 
 
 
+sys.exit()
 
-
-
+print L_MEAN
 
 
 p.figure(0,(6,6))
 p.axes([0.17,0.17,0.8,0.8])
 p.errorbar(x=gp_SFR_O2_3728[ok], xerr = gp_SFR_O2_3728_err[ok], y=gp_SFR_H1_4862[ok], yerr=gp_SFR_H1_4862_err[ok],fmt='o',elinewidth=2, mfc='none')
 p.plot([-1,2],[-1,2],'k--')
-p.legend(loc=2)
+p.legend(loc=0)
 p.xlabel('SFR GP [OII]')
 p.ylabel(r'SFR GP H$\beta$')
 #p.xlim((-1,2))
@@ -504,7 +501,7 @@ cb.set_label('log(SFR)')
 p.ylabel(r'$log([Z/H])$')
 p.xlabel('$\log(M_*)$')
 #p.title(r'$0.7<z<0.85$ ELG')
-p.legend(loc=3)
+p.legend(loc=0)
 p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "sfr-mass-z-allredshift.png"))
 p.clf()
 
@@ -526,6 +523,6 @@ cb.set_label('redshift')
 p.ylabel(r'$log([Z/H])$')
 p.xlabel('$\log(M_*)$')
 #p.title(r'$0.7<z<0.85$ ELG')
-p.legend(loc=3)
+p.legend(loc=0)
 p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "sfr-mass-redshift-allredshift.png"))
 p.clf()

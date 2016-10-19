@@ -252,7 +252,7 @@ for ll in range(len(arrs)):
 new_tb_hdu = fits.BinTableHDU.from_columns( new_cols )
 
 thdulist = fits.HDUList([hdu[0], new_tb_hdu])
-os.system("rm "+path_to_output_table_full)
+os.remove(path_to_output_table_full)
 thdulist.writeto(path_to_output_table_full)
 
 
@@ -274,6 +274,6 @@ for ll in range(len(arrs)):
 new_tb_hdu = fits.BinTableHDU.from_columns( new_cols )
 
 thdulist = fits.HDUList([hdu[0], new_tb_hdu])
-os.system("rm "+path_to_output_table_full)
+os.remove(path_to_output_table_full)
 thdulist.writeto(path_to_output_table_full)
 

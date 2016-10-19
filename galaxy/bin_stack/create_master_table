@@ -19,7 +19,7 @@ for ii, tab in enumerate(tableFull):
 	obj = InterpretSpectraStacks(stackList[ii])
 	arrFull = obj.get_table_entry_full()
 	arrLine = obj.get_table_entry_line()
-	print arrFull, arrLine
+	# print arrFull, arrLine
 	tableFull[ii] = arrFull
 	tablePG[ii] = arrLine
 

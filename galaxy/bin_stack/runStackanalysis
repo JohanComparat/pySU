@@ -50,11 +50,6 @@ python model_stacked_spectra_VVDS
 # hdu 
 # generate data sanity check oriented plots 
 
------------------------
-START HERE AGAIN
-EVERYTHING IS ON THE LAPTOP
------------------------
-
 python plot_firefly_model
 
 # concatenates results
@@ -69,4 +64,4 @@ python process_master_table
 python plot_results_spectraStacks.py
 
 
-./compute_intrinsic_LFs
+python compute_intrinsic_LFs

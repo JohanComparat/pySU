@@ -245,11 +245,15 @@ def calculate_averages_pdf(probs,light_weights,mass_weights,unnorm_mass,age,meta
 	
 	av = {} # dictionnary where values are stored :
 	av['light_age'],av['light_age_1_sig_plus'],av['light_age_1_sig_minus'], av['light_age_2_sig_plus'], av['light_age_2_sig_minus'], av['light_age_3_sig_plus'], av['light_age_3_sig_minus'] = averages_and_errors(probs,np.dot(light_weights,log_age),sampling)
-	av['light_metal'], av['light_metal_1_sig_plus'], av['light_metal_1_sig_minus'], av['light_metal_2_sig_plus'], av['light_metal_2_sig_minus'], av['light_metal_3_sig_plus'], av['light_metal_3_sig_minus'] = averages_and_errors(probs,np.dot(light_weights,metal),sampling)
-	av['mass_age'], av['mass_age_1_sig_plus'], av['mass_age_1_sig_minus'], av['mass_age_2_sig_plus'], av['mass_age_2_sig_minus'], av['mass_age_3_sig_plus'], av['mass_age_3_sig_minus'] = averages_and_errors(probs,np.dot(mass_weights,log_age),sampling)
-	av['mass_metal'], av['mass_metal_1_sig_plus'], av['mass_metal_1_sig_minus'], av['mass_metal_2_sig_plus'], av['mass_metal_2_sig_minus'], av['mass_metal_3_sig_plus'], av['mass_metal_3_sig_minus'] = averages_and_errors(probs,np.dot(mass_weights,metal),sampling)
+	
+	av['light_metal'], av['light_metal_1_sig_plus'], av['light_metal_1_sig_minus'], av['light_metal_2_sig_plus'], av['light_metal_2_sig_minus'], av['light_metal_3_sig_plus'], av['light_metal_3_sig_minus'] = averages_and_errors(probs, np.dot(light_weights, metal), sampling)
+	
+	av['mass_age'], av['mass_age_1_sig_plus'], av['mass_age_1_sig_minus'], av['mass_age_2_sig_plus'], av['mass_age_2_sig_minus'], av['mass_age_3_sig_plus'], av['mass_age_3_sig_minus'] = averages_and_errors(probs, np.dot(mass_weights, log_age), sampling)
+	
+	av['mass_metal'], av['mass_metal_1_sig_plus'], av['mass_metal_1_sig_minus'], av['mass_metal_2_sig_plus'], av['mass_metal_2_sig_minus'], av['mass_metal_3_sig_plus'], av['mass_metal_3_sig_minus'] = averages_and_errors(probs, np.dot(mass_weights, metal), sampling)
+	
 	conversion_factor 	= 10.0**(-17) * 4 * np.pi * dist_lum**2.0 # unit 1e-17 cm2 
-	tot_mass = np.log10(np.sum(unnorm_mass,1) * conversion_factor)
+	tot_mass = np.log10(np.sum(unnorm_mass, 1) * conversion_factor)
 	av['stellar_mass'], av['stellar_mass_1_sig_plus'], av['stellar_mass_1_sig_minus'], av['stellar_mass_2_sig_plus'], av['stellar_mass_2_sig_minus'], av['stellar_mass_3_sig_plus'], av['stellar_mass_3_sig_minus'] = averages_and_errors(probs,tot_mass,sampling)
 
 

@@ -147,7 +147,6 @@ def fitter(wavelength_in,data_in,error_in,models_in,SPM):
 		# To ensure exploration
 		returned_chis = [o.chi_squared for o in fit_list]
 		diff = np.min(returned_chis)#diff = 	np.percentile(returned_chis[np.where(returned_branch == branch_num-1)],percentile_use)
-				
 		return diff
 	
 	def iterate(fit_list):

@@ -663,262 +663,92 @@ def getStat(file,volume,unitVolume):
 	# print Nall[sel]/mean99[sel]
 	# print Nall[sel]/mean90[sel]
 	return Ncounts, Ncounts_c, Nall, Nall_c, mean90, std90, mean90_c, std90_c
-
-def plot_CRCoef_mvir(fileC, fileS, binFile, zList_files,z0, z0short, qty='mvir', rebin=False, resamp=5):
-	"""
-	From the pickle file output by the Multidark class, we output the number counts (differential and cumulative) per unit volume per mass bin.
-	:param file: filename
-	:param volume: total volume of the box
-	:param unitVolume: sub volume used in the jackknife
-	:return: Number counts, cumulative number counts, count density, cumulative count density, jackknife mean, jackknife std, cumulative jackknife mean, cumulative jackknife std
-	"""
-	boxName = fileC.split('/')[6]
-	boxZN = float(fileC.split('/')[-1].split('_')[1])
-	bins = n.loadtxt(binFile)
-	extraName =  fileS.split('/')[-1][:-27]
-	figName = boxName[3:]+"_"+extraName
 	
-	dX = ( 10**bins[1:]  - 10**bins[:-1] ) #* n.log(10)
-	dlnbin = dX / (10**(( bins[1:]  + bins[:-1] )/2.))
-	logmass = ( bins[1:]  + bins[:-1] )/2.
+def get_hf(sigma_val=0.8228, boxRedshift=0., delta_wrt='mean'):
+	#hf0 = MassFunction(cosmo_model=cosmo, sigma_8=sigma_val, z=boxRedshift)
+	omega = lambda zz: cosmo.Om0*(1+zz)**3. / cosmo.efunc(zz)**2
+	DeltaVir_bn98 = lambda zz : (18.*n.pi**2. + 82.*(omega(zz)-1)- 39.*(omega(zz)-1)**2.)/omega(zz)
+	print "DeltaVir", DeltaVir_bn98(boxRedshift), " at z",boxRedshift
+	hf1 = MassFunction(cosmo_model=cosmo, sigma_8=sigma_val, z=boxRedshift, delta_h=DeltaVir_bn98(boxRedshift), delta_wrt=delta_wrt, Mmin=7, Mmax=16.5)
+	return hf1
 
-	print boxName
-
-	if boxName=='MD_0.4Gpc' :
-		boxLength = 400.
-		boxRedshift = 1./boxZN - 1.
-		logmp = n.log10(9.63 * 10**7)
-		
-	if boxName=='MD_1Gpc' :
-		boxLength = 1000.
-		boxRedshift = 1./boxZN - 1.
-		logmp = n.log10(1.51 * 10**9)
-
-	if boxName=='MD_2.5Gpc' :
-		boxLength = 2500.
-		nSN, aSN = n.loadtxt(zList_files[2], unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
+def get_basic_info(fileC, boxZN, delta_wrt='mean'):
+	if fileC.find('MD_0.4Gpc')>0:
+		boxName='MD_0.4Gpc'
+		nSN, aSN = n.loadtxt(join(os.environ['MD04_DIR'],"redshift-list.txt"), unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
 		conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
 		boxRedshift =  conversion[boxZN] 
-		logmp = n.log10(2.359 * 10**10)
-
-	if boxName=='MD_4Gpc' :
-		boxLength = 4000.
-		nSN, aSN = n.loadtxt(zList_files[3], unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
+		hf = get_hf(0.8228*0.953**0.5, boxRedshift, delta_wrt=delta_wrt)
+		logmp = n.log10(9.63 * 10**7/cosmo.h)
+		boxLength = 400./cosmo.h/cosmo.efunc(boxRedshift)
+		
+	elif fileC.find('MD_1Gpc')>0 :
+		boxName='MD_1Gpc'
+		nSN, aSN = n.loadtxt(join(os.environ['MD10_DIR'],"redshift-list.txt"), unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
 		conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
 		boxRedshift =  conversion[boxZN] 
-		logmp = n.log10(9.6 * 10**10)
+		#boxRedshift = 1./boxZN - 1.
+		hf = get_hf(0.8228*1.004**0.5, boxRedshift, delta_wrt=delta_wrt)
+		logmp = n.log10(1.51 * 10**9/cosmo.h)
+		boxLength = 1000./cosmo.h/cosmo.efunc(boxRedshift)
 
-	if boxName=='MD_2.5GpcNW' :
-		boxLength = 2500.
-		nSN, aSN = n.loadtxt(zList_files[4], unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
+	elif fileC.find('MD_2.5GpcNW')>0 :
+		boxName='MD_2.5GpcNW'
+		nSN, aSN = n.loadtxt(join(os.environ['MD25NW_DIR'],"redshift-list.txt"), unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
 		conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
 		boxRedshift =  conversion[boxZN] 
-		logmp = n.log10(2.359 * 10**10)
+		hf = get_hf(0.8228*1.01**0.5, boxRedshift, delta_wrt=delta_wrt)
+		hz = 1.# hf.cosmo.H( boxRedshift ).value / 100.
+		logmp = n.log10(2.359 * 10**10/cosmo.h )
+		boxLength = 2500./cosmo.h/cosmo.efunc(boxRedshift)
 
-	if boxName=='MD_4GpcNW' :
-		boxLength = 4000.
-		nSN, aSN = n.loadtxt(zList_files[5], unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
-		conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
+	elif fileC.find('MD_4GpcNW')>0 :
+		boxName='MD_4GpcNW'
+		nSN, redshift40, aSN = n.loadtxt(join(os.environ['MD40NW_DIR'],"redshift-list.txt"), unpack=True, dtype={'names': ('nSN', 'redshift', 'aSN'), 'formats': ('i4', 'f4', 'f4')})
+		conversion = dict(n.transpose([ nSN, redshift40 ]))
 		boxRedshift =  conversion[boxZN] 
-		logmp = n.log10(9.6 * 10**10)
-
-	index = int(n.argwhere( abs(z0-n.round(boxRedshift, 6))<0.00001)[0] )
-	msigmaFile=join(os.environ['PYSU_MD_DIR'], "data", "PK_DM_CLASS", "hmf_highz_medz_lowz_planck", "mVector_z_"+str(z0short[index])+".txt")
-	DATA = n.loadtxt(msigmaFile,unpack=True)
-	M=DATA[0]
-	sigma = DATA[1]
-	m2sigma = interp1d(M, sigma)
-	sig = m2sigma( 10**((bins[:-1]+bins[1:])/2.) )
-	nus = delta_c/sig
+		hf = get_hf(0.8228*1.008**0.5, boxRedshift, delta_wrt=delta_wrt)
+		hz = 1.# hf.cosmo.H( boxRedshift ).value / 100. 
+		logmp = n.log10(9.6 * 10**10/cosmo.h )
+		boxLength = 4000./cosmo.h/cosmo.efunc(boxRedshift)
 	
-	unitVolume =  (boxLength*0.10)**3.
-	volume = (boxLength)**3.
+	elif fileC.find('MD_2.5Gpc')>0 :
+		boxName='MD_2.5Gpc'
+		nSN, aSN, redshift25 = n.loadtxt(join(os.environ['MD25_DIR'],"redshift-list.txt"), unpack=True, dtype={'names': ('nSN', 'aSN', 'redshift'), 'formats': ('i4', 'f4', 'f4')})
+		conversion = dict(n.transpose([ nSN, redshift25 ]))
+		boxRedshift =  conversion[boxZN] 
+		hf = get_hf(0.8228*1.01**0.5, boxRedshift, delta_wrt=delta_wrt)
+		hz = 1.# hf.cosmo.H( boxRedshift ).value / 100.
+		logmp = n.log10(2.359 * 10**10/cosmo.h)
+		boxLength = 2500./cosmo.h/cosmo.efunc(boxRedshift)
+
+	elif fileC.find('MD_4Gpc')>0 :
+		boxName='MD_4Gpc'
+		nSN, redshift40, aSN = n.loadtxt(join(os.environ['MD40_DIR'],"redshift-list.txt"), unpack=True, dtype={'names': ('nSN', 'redshift', 'aSN'), 'formats': ('i4', 'f4', 'f4')})
+		conversion = dict(n.transpose([ nSN, redshift40 ]))
+		boxRedshift =  conversion[boxZN] 
+		hf = get_hf(0.8228*1.008**0.5, boxRedshift, delta_wrt=delta_wrt)
+		hz = 1.# hf.cosmo.H( boxRedshift ).value / 100.
+		logmp = n.log10(9.6 * 10**10 /cosmo.h )
+		boxLength = 4000./cosmo.h/cosmo.efunc(boxRedshift)
 	
-	data=cPickle.load(open(fileC,'r'))
-	Ncounts = data.sum(axis=0) 
-	Nall = Ncounts / volume
-	ok= ( logmass> logmp-0.5) & (Ncounts>2)
-	
-	index=n.arange(int(data.shape[0]))
-	n.random.shuffle( index )
-	Ntotal = int(data.shape[0])
-	
-	dataS = n.array([n.sum(data[id:id+Ntotal/resamp:1], axis=0) for id in n.arange(0,Ntotal,Ntotal/resamp)])
-	
-	if rebin :
-		dataR = n.array([dt[2::2]+dt[1::2] for dt in data])
-		binsR = bins[1::2]
-		logmassR = ( binsR[1:]  + binsR[:-1] )/2.
-		NcountsR = dataR.sum(axis=0) 
-		okR= ( logmassR> logmp-0.5) & (NcountsR>2)
+	boxLengthComoving = boxLength * cosmo.efunc(boxRedshift)
+	return hf, boxLength, boxName, boxRedshift, logmp, boxLengthComoving
 
-		cvR = n.cov(dataR.T[okR])
-		crR = n.corrcoef(dataR.T[okR])
-		mmR = logmassR[okR]
-
-		mass2XR = interp1d(mmR, n.arange(len(mmR)))
-
-		fig = p.figure(0,(6,6))
-		mat = p.matshow(crR)
-		p.xticks(n.arange(0,len(mmR),5), mmR[n.arange(0,len(mmR),5)],rotation=45)
-		p.yticks(n.arange(0,len(mmR),5), mmR[n.arange(0,len(mmR),5)])
-		p.axvline(mass2XR(logmp+3), lw=2, color='k')
-		p.axhline(mass2XR(logmp+3), lw=2, color='k')
-		p.axvline(mass2XR(logmp+1), lw=2, color='k')
-		p.axhline(mass2XR(logmp+1), lw=2, color='k')
-		cb = p.colorbar(shrink=0.8)
-		cb.set_label("corrCoef Mvir Hist Counts")
-		p.xlabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
-		p.ylabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
-		p.grid()
-		p.savefig(join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir',"covariance","mvir-cr-2_"+figName+".png"))
-		p.clf()
-		
-
-	else :
-		cv = n.cov(data.T[ok])
-		cr = n.corrcoef(data.T[ok])
-		mm = logmass[ok]
-		sigma = sig[ok]
-		nu = nus[ok]
-		
-		cvS = n.cov(dataS.T[ok])
-		crS = n.corrcoef(dataS.T[ok])
-		
-		mass2X = interp1d(mm, n.arange(len(mm)))
-		
-		fig = p.figure(0,(6,6))
-		mat = p.matshow(cr)
-		p.xticks(n.arange(0,len(mm),5), mm[n.arange(0,len(mm),5)],rotation=45)
-		p.yticks(n.arange(0,len(mm),5), mm[n.arange(0,len(mm),5)])
-		p.axvline(mass2X(logmp+3), lw=2, color='k')
-		p.axhline(mass2X(logmp+3), lw=2, color='k')
-		p.axvline(mass2X(logmp+1), lw=2, color='k')
-		p.axhline(mass2X(logmp+1), lw=2, color='k')
-		cb = p.colorbar(shrink=0.8)
-		cb.set_label("corrCoef Mvir Counts "+figName)
-		p.xlabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
-		p.ylabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
-		p.grid()
-		p.savefig(join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir',"covariance","mvir-cr-0_"+figName+".png"))
-		p.clf()
-		"""
-		fig = p.figure(0,(6,6))
-		mat = p.matshow(cv)
-		p.xticks(n.arange(0,len(nu),5), n.round(nu[n.arange(0,len(nu),5)],3),rotation=45)
-		p.yticks(n.arange(0,len(nu),5), n.round(nu[n.arange(0,len(nu),5)],3))
-		#p.axvline(mass2X(logmp+3), lw=2, color='k')
-		#p.axhline(mass2X(logmp+3), lw=2, color='k')
-		#p.axvline(mass2X(logmp+1), lw=2, color='k')
-		#p.axhline(mass2X(logmp+1), lw=2, color='k')
-		cb = p.colorbar(shrink=0.8)
-		cb.set_label("corrCoef Mvir Counts "+figName)
-		p.xlabel(r'$\nu$')
-		p.ylabel(r'$\nu$')
-		p.grid()
-		p.savefig(join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir',"covariance","mvir-cr-0-nu_"+figName+".png"))
-		p.clf()
-		
-		fig = p.figure(0,(6,6))
-		mat = p.matshow(crS)
-		p.xticks(n.arange(0,len(mm),5), mm[n.arange(0,len(mm),5)],rotation=45)
-		p.yticks(n.arange(0,len(mm),5), mm[n.arange(0,len(mm),5)])
-		p.axvline(mass2X(logmp+3), lw=2, color='k')
-		p.axhline(mass2X(logmp+3), lw=2, color='k')
-		p.axvline(mass2X(logmp+1), lw=2, color='k')
-		p.axhline(mass2X(logmp+1), lw=2, color='k')
-		cb = p.colorbar(shrink=0.8)
-		cb.set_label("corrCoef Mvir Counts "+figName)
-		p.xlabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
-		p.ylabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
-		p.grid()
-		p.savefig(join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir',"covariance","mvir-cr-S_"+figName+".png"))
-		p.clf()
-		"""
-		return mm, sigma, nu, cr, cv
-
-def convert_pkl_mass(fileC, fileS, binFile, zList_files, qty='mvir', delta_wrt='mean'):
+def convert_pkl_mass(fileC, fileS, binFile, qty='mvir', delta_wrt='mean'):
 	"""
 	:param qty: one point function variable.Default: mvir.
 	:param fileC: file with the central halo statistics
 	:param fileS: file with the satelitte halo statistics
 	:param binFile: file with the bins
-	:param zList_files: list of file with linking snapshot number and redshift
 	:return: a fits table containing the one point function histograms
 	"""
-	
-	def get_hf(sigma_val=0.8228, boxRedshift=0.):
-		#hf0 = MassFunction(cosmo_model=cosmo, sigma_8=sigma_val, z=boxRedshift)
-		omega = lambda zz: cosmo.Om0*(1+zz)**3. / cosmo.efunc(zz)**2
-		DeltaVir_bn98 = lambda zz : (18.*n.pi**2. + 82.*(omega(zz)-1)- 39.*(omega(zz)-1)**2.)/omega(zz)
-		print "DeltaVir", DeltaVir_bn98(boxRedshift), " at z",boxRedshift
-		hf1 = MassFunction(cosmo_model=cosmo, sigma_8=sigma_val, z=boxRedshift, delta_h=DeltaVir_bn98(boxRedshift), delta_wrt=delta_wrt, Mmin=7, Mmax=16.5)
-		return hf1
 
 	boxZN = float(os.path.basename(fileC).split('_')[1])
 	print boxZN
 	extraName =  os.path.basename(fileS)[:-27]
 	
-	def get_basic_info(fileC, boxZN):
-		if fileC.find('MD_0.4Gpc')>0:
-			boxName='MD_0.4Gpc'
-			boxRedshift = 1./boxZN - 1.
-			hf = get_hf(0.8228*0.953**0.5, boxRedshift)
-			logmp = n.log10(9.63 * 10**7/cosmo.h)
-			boxLength = 400./cosmo.h/cosmo.efunc(boxRedshift)
-			
-		elif fileC.find('MD_1Gpc')>0 :
-			boxName='MD_1Gpc'
-			boxRedshift = 1./boxZN - 1.
-			hf = get_hf(0.8228*1.004**0.5, boxRedshift)
-			logmp = n.log10(1.51 * 10**9/cosmo.h)
-			boxLength = 1000./cosmo.h/cosmo.efunc(boxRedshift)
-
-		elif fileC.find('MD_2.5GpcNW')>0 :
-			boxName='MD_2.5GpcNW'
-			nSN, aSN = n.loadtxt(join(os.environ['MD25NW_DIR'],"redshift-list.txt"), unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
-			conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
-			boxRedshift =  conversion[boxZN] 
-			hf = get_hf(0.8228*1.01**0.5, boxRedshift)
-			hz = 1.# hf.cosmo.H( boxRedshift ).value / 100.
-			logmp = n.log10(2.359 * 10**10/cosmo.h )
-			boxLength = 2500./cosmo.h/cosmo.efunc(boxRedshift)
-
-		elif fileC.find('MD_4GpcNW')>0 :
-			boxName='MD_4GpcNW'
-			
-			nSN, aSN = n.loadtxt(join(os.environ['MD40NW_DIR'],"redshift-list.txt"), unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
-			conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
-			boxRedshift =  conversion[boxZN] 
-			hf = get_hf(0.8228*1.008**0.5, boxRedshift)
-			hz = 1.# hf.cosmo.H( boxRedshift ).value / 100. 
-			logmp = n.log10(9.6 * 10**10/cosmo.h )
-			boxLength = 4000./cosmo.h/cosmo.efunc(boxRedshift)
-		
-		elif fileC.find('MD_2.5Gpc')>0 :
-			boxName='MD_2.5Gpc'
-			nSN, aSN = n.loadtxt(join(os.environ['MD25_DIR'],"redshift-list.txt"), unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
-			conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
-			boxRedshift =  conversion[boxZN] 
-			hf = get_hf(0.8228*1.01**0.5, boxRedshift)
-			hz = 1.# hf.cosmo.H( boxRedshift ).value / 100.
-			logmp = n.log10(2.359 * 10**10/cosmo.h)
-			boxLength = 2500./cosmo.h/cosmo.efunc(boxRedshift)
-
-		elif fileC.find('MD_4Gpc')>0 :
-			boxName='MD_4Gpc'
-			nSN, aSN = n.loadtxt(join(os.environ['MD40_DIR'],"redshift-list.txt"), unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
-			conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
-			boxRedshift =  conversion[boxZN] 
-			hf = get_hf(0.8228*1.008**0.5, boxRedshift)
-			hz = 1.# hf.cosmo.H( boxRedshift ).value / 100.
-			logmp = n.log10(9.6 * 10**10 /cosmo.h )
-			boxLength = 4000./cosmo.h/cosmo.efunc(boxRedshift)
-		
-		boxLengthComoving = boxLength * cosmo.efunc(boxRedshift)
-		return hf, boxLength, boxName, boxRedshift, logmp, boxLengthComoving
-
-	hf, boxLength, boxName, boxRedshift, logmp, boxLengthComoving = get_basic_info(fileC, boxZN)
+	hf, boxLength, boxName, boxRedshift, logmp, boxLengthComoving = get_basic_info(fileC, boxZN, delta_wrt='mean')
 	print boxName
 	bins = n.loadtxt(binFile)
 	#bins = n.log10( 10**bins_in / hz )
@@ -986,7 +816,6 @@ def convert_pkl_mass(fileC, fileS, binFile, zList_files, qty='mvir', delta_wrt='
 	col8sc = fits.Column( name="dNdlnM_sat_c",format="D", array= Nall_c[ok] / dlnbin[ok] )
 	col9s = fits.Column( name="std90_pc_sat",format="D", array= std90[ok] )
 	col9sc = fits.Column( name="std90_pc_sat_c",format="D", array= std90_c[ok] )
-
 
 	hdu2 = fits.BinTableHDU.from_columns([col0, col1,col1b, col2a, col2b, col3, col4, col5_0, col5_1, col5_2, col5_3, col5_4, col5_5, col6c, col7c, col8c, col9c, col6cc, col7cc, col8cc, col9cc, col6s, col7s, col8s, col9s, col6sc, col7sc, col8sc, col9sc ])
 	
