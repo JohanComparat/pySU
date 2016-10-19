@@ -414,7 +414,7 @@ class StellarPopulationModel:
 			metal_per_ssp = self.metal[bf_mass]
 			weight_mass_per_ssp = self.mass_weights[self.best_fit_index[0]][bf_mass]
 			weight_light_per_ssp = self.light_weights[self.best_fit_index[0]][bf_light]
-			order = np.argsort(weight_light_per_ssp)
+			order = np.argsort(-weight_light_per_ssp)
 
 			print "M Msun", self.averages['stellar_mass'], np.log10(mass_per_ssp[order])
 			print "age Gyr", 10**self.averages['light_age'], 10**self.averages['mass_age'], age_per_ssp[order]/1e9
