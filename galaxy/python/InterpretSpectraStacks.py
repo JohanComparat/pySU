@@ -134,23 +134,57 @@ class InterpretSpectraStacks:
 		self.hduFull = hduList[5]
 		
 	def get_table_entry_full(self):
-		headerA =" lineWavelength Survey Redshift L_MIN L_MAX L_MEAN N_in_stack wl_min wl_max R_stack spm_light_age spm_light_age_err_plus spm_light_age_err_minus spm_light_metallicity spm_light_metallicity_err_plus spm_light_metallicity_err_minus spm_stellar_mass spm_stellar_mass_err_plus spm_stellar_mass_err_minus spm_EBV "
-		table_entry = n.array([self.lineWave, self.survey, self.redshift, self.head.header['L_MIN'], self.head.header['L_MAX'], self.head.header['L_MEAN'], self.N_in_stack, self.wlmin, self.wlmax, self.R_stack, 10**self.hduSPM.header['light_age'], 10**self.hduSPM.header['light_age_up']-10**self.hduSPM.header['light_age'], 10**self.hduSPM.header['light_age']-10**self.hduSPM.header['light_age_low'],self.hduSPM.header['light_metallicity'], self.hduSPM.header['light_metallicity_up'] - self.hduSPM.header['light_metallicity'], self.hduSPM.header['light_metallicity'] - self.hduSPM.header['light_metallicity_low'], self.hduSPM.header['stellar_mass'], self.hduSPM.header['stellar_mass_up'] - self.hduSPM.header['stellar_mass'], self.hduSPM.header['stellar_mass'] - self.hduSPM.header['stellar_mass_low'], self.hduSPM.header['EBV']])
-		# headerB = "gp_EBV_4862_4341 gp_EBV_4862_4341_err gp_EBV_4862_4102 gp_EBV_4862_4102_err gp_BD_4102_4341 gp_BD_4102_4341_err gp_SFR_O2_3728 gp_SFR_O2_3728_err gp_SFR_H1_4862 gp_SFR_H1_4862_err gp_12logOH_tremonti04 gp_12logOH_tremonti04_err gp_12logOH_tremonti04_intrinsic gp_12logOH_tremonti04_intrinsic_err "
-		# table_entry = n.array([ self.hduLine.header['EBV_4862_4341'], self.hduLine.header['EBV_4862_4341_err'], self.hduLine.header['EBV_4862_4102'], self.hduLine.header['EBV_4862_4102_err'], self.hduLine.header['BD_4102_4341'], self.hduLine.header['BD_4102_4341_err'], self.hduLine.header['SFR_O2_3728'], self.hduLine.header['SFR_O2_3728_err'], self.hduLine.header['SFR_H1_4862'], self.hduLine.header['SFR_H1_4862_err'], self.hduLine.header['12logOH_tremonti04'], self.hduLine.header['12logOH_tremonti04_err'], self.hduLine.header['12logOH_tremonti04_intrinsic'], self.hduLine.header['12logOH_tremonti04_intrinsic_err'] ])	
-		return n.hstack((table_entry, self.hduFull.data[0]))
+		headerA =" lineWavelength Survey Redshift L_MIN L_MAX L_MEAN N_in_stack wl_min wl_max R_stack age_universe age_lightW_mean age_lightW_err_plus age_lightW_err_minus metallicity_lightW_mean metallicity_lightW_mean_err_plus metallicity_lightW_mean_err_minus age_massW_mean age_massW_err_plus age_massW_err_minus metallicity_massW_mean metallicity_massW_mean_err_plus metallicity_massW_mean_err_minus stellar_mass stellar_mass_err_plus stellar_mass_err_minus spm_EBV nComponentsSSP"
+		
+		table_entry = [self.lineWave, self.survey, self.redshift, self.head.header['L_MIN'], self.head.header['L_MAX'], self.head.header['L_MEAN'], self.N_in_stack, self.wlmin, self.wlmax, self.R_stack, 10**self.hduSPM.header['age_universe'], 10**self.hduSPM.header['age_lightW_mean'], 10**self.hduSPM.header['age_lightW_mean_up']-10**self.hduSPM.header['age_lightW_mean'], 10**self.hduSPM.header['age_lightW_mean']-10**self.hduSPM.header['age_lightW_mean_low'], self.hduSPM.header['metallicity_lightW_mean'], self.hduSPM.header['metallicity_lightW_mean_up'] - self.hduSPM.header['metallicity_lightW_mean'], self.hduSPM.header['metallicity_lightW_mean'] - self.hduSPM.header['metallicity_lightW_mean_low'], 10**self.hduSPM.header['age_massW_mean'], 10**self.hduSPM.header['age_massW_mean_up']-10**self.hduSPM.header['age_massW_mean'], 10**self.hduSPM.header['age_massW_mean']-10**self.hduSPM.header['age_massW_mean_low'], self.hduSPM.header['metallicity_massW_mean'], self.hduSPM.header['metallicity_massW_mean_up'] - self.hduSPM.header['metallicity_massW_mean'], self.hduSPM.header['metallicity_massW_mean'] - self.hduSPM.header['metallicity_massW_mean_low'], self.hduSPM.header['stellar_mass_mean'], self.hduSPM.header['stellar_mass_mean_up'] - self.hduSPM.header['stellar_mass_mean'], self.hduSPM.header['stellar_mass_mean'] - self.hduSPM.header['stellar_mass_mean_low'], self.hduSPM.header['EBV'], self.hduSPM.header['ssp_number']]
+		#print self.hduSPM.header
+		for iii in n.arange(self.hduSPM.header['ssp_number']):
+			table_entry.append( self.hduSPM.header['stellar_mass_ssp_'+str(iii)] )
+			table_entry.append( self.hduSPM.header['age_ssp_'+str(iii)] )
+			table_entry.append( self.hduSPM.header['metal_ssp_'+str(iii)] )
+			table_entry.append( self.hduSPM.header['SFR_ssp_'+str(iii)] )
+			table_entry.append( self.hduSPM.header['weightMass_ssp_'+str(iii)] )
+			table_entry.append( self.hduSPM.header['weightLight_ssp_'+str(iii)] )
+			headerA += ' stellar_mass_ssp_'+str(iii) + ' age_ssp_'+str(iii) + ' metal_ssp_'+str(iii) + ' SFR_ssp_'+str(iii) + ' weightMass_ssp_'+str(iii) + ' weightLight_ssp_'+str(iii)
+		
+		if self.hduSPM.header['ssp_number']<8 :
+			for iii in n.arange(self.hduSPM.header['ssp_number'], 8, 1):
+				table_entry.append([0., 0., 0., 0., 0., 0.])
+				headerA += ' stellar_mass_ssp_'+str(iii) + ' age_ssp_'+str(iii) + ' metal_ssp_'+str(iii) + ' SFR_ssp_'+str(iii) + ' weightMass_ssp_'+str(iii) + ' weightLight_ssp_'+str(iii)
+
+		table_entry = n.array( n.hstack((table_entry)) )
+		#print table_entry.shape
+		return n.hstack((table_entry, self.hduFull.data[0])), headerA
 		
 	def get_table_entry_line(self):
-		headerA =" lineWavelength Survey Redshift L_MIN L_MAX L_MEAN N_in_stack wl_min wl_max R_stack spm_light_age spm_light_age_err_plus spm_light_age_err_minus spm_light_metallicity spm_light_metallicity_err_plus spm_light_metallicity_err_minus spm_stellar_mass spm_stellar_mass_err_plus spm_stellar_mass_err_minus spm_EBV "
-		table_entry = n.array([self.lineWave, self.survey, self.redshift, self.head.header['L_MIN'], self.head.header['L_MAX'], self.head.header['L_MEAN'], self.N_in_stack, self.wlmin, self.wlmax, self.R_stack, 10**self.hduSPM.header['light_age'], 10**self.hduSPM.header['light_age_up']-10**self.hduSPM.header['light_age'], 10**self.hduSPM.header['light_age']-10**self.hduSPM.header['light_age_low'],self.hduSPM.header['light_metallicity'], self.hduSPM.header['light_metallicity_up'] - self.hduSPM.header['light_metallicity'], self.hduSPM.header['light_metallicity'] - self.hduSPM.header['light_metallicity_low'], self.hduSPM.header['stellar_mass'], self.hduSPM.header['stellar_mass_up'] - self.hduSPM.header['stellar_mass'], self.hduSPM.header['stellar_mass'] - self.hduSPM.header['stellar_mass_low'], self.hduSPM.header['EBV']])
+		headerA =" lineWavelength Survey Redshift L_MIN L_MAX L_MEAN N_in_stack wl_min wl_max R_stack age_universe age_lightW_mean age_lightW_err_plus age_lightW_err_minus metallicity_lightW_mean metallicity_lightW_mean_err_plus metallicity_lightW_mean_err_minus age_massW_mean age_massW_err_plus age_massW_err_minus metallicity_massW_mean metallicity_massW_mean_err_plus metallicity_massW_mean_err_minus stellar_mass stellar_mass_err_plus stellar_mass_err_minus spm_EBV nComponentsSSP"
+		
+		table_entry = [self.lineWave, self.survey, self.redshift, self.head.header['L_MIN'], self.head.header['L_MAX'], self.head.header['L_MEAN'], self.N_in_stack, self.wlmin, self.wlmax, self.R_stack, 10**self.hduSPM.header['age_universe'], 10**self.hduSPM.header['age_lightW_mean'], 10**self.hduSPM.header['age_lightW_mean_up']-10**self.hduSPM.header['age_lightW_mean'], 10**self.hduSPM.header['age_lightW_mean']-10**self.hduSPM.header['age_lightW_mean_low'], self.hduSPM.header['metallicity_lightW_mean'], self.hduSPM.header['metallicity_lightW_mean_up'] - self.hduSPM.header['metallicity_lightW_mean'], self.hduSPM.header['metallicity_lightW_mean'] - self.hduSPM.header['metallicity_lightW_mean_low'], 10**self.hduSPM.header['age_massW_mean'], 10**self.hduSPM.header['age_massW_mean_up']-10**self.hduSPM.header['age_massW_mean'], 10**self.hduSPM.header['age_massW_mean']-10**self.hduSPM.header['age_massW_mean_low'], self.hduSPM.header['metallicity_massW_mean'], self.hduSPM.header['metallicity_massW_mean_up'] - self.hduSPM.header['metallicity_massW_mean'], self.hduSPM.header['metallicity_massW_mean'] - self.hduSPM.header['metallicity_massW_mean_low'], self.hduSPM.header['stellar_mass_mean'], self.hduSPM.header['stellar_mass_mean_up'] - self.hduSPM.header['stellar_mass_mean'], self.hduSPM.header['stellar_mass_mean'] - self.hduSPM.header['stellar_mass_mean_low'], self.hduSPM.header['EBV'], self.hduSPM.header['ssp_number']]
+		#print self.hduSPM.header
+		for iii in n.arange(self.hduSPM.header['ssp_number']):
+			table_entry.append( self.hduSPM.header['stellar_mass_ssp_'+str(iii)] )
+			table_entry.append( self.hduSPM.header['age_ssp_'+str(iii)] )
+			table_entry.append( self.hduSPM.header['metal_ssp_'+str(iii)] )
+			table_entry.append( self.hduSPM.header['SFR_ssp_'+str(iii)] )
+			table_entry.append( self.hduSPM.header['weightMass_ssp_'+str(iii)] )
+			table_entry.append( self.hduSPM.header['weightLight_ssp_'+str(iii)] )
+			headerA += ' stellar_mass_ssp_'+str(iii) + ' age_ssp_'+str(iii) + ' metal_ssp_'+str(iii) + ' SFR_ssp_'+str(iii) + ' weightMass_ssp_'+str(iii) + ' weightLight_ssp_'+str(iii)
+		
+		if self.hduSPM.header['ssp_number']<8 :
+			for iii in n.arange(self.hduSPM.header['ssp_number'], 8, 1):
+				table_entry.append([0., 0., 0., 0., 0., 0.])
+				headerA += ' stellar_mass_ssp_'+str(iii) + ' age_ssp_'+str(iii) + ' metal_ssp_'+str(iii) + ' SFR_ssp_'+str(iii) + ' weightMass_ssp_'+str(iii) + ' weightLight_ssp_'+str(iii)
+
+		table_entry = n.array( n.hstack((table_entry)) )
+		#print table_entry.shape
 		# headerB = "gp_EBV_4862_4341 gp_EBV_4862_4341_err gp_EBV_4862_4102 gp_EBV_4862_4102_err gp_BD_4102_4341 gp_BD_4102_4341_err gp_SFR_O2_3728 gp_SFR_O2_3728_err gp_SFR_H1_4862 gp_SFR_H1_4862_err gp_12logOH_tremonti04 gp_12logOH_tremonti04_err gp_12logOH_tremonti04_intrinsic gp_12logOH_tremonti04_intrinsic_err "
 		# table_entry = n.array([ self.hduLine.header['EBV_4862_4341'], self.hduLine.header['EBV_4862_4341_err'], self.hduLine.header['EBV_4862_4102'], self.hduLine.header['EBV_4862_4102_err'], self.hduLine.header['BD_4102_4341'], self.hduLine.header['BD_4102_4341_err'], self.hduLine.header['SFR_O2_3728'], self.hduLine.header['SFR_O2_3728_err'], self.hduLine.header['SFR_H1_4862'], self.hduLine.header['SFR_H1_4862_err'], self.hduLine.header['12logOH_tremonti04'], self.hduLine.header['12logOH_tremonti04_err'], self.hduLine.header['12logOH_tremonti04_intrinsic'], self.hduLine.header['12logOH_tremonti04_intrinsic_err'] ])	
-		return n.hstack((table_entry, self.hduLine.data[0]))
+		return n.hstack((table_entry, self.hduLine.data[0])), headerA
 		
 	def print_spm_result(self):
-		age ='age = ' +  str(n.round( 10**self.hdu2.header['light_age'] ,3))+ '+('+ str(n.round( 10**self.hdu2.header['light_age_up']-10**self.hdu2.header['light_age'] ,3)) +')-('+str(n.round( 10**self.hdu2.header['light_age']-10**self.hdu2.header['light_age_low'] ,3))+') Gyr'
-		metallicity = 'log(Z/Zsun) = ' + str(n.round( self.hdu2.header['light_metallicity'] ,3))+ '+('+ str(n.round( self.hdu2.header['light_metallicity_up'] - self.hdu2.header['light_metallicity'] ,3)) +')-('+str(n.round( self.hdu2.header['light_metallicity'] - self.hdu2.header['light_metallicity_low'] ,3))+')'
-		mass = 'log(M/Msun) = ' + str(n.round( self.hdu2.header['stellar_mass'] ,3))+ '+('+ str(n.round( self.hdu2.header['stellar_mass_up'] - self.hdu2.header['stellar_mass'] ,3)) +')-('+str(n.round( self.hdu2.header['stellar_mass'] - self.hdu2.header['stellar_mass_low'] ,3))+')'
+		age ='age = ' +  str(n.round( 10**self.hdu2.header['light_age'] ,3))+ '+('+ str(n.round( 10**self.hdu2.header['age_lightW_mean_up']-10**self.hdu2.header['light_age'] ,3)) +')-('+str(n.round( 10**self.hdu2.header['age_lightW_mean']-10**self.hdu2.header['age_lightW_mean_low'] ,3))+') Gyr'
+		metallicity = 'log(Z/Zsun) = ' + str(n.round( self.hdu2.header['metallicity_lightW_mean'] ,3))+ '+('+ str(n.round( self.hdu2.header['metallicity_lightW_mean_up'] - self.hdu2.header['metallicity_lightW_mean'] ,3)) +')-('+str(n.round( self.hdu2.header['metallicity_lightW_mean'] - self.hdu2.header['metallicity_lightW_mean_low'] ,3))+')'
+		mass = 'log(M/Msun) = ' + str(n.round( self.hdu2.header['stellar_mass_mean'] ,3))+ '+('+ str(n.round( self.hdu2.header['stellar_mass_mean_up'] - self.hdu2.header['stellar_mass_mean'] ,3)) +')-('+str(n.round( self.hdu2.header['stellar_mass_mean'] - self.hdu2.header['stellar_mass_mean_low'] ,3))+')'
 		return age, metallicity, mass
 		
 	def compute_derived_quantities(self):
@@ -387,11 +421,11 @@ class InterpretSpectraStacks:
 		"""
 		Plots the fit."""
 
-		age ='age = ' +  str(n.round( 10**self.hdu2.header['light_age'] ,3))+ '+('+ str(n.round( 10**self.hdu2.header['light_age_up']-10**self.hdu2.header['light_age'] ,3)) +')-('+str(n.round( 10**self.hdu2.header['light_age']-10**self.hdu2.header['light_age_low'] ,3))+') Gyr'
+		age ='age = ' +  str(n.round( 10**self.hdu2.header['age_lightW_mean'] ,3))+ '+('+ str(n.round( 10**self.hdu2.header['age_lightW_mean_up']-10**self.hdu2.header['age_lightW_mean'] ,3)) +')-('+str(n.round( 10**self.hdu2.header['age_lightW_mean']-10**self.hdu2.header['age_lightW_mean_low'] ,3))+') Gyr'
 
-		metallicity = 'log(Z/Zsun) = ' + str(n.round( self.hdu2.header['light_metallicity'] ,3))+ '+('+ str(n.round( self.hdu2.header['light_metallicity_up'] - self.hdu2.header['light_metallicity'] ,3)) +')-('+str(n.round( self.hdu2.header['light_metallicity'] - self.hdu2.header['light_metallicity_low'] ,3))+')'
+		metallicity = 'log(Z/Zsun) = ' + str(n.round( self.hdu2.header['metallicity_lightW_mean'] ,3))+ '+('+ str(n.round( self.hdu2.header['metallicity_lightW_mean_up'] - self.hdu2.header['metallicity_lightW_mean'] ,3)) +')-('+str(n.round( self.hdu2.header['metallicity_lightW_mean'] - self.hdu2.header['metallicity_lightW_mean_low'] ,3))+')'
 
-		mass = 'log(M/Msun) = ' + str(n.round( self.hdu2.header['stellar_mass'] ,3))+ '+('+ str(n.round( self.hdu2.header['stellar_mass_up'] - self.hdu2.header['stellar_mass'] ,3)) +')-('+str(n.round( self.hdu2.header['stellar_mass'] - self.hdu2.header['stellar_mass_low'] ,3))+')'
+		mass = 'log(M/Msun) = ' + str(n.round( self.hdu2.header['stellar_mass_mean'] ,3))+ '+('+ str(n.round( self.hdu2.header['stellar_mass_mean_up'] - self.hdu2.header['stellar_mass_mean'] ,3)) +')-('+str(n.round( self.hdu2.header['stellar_mass_mean'] - self.hdu2.header['stellar_mass_mean_low'] ,3))+')'
 
 		fig = p.figure(0,(10,10))
 		fig.subplots_adjust(hspace=0.5,wspace=0.5)

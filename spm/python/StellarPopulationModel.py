@@ -434,13 +434,13 @@ class StellarPopulationModel:
 			tbhdu.header['HIERARCH redshift'] = self.specObs.redshift
 
 			# mean quantities
-			tbhdu.header['HIERARCH age_lightW_mean'] = np.log10(10**9 * 10**averages['light_age']) # log(Gyrs)
+			tbhdu.header['HIERARCH age_lightW_mean'] = np.log10(10**9 * 10**averages['light_age']) 
 			tbhdu.header['HIERARCH age_lightW_mean_up'] = np.log10(10**9 * 10**averages['light_age_1_sig_plus']) # log(Gyrs)
 			tbhdu.header['HIERARCH age_lightW_mean_low'] = np.log10(10**9 * 10**averages['light_age_1_sig_minus']) # log(Gyrs)
 			tbhdu.header['HIERARCH metallicity_lightW_mean'] = averages['light_metal']
 			tbhdu.header['HIERARCH metallicity_lightW_mean_up'] = averages['light_metal_1_sig_plus']
 			tbhdu.header['HIERARCH metallicity_lightW_mean_low'] = averages['light_metal_1_sig_minus']
-			tbhdu.header['HIERARCH age_massW_mean'] = np.log10(10**9 * 10**averages['mass_age']) # log(Gyrs)
+			tbhdu.header['HIERARCH age_massW_mean'] = np.log10(10**9 * 10**averages['mass_age']) 
 			tbhdu.header['HIERARCH age_massW_mean_up'] = np.log10(10**9 * 10**averages['mass_age_1_sig_plus']) # log(Gyrs)
 			tbhdu.header['HIERARCH age_massW_mean_low'] = np.log10(10**9 * 10**averages['mass_age_1_sig_minus']) # log(Gyrs)
 			tbhdu.header['HIERARCH metallicity_massW_mean'] = averages['mass_metal']

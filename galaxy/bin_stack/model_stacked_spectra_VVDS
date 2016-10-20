@@ -10,12 +10,8 @@ stack_files.sort()
 
 #print stack_files
 
-for file in stack_files:
+for file in stack_files[:2]:
 	print( file )
-	#if len(glob.glob(file[:-4]+"*modeled*"))>0:
-	#	print( file, "out" )
-	#	continue
-
 	mm=ModelSpectraStacks(file,mode="MILES")
 	#mm.plot_fit()
 	mm.fit_lines_to_fullSpectrum()

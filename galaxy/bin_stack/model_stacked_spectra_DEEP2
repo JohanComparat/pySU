@@ -11,10 +11,6 @@ stack_files.sort()
 
 for file in stack_files:
 	print( file )
-	#if len(glob.glob(file[:-7]+"*modeled*"))>0:
-	#	print( file, "out" )
-	#	continue
-    #
 	mm=ModelSpectraStacks(file,mode="MILES")
 	#mm.plot_fit()
 	mm.fit_lines_to_fullSpectrum()
@@ -22,6 +18,7 @@ for file in stack_files:
 	#mm.compute_derived_quantities()
 	mm.save_spectrum()
 	#mm.plot_spectrum()
+
 """
 file="/users/jcomparat/skies_universes_production/spectraStacks/data/O2_3728/O2_3728-DEEP2R24.2-z0.925_stack_N_400_R_8686_L_4.09036870021e+41.fits"
 mm=ModelSpectraStacks(file,mode="MILES")
