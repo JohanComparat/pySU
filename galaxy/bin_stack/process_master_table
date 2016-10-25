@@ -62,7 +62,7 @@ bdc5_ref=H1.getEmissivity(1e4, 1e2, lev_i = 4, lev_j = 2) / H1.getEmissivity(1e4
 bdc23_ref=H1.getEmissivity(1e4, 1e2, lev_i = 5, lev_j = 2)/H1.getEmissivity(1e4, 1e2, lev_i = 6, lev_j = 2)
 
 
-def compute_derived_quantities(dat, dV = -9999.99):
+def compute_derived_quantities(tab, dV = -9999.99):
 	"""
 	Computes the different line ratios and converts to extinction :
 	 * Balmer decrement and E(B-V) Correction using 4862 / 4341
@@ -99,7 +99,7 @@ def compute_derived_quantities(dat, dV = -9999.99):
 	EBV_4862_4341_CORRHb = 10**(0.4 *klHb *EBV_4862_4341 )
 	#EBV_4862_4341_CORRHb_err =  EBV_4862_4341_err * n.log(10) * 0.4 * klHb * tab['EBV_4862_4341_CORRHb']
 
-	bad = (tab['H1_4341_flux']<=0 )|( tab['H1_4862_flux']<=0 )|( tab['H1_4341_fluxErr']<=0 )|( tab['H1_4862_fluxErr']<=0 )
+	bad = (tab['H1_4341_flux']<=0 )|( tab['H1_4862_flux']<=0 )#|( tab['H1_4341_fluxErr']<=0 )|( tab['H1_4862_fluxErr']<=0 )
 	BD_4862_4341[bad] = dV * n.ones_like(BD_4862_4341[bad])
 	BD_4862_4341_err[bad] = dV * n.ones_like(BD_4862_4341[bad])
 	EBV_4862_4341[bad] = dV * n.ones_like(BD_4862_4341[bad])
@@ -127,7 +127,7 @@ def compute_derived_quantities(dat, dV = -9999.99):
 	EBV_4862_4102_CORRHb = 10**(0.4 *klHb *EBV_4862_4102 )
 	#EBV_4862_4102_CORRHb_err =  EBV_4862_4102_err * n.log(10) * 0.4 * klHb * tab['EBV_4862_4102_CORRHb']
 	
-	bad = ( tab['H1_4102_flux']<=0 )|( tab['H1_4862_flux']<=0)|(tab['H1_4102_fluxErr']<=0 )|( tab['H1_4862_fluxErr']<=0)
+	bad = ( tab['H1_4102_flux']<=0 )|( tab['H1_4862_flux']<=0)#|(tab['H1_4102_fluxErr']<=0 )|( tab['H1_4862_fluxErr']<=0)
 	BD_4862_4102[bad] = dV * n.ones_like(BD_4862_4102[bad])
 	BD_4862_4102_err[bad] = dV * n.ones_like(BD_4862_4102[bad])
 	EBV_4862_4102[bad] = dV * n.ones_like(BD_4862_4102[bad])
@@ -155,7 +155,7 @@ def compute_derived_quantities(dat, dV = -9999.99):
 	EBV_4102_4341_CORRHb = 10**(0.4 *klHb *EBV_4102_4341 )
 	#EBV_4102_4341_CORRHb_err =  EBV_4102_4341_err * n.log(10) * 0.4 * klHb * tab['EBV_4102_4341_CORRHb']
 
-	bad = (['H1_4102_flux']<=0 )|( tab['H1_4341_flux']<=0 )|( tab['H1_4102_fluxErr']<=0 )|( tab['H1_4341_fluxErr']<=0)
+	bad = (['H1_4102_flux']<=0 )|( tab['H1_4341_flux']<=0 )#|( tab['H1_4102_fluxErr']<=0 )|( tab['H1_4341_fluxErr']<=0)
 	BD_4102_4341[bad] = dV * n.ones_like(BD_4102_4341[bad])
 	BD_4102_4341_err[bad] = dV * n.ones_like(BD_4102_4341[bad])
 	EBV_4102_4341[bad] = dV * n.ones_like(BD_4102_4341[bad])
@@ -173,7 +173,7 @@ def compute_derived_quantities(dat, dV = -9999.99):
 	O32ErrFrac =  ( ((tab['O3_4960_fluxErr']+ tab['O3_5007_fluxErr'])/ (tab['O3_4960_flux'] +tab['O3_5007_flux']))**2. + (tab['O2_3728_fluxErr'] /tab['O2_3728_flux'] ) **2.)**0.5  
 	O32_err = O32 * O32ErrFrac
 	
-	bad = (['O3_4960_flux']<=0 )|( tab['O3_5007_flux']<=0 )|( tab['O2_3728_flux']<=0 )|( tab['O3_4960_fluxErr']<=0 )|( tab['O3_5007_fluxErr']<=0 )|( tab['O2_3728_fluxErr'] <=0 )
+	bad = (['O3_4960_flux']<=0 )|( tab['O3_5007_flux']<=0 )|( tab['O2_3728_flux']<=0 )#|( tab['O3_4960_fluxErr']<=0 )|( tab['O3_5007_fluxErr']<=0 )|( tab['O2_3728_fluxErr'] <=0 )
 	O32[bad] = dV * n.ones_like(O32[bad])
 	O32_err[bad] = dV * n.ones_like(O32[bad])
 
@@ -185,7 +185,7 @@ def compute_derived_quantities(dat, dV = -9999.99):
 	logOH_tremonti04 = 9.185-0.313*n.log10(R23) - 0.264 *n.log10(R23)**2 - 0.321 *n.log10(R23)**3
 	logOH_tremonti04_err = -0.313* R23ErrFrac / n.log(10) - 0.264 *2 * R23ErrFrac / n.log(10) * n.log10(R23) - 0.321 * 3* R23ErrFrac / n.log(10) * n.log10(R23)**2
 
-	bad = (['O3_4960_flux']<=0 )|( tab['O3_5007_flux']<=0 )|( tab['O2_3728_flux']<=0 )|( tab['H1_4862_flux']<=0 )|( tab['O3_4960_fluxErr']<=0 )|( tab['O3_5007_fluxErr']<=0 )|( tab['O2_3728_fluxErr'] <=0 )|( tab['H1_4862_fluxErr']<=0 )
+	bad = (['O3_4960_flux']<=0 )|( tab['O3_5007_flux']<=0 )|( tab['O2_3728_flux']<=0 )|( tab['H1_4862_flux']<=0 )#|( tab['O3_4960_fluxErr']<=0 )|( tab['O3_5007_fluxErr']<=0 )|( tab['O2_3728_fluxErr'] <=0 )|( tab['H1_4862_fluxErr']<=0 )
 	R23[bad] =  dV * n.ones_like(R23[bad])
 	R23_err[bad] = dV * n.ones_like(R23[bad])
 	logOH_tremonti04[bad] = dV * n.ones_like(R23[bad])
@@ -198,7 +198,7 @@ def compute_derived_quantities(dat, dV = -9999.99):
 	logO2H = n.log10(OpH) + 7.637
 	logO2H_err = OpHErrFrac/n.log(10.)
 
-	bad =(tab['O2_3728_flux']<=0 )|( tab['H1_4862_flux']<=0 )|( tab['O2_3728_fluxErr']<=0 )|( tab['H1_4862_fluxErr']<=0)
+	bad =(tab['O2_3728_flux']<=0 )|( tab['H1_4862_flux']<=0 )#|( tab['O2_3728_fluxErr']<=0 )|( tab['H1_4862_fluxErr']<=0)
 	OpH[bad] = dV * n.ones_like(OpH[bad])
 	OpHErr[bad] =  dV * n.ones_like(OpH[bad])
 	logO2H[bad] =  dV * n.ones_like(OpH[bad])
@@ -211,7 +211,7 @@ def compute_derived_quantities(dat, dV = -9999.99):
 	logO3H = n.log10( O3H )+7.437
 	logO3H_err = O3HErrFrac / n.log(10.)
 
-	bad = (['O3_4960_flux']<=0 )|( tab['O3_5007_flux']<=0 )|( tab['H1_4862_flux']<=0 )|( tab['O3_5007_fluxErr'] <=0 )|( tab['O3_4960_fluxErr']<=0 )|( tab['H1_4862_fluxErr']<=0)
+	bad = (['O3_4960_flux']<=0 )|( tab['O3_5007_flux']<=0 )|( tab['H1_4862_flux']<=0 )#|( tab['O3_5007_fluxErr'] <=0 )|( tab['O3_4960_fluxErr']<=0 )|( tab['H1_4862_fluxErr']<=0)
 	O3H[bad] = dV  *n.ones_like(O3H[bad] )
 	O3HErr[bad] = dV  *n.ones_like(O3H[bad] )
 	logO3H[bad] = dV  *n.ones_like(O3H[bad] )
@@ -224,7 +224,7 @@ def compute_derived_quantities(dat, dV = -9999.99):
 	logO3_5007_H = n.log10( O35H )
 	logO3_5007_H_err = O35HErrFrac / n.log(10.)
 
-	bad = (['O3_5007_flux']<=0 )|( tab['H1_4862_flux']<=0 )|( tab['O3_5007_fluxErr'] <=0  )|( tab['H1_4862_fluxErr']<=0)
+	bad = (['O3_5007_flux']<=0 )|( tab['H1_4862_flux']<=0 )#|( tab['O3_5007_fluxErr'] <=0  )|( tab['H1_4862_fluxErr']<=0)
 	O35H[bad] = dV *n.ones_like(O35H[bad] )
 	O35HErr[bad] = dV *n.ones_like(O35H[bad] )
 	logO3_5007_H[bad] = dV *n.ones_like(O35H[bad] )
@@ -240,10 +240,9 @@ path_to_input_table_full = join(os.environ['SPECTRASTACKS_DIR'], "results", "tab
 path_to_output_table_full = join(os.environ['SPECTRASTACKS_DIR'], "results", "table_fullSpecFit_v0.VA.fits")
 
 hdu = fits.open(path_to_input_table_full)
-tab = hdu[1].data
-arrs, cols = compute_derived_quantities(tab)
+arrs, cols = compute_derived_quantities(hdu[1].data)
 
-new_cols = tab.columns 
+new_cols = hdu[1].data.columns 
 for ll in range(len(arrs)):
 	#print cols[0], arrs[ll]
 	c0 = fits.Column(name=cols[ll], format='D', array= arrs[ll] )
@@ -257,16 +256,13 @@ if os.path.isfile(path_to_output_table_full):
 thdulist.writeto(path_to_output_table_full)
 
 
-dat= 0
-
 path_to_input_table_full = join(os.environ['SPECTRASTACKS_DIR'], "results", "table_lineSpecFit_v0.fits")
 path_to_output_table_full = join(os.environ['SPECTRASTACKS_DIR'], "results", "table_lineSpecFit_v0.VA.fits")
 
 hdu = fits.open(path_to_input_table_full)
-tab = hdu[1].data
-arrs, cols = compute_derived_quantities(tab)
+arrs, cols = compute_derived_quantities(hdu[1].data)
 
-new_cols = tab.columns 
+new_cols = hdu[1].data.columns 
 for ll in range(len(arrs)):
 	#print cols[0], arrs[ll]
 	c0 = fits.Column(name=cols[ll], format='D', array= arrs[ll] )

@@ -13,11 +13,12 @@ from os.path import join
 import astropy.io.fits as fits
 
 G05 = n.loadtxt( join(os.environ['SPECTRASTACKS_DIR'], "biblioPoints", "gallazzi-2005.data"), unpack= True)
-path_to_summary_table = join(os.environ['SPECTRASTACKS_DIR'], "results", "table_fullSpecFit_v0.VA.fits")
 
-G05 = n.loadtxt( join(os.environ['SPECTRASTACKS_DIR'], "biblioPoints", "gallazzi-2005.data"), unpack= True)
+G06 = n.loadtxt( join(os.environ['SPECTRASTACKS_DIR'], "biblioPoints", "gallazzi-2006.data"), unpack= True)
+
 path_to_summary_table = join(os.environ['SPECTRASTACKS_DIR'], "results", "table_fullSpecFit_v0.VA.fits")
 data =fits.open(path_to_summary_table)[1].data
+
 path_to_summary_table = join(os.environ['SPECTRASTACKS_DIR'], "results", "table_lineSpecFit_v0.VA.fits")
 datL =fits.open(path_to_summary_table)[1].data
 
@@ -32,30 +33,83 @@ Hb = (data['lineWavelength']== 4862.) & (data['H1_4862_flux']>0)
 
 chi2 = (data['H1_4862_flux'][Hb] - fl[Hb])/data['H1_4862_fluxErr'][Hb]
 
-"""
-ok = (data[2]<5)&(data[2]>0.)
+ebv_snr_limit = 2.
+chi2_per_dof = 10.
 
-lineWavelength,Survey,Redshift,L_MIN,L_MAX,L_MEAN,N_in_stack,R_stack,spm_light_age,spm_light_age_err_plus,spm_light_age_err_minus,spm_light_metallicity,spm_light_metallicity_err_plus,spm_light_metallicity_err_minus,spm_stellar_mass,spm_stellar_mass_err_plus,spm_stellar_mass_err_minus,spm_EBV,gp_EBV_4862_4341,gp_EBV_4862_4341_err,gp_EBV_4862_4102,gp_EBV_4862_4102_err,gp_BD_4102_4341,gp_BD_4102_4341_err,gp_SFR_O2_3728,gp_SFR_O2_3728_err,gp_SFR_H1_4862,gp_SFR_H1_4862_err,gp_12logOH_tremonti04,gp_12logOH_tremonti04_err,gp_12logOH_tremonti04_intrinsic,gp_12logOH_tremonti04_intrinsic_err = data.T[ok].T
+detect_H1_4862 = (datL['H1_4862_flux']>ebv_snr_limit*datL['H1_4862_fluxErr'])  & (datL['H1_4862_flux']>0) & (datL['H1_4862_fluxErr']>0) &(datL['H1_4862_chi2']<chi2_per_dof*datL['H1_4862_ndof'])
+detect_H1_4341 = (datL['H1_4341_flux']>ebv_snr_limit*datL['H1_4341_fluxErr'])& (datL['H1_4341_flux']>0)&(datL['H1_4341_fluxErr']>0)&(datL['H1_4341_chi2']<chi2_per_dof*datL['H1_4341_ndof'])
+detect_H1_4102 = (datL['H1_4102_flux']>ebv_snr_limit*datL['H1_4102_fluxErr'])& (datL['H1_4102_flux']>0)&(datL['H1_4102_fluxErr']>0)&(datL['H1_4102_chi2']<chi2_per_dof*datL['H1_4102_ndof'])
 
-n.savetxt(join(os.environ['SPECTRASTACKS_DIR'], "results", "table_firefly.tex"), n.transpose([Survey, lineWavelength, Redshift, N_in_stack, n.log10(n.round(L_MEAN,2)), n.round(spm_light_age,3), n.round(spm_stellar_mass,2), n.round(spm_light_metallicity,3) ]) ,delimiter = " & " ,fmt='%2.3f', newline="\\\\ ")
-"""
-# EBV comparison
-#spm_EBV
-#gp_EBV_4862_4341,gp_EBV_4862_4341_err,
+detect_all_H1 = detect_H1_4862 & detect_H1_4341 & detect_H1_4102
+
+def_EBV_4862_4341 = (datL['EBV_4862_4341']!=-9999.99) &  (datL['EBV_4862_4341_err']!=-9999.99)
+def_EBV_4862_4102 = (datL['EBV_4862_4102']!=-9999.99) &  (datL['EBV_4862_4102_err']!=-9999.99)
+def_EBV_4102_4341 = (datL['EBV_4102_4341']!=-9999.99) &  (datL['EBV_4102_4341_err']!=-9999.99)
 
 
 p.figure(0,(6,6))
 p.axes([0.17,0.17,0.8,0.8])
-#ok = (datL['H1_4862_flux']>3*datL['H1_4862_fluxErr'])  & (datL['H1_4862_flux']>0) & (datL['H1_4862_fluxErr']>0)  & (datL['H1_4341_flux']>3*datL['H1_4341_fluxErr'])& (datL['H1_4341_flux']>0)&(datL['H1_4341_fluxErr']>0)& (datL['EBV_4862_4341']!=-9999.99) &  (datL['EBV_4862_4341_err']!=-9999.99)
-#p.errorbar(datL['spm_EBV'][ok], datL['EBV_4862_4341'][ok], yerr=datL['EBV_4862_4341_err'][ok],fmt='o',elinewidth=2, mfc='none',label='resi')
-ok = (data['H1_4862_flux']>3*data['H1_4862_fluxErr'])  & (data['H1_4862_flux']>0) & (data['H1_4862_fluxErr']>0)  & (data['H1_4341_flux']>3*data['H1_4341_fluxErr'])& (data['H1_4341_flux']>0)&(data['H1_4341_fluxErr']>0)& (data['EBV_4862_4341']!=-9999.99) &  (data['EBV_4862_4341_err']!=-9999.99)
-p.errorbar(data['spm_EBV'][ok], data['EBV_4862_4341'][ok], yerr=data['EBV_4862_4341_err'][ok],fmt='o',elinewidth=1, mfc='none',label='full')
-ok = (datL['H1_4862_flux']>3*datL['H1_4862_fluxErr'])  & (datL['H1_4862_flux']>0) & (datL['H1_4862_fluxErr']>0)  & (datL['H1_4341_flux']>3*datL['H1_4341_fluxErr'])& (datL['H1_4341_flux']>0)&(datL['H1_4341_fluxErr']>0)& (datL['EBV_4862_4341']!=-9999.99) &  (datL['EBV_4862_4341_err']!=-9999.99)
-p.errorbar(datL['spm_EBV'][ok], datL['EBV_4862_4341'][ok], yerr=datL['EBV_4862_4341_err'][ok],fmt='o',elinewidth=1, mfc='none',label='GP')
+p.errorbar(x=datL['age_lightW_mean'], xerr=[datL['age_lightW_err_minus'], datL['age_lightW_err_plus']], y=datL['metallicity_lightW_mean'], yerr=[datL['metallicity_lightW_mean_err_minus'], datL['metallicity_lightW_mean_err_plus']],fmt='o',elinewidth=1, mfc='none', label='ELG lightW')
+y = G06[1]
+x = 10**G06[4]
+xerr = [10**(G06[4])-10**(G06[5]), 10**(G06[6])-10**(G06[4])]
+yerr = [G06[1]-G06[2], G06[3]-G06[1]]
+p.errorbar(x, y, xerr=xerr, yerr=yerr, fmt='o',elinewidth=1, mfc='none', label='SDSS G06')
+gl=p.legend(loc=0)
+gl.set_frame_on(False)
+p.xscale('log')
+p.xlabel(r'$age/[yr]$')
+p.ylabel(r'stellar $\log(Z/[Z_\odot])$')
+p.grid()
+p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "age-metal-lightW.png"))
+p.clf()
+
+
+p.figure(0,(6,6))
+p.axes([0.17,0.17,0.8,0.8])
+p.errorbar(x=datL['age_massW_mean'], xerr=[datL['age_massW_err_minus'], datL['age_massW_err_plus']], y=datL['metallicity_massW_mean'], yerr=[datL['metallicity_massW_mean_err_minus'], datL['metallicity_massW_mean_err_plus']],fmt='o',elinewidth=1, mfc='none', label='ELG massW')
+y = G06[1]
+x = 10**G06[4]
+xerr = [10**(G06[4])-10**(G06[5]), 10**(G06[6])-10**(G06[4])]
+yerr = [G06[1]-G06[2], G06[3]-G06[1]]
+p.errorbar(x, y, xerr=xerr, yerr=yerr, fmt='o',elinewidth=1, mfc='none', label='SDSS G06')
+gl=p.legend(loc=0)
+gl.set_frame_on(False)
+p.xscale('log')
+p.xlabel(r'$age/[yr]$')
+p.ylabel(r'stellar $\log(Z/[Z_\odot])$')
+p.grid()
+p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "age-metal-massW.png"))
+p.clf()
+
+sys.exit()
+
+
+
+
+
+
+
+
+p.figure(0,(6,6))
+p.axes([0.17,0.17,0.8,0.8])
+ok = def_EBV_4862_4341 & detect_H1_4862 & detect_H1_4341
+print len(datL['spm_EBV'][ok])
+p.errorbar(datL['spm_EBV'][ok], datL['EBV_4862_4341'][ok], yerr=datL['EBV_4862_4341_err'][ok],fmt='o',elinewidth=1, mfc='none')#,label='4862-4341')
+
+#ok = def_EBV_4862_4102 & detect_H1_4862 & detect_H1_4102
+#print len(datL['spm_EBV'][ok])
+#p.errorbar(datL['spm_EBV'][ok], datL['EBV_4862_4102'][ok], yerr=datL['EBV_4862_4102_err'][ok],fmt='o',elinewidth=1, mfc='none',label='4862-4102')
+
+ok = def_EBV_4102_4341 & detect_H1_4341 & detect_H1_4102
+print len(datL['spm_EBV'][ok])
+p.errorbar(datL['spm_EBV'][ok], datL['EBV_4102_4341'][ok], yerr=datL['EBV_4102_4341_err'][ok],fmt='o',elinewidth=1, mfc='none')#,label='4341-4102')
+
 p.plot([-0.1,1.5],[-0.1,1.5],'k--')
-p.legend(loc=0)
+
+#p.legend(loc=0)
 p.xlabel('E(B-V) SPM')
-p.ylabel(r'E(B-V) GP $H\beta -H\delta$')
+p.ylabel(r'E(B-V) Balmer decrement')
 p.xlim((-0.1,1.5))
 p.ylim((-0.1,1.5))
 p.grid()
@@ -67,26 +121,30 @@ p.clf()
 p.figure(0,(6,6))
 p.axes([0.17,0.17,0.8,0.8])
 
-ok1 = (data['H1_4862_flux']>3*data['H1_4862_fluxErr'])  & (data['H1_4862_flux']>0) & (data['H1_4862_fluxErr']>0)  & (data['H1_4341_flux']>3*data['H1_4341_fluxErr'])& (data['H1_4341_flux']>0)&(data['H1_4341_fluxErr']>0)& (data['EBV_4862_4341']!=-9999.99) &  (data['EBV_4862_4341_err']!=-9999.99)
-ok2 = (data['H1_4862_flux']>3*data['H1_4862_fluxErr'])  & (data['H1_4862_flux']>0) & (data['H1_4862_fluxErr']>0)  & (data['H1_4102_flux']>3*data['H1_4102_fluxErr'])& (data['H1_4102_flux']>0)&(data['H1_4102_fluxErr']>0)& (data['EBV_4862_4102']!=-9999.99) &  (data['EBV_4862_4102_err']!=-9999.99)
-ok=(ok1)&(ok2)
-p.errorbar(data['EBV_4862_4102'][ok], data['EBV_4862_4341'][ok], xerr=data['EBV_4862_4102_err'][ok], yerr=data['EBV_4862_4341_err'][ok],fmt='o',elinewidth=1, mfc='none',label='full')
+ok = def_EBV_4862_4102 & def_EBV_4862_4341 & detect_all_H1
+print len(datL['spm_EBV'][ok])
+p.errorbar(datL['EBV_4862_4102'][ok], datL['EBV_4862_4341'][ok], xerr=datL['EBV_4862_4102_err'][ok], yerr=datL['EBV_4862_4341_err'][ok],fmt='o',elinewidth=1, mfc='none',label='x:4862-4102, y:4862-4341')
 
-ok1 = (datL['H1_4862_flux']>3*datL['H1_4862_fluxErr'])  & (datL['H1_4862_flux']>0) & (datL['H1_4862_fluxErr']>0)  & (datL['H1_4341_flux']>3*datL['H1_4341_fluxErr'])& (datL['H1_4341_flux']>0)&(datL['H1_4341_fluxErr']>0)& (datL['EBV_4862_4341']!=-9999.99) &  (datL['EBV_4862_4341_err']!=-9999.99)
-ok2 = (datL['H1_4862_flux']>3*datL['H1_4862_fluxErr'])  & (datL['H1_4862_flux']>0) & (datL['H1_4862_fluxErr']>0)  & (datL['H1_4102_flux']>3*datL['H1_4102_fluxErr'])& (datL['H1_4102_flux']>0)&(datL['H1_4102_fluxErr']>0)& (datL['EBV_4862_4102']!=-9999.99) &  (datL['EBV_4862_4102_err']!=-9999.99)
-ok=(ok1)&(ok2)
-p.errorbar(datL['EBV_4862_4102'][ok], datL['EBV_4862_4341'][ok], xerr=datL['EBV_4862_4102_err'][ok], yerr=datL['EBV_4862_4341_err'][ok],fmt='o',elinewidth=1, mfc='none',label='GP')
+ok = def_EBV_4862_4102 & def_EBV_4102_4341 & detect_all_H1
+print len(datL['spm_EBV'][ok])
+p.errorbar(datL['EBV_4862_4102'][ok], datL['EBV_4102_4341'][ok], xerr=datL['EBV_4862_4102_err'][ok], yerr=datL['EBV_4102_4341_err'][ok],fmt='o',elinewidth=1, mfc='none',label='x:4862-4102, y:4341-4102')
+
+ok = def_EBV_4862_4341 & def_EBV_4102_4341 & detect_all_H1
+print len(datL['spm_EBV'][ok])
+p.errorbar(datL['EBV_4862_4341'][ok], datL['EBV_4102_4341'][ok], xerr=datL['EBV_4862_4341_err'][ok], yerr=datL['EBV_4102_4341_err'][ok],fmt='o',elinewidth=1, mfc='none',label='x:4862-4341, y:4341-4102')
 
 p.plot([-0.1,1.5],[-0.1,1.5],'k--')
-p.legend(loc=0)
-p.xlabel(r'E(B-V) GP $H\beta -H\gamma$')
-p.ylabel(r'E(B-V) GP $H\beta -H\delta$')
-p.xlim((-0.1,1.5))
-p.ylim((-0.1,1.5))
+gl=p.legend(loc=0)
+gl.set_frame_on(False)
+p.xlabel(r'E(B-V) Balmer decrement x')#GP $H\beta -H\gamma$')
+p.ylabel(r'E(B-V) Balmer decrement y')#GP $H\beta -H\delta$')
+p.xlim((-0.1,1.2))
+p.ylim((-0.1,1.2))
 p.grid()
 p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "ebv-comparison-2.png"))
 p.clf()
 
+sys.exit()
 
 Nst = (data['N_in_stack']==200)#&(data['Survey']==2)
 EBvok = (Nst)&(data['H1_4862_flux']>data['H1_4862_fluxErr'])  & (data['H1_4862_flux']>0) & (data['H1_4862_fluxErr']>0)  & (data['H1_4341_flux']>data['H1_4341_fluxErr'])& (data['H1_4341_flux']>0)&(data['H1_4341_fluxErr']>0)& (data['EBV_4862_4341']!=-9999.99) &  (data['EBV_4862_4341_err']!=-9999.99)

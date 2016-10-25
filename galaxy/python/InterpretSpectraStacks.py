@@ -149,7 +149,7 @@ class InterpretSpectraStacks:
 		
 		if self.hduSPM.header['ssp_number']<8 :
 			for iii in n.arange(self.hduSPM.header['ssp_number'], 8, 1):
-				table_entry.append([0., 0., 0., 0., 0., 0.])
+				table_entry.append([self.dV, self.dV, self.dV, self.dV, self.dV, self.dV])
 				headerA += ' stellar_mass_ssp_'+str(iii) + ' age_ssp_'+str(iii) + ' metal_ssp_'+str(iii) + ' SFR_ssp_'+str(iii) + ' weightMass_ssp_'+str(iii) + ' weightLight_ssp_'+str(iii)
 
 		table_entry = n.array( n.hstack((table_entry)) )
@@ -172,7 +172,7 @@ class InterpretSpectraStacks:
 		
 		if self.hduSPM.header['ssp_number']<8 :
 			for iii in n.arange(self.hduSPM.header['ssp_number'], 8, 1):
-				table_entry.append([0., 0., 0., 0., 0., 0.])
+				table_entry.append([self.dV, self.dV, self.dV, self.dV, self.dV, self.dV])
 				headerA += ' stellar_mass_ssp_'+str(iii) + ' age_ssp_'+str(iii) + ' metal_ssp_'+str(iii) + ' SFR_ssp_'+str(iii) + ' weightMass_ssp_'+str(iii) + ' weightLight_ssp_'+str(iii)
 
 		table_entry = n.array( n.hstack((table_entry)) )

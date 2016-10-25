@@ -23,13 +23,6 @@ cp $DEEP2_DIR/products/spectraStacks/O3_5007/*.fits  $SPECTRASTACKS_DIR/data/O3_
 #rm  $SPECTRASTACKS_DIR/data/O3_5007/O3_5007-VVDSDEEPI24-z0.674*
 #rm  $SPECTRASTACKS_DIR/data/O3_5007/O3_5007-VVDSDEEPI24-z0.741*
 
-cd $SPECTRASTACKS_DIR/scripts/
------------------------------
-NEEDS TO BE FIXED
------------------------------
-python presentationPlot.py
-#produces the first two figures of the paper presenting the data.
-
 # fit firefly stellar population continuum models
 cd $PYSU_DIR/spm/bin
 python setup_run_for_stacks_VVDSDEEP
@@ -58,6 +51,17 @@ python create_master_table
 # computes balmer decrements, line ratios, metallicities ...
 python process_master_table
 #output in join(os.environ['SPECTRASTACKS_DIR'], "results", "table_lineSpecFit_v0.VA.fits")
+
+cd $SPECTRASTACKS_DIR/scripts/
+cd %SPECTRASTACKS_DIR%
+cd scripts
+python presentationPlot.py
+python print_latex_table.py
+#produces the first two figures of the paper presenting the data.
+
+cd $PYSU_GAL_DIR/bin_stack
+cd %PYSU_GAL_DIR%
+cd bin_stack
 
 # RUN CODE FROM HERE ON :
 # generate science oriented plots 
