@@ -30,11 +30,11 @@ outFile = join(os.environ['SPECTRASTACKS_DIR'], "fits", file[:7], file)
 print outFile
 print '========================='
 # gets the model for MILES, fits and writes
-model = spm.StellarPopulationModel(spec, outFile, cosmo, models = 'm11', model_libs = ['MILES'], imfs = ['ss', 'kr', 'cha'], age_limits = [6, 9], downgrade_models = True, data_wave_medium = 'air', Z_limits = [-2., 1.],suffix="-SPM-MILES.fits", use_downgraded_models = False)
+model = spm.StellarPopulationModel(spec, outFile, cosmo, models = 'm11', model_libs = ['MILES'], imfs = ['ss', 'kr', 'cha'], age_limits = [6, 9], downgrade_models = True, data_wave_medium = 'air', Z_limits = [-1., 1.],suffix="-SPM-MILES.fits", use_downgraded_models = False)
 model.fit_models_to_data()
 
 # gets the model for Stelib, fits and writes
-model = spm.StellarPopulationModel(spec, outFile, cosmo, models = 'm11', model_libs = ['STELIB'], imfs = ['ss', 'kr', 'cha'], age_limits = [6,9], downgrade_models = False, data_wave_medium = 'air', Z_limits = [-2.,1.],suffix="-SPM-STELIB.fits", use_downgraded_models = False)
+model = spm.StellarPopulationModel(spec, outFile, cosmo, models = 'm11', model_libs = ['STELIB'], imfs = ['ss', 'kr', 'cha'], age_limits = [6,9], downgrade_models = False, data_wave_medium = 'air', Z_limits = [-1.,1.],suffix="-SPM-STELIB.fits", use_downgraded_models = False)
 model.fit_models_to_data()
 
 print "time used =", time.time()-t0 ,"seconds"
