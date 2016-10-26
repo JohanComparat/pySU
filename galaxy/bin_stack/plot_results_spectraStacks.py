@@ -33,9 +33,10 @@ Hb = (data['lineWavelength']== 4862.) & (data['H1_4862_flux']>0)
 
 chi2 = (data['H1_4862_flux'][Hb] - fl[Hb])/data['H1_4862_fluxErr'][Hb]
 
-ebv_snr_limit = 2.
-chi2_per_dof = 10.
+ebv_snr_limit = 5.
+chi2_per_dof = 15
 
+detect_O3_5007 = (datL['O3_5007_flux']>ebv_snr_limit*datL['O3_5007_fluxErr'])  & (datL['O3_5007_flux']>0) & (datL['O3_5007_fluxErr']>0) &(datL['O3_5007_chi2']<chi2_per_dof*datL['O3_5007_ndof'])
 detect_H1_4862 = (datL['H1_4862_flux']>ebv_snr_limit*datL['H1_4862_fluxErr'])  & (datL['H1_4862_flux']>0) & (datL['H1_4862_fluxErr']>0) &(datL['H1_4862_chi2']<chi2_per_dof*datL['H1_4862_ndof'])
 detect_H1_4341 = (datL['H1_4341_flux']>ebv_snr_limit*datL['H1_4341_fluxErr'])& (datL['H1_4341_flux']>0)&(datL['H1_4341_fluxErr']>0)&(datL['H1_4341_chi2']<chi2_per_dof*datL['H1_4341_ndof'])
 detect_H1_4102 = (datL['H1_4102_flux']>ebv_snr_limit*datL['H1_4102_fluxErr'])& (datL['H1_4102_flux']>0)&(datL['H1_4102_fluxErr']>0)&(datL['H1_4102_chi2']<chi2_per_dof*datL['H1_4102_ndof'])
@@ -60,6 +61,8 @@ gl.set_frame_on(False)
 p.xscale('log')
 p.xlabel(r'$age/[yr]$')
 p.ylabel(r'stellar $\log(Z/[Z_\odot])$')
+p.xlim((10**6, 10**11))
+p.ylim((-2.5, 0.5))
 p.grid()
 p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "age-metal-lightW.png"))
 p.clf()
@@ -81,13 +84,6 @@ p.ylabel(r'stellar $\log(Z/[Z_\odot])$')
 p.grid()
 p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "age-metal-massW.png"))
 p.clf()
-
-sys.exit()
-
-
-
-
-
 
 
 
@@ -142,6 +138,20 @@ p.xlim((-0.1,1.2))
 p.ylim((-0.1,1.2))
 p.grid()
 p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "ebv-comparison-2.png"))
+p.clf()
+
+
+p.figure(0,(6,6))
+p.axes([0.17,0.17,0.8,0.8])
+
+ok = detect_O3_5007 & detect_H1_4862 
+x = datL['metallicity_lightW_mean'][ok]
+y = n.log10(datL['O3_5007_flux'][ok]/datL['H1_4862_flux'][ok])
+p.plot(x, y,'b+')
+p.ylabel(r'log([OIII]/Hbeta')#GP $H\beta -H\gamma$')
+p.xlabel(r'log(Z/Z0)')#GP $H\beta -H\delta$')
+p.grid()
+p.savefig( join(os.environ['SPECTRASTACKS_DIR'], "plots", "metal-lineRatio.png"))
 p.clf()
 
 sys.exit()

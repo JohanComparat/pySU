@@ -10,7 +10,7 @@ stack_files.sort()
 
 #print stack_files
 
-for file in stack_files[:2]:
+for file in stack_files:
 	print( file )
 	mm=ModelSpectraStacks(file,mode="MILES")
 	#mm.plot_fit()
