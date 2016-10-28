@@ -9,6 +9,7 @@ import matplotlib
 #matplotlib.use('pdf')
 import matplotlib.pyplot as p
 import astropy.io.fits as fits 
+from ModelSpectraStacks import *
 
 from scipy.stats import scoreatpercentile as sap
 from scipy.interpolate import interp1d
@@ -47,238 +48,139 @@ def plotStack( modeledStackFile ):
 	flObs_ls = hdus[3].data['flux']
 	flObsErr_ls = hdus[3].data['fluxErr']
 	# hdus[2].header['stellar_mass']
+			
+	def plotLine_full(lineName = "O3_5007", fol = 'line' ,figN = 0):
+		if fol=='full':
+			NhduL = 5
+		if fol=='line':
+			NhduL = 4
+		if lineName=="O2_3728":
+			a0_1 = hdus[NhduL].data[lineName + '_a0a'][0]
+			a0 = a0_1
+			a0_2 = hdus[NhduL].data[lineName + '_a0b'][0]
+			continu= hdus[NhduL].data[lineName + '_continu'][0]
+			aas =n.arange(a0_1-25, a0_2+25,0.05)
+			
+			wlSel = (hdus[1].data['wavelength']>a0_1-2*hdus[NhduL].data[lineName + '_sigma'])&(hdus[1].data['wavelength']<a0_2+2*hdus[NhduL].data[lineName + '_sigma'])
+			data_x = hdus[1].data['wavelength'][wlSel]
+			data_y = hdus[1].data['meanWeightedStack'][wlSel]
+			err_y = continu*n.ones_like(data_y)
+			
+			flMod=lambda aa,sigma,F0,sh :continu+ gaussianLineNC(aa,sigma,(1-sh)*F0,a0_1)+gaussianLineNC(aa,sigma,sh*F0,a0_2)
+			model = flMod(aas, hdus[NhduL].data[lineName + '_sigma'], hdus[NhduL].data[lineName + '_flux'], hdus[NhduL].data[lineName + '_share'] )		
+			data_fit = flMod(data_x, hdus[NhduL].data[lineName + '_sigma'], hdus[NhduL].data[lineName + '_flux'], hdus[NhduL].data[lineName + '_share'] )		
 
-	p.figure(1,(12,4))
-	p.axes([0.1,0.2,0.85,0.75])
-	p.errorbar(wl,flObs,yerr = flObsErr,label= "z="+str(redshift)+", "+str(Lmin) +"< log(L"+line+")<"+ str(Lmax), marker = 'x', c='b', ls='None')
-	p.plot(wl_fir, fl_fir,'k',lw=2,label = 'log(age)='+ str(age)+ ', log(M*)='+ str(Ms)+ ', log(Z)='+ str(metal))
-	p.xlabel('wavelength [A]')
-	p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
-	p.yscale('log')
-	p.legend(fontsize=12) 
-	p.savefig( outputFigureNameRoot + "-all.png")
-	p.clf()
+		else :
+			a0 = hdus[NhduL].data[lineName + '_a0'][0]
+			continu= hdus[NhduL].data[lineName + '_continu'][0]
+			aas =n.arange(a0-25, a0+25,0.05)
+			flMod=lambda aa,sigma,F0: gaussianLine(aa,sigma,F0,a0,continu)
+			model = flMod(aas, hdus[NhduL].data[lineName + '_sigma'], hdus[NhduL].data[lineName + '_flux'])
+						
+			wlSel = (hdus[1].data['wavelength']>a0-2*hdus[NhduL].data[lineName + '_sigma'][0])&(hdus[1].data['wavelength']<a0+2*hdus[NhduL].data[lineName + '_sigma'][0])
+			data_x = hdus[1].data['wavelength'][wlSel]
+			data_y = hdus[1].data['meanWeightedStack'][wlSel]
+			err_y = continu*n.ones_like(data_y)
+			
+			data_fit = flMod(data_x, hdus[NhduL].data[lineName + '_sigma'], hdus[NhduL].data[lineName + '_flux'])
 
-	p.figure(1,(12,4))
-	p.axes([0.1,0.2,0.85,0.75])
-	p.errorbar(wl,flObs,yerr = flObsErr,label="z="+str(redshift)+", "+ str(Lmin) +"< log(L"+line+")<"+ str(Lmax), marker = 'x', c='b', ls='None')
-	p.plot(wl_fir, fl_fir,'k',lw=2,label =  'log(age)='+ str(age)+ ', log(M*)='+ str(Ms)+ ', log(Z)='+ str(metal))
-	p.xlabel('wavelength [A]')
-	p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
-	p.yscale('log')
-	p.ylim(( n.min(fl_fir)*0.8, n.max(fl_fir)*1.2 ))
-	p.legend(fontsize=12, loc=4) 
-	p.savefig( outputFigureNameRoot + "-cont.png")
-	p.clf()
+		if hdus[NhduL].data[lineName + '_continu']>=0 :
+			
+			chi2 = n.sum((data_fit**2.-data_y**2.)/err_y**2.)/len(data_fit)
+			print chi2
 
-	p.figure(1,(12,4))
-	p.axes([0.1,0.2,0.85,0.75])
-	p.errorbar(wl,flObs,yerr = flObsErr,label= "z="+str(redshift)+", "+str(Lmin) +"< log(L"+line+")<"+ str(Lmax), marker = 'x', c='b', ls='None')
-	p.plot(wl_fir, fl_fir,'k',lw=2,label = "SPM E(B-V)="+str(n.round(hdus[2].header['EBV'],3)))
-	p.axvline(4861,color='k', ls='dashed')
-	p.axvline(4341,color='k', ls='dashed')
-	try :
-		aa=str(n.round(hdus[0].header['H1_4862_flux_nc']/hdus[0].header['H1_4341_flux_nc'] , 3))
-		bb=str(n.round(hdus[0].header['EBV_4862_4341'],3))
-		p.text(4331+50,1e-17,r"GP. H$\beta/\gamma$="+aa+", EBV=" +n.round(bb,3))
-	except KeyError:
-		pass
+			p.figure(figN,(4,4))
+			p.axes([0.21,0.2,0.78,0.7])
+			p.errorbar(wl,flObs,yerr = flObsErr, marker = 'x', c='b', ls='None')
+			p.plot(aas, model,'k',label='model', lw=2)
+			p.plot(data_x, data_fit,'m',label='mod', lw=2, ls='dashed')
+			p.xlabel('wavelength [A]')
+			p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
+			p.yscale('log')
+			p.ylim((model.min()/5., model.max()*5.))
+			p.xlim(( a0-25, a0+25))
+			gl = p.legend(loc=0,fontsize=12)
+			gl.set_frame_on(False)
+			p.savefig( outputFigureNameRoot + "-fs_" + lineName + ".png" )
+			#p.clf()
 
-	p.xlabel('wavelength [A]')
-	p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
-	p.yscale('log')
-	p.xlim(( 4331, 4871 ))
-	p.legend(fontsize=12, loc=4) 
-	p.savefig( outputFigureNameRoot + "-H1lineDecr.png")
-	p.clf()
-
-	# full spec line fits
-	a0_1 = hdus[5].data['O2_3728_a0a']
-	a0_2 = hdus[5].data['O2_3728_a0b']
-	continu= hdus[5].data['O2_3728_continu']
-	aas =n.arange(hdus[5].data['O2_3728_a0a']-25, hdus[5].data['O2_3728_a0b']+25,0.05)
-	flMod=lambda aa,sigma,F0,sh :continu+ gaussianLineNC(aa,sigma,(1-sh)*F0,a0_1)+gaussianLineNC(aa,sigma,sh*F0,a0_2)
-	model = flMod(aas, hdus[5].data['O2_3728_sigma'], hdus[5].data['O2_3728_flux'], hdus[5].data['O2_3728_share'] )		
-	#print continu, hdus[5].data['O2_3728_flux']
-	if continu>=0 and hdus[5].data['O2_3728_flux']>=0 :
-		p.figure(2,(4,4))
-		p.axes([0.21,0.2,0.78,0.7])
-		p.errorbar(wl,flObs,yerr = flObsErr, marker = 'x', c='b', ls='None')
-		p.plot(aas, model,'k',label='model', lw=2)
+			
+	def plotCont():
+		p.figure(10,(12,4))
+		p.axes([0.1,0.2,0.85,0.75])
+		p.errorbar(wl,flObs,yerr = flObsErr,label= "z="+str(redshift)+", "+str(Lmin) +"< log(L"+line+")<"+ str(Lmax), marker = 'x', c='b', ls='None')
+		p.plot(wl_fir, fl_fir,'k',lw=2,label = 'log(age)='+ str(age)+ ', log(M*)='+ str(Ms)+ ', log(Z)='+ str(metal))
 		p.xlabel('wavelength [A]')
 		p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
 		p.yscale('log')
-		p.ylim((model.min()/5., model.max()*5.))
-		p.xlim(( hdus[5].data['O2_3728_a0a']-25, hdus[5].data['O2_3728_a0b']+25))
-		gl = p.legend(loc=0,fontsize=12)
-		gl.set_frame_on(False)
-		p.title('[OII] 3727')
-		p.savefig( outputFigureNameRoot + "-fs_O2_3728.png")
-		p.clf()
+		p.legend(fontsize=12) 
+		p.savefig( outputFigureNameRoot + "-all.png")
+		#p.clf()
 
-	a0 = hdus[5].data['O3_5007_a0']
-	continu= hdus[5].data['O3_5007_continu']
-	aas =n.arange(hdus[5].data['O3_5007_a0']-25, hdus[5].data['O3_5007_a0']+25,0.05)
-	flMod=lambda aa,sigma,F0: gaussianLine(aa,sigma,F0,a0,continu)
-	model = flMod(aas, hdus[5].data['O3_5007_sigma'], hdus[5].data['O3_5007_flux'])
-	#print continu, hdus[5].data['O3_5007_flux']
-	if continu>=0 and hdus[5].data['O3_5007_flux']>=0 :
-		p.figure(2,(4,4))
-		p.axes([0.21,0.2,0.78,0.7])
-		p.errorbar(wl,flObs,yerr = flObsErr, marker = 'x', c='b', ls='None')
-		p.plot(aas, model,'k',label='model', lw =2)
+		p.figure(11,(12,4))
+		p.axes([0.1,0.2,0.85,0.75])
+		p.errorbar(wl,flObs,yerr = flObsErr,label="z="+str(redshift)+", "+ str(Lmin) +"< log(L"+line+")<"+ str(Lmax), marker = 'x', c='b', ls='None')
+		p.plot(wl_fir, fl_fir,'k',lw=2,label =  'log(age)='+ str(age)+ ', log(M*)='+ str(Ms)+ ', log(Z)='+ str(metal))
 		p.xlabel('wavelength [A]')
 		p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
 		p.yscale('log')
-		p.ylim((model.min()/5., model.max()*5.))
-		p.xlim(( hdus[5].data['O3_5007_a0']-25, hdus[5].data['O3_5007_a0']+25))
-		gl = p.legend(loc=0,fontsize=12)
-		gl.set_frame_on(False)
-		p.title('[OIII] 5007')
-		p.savefig( outputFigureNameRoot + "-fs_O3_5007.png")
-		p.clf()
+		p.ylim(( n.min(fl_fir)*0.8, n.max(fl_fir)*1.2 ))
+		p.legend(fontsize=12, loc=4) 
+		p.savefig( outputFigureNameRoot + "-cont.png")
+		#p.clf()
 
-	a0 = hdus[5].data['H1_4862_a0']
-	continu= hdus[5].data['H1_4862_continu']
-	aas =n.arange(hdus[5].data['H1_4862_a0']-25, hdus[5].data['H1_4862_a0']+25,0.05)
-	flMod=lambda aa,sigma,F0: gaussianLine(aa,sigma,F0,a0,continu)
-	model = flMod(aas, hdus[5].data['H1_4862_sigma'], hdus[5].data['H1_4862_flux'])
+		p.figure(12,(12,4))
+		p.axes([0.1,0.2,0.85,0.75])
+		p.errorbar(wl,flObs,yerr = flObsErr,label= "z="+str(redshift)+", "+str(Lmin) +"< log(L"+line+")<"+ str(Lmax), marker = 'x', c='b', ls='None')
+		p.plot(wl_fir, fl_fir,'k',lw=2,label = "SPM E(B-V)="+str(n.round(hdus[2].header['EBV'],3)))
+		p.axvline(4861,color='k', ls='dashed')
+		p.axvline(4341,color='k', ls='dashed')
+		try :
+			aa=str(n.round(hdus[0].header['H1_4862_flux_nc']/hdus[0].header['H1_4341_flux_nc'] , 3))
+			bb=str(n.round(hdus[0].header['EBV_4862_4341'],3))
+			p.text(4331+50,1e-17,r"GP. H$\beta/\gamma$="+aa+", EBV=" +n.round(bb,3))
+		except KeyError:
+			pass
+
+		p.xlabel('wavelength [A]')
+		p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
+		p.yscale('log')
+		p.xlim(( 4331, 4871 ))
+		p.legend(fontsize=12, loc=4) 
+		p.savefig( outputFigureNameRoot + "-H1lineDecr.png")
+		#p.clf()
+
 	
-	#print continu, hdus[5].data['H1_4862_flux']
-	if continu>=0 and hdus[5].data['H1_4862_flux']>=0 :
-		p.figure(2,(4,4))
-		p.axes([0.21,0.2,0.78,0.7])
-		p.errorbar(wl,flObs,yerr = flObsErr, marker = 'x', c='b', ls='None')
-		p.plot(aas, model,'k',label='model', lw =2)
-		p.xlabel('wavelength [A]')
-		p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
-		p.yscale('log')
-		p.ylim((model.min()/5., model.max()*5.))
-		p.xlim(( hdus[5].data['H1_4862_a0']-25, hdus[5].data['H1_4862_a0']+25))
-		gl = p.legend(loc=0,fontsize=12)
-		gl.set_frame_on(False)
-		p.title(r'H$\beta$')
-		p.savefig( outputFigureNameRoot + "-fs_H1_4862.png")
-		p.clf()
+	plotLine_full(lineName = "O3_5007", fol = 'line', figN = 0)
+	plotLine_full(lineName = 'O3_5007', fol = 'full', figN = 1)
+	plotLine_full(lineName = 'H1_4862', fol = 'line', figN = 2)
+	plotLine_full(lineName = 'H1_4862', fol = 'full', figN = 3)
+	plotLine_full(lineName = 'H1_4341', fol = 'line', figN = 4)
+	plotLine_full(lineName = 'H1_4102', fol = 'full', figN = 5)
+	plotLine_full(lineName = 'H1_4102', fol = 'line', figN = 6)
 
-	# line spec line fits
-	a0_1 = hdus[4].data['O2_3728_a0a']
-	a0_2 = hdus[4].data['O2_3728_a0b']
-	continu= hdus[4].data['O2_3728_continu']
-	aas =n.arange(hdus[4].data['O2_3728_a0a']-25, hdus[4].data['O2_3728_a0b']+25,0.05)
-	flMod=lambda aa,sigma,F0,sh :continu+ gaussianLineNC(aa,sigma,(1-sh)*F0,a0_1)+gaussianLineNC(aa,sigma,sh*F0,a0_2)
-	model = flMod(aas, hdus[4].data['O2_3728_sigma'], hdus[4].data['O2_3728_flux'], hdus[4].data['O2_3728_share'] )
-	#print continu, hdus[4].data['O2_3728_flux']
-	if continu>=0 and hdus[4].data['O2_3728_flux']>=0 :
-		p.figure(2,(4,4))
-		p.axes([0.21,0.2,0.78,0.7])
-		p.errorbar(wl_ls, flObs_ls, yerr = flObsErr_ls, marker = 'x', c='b', ls='None')
-		p.plot(aas, model,'k',label='model', lw=2)
-		p.xlabel('wavelength [A]')
-		p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
-		p.yscale('log')
-		p.ylim((model.min()/5., model.max()*5.))
-		p.xlim(( hdus[4].data['O2_3728_a0a']-25, hdus[4].data['O2_3728_a0b']+25))
-		gl = p.legend(loc=0,fontsize=12)
-		gl.set_frame_on(False)
-		p.title('[OII] 3727')
-		p.savefig( outputFigureNameRoot + "-ls_O2_3728.png")
-		p.clf()
-
-	a0 = hdus[4].data['O3_5007_a0']
-	continu= hdus[4].data['O3_5007_continu']
-	aas =n.arange(hdus[4].data['O3_5007_a0']-25, hdus[4].data['O3_5007_a0']+25,0.05)
-	flMod=lambda aa,sigma,F0: gaussianLine(aa,sigma,F0,a0,continu)
-	model = flMod(aas, hdus[4].data['O3_5007_sigma'], hdus[4].data['O3_5007_flux'])
-	#print continu, hdus[4].data['O3_5007_flux']
-	if continu>=0 and hdus[4].data['O3_5007_flux']>=0 :
-		p.figure(2,(4,4))
-		p.axes([0.21,0.2,0.78,0.7])
-		p.errorbar(wl_ls, flObs_ls, yerr = flObsErr_ls, marker = 'x', c='b', ls='None')
-		p.plot(aas, model,'k',label='model', lw =2)
-		p.xlabel('wavelength [A]')
-		p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
-		p.yscale('log')
-		p.ylim((model.min()/5., model.max()*5.))
-		p.xlim(( hdus[4].data['O3_5007_a0']-25, hdus[4].data['O3_5007_a0']+25))
-		gl = p.legend(loc=0,fontsize=12)
-		gl.set_frame_on(False)
-		p.title('[OIII] 5007')
-		p.savefig( outputFigureNameRoot + "-ls_O3_5007.png")
-		p.clf()
-
-	a0 = hdus[4].data['H1_4862_a0']
-	continu= hdus[4].data['H1_4862_continu']
-	aas =n.arange(hdus[4].data['H1_4862_a0']-25, hdus[4].data['H1_4862_a0']+25,0.05)
-	flMod=lambda aa,sigma,F0: gaussianLine(aa,sigma,F0,a0,continu)
-	model = flMod(aas, hdus[4].data['H1_4862_sigma'], hdus[4].data['H1_4862_flux'])
-	#print continu, hdus[4].data['H1_4862_flux']
-	#if continu>=0 and hdus[4].data['H1_4862_flux']>=0 :
-	p.figure(2,(4,4))
-	p.axes([0.21,0.2,0.78,0.7])
-	p.errorbar(wl_ls, flObs_ls, yerr = flObsErr_ls, marker = 'x', c='b', ls='None')
-	p.plot(aas, model,'k',label='model', lw =2)
-	p.xlabel('wavelength [A]')
-	p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
-	#p.yscale('log')
-	#p.ylim((model.min()/5., model.max()*5.))
-	p.ylim((1e-20, 1e-17))
-	p.xlim(( hdus[4].data['H1_4862_a0']-25, hdus[4].data['H1_4862_a0']+25))
-	gl = p.legend(loc=0,fontsize=12)
-	gl.set_frame_on(False)
-	p.title(r'H$\beta$')
-	p.savefig( outputFigureNameRoot + "-ls_H1_4862.png")
-	p.clf()
-
-	a0 = hdus[4].data['H1_4341_a0']
-	continu= hdus[4].data['H1_4341_continu']
-	aas =n.arange(hdus[4].data['H1_4341_a0']-25, hdus[4].data['H1_4341_a0']+25,0.05)
-	flMod=lambda aa,sigma,F0: gaussianLine(aa,sigma,F0,a0,continu)
-	model = flMod(aas, hdus[4].data['H1_4341_sigma'], hdus[4].data['H1_4341_flux'])
-	#print continu, hdus[4].data['H1_4341_flux']
-	#if continu>=0 and hdus[4].data['H1_4341_flux']>=0 :
-	p.figure(2,(4,4))
-	p.axes([0.21,0.2,0.78,0.7])
-	p.errorbar(wl_ls, flObs_ls, yerr = flObsErr_ls, marker = 'x', c='b', ls='None')
-	p.plot(aas, model,'k',label='model', lw =2)
-	p.xlabel('wavelength [A]')
-	p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
-	#p.yscale('log')
-	#p.ylim((model.min()/5., model.max()*5.))
-	p.ylim((1e-20, 1e-17))
-	p.xlim(( hdus[4].data['H1_4341_a0']-25, hdus[4].data['H1_4341_a0']+25))
-	gl = p.legend(loc=0,fontsize=12)
-	gl.set_frame_on(False)
-	p.title(r'H$\gamma$')
-	p.savefig( outputFigureNameRoot + "-ls_H1_4341.png")
-	p.clf()
-
-	a0 = hdus[4].data['H1_4102_a0']
-	continu= hdus[4].data['H1_4102_continu']
-	aas =n.arange(hdus[4].data['H1_4102_a0']-25, hdus[4].data['H1_4102_a0']+25,0.05)
-	flMod=lambda aa,sigma,F0: gaussianLine(aa,sigma,F0,a0,continu)
-	model = flMod(aas, hdus[4].data['H1_4102_sigma'], hdus[4].data['H1_4102_flux'])
-	#print continu, hdus[4].data['H1_4102_flux']
-	#if continu>=0 and hdus[4].data['H1_4102_flux']>=0 :
-	p.figure(2,(4,4))
-	p.axes([0.21,0.2,0.78,0.7])
-	p.errorbar(wl_ls, flObs_ls, yerr = flObsErr_ls, marker = 'x', c='b', ls='None')
-	p.plot(aas, model,'k',label='model', lw =2)
-	p.xlabel('wavelength [A]')
-	p.ylabel(r'f$_\lambda$ [erg cm$^{-2}$ s$^{-1}$ A$^{-1}$]')
-	#p.yscale('log')
-	#p.ylim((model.min()/5., model.max()*5.))
-	p.ylim((1e-20, 1e-17))
-	p.xlim(( hdus[4].data['H1_4102_a0']-25, hdus[4].data['H1_4102_a0']+25))
-	gl = p.legend(loc=0,fontsize=12)
-	gl.set_frame_on(False)
-	p.title(r'H$\delta$'+str(hdus[4].data['H1_4102_flux'])+" " + str(hdus[4].data['H1_4102_fluxErr']))
-	p.savefig( outputFigureNameRoot + "-ls_H1_4102.png")
-	p.clf()
 	return hdus
 
-
-for el in stL[-1:] :
+"""
+for el in stL :
 	print "plots ", el
 	hdus = plotStack(el)
+"""
+# O3 most luminous stack high z
+hdus = plotStack(stL[-1])
+p.show()
 
+sys.exit()
+stack_files=n.array(glob.glob( join( os.environ['SPECTRASTACKS_DIR'], "data", "??_????", "*DEEP2*.fits" ) ) )
+stack_files.sort()
+
+#print stack_files
+print( file )
+file = stack_files[-1]
+mm=ModelSpectraStacks(file,mode="MILES")
+#mm.plot_fit()
+mm.fit_lines_to_fullSpectrum()
+mm.fit_lines_to_lineSpectrum()
+#mm.compute_derived_quantities()
+mm.save_spectrum()
+mm.plot_spectrum()

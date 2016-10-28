@@ -72,6 +72,17 @@ n.savetxt(path_to_output_table_full, n.delete(tableFull, badRow, axis=0), header
 
 n.savetxt(path_to_output_table_line, n.delete(tablePG, badRow, axis=0), header = head)	
 
+stiltsC = """java -jar """+join(os.environ['DATA_DIR'],"stilts.jar")
+inF = join(os.environ['SPECTRASTACKS_DIR'], "results", "table_fullSpecFit_v0.data")
+outF = join(os.environ['SPECTRASTACKS_DIR'],"results", "table_fullSpecFit_v0.fits" )
+conv_fits = stiltsC + " tpipe in=" + inF +" ifmt=ascii out=" + outF + " omode=out ofmt=fits"
+os.system(conv_fits)
+
+stiltsC = """java -jar """+join(os.environ['DATA_DIR'],"stilts.jar")
+inF = join(os.environ['SPECTRASTACKS_DIR'], "results", "table_lineSpecFit_v0.data")
+outF = join(os.environ['SPECTRASTACKS_DIR'],"results", "table_lineSpecFit_v0.fits" )
+conv_fits = stiltsC + " tpipe in=" + inF +" ifmt=ascii out=" + outF + " omode=out ofmt=fits"
+os.system(conv_fits)
 
 #conv_fits = """java -jar ~/stilts.jar tpipe in=$SPECTRASTACKS_DIR/results/table_fullSpecFit_v0.data ifmt=ascii out=$SPECTRASTACKS_DIR/results/table_fullSpecFit_v0.fits omode=out ofmt=fits"""
 #os.system(conv_fits)

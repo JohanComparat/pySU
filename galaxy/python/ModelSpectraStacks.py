@@ -234,14 +234,14 @@ class ModelSpectraStacks:
 		for li in allLinesList :
 			# measure line properties from the mean weighted stack
 			print li[2]
-			dat_mean,mI,hI=lfit.fit_Line_position(self.wlLineSpectrum, self.flLineSpectrum, self.flErrLineSpectrum, li[1], lineName=li[2], continuumSide=li[3], model="gaussian", p0_sigma=7,fitWidth = 15.,DLC=10.)
+			dat_mean,mI,hI=lfit.fit_Line_position_C0noise(self.wlLineSpectrum, self.flLineSpectrum, self.flErrLineSpectrum, li[1], lineName=li[2], continuumSide=li[3], model="gaussian", p0_sigma=7,fitWidth = 15.,DLC=10.)
 			print hI, dat_mean
 			# measure its dispersion using the stacks
 			d_out=[]
 			for kk in range(len(self.hdu1.data['jackknifeSpectra'].T)):
 				fluxRR = interp1d(self.wl, self.hdu1.data['jackknifeSpectra'].T[kk][self.selection])
 				flLineSpectrumRR=n.array([fluxRR(xx)-self.model(xx) for xx in self.wlLineSpectrum])
-				d1,mI,hI=lfit.fit_Line_position(self.wlLineSpectrum, flLineSpectrumRR, self.flErrLineSpectrum, li[1], lineName=li[2], continuumSide=li[3], model="gaussian", p0_sigma=7,fitWidth = 15.,DLC=10.)
+				d1,mI,hI=lfit.fit_Line_position_C0noise(self.wlLineSpectrum, flLineSpectrumRR, self.flErrLineSpectrum, li[1], lineName=li[2], continuumSide=li[3], model="gaussian", p0_sigma=7,fitWidth = 15.,DLC=10.)
 				d_out.append(d1)
 
 			d_out = n.array(d_out)
@@ -306,12 +306,12 @@ class ModelSpectraStacks:
 		for li in allLinesList :
 			print li[2]
 			# measure line properties from the mean weighted stack
-			dat_mean,mI,hI=lfit.fit_Line_position(self.wl, self.fl, self.flErr, li[1], lineName=li[2], continuumSide=li[3], model="gaussian", p0_sigma=7,fitWidth = 15.,DLC=10.)
+			dat_mean,mI,hI=lfit.fit_Line_position_C0noise(self.wl, self.fl, self.flErr, li[1], lineName=li[2], continuumSide=li[3], model="gaussian", p0_sigma=7,fitWidth = 15.,DLC=10.)
 			print hI, dat_mean
 			# measure its dispersion using the stacks
 			d_out=[]
 			for kk in range(len(self.hdu1.data['jackknifeSpectra'].T)):
-				d1,mI,hI=lfit.fit_Line_position(self.wl,  self.hdu1.data['jackknifeSpectra'].T[kk][self.selection], self.flErr, li[1], lineName=li[2], continuumSide=li[3], model="gaussian", p0_sigma=7,fitWidth = 15.,DLC=10.)
+				d1,mI,hI=lfit.fit_Line_position_C0noise(self.wl,  self.hdu1.data['jackknifeSpectra'].T[kk][self.selection], self.flErr, li[1], lineName=li[2], continuumSide=li[3], model="gaussian", p0_sigma=7,fitWidth = 15.,DLC=10.)
 				d_out.append(d1)
 
 			d_out = n.array(d_out)
@@ -357,5 +357,7 @@ class ModelSpectraStacks:
 		thdulist = fits.HDUList([prihdu, self.hdu1, self.hdu2, lineSptbhdu, self.lineSpec_tb_hdu, self.fullSpec_tb_hdu])
 		outPutFileName = self.stack_model_file
 		outFile = n.core.defchararray.replace(outPutFileName, "fits", "model").item()
-		os.system('rm '+outFile)
+		if os.path.isfile(outFile):
+			os.remove(outFile)
+		
 		thdulist.writeto(outFile)
