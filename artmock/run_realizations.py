@@ -2,7 +2,7 @@ import os
 from os.path import join
 
 # define params
-def runPMP(LBOX = "650.000", NROW = "1612", NGRID = "1612", DTHR = "120.000", NORM = "0.0001", nrm= "N1em4", SLOPE= "-1.000", slp = "am100", DMAX = "240.000", RR=1, start=0, topdir = os.environ['PM_DIR']):
+def runPMP(LBOX = "650.000", NROW = "1612", NGRID = "1612", DTHR = "120.000", NORM = "0.0001", nrm= "N1em4", SLOPE= "-1.000", slp = "am100", DMAX = "240.000", RR=1, start=0):
 	# create outdir
 	
 	os.chdir(os.environ['ARTMOCK_DIR'])
@@ -39,8 +39,9 @@ def runPMP(LBOX = "650.000", NROW = "1612", NGRID = "1612", DTHR = "120.000", NO
 	os.system("make PMP2init ")
 	os.system("make PMPanalysis")
 	os.system("./PMP2init.exe")
-
-	outdir = join(topdir, "PM_Nr"+NROW+"_L"+LBOX+"_g"+NGRID+"_Dgt"+DTHR[:4]+"_"+slp+"_Dlt"+DMAX[:4] +"_"+nrm)
+	
+	dirName = "PM_Nr"+NROW+"_L"+LBOX+"_g"+NGRID+"_Dgt"+DTHR[:4]+"_"+slp+"_Dlt"+DMAX[:4] +"_"+nrm
+	outdir = join(os.environ['ARTMOCK_DIR'], dirName)
 	os.mkdir(outdir)
 	os.chdir(outdir)
 	
@@ -49,8 +50,9 @@ def runPMP(LBOX = "650.000", NROW = "1612", NGRID = "1612", DTHR = "120.000", NO
 		os.system("echo " + str(ii) + " | " + join( os.environ['ARTMOCK_DIR'], "PMP2start.exe") )
 		os.system("echo 1000000 | " + join( os.environ['ARTMOCK_DIR'], "PMP2main.exe") )
 		os.system("rm -rf PMcr*.DAT" )
-		
+	
+	return dirName
 
-runPMP(LBOX="1040.000", NROW="1300", NGRID="2600", DTHR="10.000", NORM="0.0003", nrm= "N3em4", SLOPE= "0.110", slp="ap011", DMAX="400.000", RR = 10, start=300)
+dirName = runPMP(LBOX="1040.000", NROW="1300", NGRID="2600", DTHR="10.000", NORM="0.0003", nrm= "N3em4", SLOPE= "0.110", slp="ap011", DMAX="400.000", RR = 10, start=300)
 
-
+os.rename(join(os.environ['ARTMOCK_DIR'], dirName), join(os.environ['PM_DIR'], dirName))
