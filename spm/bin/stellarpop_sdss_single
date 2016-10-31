@@ -21,9 +21,9 @@ mjd = sys.argv[2] # 56900
 fibre = sys.argv[3] #300
 
 # path to lite spectra
-specLiteFile = join( os.environ['BOSS_SPECTRO_REDUX'], 'v5_7_0', "spectra", "lite", str(plate), 'spec-'+str(plate)+ '-'+str(mjd)+'-' +str(fibre).zfill(4)+'.fits')
+specLiteFile = join( os.environ['SDSSDR12_DIR'], str(plate), 'spec-'+str(plate)+ '-'+str(mjd)+'-' +str(fibre).zfill(4)+'.fits')
 # join( os.environ['BOSS_SPECTRO_REDUX'], os.environ['RUN2D'], 'spectra', 'lite' , str(plate), 'spec-'+str(plate)+ '-'+str(mjd)+'-' +str(fibre).zfill(4)+'.fits')
-outputFolder = join( os.environ['BOSS_GALAXY_REDUX'],'stellarpop')
+outputFolder = join( os.environ['SDSSDR12_DIR'],'stellarpop')
 
 print( specLiteFile )
 t0=time.time()
