@@ -1,0 +1,33 @@
+ --------------- Setup file for PMP2 simulations ------------------
+N=1300x2600L=1040zi100da=3.96E-04f0.040
+ 9.90099E-03       Expansion Parameter
+ 3.96040E-04       Step in dAEXPN    da/a =   4.0000E-02
+ 4.21672E-02       DRho/rho in box    
+ 1.04000E+03       Box in  Mpc/h   
+ 8.28000E-01       sigma8    
+ 6.78000E-01       Hubble    
+ 3.07115E-01       Omega Matter
+ 6.92885E-01       Omega Lambda
+ 2.21610E-02       Omega Baryons
+ 1300              NROW  Number Particles   
+ 2600              NGRID Number grid points 
+    0              Random seed
+ 4.00000E-01       Cell Size   
+ 2.00558E+10       Particle Mass
+ 1.00000E+02       Initial redshift       
+ 7.00000E-01       Final redshift       
+ 1.00000E+01       Density Threshold for V correction 
+ 0.00000E+00       rms V correction factor
+    8              Number of redshifts for analysis
+   2.000   1.700   1.400   1.200   1.100   1.000   0.900   0.800
+   10              Number of bias parameters
+ 1.00000E+01       Bias
+ 3.00000E-04       Bias
+ 1.10000E-01       Bias
+ 4.00000E+02       Bias
+ 0.00000E+00       Bias
+ 0.00000E+00       Bias
+ 0.00000E+00       Bias
+ 0.00000E+00       Bias
+ 0.00000E+00       Bias
+ 0.00000E+00       Bias

@@ -1,0 +1,211 @@
+------------------------------------------------
+PM code for cosmological simulation
+        A. Klypin (NMSU) 2016
+	Version PMP2
+------------------------------------------------
+Most important parameters:
+
+  NROW  = defines the number of particles in a simulation:
+           Nparticles = NROW**3
+  NGRID = defines the number of grid points in each direction
+          Total number of grid points is NGRID**3
+  Box   = size of computational box in Mpc/h units
+
+------------------------------------------------
+Memory requirements:
+
+  Particles: 6*4*NROW**3  bytes = 24GB *(NROW/1024)**3
+  Mesh     :   4*NGRID**3 bytes = 4GB  *(NGRID/1024)**3
+  For some analysis one needs 1 extra array of NROW**3 length
+               to store density
+	       Extra memory = 4Gb*(NROW/1024)**3
+
+               Recommended configuration: NGRID = 2NROW
+
+------------------------------------------------
+Directories and input files:
+
+          PMP2 - code directory
+	  Working directory has structure:
+	      Init.dat
+	      PkTable.dat
+	      Setup.dat
+	      TableSeeds.dat
+	      SubDir1
+	      Subdir2
+	      ....
+
+	      The only file, which must be present before
+	      simulation is initiated is the power spectrum PkTable.dat
+	      Files Init.dat, Setup.dat, and TableSeeds.dat  will be created if they are
+	      not found.
+
+	      Subdirectories SubDir1, SubDir2, .... are working subdirectories
+	      used for separate runs. Their names are arbitrary -- any will do it.
+
+------------------------------------------------
+Initiation of simulations:
+           File Init.dat is used to set initial configuration of a given set of simulations.
+	   Simulations in the set will only deviate by initial random seed used to
+	   set initial conditions. Random seeds are stored (and generated) in file
+	   TableSeeds.dat.
+	   
+           You do not not need to type or create this file. A template of this
+	   file will be created the first time you run PMP2init.exe
+	   If the code does not find the file in directory, from which it was
+	   initiated, it will create a template and quit.
+
+           Structure of Init.dat:
+	     Box      =  500.000
+	     Nrow     =      600
+	     Ngrid    =      600
+	     sig8     =     0.828
+	     z_init   =   100.000
+	     step da  =  2.0000E-04
+	     z_final  =     0.000
+	     #outputs =        12
+	     50. 25.  2.50 1.50 1.00 0.80 0.70 0.50 0.30 0.20 0.10 0.00
+	     dens_thr =    30.000
+	     Vrms     =    50.000
+	     #Params  =        10
+	     Parametr =     0.000
+	     Parametr =     0.000
+	     Parametr =     0.000
+	     Parametr =     0.000
+	     Parametr =     0.000
+	     Parametr =     0.000
+	     Parametr =     0.000
+	     Parametr =     0.000
+	     Parametr =     0.000
+	     Parametr =     0.000
+
+             Edit the file to change the parameters. It is used only to
+	     initiate the simulations. So, it is used *only once* at the very beginning of
+	     each simulation.
+
+	     File Setup.dat will be used *every time* the simulation is analyzed or simulation
+	     re-starts.
+	     Most of parameters (but not all) in the Setup.dat are only for
+	     information. Their actual values are stored in data files PMcrdXXX and cannot be
+	     changed. For example, parameters defining cosmology (Omegas, hubble, sigma8) and
+	     NGRID, NROW cannot be modified.
+	     
+	     Parameters such as Bias Parameters can be modified.
+
+------------------------------------------------
+Code:
+
+        Stored in directory PMP2. Edit 'makefile', if you want to change
+	compilation setup. Code uses ifort compiler. Not clear whether gfortran
+	will work.
+
+	make PMP2main      -- compile the PM code
+	make PMP2start     -- compile the IC code
+	make PMP2init      -- compile the initialization code
+	make PMPanalysis   -- compile analysis code to be used to analyze
+	                              specific snapshot
+
+
+------------------------------------------------
+Running the code:
+
+        - open directory PMP2 and place code there
+	- compile the code by issuing four 'make' statements above
+	- open working directory. Copy PkTable.dat to that directory
+	- run PMP2init.exe two times. The first time the code generates
+	       Init.dat file. Modify it and re-run PMP2init.exe
+	- open a subdirectory (any) in that directory and 'cd' to it.
+	- modify environment variable OMP_NUM_THREADS according to the number
+	           OpenMP threads you have on compute node. For example,
+		   export OMP_NUM_THREADS=32
+		   to run the code with 32 threads. Typically the number of
+		   threads is equal to the number of cores.
+	- run PMP2start.exe
+	      The code will ask you to input one parameter: realization number.
+	- run PMP2main.exe
+	      The code will ask you to input the maximum number of time-steps for
+	      this run. Give it a very large number (say, 100000), if you want to
+	      finish the simulation in one run.
+	- as the code runs, it will make analysis of moments that were provided in
+	      Setup.dat file.
+
+------------------------------------------------
+Selecting the number of time-steps:
+       - the code uses variable time-stepping scheme. Specifically,
+         for most of time the time step is constant da in the expansion
+	 parameter a, but from time-to-time the time step da is increased
+	 by factor 3/2. This happens when two conditions are satisfied:
+	 (a) z>2 and (b) da/a < (StepF/1.25), where factor StepF is a parameter,
+	 that defines how many time-steps are used for a particular run. The value
+	 of StepF is defined by the initial time-step: stepF = (da/a)_init
+	 The factor 1.25 is used to avoid an immediate increase in da at the beginning
+	 for simulation. It also ensures that the time-step da/a stays close
+	 (within 25%) to the initial da/a. At a> 1/3 (z<2) the time-step da is
+	 constant so that the relative time-step da/a decreases with time.
+	 For a simulation with initial z=100 and da=4e-4 (da/a=0.04) the
+	 number of steps is 136, and the number of times for time-step changes is 9.
+	 At a=1 the time-step is da=0.0152. Changing initial da/a to 0.02 gives 271
+	 steps with the same (9) number of moments to modify the time-step.
+	 
+       - During the periods when time-step is constant, the code uses the leap-frog
+         integration scheme with the velocities lagging behind coordinates by
+	 half time-step:
+	        V_(1/2)  = V_(-1/2) + g_0 da,
+		X_(1)    = X_(0)    + V_(1/2) da,
+         where numbers in parenthesis indicate moment of time in units of
+	 current time-step da
+       - When time-step is increased, it is always increased by factor 1.5.
+         To account for the time-change, velocities are interploted to new time.
+	 	
+------------------------------------------------
+Analysis of snapshots:
+
+       - Analysis of results can be done on the fly: as the PM code
+        running for specified list of redshifts
+       - Alternatively, it can be done for saved snapshot. Use PMP2analyze.exe
+         do do this. You will be prompted to input snapshot number to analyze.
+       - Selection of different analysis tools is done in routine 'Analysis' in
+         module PMP2mod_analyze
+       - There are five parameters that define whether particular tool is selected or not:
+         If parameter is set to '1' the tool is selected. Here is the table
+	 in PMP2mod_analyze.f90 
+
+           !-----  Fill the table for things to analyze
+             iPower         = 0   !-- all particles Power spectrum 
+             iPowerRSD      = 0   !       redshift distortions for DM
+             iDensityDistr  = 0   !-- PDF for DM for different cell-sizes
+             iBias          = 1   !-- Biasing model
+             iSave          = 0   !-- Save snapshot
+
+       - iPower=1  makes real-space power spectrum of all particles on Ngrid**3 mesh
+                   Results are given in a file with name PowerDM.R.xxxx.yyyy.dat
+		   where xxxx codes the redshift and yyyy is the relization number
+		   xxxx is the redshift muliplyied by 100. E.g., z=0.25 gives xxxx=0025
+
+       - iPowerRSD=1 gives the power spectrum in redshift space for dark matter.
+                    For this to work, parameter iPower should have value 1
+		    Power spectra for DM in real-space, P_0 and P_2 will be placed
+		    in file PowerDM.Z.xxxx.yyyy.dat. The power spectra are estimated
+		    on twice smaller mesh (Ngrid/2). Redshift distortions are done
+		    in all three directions and results are averaged over the three
+		    projections.
+		    In order to compensate for resolution, a random gaussian velocity is added
+		    along the lin-of-sight for each DM particle. This is done only
+		    for particles with density exceeding a threshhold rho_th and the
+		    magnitude is defined by parameter Vrms: deltaV = Vrms*(dens-rho_th)**(1/3)
+		    Parameters rho_th and Vrms are provided in Setup.dat file:
+		            5.00000E+01       Density Threshold for V correction 
+                            5.00000E+01       rms V correction factor
+ 
+       - iDensityDistr=1 creates PDF of dark matter on 5 meshes: Ngrid, Ngrid/2 ... Ngrid/16
+                    Results  are placed in file DensDistrDM.xxxx.yyyy.dat
+
+       - iSave=1 saves snapshot on the disk for subsequent analysis.
+
+       - iBias=1 applies biasing model to generate a mock galaxy catalog.
+                 Biasing model is in subroutine BiasParticles in module PMP2mod_analyze.
+		 The code loops through all DM particles and makes a decision if
+		 a particle is a 'galaxy' or not. Selected galaxies are written
+		 into file GalaxiesZ.xxxx.yyyy.dat
+
+                 
