@@ -102,7 +102,7 @@ def plotStack( modeledStackFile ):
 			gl = p.legend(loc=0,fontsize=12)
 			gl.set_frame_on(False)
 			p.savefig( outputFigureNameRoot + "-fs_" + lineName + ".png" )
-			#p.clf()
+			p.clf()
 
 			
 	def plotCont():
@@ -115,7 +115,7 @@ def plotStack( modeledStackFile ):
 		p.yscale('log')
 		p.legend(fontsize=12) 
 		p.savefig( outputFigureNameRoot + "-all.png")
-		#p.clf()
+		p.clf()
 
 		p.figure(11,(12,4))
 		p.axes([0.1,0.2,0.85,0.75])
@@ -127,7 +127,7 @@ def plotStack( modeledStackFile ):
 		p.ylim(( n.min(fl_fir)*0.8, n.max(fl_fir)*1.2 ))
 		p.legend(fontsize=12, loc=4) 
 		p.savefig( outputFigureNameRoot + "-cont.png")
-		#p.clf()
+		p.clf()
 
 		p.figure(12,(12,4))
 		p.axes([0.1,0.2,0.85,0.75])
@@ -148,7 +148,7 @@ def plotStack( modeledStackFile ):
 		p.xlim(( 4331, 4871 ))
 		p.legend(fontsize=12, loc=4) 
 		p.savefig( outputFigureNameRoot + "-H1lineDecr.png")
-		#p.clf()
+		p.clf()
 
 	
 	plotLine_full(lineName = "O3_5007", fol = 'line', figN = 0)
@@ -161,11 +161,12 @@ def plotStack( modeledStackFile ):
 
 	return hdus
 
-"""
+
 for el in stL :
 	print "plots ", el
 	hdus = plotStack(el)
-"""
+
+sys.exit()
 # O3 most luminous stack high z
 hdus = plotStack(stL[-1])
 p.show()
