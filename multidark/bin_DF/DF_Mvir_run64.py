@@ -28,7 +28,7 @@ dx = Lbox/grid
 
 
 #binsQTY = n.arange(11,14.7,0.1)
-def computeSlice(NN=4, massRange=[11,12], sliceNum=0, 	logbinsDelta = n.arange(-1., 2.6, 0.1)):
+def computeSlice(NN=4, massRange=[11,12], sliceNum=0, 	logbinsDelta = n.arange(-1., 2.6, 0.1), cos='cen_sat'):
 	massMin = massRange[0]
 	massMax = massRange[1]
 	dxN = NN * dx
@@ -47,7 +47,10 @@ def computeSlice(NN=4, massRange=[11,12], sliceNum=0, 	logbinsDelta = n.arange(-
 		ix  = ( ( md['x'] / dxN ) // 1 ).astype( 'int' )
 		iy  = ( ( md['y'] / dxN ) // 1 ).astype( 'int' )
 		iz = ( ( md['z'] / dxN ) // 1 ).astype( 'int' )
-		sel = (iz==sliceNum)&(md['pid']<0)&(md[qty]>massMin)&(md[qty]<massMax)
+		if cos=='cen':
+			sel = (iz==sliceNum)&(md['pid']<0)&(md[qty]>massMin)&(md[qty]<massMax)
+		if cos=='cen_sat':
+			sel = (iz==sliceNum)&(md[qty]>massMin)&(md[qty]<massMax)
 		H, xedges, yedges = n.histogram2d(ix[sel], iy[sel], bins=n.arange(0,grid/NN+1,1))
 		return H.T
 	# function 2
@@ -91,7 +94,6 @@ def computeSlice(NN=4, massRange=[11,12], sliceNum=0, 	logbinsDelta = n.arange(-
 	p.title("log10(Nhalo)")
 	p.savefig(join(DF_results_dir, "slice"+str(NN), "Nhalo_plot", Halofile.split('/')[-1][:-8] + ".Nhalo.slice"+str(sliceNum)+"."+str(massMin)+".M."+str(massMax)+".png"))
 	p.clf()
-	
 	#figure delta
 	p.figure(1)
 	p.imshow(n.log10(0.0001+DF_rs), vmin=-0.5, vmax=1.5)
