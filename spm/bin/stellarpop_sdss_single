@@ -37,7 +37,7 @@ def runSpec(specLiteFile):
 	ageMax = np.log10(cosmo.age(spec.redshift).value*1e9)
 	print spec.redshift,  spec.hdulist[2].data['CLASS'][0], spec.hdulist[2].data['ZWARNING'][0]
 
-	if spec.redshift>0 and spec.redshift<1.7 and spec.hdulist[2].data['CLASS'][0]=="GALAXY" and spec.hdulist[2].data['ZWARNING'][0] ==0 :
+	if spec.redshift>0 and spec.redshift<1.7 and spec.hdulist[2].data['CLASS'][0]=="GALAXY" :#and spec.hdulist[2].data['ZWARNING'][0] ==0 :
 
 		model = spm.StellarPopulationModel(spec, join(outputFolder , specLiteFile.split('/')[-1][:-5]), cosmo, models = 'm11', model_libs = ['MILES'], imfs = ['ss'], age_limits = [6,10], downgrade_models = True, data_wave_medium = 'vacuum', Z_limits = [-3.,1.],suffix="-SPM-MILES.fits", use_downgraded_models = True)
 		
@@ -50,6 +50,10 @@ def runSpec(specLiteFile):
 		#print( model.averages )
 
 	print "time used =", time.time()-t0 ,"seconds"
+	return spec
 
-fileList = n.array(glob.glob(join( os.environ['SDSSDR12_DIR'], "7457", 'spec-*.fits')))
-runSpec(fileList[0])
+fileList = np.array(glob.glob(join( os.environ['SDSSDR12_DIR'], "1678", 'spec-*425*.fits')))
+fileList.sort()
+
+for el in fileList:
+	spec = runSpec(el)
