@@ -8,41 +8,47 @@ from os.path import join
 import os
 import time
 import numpy as np
+import glob
 import astropy.cosmology as co
-#cosmo = co.Planck13
-cosmo=co.FlatLambdaCDM(H0=70,Om0=0.3)
+cosmo = co.Planck13
+#cosmo=co.FlatLambdaCDM(H0=70,Om0=0.3)
 
 # for one galaxy spectrum
 import GalaxySpectrumFIREFLY as gs
 import StellarPopulationModel as spm
 
-plate = sys.argv[1] #7619
-mjd = sys.argv[2] # 56900
-fibre = sys.argv[3] #300
+fileList = n.array(glob.glob(join( os.environ['SDSSDR12_DIR'], 7457, 'spec-*.fits'))
 
-# path to lite spectra
-specLiteFile = join( os.environ['SDSSDR12_DIR'], str(plate), 'spec-'+str(plate)+ '-'+str(mjd)+'-' +str(fibre).zfill(4)+'.fits')
-# join( os.environ['BOSS_SPECTRO_REDUX'], os.environ['RUN2D'], 'spectra', 'lite' , str(plate), 'spec-'+str(plate)+ '-'+str(mjd)+'-' +str(fibre).zfill(4)+'.fits')
-outputFolder = join( os.environ['SDSSDR12_DIR'],'stellarpop')
+def runSpec(specLiteFile):
+	baseN = os.path.basename(specLiteFile).split('-')
+	plate = baseN[1] #7457# sys.argv[1] #7619
+	mjd = baseN[2] # 56746#sys.argv[2] # 56900
+	fibre = baseN[3] # 471#sys.argv[3] #300
+	# path to lite spectra
+	#specLiteFile = join( os.environ['SDSSDR12_DIR'], str(plate), 'spec-'+str(plate)+ '-'+str(mjd)+'-' +str(fibre).zfill(4)+'.fits')
+	# join( os.environ['BOSS_SPECTRO_REDUX'], os.environ['RUN2D'], 'spectra', 'lite' , str(plate), 'spec-'+str(plate)+ '-'+str(mjd)+'-' +str(fibre).zfill(4)+'.fits')
+	outputFolder = join( os.environ['SDSSDR12_DIR'],'stellarpop', str(plate))
+	if os.path.isdir(outputFolder)==False:
+		os.mkdir(outputFolder)
 
-print( specLiteFile )
-t0=time.time()
-spec=gs.GalaxySpectrumFIREFLY(specLiteFile, milky_way_reddening=True)
-spec.openObservedSDSSSpectrum()
-ageMax = np.log10(cosmo.age(spec.redshift).value*1e9)
-print spec.redshift,  spec.hdulist[2].data['CLASS'][0], spec.hdulist[2].data['ZWARNING'][0]
+	print( specLiteFile )
+	t0=time.time()
+	spec=gs.GalaxySpectrumFIREFLY(specLiteFile, milky_way_reddening=True)
+	spec.openObservedSDSSSpectrum()
+	ageMax = np.log10(cosmo.age(spec.redshift).value*1e9)
+	print spec.redshift,  spec.hdulist[2].data['CLASS'][0], spec.hdulist[2].data['ZWARNING'][0]
 
-if spec.redshift>0 and spec.redshift<1.7 and spec.hdulist[2].data['CLASS'][0]=="GALAXY" and spec.hdulist[2].data['ZWARNING'][0] ==0 :
+	if spec.redshift>0 and spec.redshift<1.7 and spec.hdulist[2].data['CLASS'][0]=="GALAXY" and spec.hdulist[2].data['ZWARNING'][0] ==0 :
 
-	model = spm.StellarPopulationModel(spec, join(outputFolder , specLiteFile.split('/')[-1][:-5]), cosmo, models = 'm11', model_libs = ['MILES'], imfs = ['ss'], age_limits = [6,10], downgrade_models = True, data_wave_medium = 'vacuum', Z_limits = [-3.,1.],suffix="-SPM-MILES.fits", use_downgraded_models = True)
-	
-	model.fit_models_to_data()
+		model = spm.StellarPopulationModel(spec, join(outputFolder , specLiteFile.split('/')[-1][:-5]), cosmo, models = 'm11', model_libs = ['MILES'], imfs = ['ss'], age_limits = [6,10], downgrade_models = True, data_wave_medium = 'vacuum', Z_limits = [-3.,1.],suffix="-SPM-MILES.fits", use_downgraded_models = True)
+		
+		model.fit_models_to_data()
 
-	#model = spm.StellarPopulationModel(spec, join( outputFolder , specLiteFile.split('/')[-1][:-5]), cosmo, models = 'm11', model_libs = ['STELIB'], imfs = ['ss'], age_limits = [6,10], downgrade_models = True, data_wave_medium = 'vacuum', Z_limits = [-3.,1.],suffix="-SPM-STELIB.fits", use_downgraded_models = True)
-	
-	#model.fit_models_to_data()
+		#model = spm.StellarPopulationModel(spec, join( outputFolder , specLiteFile.split('/')[-1][:-5]), cosmo, models = 'm11', model_libs = ['STELIB'], imfs = ['ss'], age_limits = [6,10], downgrade_models = True, data_wave_medium = 'vacuum', Z_limits = [-3.,1.],suffix="-SPM-STELIB.fits", use_downgraded_models = True)
+		
+		#model.fit_models_to_data()
 
-	#print( model.averages )
+		#print( model.averages )
 
-print "time used =", time.time()-t0 ,"seconds"
+	print "time used =", time.time()-t0 ,"seconds"
 
