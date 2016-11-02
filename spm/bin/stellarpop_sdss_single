@@ -51,5 +51,5 @@ def runSpec(specLiteFile):
 
 	print "time used =", time.time()-t0 ,"seconds"
 
-fileList = n.array(glob.glob(join( os.environ['SDSSDR12_DIR'], "7457", 'spec-*.fits'))
+fileList = n.array(glob.glob(join( os.environ['SDSSDR12_DIR'], "7457", 'spec-*.fits')))
 runSpec(fileList[0])
