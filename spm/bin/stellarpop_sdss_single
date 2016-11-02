@@ -17,6 +17,7 @@ cosmo = co.Planck13
 import GalaxySpectrumFIREFLY as gs
 import StellarPopulationModel as spm
 
+plate = sys.argv[1]
 
 def runSpec(specLiteFile):
 	baseN = os.path.basename(specLiteFile).split('-')
@@ -52,7 +53,7 @@ def runSpec(specLiteFile):
 	print "time used =", time.time()-t0 ,"seconds"
 	return spec
 
-fileList = np.array(glob.glob(join( os.environ['SDSSDR12_DIR'], "1678", 'spec-*425*.fits')))
+fileList = np.array(glob.glob(join( os.environ['SDSSDR12_DIR'], str(plate), 'spec-*.fits')))
 fileList.sort()
 
 for el in fileList:
