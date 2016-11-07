@@ -58,7 +58,7 @@ Initiation of simulations:
            Structure of Init.dat:
 	     Box      =  500.000
 	     Nrow     =      600
-	     Ngrid    =      600
+	     Ngrid    =      1200
 	     sig8     =     0.828
 	     z_init   =   100.000
 	     step da  =  2.0000E-04
