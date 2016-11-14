@@ -3,38 +3,46 @@
 """
 This script produces the stacks for emission line luminosity limited samples.
 """
+headerB = " O2_3728_a0a  O2_3728_a0b  O2_3728_flux  O2_3728_fluxErr  O2_3728_sigma  O2_3728_sigmaErr  O2_3728_continu  O2_3728_continuErr  O2_3728_EW  O2_3728_share  O2_3728_shareErr  O2_3728_fd_a0_l  O2_3728_fd_a0_r  O2_3728_chi2  O2_3728_ndof  Ne3_3869_a0  Ne3_3869_flux  Ne3_3869_fluxErr  Ne3_3869_sigma  Ne3_3869_sigmaErr  Ne3_3869_continu  Ne3_3869_continuErr  Ne3_3869_EW  Ne3_3869_fd_a0_l  Ne3_3869_fd_a0_r  Ne3_3869_chi2  Ne3_3869_ndof  Ne3_3968_a0  Ne3_3968_flux  Ne3_3968_fluxErr  Ne3_3968_sigma  Ne3_3968_sigmaErr  Ne3_3968_continu  Ne3_3968_continuErr  Ne3_3968_EW  Ne3_3968_fd_a0_l  Ne3_3968_fd_a0_r  Ne3_3968_chi2  Ne3_3968_ndof  O3_4363_a0  O3_4363_flux  O3_4363_fluxErr  O3_4363_sigma  O3_4363_sigmaErr  O3_4363_continu  O3_4363_continuErr  O3_4363_EW  O3_4363_fd_a0_l  O3_4363_fd_a0_r  O3_4363_chi2  O3_4363_ndof  O3_4960_a0  O3_4960_flux  O3_4960_fluxErr  O3_4960_sigma  O3_4960_sigmaErr  O3_4960_continu  O3_4960_continuErr  O3_4960_EW  O3_4960_fd_a0_l  O3_4960_fd_a0_r  O3_4960_chi2  O3_4960_ndof  O3_5007_a0  O3_5007_flux  O3_5007_fluxErr  O3_5007_sigma  O3_5007_sigmaErr  O3_5007_continu  O3_5007_continuErr  O3_5007_EW  O3_5007_fd_a0_l  O3_5007_fd_a0_r  O3_5007_chi2  O3_5007_ndof  N2_6549_a0  N2_6549_flux  N2_6549_fluxErr  N2_6549_sigma  N2_6549_sigmaErr  N2_6549_continu  N2_6549_continuErr  N2_6549_EW  N2_6549_fd_a0_l  N2_6549_fd_a0_r  N2_6549_chi2  N2_6549_ndof  N2_6585_a0  N2_6585_flux  N2_6585_fluxErr  N2_6585_sigma  N2_6585_sigmaErr  N2_6585_continu  N2_6585_continuErr  N2_6585_EW  N2_6585_fd_a0_l  N2_6585_fd_a0_r  N2_6585_chi2  N2_6585_ndof  H1_3970_a0  H1_3970_flux  H1_3970_fluxErr  H1_3970_sigma  H1_3970_sigmaErr  H1_3970_continu  H1_3970_continuErr  H1_3970_EW  H1_3970_fd_a0_l  H1_3970_fd_a0_r  H1_3970_chi2  H1_3970_ndof  H1_4102_a0  H1_4102_flux  H1_4102_fluxErr  H1_4102_sigma  H1_4102_sigmaErr  H1_4102_continu  H1_4102_continuErr  H1_4102_EW  H1_4102_fd_a0_l  H1_4102_fd_a0_r  H1_4102_chi2  H1_4102_ndof  H1_4341_a0  H1_4341_flux  H1_4341_fluxErr  H1_4341_sigma  H1_4341_sigmaErr  H1_4341_continu  H1_4341_continuErr  H1_4341_EW  H1_4341_fd_a0_l  H1_4341_fd_a0_r  H1_4341_chi2  H1_4341_ndof  H1_4862_a0  H1_4862_flux  H1_4862_fluxErr  H1_4862_sigma  H1_4862_sigmaErr  H1_4862_continu  H1_4862_continuErr  H1_4862_EW  H1_4862_fd_a0_l  H1_4862_fd_a0_r  H1_4862_chi2  H1_4862_ndof  H1_6564_a0  H1_6564_flux  H1_6564_fluxErr  H1_6564_sigma  H1_6564_sigmaErr  H1_6564_continu  H1_6564_continuErr  H1_6564_EW  H1_6564_fd_a0_l  H1_6564_fd_a0_r  H1_6564_chi2  H1_6564_ndof "
+
 import glob
 import os
 from os.path import join
 import InterpretFirefly as itf 
 import numpy as n
-plate = 1000
 
-stellarpop_files=n.array(glob.glob( join( os.environ['SDSSDR12_DIR'], "stellarpop", str(int(plate)), "*.fits" ) ) )
-spec_files = n.array([join( os.environ['SDSSDR12_DIR'],  str(int(plate)),  os.path.basename(el)[:-15] + ".fits") for el in stellarpop_files ])
-model_files = n.array([join( os.environ['SDSSDR12_DIR'],"model",  str(int(plate)),  os.path.basename(el)[:-15] + ".model") for el in stellarpop_files ])
-	
+plateList = n.loadtxt("plateList", unpack = True)
 
-tableFull = n.empty((len(stellarpop_files), 235 ))
-tablePG = n.empty((len(stellarpop_files), 235 ))
+def create_master_table(plate=1000):
+	stellarpop_files=n.array(glob.glob( join( os.environ['SDSSDR12_DIR'], "stellarpop", str(int(plate)), "*.fits" ) ) )
+	model_files = n.array([join( os.environ['SDSSDR12_DIR'],"model",  str(int(plate)),  os.path.basename(el)[:-15] + ".model") for el in stellarpop_files ])
 
-for ii, el in enumerate(model_files):
-	name_ = os.path.basename(el).split('_')
-	obj = itf.InterpretFirefly(el)
-	arrFull, headerA = obj.get_table_entry_full()
-	arrLine, headerA = obj.get_table_entry_line()
-	# print arrFull, arrLine
-	tableFull[ii] = arrFull
-	tablePG[ii] = arrLine
+	path_to_output_table_dir = join( os.environ['SDSSDR12_DIR'],"tables")
+
+	path_to_output_table_full = join(path_to_output_table_dir,   str(int(plate))+"_full.data")
+	path_to_output_table_line = join(path_to_output_table_dir,   str(int(plate))+"_line.data")
+
+	tableFull = n.empty((len(model_files), 226 ))
+	tablePG = n.empty((len(model_files), 226 ))
+
+	for ii, el in enumerate(model_files):
+		name_ = os.path.basename(el).split('_')
+		obj = itf.InterpretFirefly(el)
+		arrFull, headerA = obj.get_table_entry_full()
+		arrLine, headerA = obj.get_table_entry_line()
+		# print arrFull, arrLine
+		tableFull[ii] = arrFull
+		tablePG[ii] = arrLine
+
+	head = headerA + headerB
+	n.savetxt(path_to_output_table_full, tableFull, header = head)	
+	n.savetxt(path_to_output_table_line, tablePG, header = head)	
+
+for plate in plateList:
+	print plate
+	create_master_table(plate)
 
 sys.exit()
-headerB = " O2_3728_a0a  O2_3728_a0b  O2_3728_flux  O2_3728_fluxErr  O2_3728_sigma  O2_3728_sigmaErr  O2_3728_continu  O2_3728_continuErr  O2_3728_EW  O2_3728_share  O2_3728_shareErr  O2_3728_fd_a0_l  O2_3728_fd_a0_r  O2_3728_chi2  O2_3728_ndof  Ne3_3869_a0  Ne3_3869_flux  Ne3_3869_fluxErr  Ne3_3869_sigma  Ne3_3869_sigmaErr  Ne3_3869_continu  Ne3_3869_continuErr  Ne3_3869_EW  Ne3_3869_fd_a0_l  Ne3_3869_fd_a0_r  Ne3_3869_chi2  Ne3_3869_ndof  Ne3_3968_a0  Ne3_3968_flux  Ne3_3968_fluxErr  Ne3_3968_sigma  Ne3_3968_sigmaErr  Ne3_3968_continu  Ne3_3968_continuErr  Ne3_3968_EW  Ne3_3968_fd_a0_l  Ne3_3968_fd_a0_r  Ne3_3968_chi2  Ne3_3968_ndof  O3_4363_a0  O3_4363_flux  O3_4363_fluxErr  O3_4363_sigma  O3_4363_sigmaErr  O3_4363_continu  O3_4363_continuErr  O3_4363_EW  O3_4363_fd_a0_l  O3_4363_fd_a0_r  O3_4363_chi2  O3_4363_ndof  O3_4960_a0  O3_4960_flux  O3_4960_fluxErr  O3_4960_sigma  O3_4960_sigmaErr  O3_4960_continu  O3_4960_continuErr  O3_4960_EW  O3_4960_fd_a0_l  O3_4960_fd_a0_r  O3_4960_chi2  O3_4960_ndof  O3_5007_a0  O3_5007_flux  O3_5007_fluxErr  O3_5007_sigma  O3_5007_sigmaErr  O3_5007_continu  O3_5007_continuErr  O3_5007_EW  O3_5007_fd_a0_l  O3_5007_fd_a0_r  O3_5007_chi2  O3_5007_ndof  N2_6549_a0  N2_6549_flux  N2_6549_fluxErr  N2_6549_sigma  N2_6549_sigmaErr  N2_6549_continu  N2_6549_continuErr  N2_6549_EW  N2_6549_fd_a0_l  N2_6549_fd_a0_r  N2_6549_chi2  N2_6549_ndof  N2_6585_a0  N2_6585_flux  N2_6585_fluxErr  N2_6585_sigma  N2_6585_sigmaErr  N2_6585_continu  N2_6585_continuErr  N2_6585_EW  N2_6585_fd_a0_l  N2_6585_fd_a0_r  N2_6585_chi2  N2_6585_ndof  H1_3970_a0  H1_3970_flux  H1_3970_fluxErr  H1_3970_sigma  H1_3970_sigmaErr  H1_3970_continu  H1_3970_continuErr  H1_3970_EW  H1_3970_fd_a0_l  H1_3970_fd_a0_r  H1_3970_chi2  H1_3970_ndof  H1_4102_a0  H1_4102_flux  H1_4102_fluxErr  H1_4102_sigma  H1_4102_sigmaErr  H1_4102_continu  H1_4102_continuErr  H1_4102_EW  H1_4102_fd_a0_l  H1_4102_fd_a0_r  H1_4102_chi2  H1_4102_ndof  H1_4341_a0  H1_4341_flux  H1_4341_fluxErr  H1_4341_sigma  H1_4341_sigmaErr  H1_4341_continu  H1_4341_continuErr  H1_4341_EW  H1_4341_fd_a0_l  H1_4341_fd_a0_r  H1_4341_chi2  H1_4341_ndof  H1_4862_a0  H1_4862_flux  H1_4862_fluxErr  H1_4862_sigma  H1_4862_sigmaErr  H1_4862_continu  H1_4862_continuErr  H1_4862_EW  H1_4862_fd_a0_l  H1_4862_fd_a0_r  H1_4862_chi2  H1_4862_ndof  H1_6564_a0  H1_6564_flux  H1_6564_fluxErr  H1_6564_sigma  H1_6564_sigmaErr  H1_6564_continu  H1_6564_continuErr  H1_6564_EW  H1_6564_fd_a0_l  H1_6564_fd_a0_r  H1_6564_chi2  H1_6564_ndof "
-
-head = headerA + headerB
-
-n.savetxt(path_to_output_table_full, n.delete(tableFull, badRow, axis=0), header = head)	
-
-n.savetxt(path_to_output_table_line, n.delete(tablePG, badRow, axis=0), header = head)	
 
 stiltsC = """java -jar """+join(os.environ['DATA_DIR'],"stilts.jar")
 inF = join(os.environ['SPECTRASTACKS_DIR'], "results", "table_fullSpecFit_v0.data")
