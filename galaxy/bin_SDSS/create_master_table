@@ -16,8 +16,7 @@ plateList = n.loadtxt("plateList", unpack = True)
 def create_master_table(plate=1000):
 	stellarpop_files=n.array(glob.glob( join( os.environ['SDSSDR12_DIR'], "stellarpop", str(int(plate)), "*.fits" ) ) )
 	model_files = n.array([join( os.environ['SDSSDR12_DIR'],"model",  str(int(plate)),  os.path.basename(el)[:-15] + ".model") for el in stellarpop_files ])
-
-		if len(model_files)>=1:
+	if len(model_files)>=1:
 		path_to_output_table_dir = join( os.environ['SDSSDR12_DIR'],"tables")
 
 		path_to_output_table_full = join(path_to_output_table_dir,   str(int(plate))+"_full.data")
