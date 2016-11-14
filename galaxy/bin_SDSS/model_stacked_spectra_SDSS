@@ -9,7 +9,7 @@ plateList = n.loadtxt("plateList", unpack = True)
 
 #plate = plateList[1000]
 
-for plate in plateList[:50]:
+for plate in plateList[696:]:
 	stellarpop_files=n.array(glob.glob( join( os.environ['SDSSDR12_DIR'], "stellarpop", str(int(plate)), "*.fits" ) ) )
 	spec_files = n.array([join( os.environ['SDSSDR12_DIR'],  str(int(plate)),  os.path.basename(el)[:-15] + ".fits") for el in stellarpop_files ])
 	spec_files.sort()

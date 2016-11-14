@@ -91,9 +91,9 @@ class ModelSpectraStacks:
 		self.stack_file = stack_file
 		self.stack_file_base = os.path.basename(stack_file)
 		spl = self.stack_file_base.split('.')[0].split('-')
-		self.plate = spl[0]
-		self.mjd = spl[1]
-		self.fiber = spl[2]			
+		self.plate = spl[1]
+		self.mjd = spl[2]
+		self.fiber = spl[3]			
 		self.stack_model_file = os.path.join( os.environ['SDSSDR12_DIR'], "stellarpop", self.plate, self.stack_file_base[:-5] + "-SPM-MILES.fits")
 		outPutDir = os.path.join( os.environ['SDSSDR12_DIR'], "model", self.plate)
 		os.mkdir(outPutDir)
