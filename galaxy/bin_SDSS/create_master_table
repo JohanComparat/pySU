@@ -22,8 +22,8 @@ def create_master_table(plate=1000):
 	path_to_output_table_full = join(path_to_output_table_dir,   str(int(plate))+"_full.data")
 	path_to_output_table_line = join(path_to_output_table_dir,   str(int(plate))+"_line.data")
 
-	tableFull = n.empty((len(model_files), 226 ))
-	tablePG = n.empty((len(model_files), 226 ))
+	tableFull = n.empty((len(model_files), 229 ))
+	tablePG = n.empty((len(model_files), 229 ))
 
 	for ii, el in enumerate(model_files):
 		name_ = os.path.basename(el).split('_')
