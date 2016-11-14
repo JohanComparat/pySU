@@ -17,26 +17,27 @@ def create_master_table(plate=1000):
 	stellarpop_files=n.array(glob.glob( join( os.environ['SDSSDR12_DIR'], "stellarpop", str(int(plate)), "*.fits" ) ) )
 	model_files = n.array([join( os.environ['SDSSDR12_DIR'],"model",  str(int(plate)),  os.path.basename(el)[:-15] + ".model") for el in stellarpop_files ])
 
-	path_to_output_table_dir = join( os.environ['SDSSDR12_DIR'],"tables")
+		if len(model_files)>=1:
+		path_to_output_table_dir = join( os.environ['SDSSDR12_DIR'],"tables")
 
-	path_to_output_table_full = join(path_to_output_table_dir,   str(int(plate))+"_full.data")
-	path_to_output_table_line = join(path_to_output_table_dir,   str(int(plate))+"_line.data")
+		path_to_output_table_full = join(path_to_output_table_dir,   str(int(plate))+"_full.data")
+		path_to_output_table_line = join(path_to_output_table_dir,   str(int(plate))+"_line.data")
 
-	tableFull = n.empty((len(model_files), 229 ))
-	tablePG = n.empty((len(model_files), 229 ))
+		tableFull = n.empty((len(model_files), 229 ))
+		tablePG = n.empty((len(model_files), 229 ))
 
-	for ii, el in enumerate(model_files):
-		name_ = os.path.basename(el).split('_')
-		obj = itf.InterpretFirefly(el)
-		arrFull, headerA = obj.get_table_entry_full()
-		arrLine, headerA = obj.get_table_entry_line()
-		# print arrFull, arrLine
-		tableFull[ii] = arrFull
-		tablePG[ii] = arrLine
+		for ii, el in enumerate(model_files):
+			name_ = os.path.basename(el).split('_')
+			obj = itf.InterpretFirefly(el)
+			arrFull, headerA = obj.get_table_entry_full()
+			arrLine, headerA = obj.get_table_entry_line()
+			# print arrFull, arrLine
+			tableFull[ii] = arrFull
+			tablePG[ii] = arrLine
 
-	head = headerA + headerB
-	n.savetxt(path_to_output_table_full, tableFull, header = head)	
-	n.savetxt(path_to_output_table_line, tablePG, header = head)	
+		head = headerA + headerB
+		n.savetxt(path_to_output_table_full, tableFull, header = head)	
+		n.savetxt(path_to_output_table_line, tablePG, header = head)	
 
 for plate in plateList:
 	print plate
