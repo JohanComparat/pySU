@@ -112,9 +112,6 @@ class InterpretFirefly:
 		hdus = fits.open(self.model_file)
 		self.head = hdus[0]
 		self.hduStack = hdus[1]
-		
-		self.wlmin = n.min(wl)
-		self.wlmax = n.max(wl)
 		# opens the spm model
 		print " loads the spm model :"
 		self.hduSPM = hduList[2]
