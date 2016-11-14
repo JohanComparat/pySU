@@ -110,9 +110,11 @@ class ModelSpectraStacks:
 		self.hdu1 = hdus[1] 
 		
 		print "Loads the data"
-		wlA,flA,flErrA = self.hdu1.data['wavelength'], self.hdu1.data['meanWeightedStack'], self.hdu1.data['jackknifStackErrors']
-		self.selection = (flA>0) 
-		self.wl,self.fl,self.flErr = wlA[self.selection], flA[self.selection], flErrA[self.selection] 
+		self.wl = 10**self.hdu1.data['loglam']
+		self.fl = self.hdu1.data['flux']
+		self.flErr = self.hdu1.data['ivar']**(-0.5)
+		self.z = hdus[2].data['Z'][0]
+		
 		self.stack=interp1d(self.wl,self.fl)
 		self.stackErr=interp1d(self.wl,self.flErr)
 		
@@ -122,7 +124,7 @@ class ModelSpectraStacks:
 		self.hdu2 = hdus[1]
 		self.wlModel,self.flModel = self.hdu2.data['wavelength'], self.hdu2.data['firefly_model']*10**(-17)
 		self.model=interp1d(n.hstack((self.wlModel,[n.max(self.wlModel)+10,11000])), n.hstack(( self.flModel, [n.median(self.flModel[:-20]),n.median(self.flModel[:-20])] )) )
-		self.z = hdus[2].data['Z'][0]
+		
 		
 		# wavelength range common to the stack and the model :
 		self.wlLineSpectrum  = n.arange(n.max([self.stack.x.min(),self.model.x.min()]), n.min([self.stack.x.max(),self.model.x.max()]), 0.5)[2:-1]
