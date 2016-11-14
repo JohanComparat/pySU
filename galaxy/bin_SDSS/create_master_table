@@ -6,7 +6,7 @@ This script produces the stacks for emission line luminosity limited samples.
 import glob
 import os
 from os.path import join
-from InterpretFirefly import *
+import InterpretFirefly as itf 
 import numpy as n
 plate = 1000
 
