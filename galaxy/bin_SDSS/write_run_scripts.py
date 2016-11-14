@@ -23,5 +23,5 @@ def writeScript(rootName, plate):
 
 plateList = n.loadtxt("plateList", unpack = True)
 for plate in plateList:
-	rootName = join(os.environ['HOME'], "batchscripts_firefly_model", plate)
-	writeScript(rootName, plate)
+	rootName = join(os.environ['HOME'], "batchscripts_firefly_model", str(int(plate)))
+	writeScript(rootName, str(int(plate)))
