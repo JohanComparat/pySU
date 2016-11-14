@@ -114,12 +114,12 @@ class InterpretFirefly:
 		self.hduStack = hdus[1]
 		# opens the spm model
 		print " loads the spm model :"
-		self.hduSPM = hduList[2]
+		self.hduSPM = hdus[2]
 		# opens the line model
 		print " loads the line model lineSpec :"
-		self.hduLine = hduList[4]
+		self.hduLine = hdus[4]
 		print " loads the line model fullSpec :"
-		self.hduFull = hduList[5]
+		self.hduFull = hdus[5]
 		
 	def get_table_entry_full(self):
 		headerA =" Redshift age_universe age_lightW_mean age_lightW_err_plus age_lightW_err_minus metallicity_lightW_mean metallicity_lightW_mean_err_plus metallicity_lightW_mean_err_minus age_massW_mean age_massW_err_plus age_massW_err_minus metallicity_massW_mean metallicity_massW_mean_err_plus metallicity_massW_mean_err_minus stellar_mass stellar_mass_err_plus stellar_mass_err_minus spm_EBV nComponentsSSP"
