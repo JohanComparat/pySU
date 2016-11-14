@@ -5,11 +5,16 @@ import glob
 from os.path import join
 import os
 import numpy as n
-plateList = n.loadtxt("plateList", unpack = True)
-
+# plateList = n.loadtxt("plateList", unpack = True)
+# for plate in plateList[696:699]:
 #plate = plateList[1000]
+import sys
+for arg in sys.argv:
+    print arg
 
-for plate in plateList[696:699]:
+plate = sys.argv[1]
+
+def modelPlate(plate):
 	stellarpop_files=n.array(glob.glob( join( os.environ['SDSSDR12_DIR'], "stellarpop", str(int(plate)), "*.fits" ) ) )
 	spec_files = n.array([join( os.environ['SDSSDR12_DIR'],  str(int(plate)),  os.path.basename(el)[:-15] + ".fits") for el in stellarpop_files ])
 	spec_files.sort()
@@ -25,3 +30,4 @@ for plate in plateList[696:699]:
 		mm.save_spectrum()
 		#mm.plot_spectrum()
 
+modelPlate(plate)
