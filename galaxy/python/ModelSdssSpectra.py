@@ -79,25 +79,25 @@ class ModelSpectraStacks:
 	"""
 	This class fits the emission lines on the continuum-subtracted stack.
 
-	:param stack_file: fits file generated with a LF in a luminosity bin.
+	:param spec_file: fits file generated with a LF in a luminosity bin.
 	:param cosmo: cosmology class from astropy
 	:param sdss_min_wavelength: minimum wavelength considered by firefly (default : 1000) 
 	:param sdss_max_wavelength: minimum wavelength considered by firefly (default : 7500)
 	:param dV: default value that hold the place (default : -9999.99) 
 	"""
-	def __init__(self, stack_file, mode="MILES", cosmo=cosmo, sdss_min_wavelength= 1000., sdss_max_wavelength=7500., dV=-9999.99):
+	def __init__(self, spec_file, mode="MILES", cosmo=cosmo, sdss_min_wavelength= 1000., sdss_max_wavelength=7500., dV=-9999.99):
 		self.mode = mode
 		
-		self.stack_file = stack_file
-		self.stack_file_base = os.path.basename(stack_file)
-		spl = self.stack_file_base.split('.')[0].split('-')
+		self.spec_file = spec_file
+		self.spec_file_base = os.path.basename(spec_file)
+		spl = self.spec_file_base.split('.')[0].split('-')
 		self.plate = spl[1]
 		self.mjd = spl[2]
 		self.fiber = spl[3]			
-		self.stack_model_file = os.path.join( os.environ['SDSSDR12_DIR'], "stellarpop", self.plate, self.stack_file_base[:-5] + "-SPM-MILES.fits")
+		self.spec_model_file = os.path.join( os.environ['SDSSDR12_DIR'], "stellarpop", self.plate, self.spec_file_base[:-5] + "-SPM-MILES.fits")
 		outPutDir = os.path.join( os.environ['SDSSDR12_DIR'], "model", self.plate)
 		os.mkdir(outPutDir)
-		outPutFileName = os.path.join( outPutDir, self.stack_file_base + "-SPM-MILES.fits")
+		outPutFileName = os.path.join( outPutDir, self.spec_file_base + "-SPM-MILES.fits")
 		
 		self.cosmo = cosmo
 		self.sdss_max_wavelength	= sdss_max_wavelength
@@ -105,7 +105,7 @@ class ModelSpectraStacks:
 		self.dV = dV
 		self.side = ''
 
-		hdus = fits.open(self.stack_file)
+		hdus = fits.open(self.spec_file)
 		self.hdR = hdus[0].header
 		self.hdu1 = hdus[1] 
 		
@@ -119,7 +119,7 @@ class ModelSpectraStacks:
 		self.stackErr=interp1d(self.wl,self.flErr)
 		
 		print "loads model"
-		hdus = fits.open(self.stack_model_file)
+		hdus = fits.open(self.spec_model_file)
 		
 		self.hdu2 = hdus[1]
 		self.wlModel,self.flModel = self.hdu2.data['wavelength'], self.hdu2.data['firefly_model']*10**(-17)
@@ -215,23 +215,6 @@ class ModelSpectraStacks:
 		data,h=[],[]
 		print O2_3727
 		dat_mean,mI,hI=lfit.fit_Line_OIIdoublet_position(self.wlLineSpectrum, self.flLineSpectrum, self.flErrLineSpectrum, a0= O2_3727*(1 + self.z) , lineName="O2_3728", p0_sigma=7,model="gaussian",fitWidth = 20.,DLC=10.)
-		print hI, dat_mean
-		d_out=[]
-		for kk in range(10):
-			fluxRR = interp1d(self.wl, self.hdu1.data['jackknifeSpectra'].T[kk][self.selection])
-			flLineSpectrumRR=n.array([fluxRR(xx)-self.model(xx) for xx in self.wlLineSpectrum])
-			d1,mI,hI=lfit.fit_Line_OIIdoublet_position(self.wlLineSpectrum, flLineSpectrumRR, self.flErrLineSpectrum, a0= O2_3727*(1 + self.z) , lineName="O2_3728", p0_sigma=7,model="gaussian",fitWidth = 20.,DLC=10.)
-			d_out.append(d1)
-
-		d_out = n.array(d_out)
-		#print "jk out", d_out
-		err_out = n.std(d_out,axis=0)
-		#print "before", err_out, dat_mean
-		# assign error values :
-		dat_mean[3] = err_out[3-1]
-		dat_mean[5] = err_out[5-1]
-		dat_mean[7] = err_out[7-1]
-		#print "after", dat_mean
 		data.append(dat_mean)
 		h.append(hI)
 
@@ -239,21 +222,6 @@ class ModelSpectraStacks:
 			# measure line properties from the mean weighted stack
 			print li[2]
 			dat_mean,mI,hI=lfit.fit_Line_position_C0noise(self.wlLineSpectrum, self.flLineSpectrum, self.flErrLineSpectrum, li[1]*(1 + self.z), lineName=li[2], continuumSide=li[3], model="gaussian", p0_sigma=7,fitWidth = 15.,DLC=10.)
-			print hI, dat_mean
-			# measure its dispersion using the stacks
-			d_out=[]
-			for kk in range(len(self.hdu1.data['jackknifeSpectra'].T)):
-				fluxRR = interp1d(self.wl, self.hdu1.data['jackknifeSpectra'].T[kk][self.selection])
-				flLineSpectrumRR=n.array([fluxRR(xx)-self.model(xx) for xx in self.wlLineSpectrum])
-				d1,mI,hI=lfit.fit_Line_position_C0noise(self.wlLineSpectrum, flLineSpectrumRR, self.flErrLineSpectrum, li[1]*(1 + self.z), lineName=li[2], continuumSide=li[3], model="gaussian", p0_sigma=7,fitWidth = 15.,DLC=10.)
-				d_out.append(d1)
-
-			d_out = n.array(d_out)
-			err_out = n.std(d_out,axis=0)
-			# assign error values :
-			dat_mean[2] = err_out[2-1]
-			dat_mean[4] = err_out[4-1]
-			dat_mean[6] = err_out[6-1]
 			data.append(dat_mean)
 			h.append(hI)
 
@@ -290,20 +258,6 @@ class ModelSpectraStacks:
 		print O2_3727
 		dat_mean,mI,hI=lfit.fit_Line_OIIdoublet_position(self.wl, self.fl, self.flErr, a0= O2_3727*(1 + self.z) , lineName="O2_3728", p0_sigma=7,model="gaussian",fitWidth = 20.,DLC=10.)
 		print hI, dat_mean
-		d_out=[]
-		for kk in range(10):
-			d1,mI,hI=lfit.fit_Line_OIIdoublet_position(self.wl, self.hdu1.data['jackknifeSpectra'].T[kk][self.selection], self.flErr , a0= O2_3727*(1 + self.z) , lineName="O2_3728", p0_sigma=7,model="gaussian",fitWidth = 20.,DLC=10.)
-			d_out.append(d1)
-
-		d_out = n.array(d_out)
-		#print "jk out", d_out
-		err_out = n.std(d_out,axis=0)
-		#print "before", err_out, dat_mean
-		# assign error values :
-		dat_mean[3] = err_out[3-1]
-		dat_mean[5] = err_out[5-1]
-		dat_mean[7] = err_out[7-1]
-		#print "after", dat_mean
 		data.append(dat_mean)
 		h.append(hI)
 
@@ -311,19 +265,6 @@ class ModelSpectraStacks:
 			print li[2]
 			# measure line properties from the mean weighted stack
 			dat_mean,mI,hI=lfit.fit_Line_position_C0noise(self.wl, self.fl, self.flErr, li[1]*(1 + self.z), lineName=li[2], continuumSide=li[3], model="gaussian", p0_sigma=7,fitWidth = 15.,DLC=10.)
-			print hI, dat_mean
-			# measure its dispersion using the stacks
-			d_out=[]
-			for kk in range(len(self.hdu1.data['jackknifeSpectra'].T)):
-				d1,mI,hI=lfit.fit_Line_position_C0noise(self.wl,  self.hdu1.data['jackknifeSpectra'].T[kk][self.selection], self.flErr, li[1]*(1 + self.z), lineName=li[2], continuumSide=li[3], model="gaussian", p0_sigma=7,fitWidth = 15.,DLC=10.)
-				d_out.append(d1)
-
-			d_out = n.array(d_out)
-			err_out = n.std(d_out,axis=0)
-			# assign error values :
-			dat_mean[2] = err_out[2-1]
-			dat_mean[4] = err_out[4-1]
-			dat_mean[6] = err_out[6-1]
 			data.append(dat_mean)
 			#print li[2], dat_mean
 			h.append(hI)
