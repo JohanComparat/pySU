@@ -99,7 +99,7 @@ class ModelSpectraStacks:
 		if os.path.isdir(outPutDir)==False:
 			os.mkdir(outPutDir)
 		
-		outPutFileName = os.path.join( outPutDir, self.spec_file_base + "-SPM-MILES.fits")
+		self.outFile = os.path.join( outPutDir, self.spec_file_base[:-5] + ".model")
 		
 		self.cosmo = cosmo
 		self.sdss_max_wavelength	= sdss_max_wavelength
@@ -302,7 +302,7 @@ class ModelSpectraStacks:
 		# previous file
 		prihdu = fits.PrimaryHDU(header=self.hdR)
 		thdulist = fits.HDUList([prihdu, self.hdu1, self.hdu2, lineSptbhdu, self.lineSpec_tb_hdu, self.fullSpec_tb_hdu])
-		if os.path.isfile(outFile):
-			os.remove(outFile)
+		if os.path.isfile(self.outFile):
+			os.remove(self.outFile)
 		
-		thdulist.writeto(outFile)
+		thdulist.writeto(self.outFile)
