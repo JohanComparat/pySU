@@ -7,23 +7,21 @@ import os
 import numpy as n
 plateList = n.loadtxt("plateList", unpack = True)
 
-plate = plateList[0]
+#plate = plateList[1000]
 
-stellarpop_files=n.array(glob.glob( join( os.environ['SDSSDR12_DIR'], "stellarpop", str(int(plate)), "*.fits" ) ) )
-
-spec_files = n.array([join( os.environ['SDSSDR12_DIR'],  str(int(plate)),  os.path.basename(el)[:-15] + ".fits") for el in stellarpop_files ])
-
-spec_files.sort()
-
-#print stack_files
-
-for file in spec_files:
-	print( file )
-	mm=ModelSpectraStacks(file,mode="MILES")
-	#mm.plot_fit()
-	mm.fit_lines_to_fullSpectrum()
-	mm.fit_lines_to_lineSpectrum()
-	#mm.compute_derived_quantities()
-	mm.save_spectrum()
-	#mm.plot_spectrum()
+for plate in plateList[:50]:
+	stellarpop_files=n.array(glob.glob( join( os.environ['SDSSDR12_DIR'], "stellarpop", str(int(plate)), "*.fits" ) ) )
+	spec_files = n.array([join( os.environ['SDSSDR12_DIR'],  str(int(plate)),  os.path.basename(el)[:-15] + ".fits") for el in stellarpop_files ])
+	spec_files.sort()
+	print spec_files
+	
+	for file in spec_files:
+		print( file )
+		mm=ModelSpectraStacks(file,mode="MILES")
+		#mm.plot_fit()
+		mm.fit_lines_to_fullSpectrum()
+		mm.fit_lines_to_lineSpectrum()
+		#mm.compute_derived_quantities()
+		mm.save_spectrum()
+		#mm.plot_spectrum()
 
