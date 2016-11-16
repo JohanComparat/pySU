@@ -110,7 +110,7 @@ class ModelSpectraStacks:
 		hdus = fits.open(self.spec_file)
 		self.hdR = hdus[0].header
 		self.hdu1 = hdus[1] 
-		
+		self.z = hdus[2].data['Z'][0]
 		print "Loads the data"
 		self.wl = 10**self.hdu1.data['loglam']
 		self.fl = self.hdu1.data['flux']
