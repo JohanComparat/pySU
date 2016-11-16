@@ -112,9 +112,9 @@ class ModelSpectraStacks:
 		self.hdu1 = hdus[1] 
 		
 		print "Loads the data"
-		self.wl = 10**self.hdu1[1].data['loglam']
-		self.fl = self.hdu1[1].data['flux']
-		self.flErr = self.hdu1[1].data['ivar']**(-0.5)
+		self.wl = 10**self.hdu1.data['loglam']
+		self.fl = self.hdu1.data['flux']
+		self.flErr = self.hdu1.data['ivar']**(-0.5)
 
 		self.stack=interp1d(self.wl,self.fl)
 		self.stackErr=interp1d(self.wl,self.flErr)
