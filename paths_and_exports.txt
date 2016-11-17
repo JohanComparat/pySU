@@ -1,13 +1,13 @@
-﻿# list of exports to make
+﻿# list of exports needed
 
-export PYTHONPATH=$PYTHONPATH:/users/jcomparat/skies_universes_production/pySU/galaxy/python/
-export PYTHONPATH=$PYTHONPATH:/users/jcomparat/skies_universes_production/pySU/simulations/python/
-export PYTHONPATH=$PYTHONPATH:/users/jcomparat/skies_universes_production/pySU/multidark/python/
-export PYTHONPATH=$PYTHONPATH:/users/jcomparat/skies_universes_production/pySU/spm/python/
-export PYTHONPATH=$PYTHONPATH:/users/jcomparat/skies_universes_production/pySU/targetselection/python/
+export PYTHONPATH=$PYTHONPATH:/path_to/pySU/galaxy/python/
+export PYTHONPATH=$PYTHONPATH:/path_to/pySU/simulations/python/
+export PYTHONPATH=$PYTHONPATH:/path_to/pySU/multidark/python/
+export PYTHONPATH=$PYTHONPATH:/path_to/pySU/spm/python/
+export PYTHONPATH=$PYTHONPATH:/path_to/pySU/targetselection/python/
 
-export DATA_DIR='/users/jcomparat/skies_universes_production/’
-export PYSU_DIR='/users/jcomparat/skies_universes_production/pySU/'
+export DATA_DIR='/path_to_data/’
+export PYSU_DIR='/path_to/pySU/'
 
-export PYTHONPATH=$PYTHONPATH:/users/jcomparat/.local/
+export PYTHONPATH=$PYTHONPATH:/users/username/.local/
 

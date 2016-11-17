@@ -38,7 +38,7 @@ def create_master_table(plate=1000):
 		n.savetxt(path_to_output_table_full, tableFull, header = head)	
 		n.savetxt(path_to_output_table_line, tablePG, header = head)	
 
-for plate in plateList:
+for plate in plateList[893:]:
 	print plate
 	create_master_table(plate)
 

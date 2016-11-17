@@ -4,26 +4,7 @@
 General purpose:
 ................
 
-The class ModelSpectraStacks is dedicated to modelling and extracting information from stacks of spectra.
-
-*Imports*::
-
-	import matplotlib
-	matplotlib.use('pdf')
-	import matplotlib.pyplot as p
-	import os 
-	import astropy.cosmology as co
-	cosmo=co.FlatLambdaCDM(H0=70,Om0=0.3)
-	import astropy.units as u
-	import astropy.io.fits as fits
-	import numpy as n
-	from scipy.optimize import curve_fit
-	from scipy.interpolate import interp1d
-	from scipy.stats import scoreatpercentile
-	import astropy.io.fits as fits
-	from lineListAir import *
-	import LineFittingLibrary as lineFit
-
+The class ModelSdssSpectra is dedicated to modelling and extracting information from stacks of spectra.
 
 """
 import matplotlib

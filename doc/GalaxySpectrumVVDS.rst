@@ -1,5 +1,5 @@
 VVDS Spectra
-############
+##########
 
 This class is dedicated to handling the spectra from VVDS galaxy redshift survey, see LeFevre et al. 2013.
 

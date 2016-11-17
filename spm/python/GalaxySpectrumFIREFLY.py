@@ -17,7 +17,7 @@ The class GalaxySpectrumFIREFLY is dedicated to handling spectra to be fed to FI
 import numpy as np
 import astropy.io.fits as pyfits
 import glob
-
+import os
 from firefly_dust import get_dust_radec
 
 class GalaxySpectrumFIREFLY:
@@ -33,6 +33,7 @@ class GalaxySpectrumFIREFLY:
 	def __init__(self,path_to_spectrum, milky_way_reddening=True , hpf_mode = 'on'):
 		self.path_to_spectrum=path_to_spectrum
 		self.milky_way_reddening = milky_way_reddening
+		self.N_angstrom_masked = 20.
 
 	def openObservedMuseSpectrum(self, catalog):
 		"""Loads the observed spectrum in counts."""
@@ -50,8 +51,7 @@ class GalaxySpectrumFIREFLY:
 		self.restframe_wavelength = self.wavelength / (1.0+self.redshift)
 
 		# masking emission lines
-		N_angstrom_masked = 20
-		lines_mask = ((self.restframe_wavelength > 3738 - N_angstrom_masked) & (self.restframe_wavelength < 3738 + N_angstrom_masked)) | ((self.restframe_wavelength > 5007 - N_angstrom_masked) & (self.restframe_wavelength < 5007 + N_angstrom_masked)) | ((self.restframe_wavelength > 4861 - N_angstrom_masked) & (self.restframe_wavelength < 4861 + N_angstrom_masked)) | ((self.restframe_wavelength > 6564 - N_angstrom_masked) & (self.restframe_wavelength < 6564 + N_angstrom_masked)) 
+		lines_mask = ((self.restframe_wavelength > 3728 - self.N_angstrom_masked) & (self.restframe_wavelength < 3728 + self.N_angstrom_masked)) | ((self.restframe_wavelength > 5007 - self.N_angstrom_masked) & (self.restframe_wavelength < 5007 + self.N_angstrom_masked)) | ((self.restframe_wavelength > 4861 - self.N_angstrom_masked) & (self.restframe_wavelength < 4861 + self.N_angstrom_masked)) | ((self.restframe_wavelength > 6564 - self.N_angstrom_masked) & (self.restframe_wavelength < 6564 + self.N_angstrom_masked)) 
 
 		self.restframe_wavelength = self.restframe_wavelength[(lines_mask==False)] 
 		self.wavelength = self.wavelength[(lines_mask==False)] 
@@ -114,8 +114,7 @@ class GalaxySpectrumFIREFLY:
 		self.objid = 0
 
 		# masking emission lines
-		N_angstrom_masked = 20
-		lines_mask = ((self.restframe_wavelength > 3738 - N_angstrom_masked) & (self.restframe_wavelength < 3738 + N_angstrom_masked)) | ((self.restframe_wavelength > 5007 - N_angstrom_masked) & (self.restframe_wavelength < 5007 + N_angstrom_masked)) | ((self.restframe_wavelength > 4861 - N_angstrom_masked) & (self.restframe_wavelength < 4861 + N_angstrom_masked)) | ((self.restframe_wavelength > 6564 - N_angstrom_masked) & (self.restframe_wavelength < 6564 + N_angstrom_masked)) 
+		lines_mask = ((self.restframe_wavelength > 3728 - self.N_angstrom_masked) & (self.restframe_wavelength < 3728 + self.N_angstrom_masked)) | ((self.restframe_wavelength > 5007 - self.N_angstrom_masked) & (self.restframe_wavelength < 5007 + self.N_angstrom_masked)) | ((self.restframe_wavelength > 4861 - self.N_angstrom_masked) & (self.restframe_wavelength < 4861 + self.N_angstrom_masked)) | ((self.restframe_wavelength > 6564 - self.N_angstrom_masked) & (self.restframe_wavelength < 6564 + self.N_angstrom_masked)) 
 
 		self.restframe_wavelength = self.restframe_wavelength[(lines_mask==False)] 
 		self.wavelength = self.wavelength[(lines_mask==False)] 
@@ -168,7 +167,7 @@ class GalaxySpectrumFIREFLY:
 		self.hdulist = pyfits.open(self.path_to_spectrum)
 		self.ra = 0. #self.hdulist[0].header['RA']
 		self.dec = 0. #self.hdulist[0].header['DEC']
-		self.redshift = float(self.path_to_spectrum.split('-')[-1].split('_')[0][1:])
+		self.redshift = float(os.path.basename(self.path_to_spectrum).split('-')[-1].split('_')[0][1:])
 		self.restframe_wavelength = self.hdulist[1].data['wavelength']
 		self.wavelength = self.restframe_wavelength * (1. + self.redshift)
 		
@@ -181,8 +180,7 @@ class GalaxySpectrumFIREFLY:
 		self.bad_flags = np.ones(len(self.restframe_wavelength))
 		Nstacked = float(self.path_to_spectrum.split('-')[-1].split('_')[3])
 
-		N_angstrom_masked = 20
-		lines_mask = ((self.restframe_wavelength > 3738 - N_angstrom_masked) & (self.restframe_wavelength < 3738 + N_angstrom_masked)) | ((self.restframe_wavelength > 5007 - N_angstrom_masked) & (self.restframe_wavelength < 5007 + N_angstrom_masked)) | ((self.restframe_wavelength > 4861 - N_angstrom_masked) & (self.restframe_wavelength < 4861 + N_angstrom_masked)) | ((self.restframe_wavelength > 6564 - N_angstrom_masked) & (self.restframe_wavelength < 6564 + N_angstrom_masked)) | ( self.hdulist[1].data['NspectraPerPixel'] < Nstacked * 0.8 ) | (self.flux==-9999.99)
+		lines_mask = ((self.restframe_wavelength > 3728 - self.N_angstrom_masked) & (self.restframe_wavelength < 3728 + self.N_angstrom_masked)) | ((self.restframe_wavelength > 5007 - self.N_angstrom_masked) & (self.restframe_wavelength < 5007 + self.N_angstrom_masked)) | ((self.restframe_wavelength > 4861 - self.N_angstrom_masked) & (self.restframe_wavelength < 4861 + self.N_angstrom_masked)) | ((self.restframe_wavelength > 6564 - self.N_angstrom_masked) & (self.restframe_wavelength < 6564 + self.N_angstrom_masked)) | ( self.hdulist[1].data['NspectraPerPixel'] < Nstacked * 0.8 ) | (self.flux==-9999.99)
 
 		self.restframe_wavelength = self.restframe_wavelength[(lines_mask==False)] 
 		self.wavelength = self.wavelength[(lines_mask==False)] 
@@ -210,3 +208,67 @@ class GalaxySpectrumFIREFLY:
 
 		print"there are", len(self.wavelength),"data points at redshift",self.redshift," between", np.min(self.wavelength[bad_data==False]), np.max(self.wavelength[bad_data==False]), "Angstrom.", np.min(self.restframe_wavelength[bad_data==False]), np.max(self.restframe_wavelength[bad_data==False]), "Angstrom in the rest frame."
 
+	def openObservedStackTutorial(self):
+		"""
+		It reads an Stack spectrum from the LF analysis and provides the input for the firefly fitting routine.
+		:param path_to_spectrum:
+		:param sdss_dir: directory with the observed spectra
+		:param milky_way_reddening: True or False if you want to correct the redenning of the Milky way.
+		:param hpf_mode: 'on' high pass filters the data to correct from dust in the galaxy.
+
+		In this aims, it stores the following data in the object :
+		* hdu list from the spec lite
+		* SED data : wavelength (in angstrom), flux, error on the flux (in 10^{-17} erg/cm2/s/Angstrom, like the SDSS spectra)
+		* Metadata :
+			* ra : in degrees J2000
+			* dec : in degrees J2000
+			* redshift : best fit
+			* vdisp : velocity dispersion in km/s
+			* r_instrument : resolution of the instrument at each wavelength observed
+			* trust_flag : 1 or True if trusted 
+			* bad_flags : ones as long as the wavelength array, filters the pixels with bad data
+			* objid : object id optional : set to 0
+		"""
+		self.hdulist = pyfits.open(self.path_to_spectrum)
+		self.ra = 0. #self.hdulist[0].header['RA']
+		self.dec = 0. #self.hdulist[0].header['DEC']
+		self.redshift = float(os.path.basename(self.path_to_spectrum).split('-')[-1].split('_')[0][1:])
+		self.restframe_wavelength = self.hdulist[1].data['WAVE'][0]
+		self.wavelength = self.restframe_wavelength * (1. + self.redshift)
+		
+		meanWL = (self.wavelength[1:]+self.wavelength[:-1])/2.
+		deltaWL = self.wavelength[1:]-self.wavelength[:-1]
+		resolution = np.ones_like(self.wavelength)*np.mean(meanWL / deltaWL)
+		# units of 1e-17 f lambda
+		self.flux = self.hdulist[1].data['FLUXMEDIAN'][0]# * 1e-17
+		self.error = self.hdulist[1].data['FLUXMEDIAN_ERR'][0]# * 1e-17
+		self.bad_flags = np.ones(len(self.restframe_wavelength))
+		Nstacked = float(self.path_to_spectrum.split('-')[-1].split('_')[3])
+		
+		lines_mask = ((self.restframe_wavelength > 3728 - self.N_angstrom_masked) & (self.restframe_wavelength < 3728 + self.N_angstrom_masked)) | ((self.restframe_wavelength > 5007 - self.N_angstrom_masked) & (self.restframe_wavelength < 5007 + self.N_angstrom_masked)) | ((self.restframe_wavelength > 4861 - self.N_angstrom_masked) & (self.restframe_wavelength < 4861 + self.N_angstrom_masked)) | ((self.restframe_wavelength > 6564 - self.N_angstrom_masked) & (self.restframe_wavelength < 6564 + self.N_angstrom_masked)) 
+
+		self.restframe_wavelength = self.restframe_wavelength[(lines_mask==False)] 
+		self.wavelength = self.wavelength[(lines_mask==False)] 
+		self.flux = self.flux[(lines_mask==False)] 
+		self.error = self.error[(lines_mask==False)] 
+		self.bad_flags = self.bad_flags[(lines_mask==False)] 
+		self.r_instrument = resolution[(lines_mask==False)] 
+
+		bad_data 	= np.isnan(self.flux) | np.isinf(self.flux) | (self.flux <= 0.0) | np.isnan(self.error) | np.isinf(self.error) 
+		# removes the bad data from the spectrum 
+		self.flux[bad_data] 	= 0.0
+		self.error[bad_data] 	= np.max(self.flux) * 99999999999.9
+		self.bad_flags[bad_data] = 0
+		
+		self.vdisp = 70. # km/s
+
+		self.trust_flag = 1
+		self.objid = 0
+
+		if self.milky_way_reddening :
+			# gets the amount of MW reddening on the models
+			self.ebv_mw = get_dust_radec(self.ra,self.dec,'ebv')
+		else:
+			self.ebv_mw = 0.0
+
+		print"there are", len(self.wavelength),"data points at redshift",self.redshift," between", np.min(self.wavelength[bad_data==False]), np.max(self.wavelength[bad_data==False]), "Angstrom.", np.min(self.restframe_wavelength[bad_data==False]), np.max(self.restframe_wavelength[bad_data==False]), "Angstrom in the rest frame."

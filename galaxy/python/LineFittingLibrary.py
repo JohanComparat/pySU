@@ -27,7 +27,6 @@ class LineFittingLibrary:
 	 * conversion magnitude AB to flux : flambda to fnu
 
 	:param dV: the default value  (def: -9999.99)
-	:param fitWidth: width in Angstrom around the line where the fit is performed, default 35 Angstrom 
 	"""
 	def __init__(self,dV=-9999.99):
 		self.dV=dV # default value put in the catalogs
@@ -139,18 +138,19 @@ class LineFittingLibrary:
 
 	def fit_Line_position_C0noise(self,wl,spec1d,err1d,a0=5007.,lineName="AL",fitWidth=20,DLC=20, p0_sigma=15.,p0_flux=8e-17,p0_share=0.5,continuumSide="left",model="gaussian"):
 		"""
-		fits a line profile to a spectrum around a fixed line position
+		fits a line profile to a spectrum where the error model is takes the value of the continuum.
 
 		:param wl: wavelength (array, Angstrom)
 		:param spec1d: flux observed in the broad band (array, f lambda)
 		:param err1d: error on the flux observed in the broad band (array, f lambda)
-		:param a0: expected position of the peak of the line in the observed frame (redshifted). a0 is not fitted, it is given.
+		:param a0: expected position of the peak of the line in the observed frame (redshifted). a0 is  fitted.
 		:param lineName: suffix characterizing the line in the headers of the output
+		:param fitWidth: width in Angstrom around the line where the fit is performed, default 20 Angstrom 
+		:param continuumSide: "left" = bluewards of the line or "right" = redwards of the line
 		:param DLC: wavelength extent to fit the continuum around the line. (def: 230 Angstrom)
 		:param p0_sigma: prior on the line width in A (def: 15 A)
 		:param p0_flux: prior on the line flux in erg/cm2/s/A (def: 8e-17)
 		:param p0_share: prior on the share of Gaussian and Lorentzian model. Only used if the line is fitted with a pseudoVoigt profile width (def: 0.5 no units)
-		:param continuumSide: "left" = bluewards of the line or "right" = redwards of the line
 		:param model: line model to be fitted : "gaussian", "lorentz" or "pseudoVoigt".
 
 		Returns :

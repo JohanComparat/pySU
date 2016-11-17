@@ -19,11 +19,21 @@ import shlex
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.insert(0, os.path.abspath('/home/comparat/database/pySU/'))
-sys.path.insert(0, os.path.abspath('/home/comparat/database/pySU/pyGalaxy/'))
-sys.path.insert(0, os.path.abspath('/home/comparat/database/pySU/pyMultidark/'))
-sys.path.insert(0, os.path.abspath('/home/comparat/database/pySU/pyGalaxy/trunk/python/'))
-sys.path.insert(0, os.path.abspath('/home/comparat/database/pySU/pyMultidark/trunk/python/'))
+
+# root package
+sys.path.insert(0, os.path.abspath('/users/jcomparat/skies_universes_production/pySU/'))
+
+# galaxy package
+sys.path.insert(0, os.path.abspath('/users/jcomparat/skies_universes_production/pySU/galaxy/'))
+sys.path.insert(0, os.path.abspath('/users/jcomparat/skies_universes_production/pySU/galaxy/python/'))
+
+# MultiDark
+sys.path.insert(0, os.path.abspath('/users/jcomparat/skies_universes_production/pySU/multidark/'))
+sys.path.insert(0, os.path.abspath('/users/jcomparat/skies_universes_production/pySU/multidark/python/'))
+
+# stellar population model
+sys.path.insert(0, os.path.abspath('/users/jcomparat/skies_universes_production/pySU/spm/'))
+sys.path.insert(0, os.path.abspath('/users/jcomparat/skies_universes_production/pySU/spm/python/'))
 
 # -- General configuration ------------------------------------------------
 

@@ -437,7 +437,7 @@ class MultiDarkMock:
         raR,decR,RR=0,0,0
         
     def writeClusteringParamFile(self,type,decade=""):
-        """ Writes the clustering commands that command the CUTE code.
+        """ Writes the clustering commands that command the CUTE code, see Alonso et al. 2012 https://arxiv.org/abs/1210.1833
         :param type: monopole or angular or ...
         :param decade: string suffix that is appended if you study different scales (decades) _d1, _d2, _d3 are used for the angular clustering."""
         f=open(join( self.mockOutput_dir, self.mockName +".param2PCF_"+type+decade),'a')

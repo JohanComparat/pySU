@@ -30,6 +30,7 @@ import matplotlib
 matplotlib.use('pdf')
 import matplotlib.pyplot as p
 import os 
+from os.path import join
 import astropy.cosmology as co
 cosmo=co.Planck15 #co.FlatLambdaCDM(H0=70,Om0=0.3)
 import astropy.units as u
@@ -86,15 +87,18 @@ class ModelSpectraStacks:
 	:param dV: default value that hold the place (default : -9999.99) 
 	:param N_spectra_limitFraction: If the stack was made with N spectra. N_spectra_limitFraction selects the points that have were computed using more thant N_spectra_limitFraction * N spectra. (default : 0.8)
 	"""
-	def __init__(self, stack_file, mode="MILES", cosmo=cosmo, firefly_min_wavelength= 1000., firefly_max_wavelength=7500., dV=-9999.99, N_spectra_limitFraction=0.8):
+	def __init__(self, stack_file, mode="MILES", cosmo=cosmo, firefly_min_wavelength= 1000., firefly_max_wavelength=7500., dV=-9999.99, N_spectra_limitFraction=0.8, tutorial = False):
 		self.stack_file = stack_file
 		self.stack_file_base = os.path.basename(stack_file)
 		self.mode = mode
 		self.lineName = os.path.basename(self.stack_file)[:7]
+		self.tutorial = tutorial
 		if self.mode=="MILES":
 			self.stack_model_file = os.path.join( os.environ['SPECTRASTACKS_DIR'], "fits", self.lineName, self.stack_file_base + "-SPM-MILES.fits")
 		if self.mode=="STELIB":
 			self.stack_model_file = os.path.join( os.environ['SPECTRASTACKS_DIR'], "fits", self.lineName, self.stack_file_base + "-SPM-STELIB.fits")
+		if self.tutorial :
+			self.stack_model_file = os.path.join( os.environ['DATA_DIR'], "ELG-composite", self.stack_file_base + "-SPM-MILES.fits")
 
 		self.cosmo = cosmo
 		self.firefly_max_wavelength	= firefly_max_wavelength
@@ -103,7 +107,7 @@ class ModelSpectraStacks:
 		self.side = ''
 		self.N_spectra_limitFraction = N_spectra_limitFraction
 		# define self.sphereCM, find redshift ...
-		self.redshift = float(self.stack_file.split('-')[2].split('_')[0][1:])
+		self.redshift = float(self.stack_file_base.split('-')[2].split('_')[0][1:])
 		sphere=4*n.pi*( self.cosmo.luminosity_distance(self.redshift) )**2.
 		self.sphereCM=sphere.to(u.cm**2)
 		hdus = fits.open(self.stack_file)
@@ -111,21 +115,39 @@ class ModelSpectraStacks:
 		self.hdu1 = hdus[1] # .data
 		print "Loads the data."
 		#print self.hdu1.data.dtype
-		wlA,flA,flErrA = self.hdu1.data['wavelength'], self.hdu1.data['meanWeightedStack'], self.hdu1.data['jackknifStackErrors']
-		self.selection = (flA>0) & (self.hdu1.data['NspectraPerPixel']  > float( self.stack_file.split('_')[-5]) * self.N_spectra_limitFraction )
-		self.wl,self.fl,self.flErr = wlA[self.selection], flA[self.selection], flErrA[self.selection] 
-		self.stack=interp1d(self.wl,self.fl)
-		self.stackErr=interp1d(self.wl,self.flErr)
-		# loads model :
-		hdus = fits.open(self.stack_model_file)
-		self.hdu2 = hdus[1] # .data
-		self.wlModel,self.flModel = self.hdu2.data['wavelength'], self.hdu2.data['firefly_model']*10**(-17)
-		self.model=interp1d(n.hstack((self.wlModel,[n.max(self.wlModel)+10,11000])), n.hstack(( self.flModel, [n.median(self.flModel[:-20]),n.median(self.flModel[:-20])] )) )
-		# wavelength range common to the stack and the model :
-		self.wlLineSpectrum  = n.arange(n.max([self.stack.x.min(),self.model.x.min()]), n.min([self.stack.x.max(),self.model.x.max()]), 0.5)[2:-1]
-		self.flLineSpectrum=n.array([self.stack(xx)-self.model(xx) for xx in self.wlLineSpectrum])
-		self.fl_frac_LineSpectrum=n.array([self.stack(xx)/self.model(xx) for xx in self.wlLineSpectrum])
-		self.flErrLineSpectrum=self.stackErr(self.wlLineSpectrum)
+		if self.tutorial :
+			wlA, flA, flErrA = self.hdu1.data['WAVE'][0], self.hdu1.data['FLUXMEDIAN'][0]*10**(-17), self.hdu1.data['FLUXMEDIAN_ERR'][0]*10**(-17)
+			self.selection = (flA>0) 
+			self.wl,self.fl,self.flErr = wlA[self.selection], flA[self.selection], flErrA[self.selection] 
+			self.stack=interp1d(self.wl,self.fl)
+			self.stackErr=interp1d(self.wl,self.flErr)
+			# loads model :
+			hdus = fits.open(self.stack_model_file)
+			self.hdu2 = hdus[1] # .data
+			self.wlModel,self.flModel = self.hdu2.data['wavelength'], self.hdu2.data['firefly_model']*10**(-17)
+			self.model=interp1d(n.hstack((self.wlModel,[n.max(self.wlModel)+10,11000])), n.hstack(( self.flModel, [n.median(self.flModel[:-20]),n.median(self.flModel[:-20])] )) )
+			# wavelength range common to the stack and the model :
+			self.wlLineSpectrum  = n.arange(n.max([self.stack.x.min(),self.model.x.min()]), n.min([self.stack.x.max(),self.model.x.max()]), 0.5)[2:-1]
+			self.flLineSpectrum=n.array([self.stack(xx)-self.model(xx) for xx in self.wlLineSpectrum])
+			self.fl_frac_LineSpectrum=n.array([self.stack(xx)/self.model(xx) for xx in self.wlLineSpectrum])
+			self.flErrLineSpectrum=self.stackErr(self.wlLineSpectrum)
+
+		else:
+			wlA,flA,flErrA = self.hdu1.data['wavelength'], self.hdu1.data['meanWeightedStack'], self.hdu1.data['jackknifStackErrors']
+			self.selection = (flA>0) & (self.hdu1.data['NspectraPerPixel']  > float( self.stack_file.split('_')[-5]) * self.N_spectra_limitFraction )
+			self.wl,self.fl,self.flErr = wlA[self.selection], flA[self.selection], flErrA[self.selection] 
+			self.stack=interp1d(self.wl,self.fl)
+			self.stackErr=interp1d(self.wl,self.flErr)
+			# loads model :
+			hdus = fits.open(self.stack_model_file)
+			self.hdu2 = hdus[1] # .data
+			self.wlModel,self.flModel = self.hdu2.data['wavelength'], self.hdu2.data['firefly_model']*10**(-17)
+			self.model=interp1d(n.hstack((self.wlModel,[n.max(self.wlModel)+10,11000])), n.hstack(( self.flModel, [n.median(self.flModel[:-20]),n.median(self.flModel[:-20])] )) )
+			# wavelength range common to the stack and the model :
+			self.wlLineSpectrum  = n.arange(n.max([self.stack.x.min(),self.model.x.min()]), n.min([self.stack.x.max(),self.model.x.max()]), 0.5)[2:-1]
+			self.flLineSpectrum=n.array([self.stack(xx)-self.model(xx) for xx in self.wlLineSpectrum])
+			self.fl_frac_LineSpectrum=n.array([self.stack(xx)/self.model(xx) for xx in self.wlLineSpectrum])
+			self.flErrLineSpectrum=self.stackErr(self.wlLineSpectrum)
 
 
 	def interpolate_stack(self):
@@ -342,6 +364,90 @@ class ModelSpectraStacks:
 		self.fullSpec_tb_hdu = fits.BinTableHDU.from_columns(self.fullSpec_cols)
 
 
+	def fit_lines_to_lineSpectrum_tutorial(self):
+		"""
+		Fits the emission lines on the line spectrum.
+		"""
+		# interpolates the mean spectra.
+		print "fits to the line spectrum"
+		lfit  =  lineFit.LineFittingLibrary()
+		
+		#self.subtract_continuum_model()
+		data,h=[],[]
+		print O2_3727
+		dat_mean,mI,hI=lfit.fit_Line_OIIdoublet_position(self.wlLineSpectrum, self.flLineSpectrum, self.flErrLineSpectrum, a0= O2_3727 , lineName="O2_3728", p0_sigma=7,model="gaussian",fitWidth = 20.,DLC=10.)
+		data.append(dat_mean)
+		h.append(hI)
+
+		for li in allLinesList :
+			# measure line properties from the mean weighted stack
+			print li[2]
+			dat_mean,mI,hI=lfit.fit_Line_position_C0noise(self.wlLineSpectrum, self.flLineSpectrum, self.flErrLineSpectrum, li[1], lineName=li[2], continuumSide=li[3], model="gaussian", p0_sigma=7,fitWidth = 15.,DLC=10.)
+			data.append(dat_mean)
+			h.append(hI)
+
+		heading="".join(h)
+		out=n.hstack((data))
+		#print "out", out
+		out[n.isnan(out)]=n.ones_like(out[n.isnan(out)])*self.dV
+		#output = n.array([ out ])
+		#print "----------------", output.T[0], output.T[1], output
+		colNames = heading.split()
+		#print colNames
+		col0 = fits.Column(name=colNames[0],format='D', array= n.array([out.T[0]]))
+		col1 = fits.Column(name=colNames[1],format='D', array= n.array([out.T[1]]))
+		self.lineSpec_cols  = fits.ColDefs([col0, col1])
+		#print self.lineSpec_cols
+		#print colNames
+		for ll in range(2,len(colNames),1):
+			#self.hdR["HIERARCH "+colNames[ll]+"_nc"] = out.T[ll]
+			self.lineSpec_cols += fits.Column(name=colNames[ll], format='D', array= n.array([out.T[ll]]) )
+		
+		#print self.lineSpec_cols
+		self.lineSpec_tb_hdu = fits.BinTableHDU.from_columns(self.lineSpec_cols)
+
+			
+	def fit_lines_to_fullSpectrum_tutorial(self):
+		"""
+		Fits the emission lines on the line spectrum.
+		"""
+		# interpolates the mean spectra.
+		print "fits to full spectrum"
+		lfit  =  lineFit.LineFittingLibrary()
+		data,h=[],[]
+		print O2_3727
+		dat_mean,mI,hI=lfit.fit_Line_OIIdoublet_position(self.wl, self.fl, self.flErr, a0= O2_3727 , lineName="O2_3728", p0_sigma=7,model="gaussian",fitWidth = 20.,DLC=10.)
+		print hI, dat_mean
+		data.append(dat_mean)
+		h.append(hI)
+
+		for li in allLinesList :
+			print li[2]
+			# measure line properties from the mean weighted stack
+			dat_mean,mI,hI=lfit.fit_Line_position_C0noise(self.wl, self.fl, self.flErr, li[1], lineName=li[2], continuumSide=li[3], model="gaussian", p0_sigma=7,fitWidth = 15.,DLC=10.)
+			print hI, dat_mean
+			# measure its dispersion using the stacks
+			data.append(dat_mean)
+			#print li[2], dat_mean
+			h.append(hI)
+
+		heading="".join(h)
+		out=n.hstack((data))
+		out[n.isnan(out)]=n.ones_like(out[n.isnan(out)])*self.dV
+		#output = n.array([ out ])
+		#print "----------------", output.T[0], output.T[1], output
+		colNames = heading.split()
+		#print colNames
+		col0 = fits.Column(name=colNames[0],format='D', array= n.array([out.T[0]]))
+		col1 = fits.Column(name=colNames[1],format='D', array= n.array([out.T[1]]))
+		self.fullSpec_cols  = fits.ColDefs([col0, col1])
+		#print colNames
+		for ll in range(2,len(colNames),1):
+			#self.hdR["HIERARCH "+colNames[ll]+"_nc"] = out.T[ll]
+			self.fullSpec_cols += fits.Column(name=colNames[ll], format='D', array= n.array([out.T[ll]]) )
+		
+		self.fullSpec_tb_hdu = fits.BinTableHDU.from_columns(self.fullSpec_cols)
+
 	def save_spectrum(self):
 		"""
 		Saves the stack spectrum, the model and derived quantities in a single fits file with different hdus.
@@ -357,6 +463,8 @@ class ModelSpectraStacks:
 		thdulist = fits.HDUList([prihdu, self.hdu1, self.hdu2, lineSptbhdu, self.lineSpec_tb_hdu, self.fullSpec_tb_hdu])
 		outPutFileName = self.stack_model_file
 		outFile = n.core.defchararray.replace(outPutFileName, "fits", "model").item()
+		if self.tutorial:
+			outFile = join( os.environ['DATA_DIR'], "ELG-composite", self.stack_file_base[:-5]+".model" ) 
 		if os.path.isfile(outFile):
 			os.remove(outFile)
 		
