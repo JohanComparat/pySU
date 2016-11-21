@@ -103,7 +103,7 @@ class MultiDarkSimulation :
 		:param NperBatch: number of line per fits file, default: 1000000
 		 """		
 		fl = fileinput.input(self.snl[ii])
-		print self.snl[ii]
+		#print self.snl[ii]
 		nameSnapshot = self.snl[ii].split('/')[-1][:-5]
 		Nb = 0
 		count = 0
@@ -120,10 +120,10 @@ class MultiDarkSimulation :
 				count+=1
 				
 			if count == NperBatch  :
-				print "count",count
-				print output
-				print output.shape
-				print output.T[0].shape
+				#print "count",count
+				#print output
+				#print output.shape
+				#print output.T[0].shape
 				#define the columns
 				col0 = fits.Column(name='x',format='D', array=output.T[0] )
 				col1 = fits.Column(name='y',format='D', array= output.T[1] )
@@ -203,10 +203,10 @@ class MultiDarkSimulation :
 				count+=1
 				
 			if count == NperBatch  :
-				print "count",count
-				print output
-				print output.shape
-				print output.T[0].shape
+				#print "count",count
+				#print output
+				#print output.shape
+				#print output.T[0].shape
 				#define the columns
 				col0 = fits.Column(name='id',format='D', array= output.T[0] )
 				col1 = fits.Column(name='pid',format='D', array= output.T[1] )
@@ -282,10 +282,10 @@ class MultiDarkSimulation :
 				count+=1
 				
 			if count == NperBatch  :
-				print "count",count
-				print output
-				print output.shape
-				print output.T[0].shape
+				#print "count",count
+				#print output
+				#print output.shape
+				#print output.T[0].shape
 				#define the columns
 				col0 = fits.Column(name='x',format='D', array=output.T[0] )
 				col1 = fits.Column(name='y',format='D', array= output.T[1] )
@@ -355,10 +355,10 @@ class MultiDarkSimulation :
 				count+=1
 				
 			if count == NperBatch  :
-				print "count",count
-				print output
-				print output.shape
-				print output.T[0].shape
+				#print "count",count
+				#print output
+				#print output.shape
+				#print output.T[0].shape
 				#define the columns
 				col0 = fits.Column(name='x',format='D', array=output.T[0] )
 				col1 = fits.Column(name='y',format='D', array= output.T[1] )
@@ -424,16 +424,16 @@ class MultiDarkSimulation :
 			zR = n.hstack(( n.array([ hdus[ii]['z'][sel[ii]] for ii in range(len(hdus)) ]) ))
 			Ntotal = len(xR)
 			if len(xR)>20000 and len(xR)<=Nmax:
-				print vbins[jj], vbins[jj+1]
+				#print vbins[jj], vbins[jj+1]
 				insideSel=(xR>rmax)&(xR<self.Lbox.value-rmax)&(yR>rmax)&(yR<self.Lbox.value-rmax)&(zR>rmax)&(zR<self.Lbox.value-rmax)
 				volume=(self.Lbox.value)**3
 				# defines the trees
-				print "creates trees"
+				#print "creates trees"
 				treeRandoms=t.cKDTree(n.transpose([xR,yR,zR]),1000.0)
 				treeData=t.cKDTree(n.transpose([xR[insideSel],yR[insideSel],zR[insideSel]]),1000.0)
 				nD=len(treeData.data)
 				nR=len(treeRandoms.data)
-				print nD, nR
+				#print nD, nR
 				bin_xi3D=n.arange(0, rmax, dr)
 				# now does the pair counts :
 				pairs=treeData.count_neighbors(treeRandoms, bin_xi3D)
@@ -446,11 +446,11 @@ class MultiDarkSimulation :
 				cPickle.dump([bin_xi3D,xis, DR, volume, dV, pairCount, pairs, Ntotal, nD, nR, vbins[jj], vbins[jj+1]],f)
 				f.close()
 				t4 = time.time()
-				print "total time in s, min",t4 - t0, (t4 - t0)/60.
+				#print "total time in s, min",t4 - t0, (t4 - t0)/60.
 				#return DR, volume, dV, pairCount, pairs, nD, nR
 
 			if  len(xR)>Nmax:
-				print vbins[jj], vbins[jj+1], "downsampling ..."
+				#print vbins[jj], vbins[jj+1], "downsampling ..."
 				downSamp = (n.random.random(len(xR))<Nmax / float(len(xR)) )
 				xR = xR[downSamp]
 				yR = yR[downSamp]
@@ -459,12 +459,12 @@ class MultiDarkSimulation :
 				insideSel=(xR>rmax)&(xR<self.Lbox.value-rmax)&(yR>rmax)&(yR<self.Lbox.value-rmax)&(zR>rmax)&(zR<self.Lbox.value-rmax)
 				volume=(self.Lbox.value-rmax*2)**3
 				# defines the trees
-				print "creates trees"
+				#print "creates trees"
 				treeRandoms=t.cKDTree(n.transpose([xR,yR,zR]),1000.0)
 				treeData=t.cKDTree(n.transpose([xR[insideSel],yR[insideSel],zR[insideSel]]),1000.0)
 				nD=len(treeData.data)
 				nR=len(treeRandoms.data)
-				print nD, nR
+				#print nD, nR
 				bin_xi3D=n.arange(0, rmax, dr)
 				# now does the pair counts :
 				pairs=treeData.count_neighbors(treeRandoms, bin_xi3D)
@@ -477,7 +477,7 @@ class MultiDarkSimulation :
 				cPickle.dump([bin_xi3D,xis, DR, volume, dV, pairCount, pairs, Ntotal, nD, nR, vbins[jj], vbins[jj+1]],f)
 				f.close()
 				t4 = time.time()
-				print "total time in s, min",t4 - t0, (t4 - t0)/60.
+				#print "total time in s, min",t4 - t0, (t4 - t0)/60.
 				#return DR, volume, dV, pairCount, pairs, nD, nR
 
 	def computeSingleDistributionFunctionJKresampling(self, fileList, rootname, name, bins, Ljk = 100., overlap = 1. ) :
@@ -496,26 +496,26 @@ class MultiDarkSimulation :
 		# define boundaries
 		NBoundariesPerSide = int(overlap*self.Lbox.value/Ljk)
 		bounds = n.arange(NBoundariesPerSide+1)* Ljk / overlap
-		print "boundaries on each side: ", bounds
+		#print "boundaries on each side: ", bounds
 		Xi, Yi, Zi = n.meshgrid(bounds[:-1],bounds[:-1],bounds[:-1])
 		X = n.ravel(Xi)
 		Y = n.ravel(Yi)
 		Z = n.ravel(Zi)	
-		print X.min(), X.max(), len(X),len(bounds)
+		#print X.min(), X.max(), len(X),len(bounds)
 		# loops over the fileList : fits files with the data
 		nnC = n.zeros((len(fileList),len(X),len(bins)-1))
 		nnS = n.zeros((len(fileList),len(X),len(bins)-1))
 		for jj, file in enumerate(fileList):
-			print file
+			#print file
 			dd = fits.open(file)[1].data
 			cen = (dd['pid']==-1)
 			sat = (cen==False) # (dd['pid']>=1)
 			#computes the histogram for each resampling of the file
 			for ii, xel in enumerate(X):
-				print ii
+				#print ii
 				xmin, ymin, zmin, xmax, ymax, zmax = X[ii], Y[ii], Z[ii], X[ii]+Ljk, Y[ii]+Ljk, Z[ii]+Ljk
 				sel = (dd['x']>=xmin)&(dd['x']<xmax)&(dd['y']>=ymin)&(dd['y']<ymax)&(dd['z']>=zmin)&(dd['z']<zmax)&(dd[name]>bins[0])&(dd[name]<bins[-1])
-				print len(dd[name][(sel)&(cen)]), len(dd[name][(sel)&(sat)])
+				#print len(dd[name][(sel)&(cen)]), len(dd[name][(sel)&(sat)])
 				if len(dd[name][(sel)&(cen)])>=1:
 					nnC[jj][ii] = n.histogram(dd[name][(sel)&(cen)], bins = bins)[0]
 				if  len(dd[name][(sel)&(sat)])>=1:
@@ -547,12 +547,12 @@ class MultiDarkSimulation :
 		nnC = n.zeros((len(fileList),len(bins)-1))
 		nnS = n.zeros((len(fileList),len(bins)-1))
 		for jj, file in enumerate(fileList):
-			print file
+			#print file
 			dd = fits.open(file)[1].data
 			cen = (dd['pid']==-1)
 			#computes the histogram for each resampling of the file
 			sel = (dd['x']>0)&(dd['x']<self.Lbox.value)&(dd['y']>0)&(dd['y']<self.Lbox.value)&(dd['z']>0)&(dd['z']<self.Lbox.value)&(dd[name]>bins[0])&(dd[name]<bins[-1])
-			print len(dd[name][(sel)&(cen)]), len(dd[name][(sel)&(cen==False)])
+			#print len(dd[name][(sel)&(cen)]), len(dd[name][(sel)&(cen==False)])
 			if len(dd[name][(sel)&(cen)])>=1:
 				nnC[jj] = n.histogram(dd[name][(sel)&(cen)], bins = bins)[0]
 			if  len(dd[name][(sel)&(cen==False)])>=1:
@@ -577,17 +577,17 @@ class MultiDarkSimulation :
 		"""		
 		index = self.columnDict[name]
 		output_dir = join(self.wdir,self.boxDir,"properties",name)
-		print output_dir
+		#print output_dir
 		os.system('mkdir '+ output_dir)
 		NperBatch = 10000000
 		qtyCentral = n.empty(NperBatch)  # 10M array
 		qtySat = n.empty(NperBatch)  # 10M array
-		print name, index, output_dir
+		#print name, index, output_dir
 
 		fl = fileinput.input(self.snl[ii])
 		nameSnapshot = self.snl[ii].split('/')[-1][:-5]
-		print nameSnapshot
-		print name
+		#print nameSnapshot
+		#print name
 
 		countCen,countSat,countFileCen,countFileSat = 0,0,0,0
 		
@@ -608,9 +608,9 @@ class MultiDarkSimulation :
 				countCen+= 1					
 				
 			if countCen == NperBatch :
-				print "cen", qtyCentral
+				#print "cen", qtyCentral
 				nnM,bb = n.histogram(n.log10(qtyCentral),bins = bins)
-				print "countCen",countCen
+				#print "countCen",countCen
 				f = open(join(output_dir, nameSnapshot + "_" + name + "_Central_" + str(countFileCen)+ ".pkl"),'w')
 				cPickle.dump(nnM,f)
 				f.close()
@@ -619,9 +619,9 @@ class MultiDarkSimulation :
 				qtyCentral = n.empty(NperBatch)
 
 			if countSat == NperBatch :
-				print "sat", qtySat
+				#print "sat", qtySat
 				nnM,bb = n.histogram(n.log10(qtySat),bins = bins)
-				print "countSat", countSat
+				#print "countSat", countSat
 				f = open(join(output_dir, nameSnapshot + "_" + name+ "_Satellite_" + str(countFileSat)+ ".pkl"),'w')
 				cPickle.dump(nnM,f)
 				f.close()
@@ -629,8 +629,8 @@ class MultiDarkSimulation :
 				countSat = 0
 				qtySat = n.empty(NperBatch)
 
-		print "sat2", qtyCentral
-		print "cen2", qtySat
+		#print "sat2", qtyCentral
+		#print "cen2", qtySat
 		# and for the last batch :
 		nnM,bb = n.histogram(n.log10(qtyCentral[ (qtyCentral>10**bins[0]) & (qtyCentral<10**bins[-1]) ]),bins = bins)
 		f = open(join(output_dir, nameSnapshot + "_" + name +"_Central_" + str(countFileCen)+ ".pkl"),'w')
@@ -653,7 +653,7 @@ class MultiDarkSimulation :
 		:param type: "Central" or "Satellite"
 		"""
 		output_dir = join(self.wdir,self.boxDir,"properties",name)
-		print output_dir
+		#print output_dir
 		nameSnapshot = self.snl[ii].split('/')[-1][:-5]
 		pklList = n.array(glob.glob(join(output_dir, nameSnapshot + "_" + name +"_"+type+"_*.pkl")))
 
@@ -683,7 +683,7 @@ class MultiDarkSimulation :
 		NperBatch = 10000000
 		qtyCentral = n.empty((NperBatch,2))  # 10M array
 		qtySat = n.empty((NperBatch,2))  # 10M array
-		print nameA, nameB, indexA, indexB, output_dir
+		#print nameA, nameB, indexA, indexB, output_dir
 
 		fl = fileinput.input(self.snl[ii])
 		nameSnapshot = self.snl[ii].split('/')[-1][:-5]
@@ -708,12 +708,12 @@ class MultiDarkSimulation :
 			if countCen == NperBatch-1 :
 				arrA = n.log10(qtyCentral.T[0][(qtyCentral.T[0]>0)])
 				arrB = n.log10(qtyCentral.T[1][(qtyCentral.T[1]>0)])
-				print len(arrA), arrA, binsA
-				print len(arrB), arrB, binsB
+				#print len(arrA), arrA, binsA
+				#print len(arrB), arrB, binsB
 				nnA,bbA = n.histogram(arrA,bins = binsA)
 				nnB,bbB = n.histogram(arrB,bins = binsB)
 				dataAB = n.histogram2d(arrA,arrB,bins = [binsA,binsB])
-				print "countCen",countCen
+				#print "countCen",countCen
 				f = open(join(output_dir, nameSnapshot + "_" + nameA+"-"+nameB + "_Central_" + str(countFileCen)+ ".pkl"),'w')
 				cPickle.dump([nnA,nnB,dataAB],f)
 				f.close()
@@ -724,12 +724,12 @@ class MultiDarkSimulation :
 			if countSat == NperBatch-1 :
 				arrAs = n.log10(qtySat.T[0][(qtySat.T[0]>0)])
 				arrBs = n.log10(qtySat.T[1][(qtySat.T[1]>0)])
-				print len(arrAs), arrAs, binsA
-				print len(arrBs), arrBs, binsB
+				#print len(arrAs), arrAs, binsA
+				#print len(arrBs), arrBs, binsB
 				nnA,bbA = n.histogram(arrAs,bins = binsA)
 				nnB,bbB = n.histogram(arrBs,bins = binsB)
 				dataAB = n.histogram2d(arrAs, arrBs ,bins = [binsA,binsB])
-				print "countSat", countSat
+				#print "countSat", countSat
 				f = open(join(output_dir, nameSnapshot + "_" + nameA+"-"+nameB+ "_Satellite_" + str(countFileSat)+ ".pkl"),'w')
 				cPickle.dump([nnA,nnB,dataAB],f)
 				f.close()
@@ -741,7 +741,7 @@ class MultiDarkSimulation :
 		nnA,bbA = n.histogram(n.log10(qtyCentral.T[0]),bins = binsA)
 		nnB,bbB = n.histogram(n.log10(qtyCentral.T[1]),bins = binsB)
 		dataAB = n.histogram2d(n.log10(qtyCentral.T[0]), n.log10(qtyCentral.T[1]) ,bins = [binsA,binsB])
-		print "countCen",countCen
+		#print "countCen",countCen
 		f = open(join(output_dir, nameSnapshot + "_" + nameA+"-"+nameB + "_Central_" + str(countFileCen)+ ".pkl"),'w')
 		cPickle.dump([nnA,nnB,dataAB],f)
 		f.close()
@@ -749,7 +749,7 @@ class MultiDarkSimulation :
 		nnA,bbA = n.histogram(n.log10(qtySat.T[0]),bins = binsA)
 		nnB,bbB = n.histogram(n.log10(qtySat.T[1]),bins = binsB)
 		dataAB = n.histogram2d(n.log10(qtySat.T[0]), n.log10(qtySat.T[1]) ,bins = [binsA,binsB])
-		print "countSat", countSat
+		#print "countSat", countSat
 		f = open(join(output_dir, nameSnapshot + "_" + nameA+"-"+nameB+ "_Satellite_" + str(countFileSat)+ ".pkl"),'w')
 		cPickle.dump([nnA,nnB,dataAB],f)
 		f.close()
