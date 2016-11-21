@@ -33,7 +33,10 @@ for ii, el in enumerate(fileC):
 	print el
 	print fileS[ii]
 	print fileB[ii]
-	lib.convert_pkl_mass(fileC[ii], fileS[ii], fileB[ii],zList_files, qty)
+	lib.convert_pkl_mass(fileC[ii], fileS[ii], fileB[ii], qty)
+
+# rebinning here
+#if logmvir < 14 :
 
 af = n.array(glob.glob(join(os.environ['MULTIDARK_LIGHTCONE_DIR'], qty, "data", "MD_*_"+qty+".fits") ) )
 d0 = fits.open(af[0])[1].data

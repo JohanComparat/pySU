@@ -681,6 +681,7 @@ def get_basic_info(fileC, boxZN, delta_wrt='mean'):
 		hf = get_hf(0.8228*0.953**0.5, boxRedshift, delta_wrt=delta_wrt)
 		logmp = n.log10(9.63 * 10**7/cosmo.h)
 		boxLength = 400./cosmo.h/cosmo.efunc(boxRedshift)
+		massCorrection = 1. - 0.0002
 		
 	elif fileC.find('MD_1Gpc')>0 :
 		boxName='MD_1Gpc'
@@ -691,6 +692,7 @@ def get_basic_info(fileC, boxZN, delta_wrt='mean'):
 		hf = get_hf(0.8228*1.004**0.5, boxRedshift, delta_wrt=delta_wrt)
 		logmp = n.log10(1.51 * 10**9/cosmo.h)
 		boxLength = 1000./cosmo.h/cosmo.efunc(boxRedshift)
+		massCorrection = 1. - 0.0005
 
 	elif fileC.find('MD_2.5GpcNW')>0 :
 		boxName='MD_2.5GpcNW'
@@ -701,6 +703,7 @@ def get_basic_info(fileC, boxZN, delta_wrt='mean'):
 		hz = 1.# hf.cosmo.H( boxRedshift ).value / 100.
 		logmp = n.log10(2.359 * 10**10/cosmo.h )
 		boxLength = 2500./cosmo.h/cosmo.efunc(boxRedshift)
+		massCorrection = 1. - 0.001
 
 	elif fileC.find('MD_4GpcNW')>0 :
 		boxName='MD_4GpcNW'
@@ -711,6 +714,7 @@ def get_basic_info(fileC, boxZN, delta_wrt='mean'):
 		hz = 1.# hf.cosmo.H( boxRedshift ).value / 100. 
 		logmp = n.log10(9.6 * 10**10/cosmo.h )
 		boxLength = 4000./cosmo.h/cosmo.efunc(boxRedshift)
+		massCorrection = 1. - 0.003
 	
 	elif fileC.find('MD_2.5Gpc')>0 :
 		boxName='MD_2.5Gpc'
@@ -721,6 +725,7 @@ def get_basic_info(fileC, boxZN, delta_wrt='mean'):
 		hz = 1.# hf.cosmo.H( boxRedshift ).value / 100.
 		logmp = n.log10(2.359 * 10**10/cosmo.h)
 		boxLength = 2500./cosmo.h/cosmo.efunc(boxRedshift)
+		massCorrection = 1. - 0.001
 
 	elif fileC.find('MD_4Gpc')>0 :
 		boxName='MD_4Gpc'
@@ -731,9 +736,10 @@ def get_basic_info(fileC, boxZN, delta_wrt='mean'):
 		hz = 1.# hf.cosmo.H( boxRedshift ).value / 100.
 		logmp = n.log10(9.6 * 10**10 /cosmo.h )
 		boxLength = 4000./cosmo.h/cosmo.efunc(boxRedshift)
+		massCorrection = 1. - 0.003
 	
 	boxLengthComoving = boxLength * cosmo.efunc(boxRedshift)
-	return hf, boxLength, boxName, boxRedshift, logmp, boxLengthComoving
+	return hf, boxLength, boxName, boxRedshift, logmp, boxLengthComoving, massCorrection
 
 def convert_pkl_mass(fileC, fileS, binFile, qty='mvir', delta_wrt='mean'):
 	"""
@@ -743,24 +749,25 @@ def convert_pkl_mass(fileC, fileS, binFile, qty='mvir', delta_wrt='mean'):
 	:param binFile: file with the bins
 	:return: a fits table containing the one point function histograms
 	"""
-
+	print "qty", qty
 	boxZN = float(os.path.basename(fileC).split('_')[1])
 	print boxZN
 	extraName =  os.path.basename(fileS)[:-27]
-	
-	hf, boxLength, boxName, boxRedshift, logmp, boxLengthComoving = get_basic_info(fileC, boxZN, delta_wrt='mean')
+	hf, boxLength, boxName, boxRedshift, logmp, boxLengthComoving, massCorrection = get_basic_info(fileC, boxZN, delta_wrt='mean')
 	print boxName
-	bins = n.loadtxt(binFile)
+	bins = n.log10( 10**n.loadtxt(binFile) * massCorrection )
 	#bins = n.log10( 10**bins_in / hz )
 	#bins = n.loadtxt(binFile)
 	logmass = ( bins[1:]  + bins[:-1] )/2.
-	mass = 10**logmass
+	mass = 10**logmass 
 	dX = ( 10**bins[1:]  - 10**bins[:-1] )
 	#dlnbin = dX / mass
 	dlnbin = (bins[1:]  - bins[:-1])*n.log(10)
 	#print dX / mass, dlnbin
 	#selects meaningful masses 10 times particle mass
 	ok = (logmass > logmp+1.0)&(logmass<16.1)
+	print "bins", bins
+	print "bins[ok]", bins[:-1][ok]
 	hz = cosmo.H( boxRedshift ).value / 100.
 	# m sigma relation using the sigma8 corrected power spectrum
 	m2sigma = interp1d(hf.M, hf.sigma )

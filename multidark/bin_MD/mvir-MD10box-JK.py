@@ -8,5 +8,5 @@ box = MultiDarkSimulation(Lbox=1000.0 * uu.Mpc,wdir="/data2/DATA/eBOSS/Multidark
 for ii in n.arange(len(box.snl)):
 	fileList = glob.glob(box.snl[ii][:-5]+"*_PM_Nb_*.fits")
 	rootname = box.snl[ii][:-5].split('/')[-1]
-	box.computeSingleDistributionFunctionJKresampling( fileList, rootname, "mvir", n.arange(8,16,0.1),  Ljk = 100., overlap = 1. )
+	box.computeSingleDistributionFunctionJKresampling( fileList, rootname, "mvir", n.arange(8,16,0.05),  Ljk = 100., overlap = 1. )
 
