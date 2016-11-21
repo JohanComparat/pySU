@@ -5,7 +5,7 @@ import astropy.io.fits as fits
 import os
 from os.path import join
 import cPickle
-
+import time
 # numerical modules
 import numpy as n
 from scipy.interpolate import interp1d
@@ -754,6 +754,7 @@ def convert_pkl_mass(fileC, fileS, binFile, qty='mvir', delta_wrt='mean'):
 	print boxZN
 	extraName =  os.path.basename(fileS)[:-27]
 	hf, boxLength, boxName, boxRedshift, logmp, boxLengthComoving, massCorrection = get_basic_info(fileC, boxZN, delta_wrt='mean')
+	
 	print boxName
 	bins = n.log10( 10**n.loadtxt(binFile) * massCorrection )
 	#bins = n.log10( 10**bins_in / hz )
@@ -766,8 +767,8 @@ def convert_pkl_mass(fileC, fileS, binFile, qty='mvir', delta_wrt='mean'):
 	#print dX / mass, dlnbin
 	#selects meaningful masses 10 times particle mass
 	ok = (logmass > logmp+1.0)&(logmass<16.1)
-	print "bins", bins
-	print "bins[ok]", bins[:-1][ok]
+	print "bins", len(bins), bins
+	print "bins[ok]", len(bins[:-1][ok]), bins[:-1][ok]
 	hz = cosmo.H( boxRedshift ).value / 100.
 	# m sigma relation using the sigma8 corrected power spectrum
 	m2sigma = interp1d(hf.M, hf.sigma )
@@ -784,17 +785,20 @@ def convert_pkl_mass(fileC, fileS, binFile, qty='mvir', delta_wrt='mean'):
 	rhom = rhom_units.value # hf.mean_density#/(hz)**2. 
 	print hf.mean_density, rhom / (hf.mean_density*(cosmo.h)**2.)
 	
-	col0 = fits.Column( name="boxName",format="14A", array= n.array([boxName for i in range(len(bins[:-1]))]))
-	col1 = fits.Column( name="redshift",format="D", array= boxRedshift * n.ones_like(bins[:-1][ok]) )
-	col1b = fits.Column( name="h",format="D", array= hz * n.ones_like(bins[:-1][ok]) )
-	col2a = fits.Column( name="boxLengthProper",format="D", array= boxLength * n.ones_like(bins[:-1][ok]) )
-	col2b = fits.Column( name="boxLengthComoving",format="D", array= boxLengthComoving * n.ones_like(bins[:-1][ok]) )
-	col3 = fits.Column( name="logMpart",format="D", array=  logmp* n.ones_like(bins[:-1][ok]) )
-	col4 = fits.Column( name="rhom",format="D", array= rhom* n.ones_like(bins[:-1][ok]) )
-
+	col0 = fits.Column( name="boxName",format="14A", array= n.array([boxName for i in range(len(bins[:-1][ok]))]))
+	col1 = fits.Column( name="redshift",format="D", array= boxRedshift * n.ones( len(bins[:-1][ok]) ) )
+	col1b = fits.Column( name="h",format="D", array= hz * n.ones( len(bins[:-1][ok]) ) )
+	col2a = fits.Column( name="boxLengthProper",format="D", array= boxLength * n.ones( len(bins[:-1][ok]) ) )
+	col2b = fits.Column( name="boxLengthComoving",format="D", array= boxLengthComoving * n.ones( len(bins[:-1][ok]) ) )
+	col3 = fits.Column( name="logMpart",format="D", array=  logmp* n.ones( len(bins[:-1][ok]) ) )
+	col4 = fits.Column( name="rhom",format="D", array= rhom* n.ones( len(bins[:-1][ok]) ) )
+	print "bin test", bins[:-1][ok]
 	col5_0 = fits.Column( name="log_"+qty+"_min",format="D", array= bins[:-1][ok] )
 	col5_1 = fits.Column( name="log_"+qty+"_max",format="D", array= bins[1:][ok] )
 	col5_2 = fits.Column( name="log_"+qty,format="D", array= logmass[ok])
+	print "test2", len( logmass[ok]), logmass[ok]
+	print "columns", col5_0, col5_1, col5_2
+	print "array", col5_0.array, col5_1.array, col5_2.array
 	col5_3 = fits.Column( name="sigmaM",format="D", array= sig[ok] )
 	col5_4 = fits.Column( name="nu2",format="D", array= nnu[ok])#hf.delta_c/sig ) # hf.growth_factor/
 	col5_5 = fits.Column( name="dlnsigmaMdlnM",format="D", array= dlnsigmadlnm[ok] )
@@ -824,14 +828,20 @@ def convert_pkl_mass(fileC, fileS, binFile, qty='mvir', delta_wrt='mean'):
 	col9s = fits.Column( name="std90_pc_sat",format="D", array= std90[ok] )
 	col9sc = fits.Column( name="std90_pc_sat_c",format="D", array= std90_c[ok] )
 
-	hdu2 = fits.BinTableHDU.from_columns([col0, col1,col1b, col2a, col2b, col3, col4, col5_0, col5_1, col5_2, col5_3, col5_4, col5_5, col6c, col7c, col8c, col9c, col6cc, col7cc, col8cc, col9cc, col6s, col7s, col8s, col9s, col6sc, col7sc, col8sc, col9sc ])
+	tbhdu = fits.BinTableHDU.from_columns([col0, col1,col1b, col2a, col2b, col3, col4, col5_0, col5_1, col5_2, col5_3, col5_4, col5_5, col6c, col7c, col8c, col9c, col6cc, col7cc, col8cc, col9cc, col6s, col7s, col8s, col9s, col6sc, col7sc, col8sc, col9sc ])
+	
+	prihdr = fits.Header()
+	prihdr['AUTHOR'] = 'J. Comparat'
+	prihdr['DATE'] = time.time()
+	prihdu = fits.PrimaryHDU(header=prihdr)
+	thdulist = fits.HDUList([prihdu, tbhdu])
 	
 	writeName = join(os.environ['MULTIDARK_LIGHTCONE_DIR'], qty, "data", boxName+"_"+str(boxRedshift)+"_"+qty+".fits")
 	if os.path.isfile(writeName):
 		os.remove(writeName)
 	
-	hdu2.writeto(writeName)
-	return hf
+	thdulist.writeto(writeName)
+	#return hf
 
 def convert_pkl_velocity(fileC, fileS, binFile, zList_files, qty='vmax'):
 	"""
