@@ -51,10 +51,12 @@ log_MF_c = n.log10(  ff_c )
 zSel = lib.zSelection( data, zmin, zmax )
 # mass selection
 mSel = lib.mSelection(data, qty, logNpmin)
+mSel2_inter = (data["log_mvir"]<13.2) & (data["redshift"]>0.)
+mSel2 = (mSel2_inter==False)
 # minimum number counts selection
 nSelCen = lib.nSelection(data, NminCount, cos )
 # altogether
-ok = (zSel) & (mSel) & (nSelCen)
+ok = (zSel) & (mSel) & (mSel2) & (nSelCen)
 # selection per box :
 MD04=(data["boxName"]=='MD_0.4Gpc')
 MD10=(data["boxName"]=='MD_1Gpc_new_rockS')
@@ -87,7 +89,7 @@ log_MF_c = n.log10(  ff_c )
 # minimum number counts selection
 nSelSat = lib.nSelection(data, NminCount, cos )
 # altogether
-ok = (zSel) & (mSel) & (nSelSat)
+ok = (zSel) & (mSel)& (mSel2)  & (nSelSat)
 
 # NOW PLOTTING ALL THE DATA
 lib.plot_mvir_function_data(log_mvir[ok], logsig[ok], lognu[ok], log_MF[ok], log_MF_c[ok], data['redshift'][ok], zmin, zmax, cos = cos)

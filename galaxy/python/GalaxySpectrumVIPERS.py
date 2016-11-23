@@ -35,7 +35,7 @@ class GalaxySpectrumVIPERS:
 		returns the wavelength, the flux and the error on the flux and two arrays for masking purpose
 		"""
 		self.field='W'+self.catalog_entry['id_IAU'][7]
-		specFileName=join(self.vipers_spectra_dir,"VIPERS_"+ self.field+ "_PDR1_SPECTRA_1D",self.catalog_entry['id_IAU'][:6]+"_"+self.catalog_entry['id_IAU'][7:]+".fits")
+		specFileName=join(self.vipers_spectra_dir,"VIPERS_"+ self.field+ "_PDR2_SPECTRA_1D",self.catalog_entry['id_IAU'][:6]+"_"+self.catalog_entry['id_IAU'][7:]+".fits")
 		spectraHDU=fits.open(specFileName)
 		wlA=spectraHDU[1].data['WAVES']
 		flA=spectraHDU[1].data['FLUXES']

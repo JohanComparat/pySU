@@ -1,0 +1,10 @@
+# MVIR function
+================================
+
+# creates the measurement summary file:
+
+python mvir-0-gather-measurements.py
+
+# shows the data created
+python mvir-1A-plotData.py
+

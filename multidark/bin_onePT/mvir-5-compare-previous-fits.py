@@ -41,7 +41,7 @@ f_dsp = lambda sigma, A, a, p: A * ((2. * a * (delta_c/sigma)**2.) / (  n.pi))**
 
 f_T08 = lambda sigma, A, a, b, c : A*( (sigma/b)**(-a) + 1 )*n.e**(-c/sigma**2.)
 f_ST = lambda sigma, A, a, p: A* (2*a/n.pi)**0.5 * ( 1 + (delta_c**2./(a*sigma**2.))**(p) )*(delta_c/sigma)*n.e**(-a*delta_c**2./(2.*sigma**2.))
-f_BH = lambda sigma, A, a, p, q: A* (2./n.pi)**0.5 * ( 1 + (delta_c**2./(a*sigma**2.))**(p) )*(delta_c*a**0.5/sigma)**(q)*n.e**(-a*delta_c**2./(2.*sigma**2.))
+f_BH = lambda sigma, A, a, p, q: A* (2./n.pi)**0.5 * ( 1 + (sigma**2./(a**delta_c*2.))**(p) )*(delta_c*a**0.5/sigma)**(q)*n.e**(-a*delta_c**2./(2.*sigma**2.))
 
 """
 M200c

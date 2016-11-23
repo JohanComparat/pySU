@@ -36,6 +36,7 @@ for ii, el in enumerate(fileC):
 	print fileB[ii]
 	lib.convert_pkl_mass(fileC[ii], fileS[ii], fileB[ii], qty)
 
+"""
 sys.exit()
 # rebinning here
 #solve bins = 0 problem
@@ -68,24 +69,12 @@ def rebinMe(trb, mod, Nrb = 5):
 trb = d0['log_mvir']
 mode = 'middle'
 trb_o = rebinMe(trb, mode)
-
-col6c = do["dN_counts_cen"] 
-col6cc = do["dN_counts_cen_c"]
-col7c = do["dNdV_cen"] 
-col7cc = do["dNdV_cen_c"]
-col8c = do["dNdlnM_cen"] 
-col8cc = do["dNdlnM_cen_c"]
-col9c = do["std90_pc_cen"] 
-col9cc = do["std90_pc_cen_c"]
-
+"""
 print qty
 af = n.array(glob.glob(join(os.environ['MULTIDARK_LIGHTCONE_DIR'], qty, "data", "MD_*_"+qty+".fits") ) )
 print af[0]
 d0 = fits.open(af[0])[1].data
 print len(d0['log_mvir']), d0['log_mvir']
-
-import sys
-sys.exit()
 
 for ii in range(1,len(af),1):
 	d1 = fits.open(af[ii])[1].data
