@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Library of functions to handle Multidark simulations &mdash; pySU, python Skies and Universes 1.0 documentation</title>
+    <title>Library of functions to handle Multidark simulations &#8212; pySU, python Skies and Universes 1.0 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="pySU, python Skies and Universes 1.0 documentation" href="index.html" />
     <link rel="next" title="Library of functions to handle Multidark Lightcone Creation" href="LightconeCreation.html" />
-    <link rel="prev" title="Library of functions to fit lines" href="MiscellanousFunctionsLibrary.html" /> 
+    <link rel="prev" title="Miscellanous functions" href="MiscellanousFunctionsLibrary.html" /> 
   </head>
   <body role="document">
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
@@ -36,7 +36,7 @@
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        «&#160;&#160;<a href="MiscellanousFunctionsLibrary.html">Library of functions to fit lines</a>
+        «&#160;&#160;<a href="MiscellanousFunctionsLibrary.html">Miscellanous functions</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
@@ -100,6 +100,16 @@
 </dd></dl>
 
 <dl class="method">
+<dt id="MultiDark.MultiDarkSimulation.compute2PCF">
+<code class="descname">compute2PCF</code><span class="sig-paren">(</span><em>catalogList</em>, <em>vmin=65</em>, <em>rmax=200</em>, <em>dlogBin=0.05</em>, <em>Nmax=4000000.0</em>, <em>dr=1.0</em>, <em>name=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MultiDark.html#MultiDarkSimulation.compute2PCF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MultiDark.MultiDarkSimulation.compute2PCF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts the 2PCF out of a catalog of halos        
+:param catalog: where the catalog is
+:param vmin: minimum circular velocity.
+:param dlogBin: bin width.
+:param rmax: maximum distance</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="MultiDark.MultiDarkSimulation.computeDoubleDistributionFunction">
 <code class="descname">computeDoubleDistributionFunction</code><span class="sig-paren">(</span><em>ii</em>, <em>nameA</em>, <em>nameB</em>, <em>binsA</em>, <em>binsB</em>, <em>Mfactor=100.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MultiDark.html#MultiDarkSimulation.computeDoubleDistributionFunction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MultiDark.MultiDarkSimulation.computeDoubleDistributionFunction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extracts the distributions of two quantity and their correlation &#8216;name&#8217; out of all snapshots of the Multidark simulation.
@@ -111,33 +121,82 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="MultiDark.MultiDarkSimulation.computeMassVelocityConcentrationFunction">
-<code class="descname">computeMassVelocityConcentrationFunction</code><span class="sig-paren">(</span><em>ii</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MultiDark.html#MultiDarkSimulation.computeMassVelocityConcentrationFunction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MultiDark.MultiDarkSimulation.computeMassVelocityConcentrationFunction" title="Permalink to this definition">¶</a></dt>
-<dd><p>DO NOT USE
-computes the mass, velocity and concentration histograms for a rockstar snapshot.
-:param ii: index of the snapshot in the list self.snl
-# does not work any more 
-DO NOT USE</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="MultiDark.MultiDarkSimulation.computeMassVelocityPeakAccRateFunctions">
-<code class="descname">computeMassVelocityPeakAccRateFunctions</code><span class="sig-paren">(</span><em>ii</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MultiDark.html#MultiDarkSimulation.computeMassVelocityPeakAccRateFunctions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MultiDark.MultiDarkSimulation.computeMassVelocityPeakAccRateFunctions" title="Permalink to this definition">¶</a></dt>
-<dd><p>DO NOT USE
-computes the mass, velocity and concentration histograms for a rockstar snapshot.
-:param ii: index of the snapshot in the list self.snl()
-DO NOT USE</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="MultiDark.MultiDarkSimulation.computeSingleDistributionFunction">
-<code class="descname">computeSingleDistributionFunction</code><span class="sig-paren">(</span><em>ii</em>, <em>name</em>, <em>bins</em>, <em>Mfactor=100.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MultiDark.html#MultiDarkSimulation.computeSingleDistributionFunction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MultiDark.MultiDarkSimulation.computeSingleDistributionFunction" title="Permalink to this definition">¶</a></dt>
+<code class="descname">computeSingleDistributionFunction</code><span class="sig-paren">(</span><em>ii</em>, <em>name</em>, <em>bins</em>, <em>Mfactor=10.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MultiDark.html#MultiDarkSimulation.computeSingleDistributionFunction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MultiDark.MultiDarkSimulation.computeSingleDistributionFunction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extracts the distribution of quantity &#8216;name&#8217; out of all snapshots of the Multidark simulation.        
 :param ii: index of the snapshot in the list self.snl
 :param name: name of the quantity of interest, mass, velocity.
 :param index: of the quantity of interest in the snapshots.
 :param bins: binning scheme to compute the historgram.
 :param Mfactor: only halos with Mvir &gt; Mfact* Melement are used.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MultiDark.MultiDarkSimulation.computeSingleDistributionFunctionJKresampling">
+<code class="descname">computeSingleDistributionFunctionJKresampling</code><span class="sig-paren">(</span><em>fileList</em>, <em>rootname</em>, <em>name</em>, <em>bins</em>, <em>Ljk=100.0</em>, <em>overlap=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MultiDark.html#MultiDarkSimulation.computeSingleDistributionFunctionJKresampling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MultiDark.MultiDarkSimulation.computeSingleDistributionFunctionJKresampling" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts the distribution of quantity &#8216;name&#8217; out of all snapshots of the Multidark simulation.
+Resamples the box in smaller boxes of length Ljk in Mpc/h
+:param ii: index of the snapshot in the list self.snl
+:param name: name of the quantity of interest, mass, velocity.
+:param index: of the quantity of interest in the snapshots.
+:param bins: binning scheme to compute the historgram.
+:param Ljk: length of the resampled box
+:param overlap: allowed overlap between resampled realizations : 1 = no overlap 2 : 50% overlap ...</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MultiDark.MultiDarkSimulation.computeSingleDistributionFunctionV2">
+<code class="descname">computeSingleDistributionFunctionV2</code><span class="sig-paren">(</span><em>fileList</em>, <em>rootname</em>, <em>name</em>, <em>bins</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MultiDark.html#MultiDarkSimulation.computeSingleDistributionFunctionV2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MultiDark.MultiDarkSimulation.computeSingleDistributionFunctionV2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts the distribution of quantity &#8216;name&#8217; out of all snapshots of the Multidark simulation.
+Resamples the box in smaller boxes of length Ljk in Mpc/h
+:param ii: index of the snapshot in the list self.snl
+:param name: name of the quantity of interest, mass, velocity.
+:param index: of the quantity of interest in the snapshots.
+:param bins: binning scheme to compute the historgram.
+:param Ljk: length of the resampled box
+:param overlap: allowed overlap between resampled realizations : 1 = no overlap 2 : 50% overlap ...</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MultiDark.MultiDarkSimulation.cornerLCpositionCatalog">
+<code class="descname">cornerLCpositionCatalog</code><span class="sig-paren">(</span><em>ii</em>, <em>DMIN=0.0</em>, <em>DMAX=1000.0</em>, <em>vmin=190</em>, <em>vmax=100000</em>, <em>NperBatch=10000000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MultiDark.html#MultiDarkSimulation.cornerLCpositionCatalog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MultiDark.MultiDarkSimulation.cornerLCpositionCatalog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts the positions and velocity out of a snapshot of the Multidark simulation.              
+:param ii: index of the snapshot in the list self.snl
+:param DMIN:maximum distance for the pointto be included.
+:param DMAX:maximum distance for the pointto be included.
+:param vmin: name of the quantity of interest, mass, velocity.
+:param vmax: of the quantity of interest in the snapshots.
+:param NperBatch: number of line per fits file, default: 1000000</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MultiDark.MultiDarkSimulation.writePositionCatalogPM">
+<code class="descname">writePositionCatalogPM</code><span class="sig-paren">(</span><em>ii</em>, <em>vmin=30.0</em>, <em>mmin=100000000</em>, <em>NperBatch=20000000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MultiDark.html#MultiDarkSimulation.writePositionCatalogPM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MultiDark.MultiDarkSimulation.writePositionCatalogPM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts the positions and velocity out of a snapshot of the Multidark simulation.        
+:param ii: index of the snapshot in the list self.snl
+:param vmin: name of the quantity of interest, mass, velocity.
+:param vmax: of the quantity of interest in the snapshots.
+:param NperBatch: number of line per fits file, default: 1000000</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MultiDark.MultiDarkSimulation.writePositionCatalogVmax">
+<code class="descname">writePositionCatalogVmax</code><span class="sig-paren">(</span><em>ii</em>, <em>vmin=190</em>, <em>vmax=10000</em>, <em>NperBatch=10000000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MultiDark.html#MultiDarkSimulation.writePositionCatalogVmax"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MultiDark.MultiDarkSimulation.writePositionCatalogVmax" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts the positions and velocity out of a snapshot of the Multidark simulation.        
+:param ii: index of the snapshot in the list self.snl
+:param vmin: name of the quantity of interest, mass, velocity.
+:param vmax: of the quantity of interest in the snapshots.
+:param NperBatch: number of line per fits file, default: 1000000</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MultiDark.MultiDarkSimulation.writePositionCatalogVmaxM200c">
+<code class="descname">writePositionCatalogVmaxM200c</code><span class="sig-paren">(</span><em>ii</em>, <em>vmin=190</em>, <em>vmax=10000</em>, <em>NperBatch=10000000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MultiDark.html#MultiDarkSimulation.writePositionCatalogVmaxM200c"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MultiDark.MultiDarkSimulation.writePositionCatalogVmaxM200c" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts the positions and velocity out of a snapshot of the Multidark simulation.        
+:param ii: index of the snapshot in the list self.snl
+:param vmin: name of the quantity of interest, mass, velocity.
+:param vmax: of the quantity of interest in the snapshots.
+:param NperBatch: number of line per fits file, default: 1000000</p>
 </dd></dl>
 
 </dd></dl>
@@ -149,7 +208,7 @@ DO NOT USE</p>
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
-        «&#160;&#160;<a href="MiscellanousFunctionsLibrary.html">Library of functions to fit lines</a>
+        «&#160;&#160;<a href="MiscellanousFunctionsLibrary.html">Miscellanous functions</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
@@ -159,8 +218,8 @@ DO NOT USE</p>
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, johan comparat.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+        &#169; Copyright 2015, johan comparat.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
     </div>
   </body>
 </html>

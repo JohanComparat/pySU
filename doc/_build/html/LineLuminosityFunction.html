@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Library of functions to estimate luminosity functions &mdash; pySU, python Skies and Universes 1.0 documentation</title>
+    <title>Library of functions to estimate luminosity functions &#8212; pySU, python Skies and Universes 1.0 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -63,7 +63,7 @@
 <p>The class LineLuminosityFunction is dedicated to measuring the line luminosity functions. The class ModelLuminosityFunction is dedicated to fitting models to the LFs.</p>
 <dl class="class">
 <dt>
-<em class="property">class </em><code class="descclassname">LineLuminosityFunction.</code><code class="descname">LineLuminosityFunction</code><span class="sig-paren">(</span><em>lineWavelength=3727.4228417998916</em>, <em>lineName='O2_3728'</em>, <em>cosmology=FlatLambdaCDM(H0=70 km / (Mpc s)</em>, <em>Om0=0.3</em>, <em>Tcmb0=2.725 K</em>, <em>Neff=3.04</em>, <em>m_nu=[ 0.  0.  0.] eV</em>, <em>Ob0=None)</em>, <em>surveyName='DEEP2'</em>, <em>redshift_catalog='zcat.deep2.dr4.v2.LFcatalog.fits'</em>, <em>SNlimit=5.0</em>, <em>luminosityBins=array([  1.00000000e+38</em>, <em>1.38949549e+38</em>, <em>1.93069773e+38</em>, <em>2.68269580e+38</em>, <em>3.72759372e+38</em>, <em>5.17947468e+38</em>, <em>7.19685673e+38</em>, <em>1.00000000e+39</em>, <em>1.38949549e+39</em>, <em>1.93069773e+39</em>, <em>2.68269580e+39</em>, <em>3.72759372e+39</em>, <em>5.17947468e+39</em>, <em>7.19685673e+39</em>, <em>1.00000000e+40</em>, <em>1.38949549e+40</em>, <em>1.93069773e+40</em>, <em>2.68269580e+40</em>, <em>3.72759372e+40</em>, <em>5.17947468e+40</em>, <em>7.19685673e+40</em>, <em>1.00000000e+41</em>, <em>1.38949549e+41</em>, <em>1.93069773e+41</em>, <em>2.68269580e+41</em>, <em>3.72759372e+41</em>, <em>5.17947468e+41</em>, <em>7.19685673e+41</em>, <em>1.00000000e+42</em>, <em>1.38949549e+42</em>, <em>1.93069773e+42</em>, <em>2.68269580e+42</em>, <em>3.72759372e+42</em>, <em>5.17947468e+42</em>, <em>7.19685673e+42</em>, <em>1.00000000e+43</em>, <em>1.38949549e+43</em>, <em>1.93069773e+43</em>, <em>2.68269580e+43</em>, <em>3.72759372e+43</em>, <em>5.17947468e+43</em>, <em>7.19685673e+43</em>, <em>1.00000000e+44</em>, <em>1.38949549e+44</em>, <em>1.93069773e+44</em>, <em>2.68269580e+44</em>, <em>3.72759372e+44</em>, <em>5.17947468e+44</em>, <em>7.19685673e+44</em>, <em>1.00000000e+45])</em>, <em>Nstack=400</em>, <em>Nclustering=400</em>, <em>outputFolder='emissionLineLuminosityFunctions/'</em>, <em>zmin=0.6</em>, <em>zmax=0.8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/LineLuminosityFunction.html#LineLuminosityFunction"><span class="viewcode-link">[source]</span></a></dt>
+<em class="property">class </em><code class="descclassname">LineLuminosityFunction.</code><code class="descname">LineLuminosityFunction</code><span class="sig-paren">(</span><em>lineWavelength=3727.4228417998916</em>, <em>lineName='O2_3728'</em>, <em>cosmology=FlatLambdaCDM(name=&quot;Planck15&quot;</em>, <em>H0=67.7 km / (Mpc s)</em>, <em>Om0=0.307</em>, <em>Tcmb0=2.725 K</em>, <em>Neff=3.05</em>, <em>m_nu=[ 0.    0.    0.06] eV</em>, <em>Ob0=0.0486)</em>, <em>surveyName='DEEP2'</em>, <em>redshift_catalog='zcat.deep2.dr4.v2.LFcatalog.fits'</em>, <em>SNlimit=5.0</em>, <em>luminosityBins=array([  1.00000000e+38</em>, <em>1.38949549e+38</em>, <em>1.93069773e+38</em>, <em>2.68269580e+38</em>, <em>3.72759372e+38</em>, <em>5.17947468e+38</em>, <em>7.19685673e+38</em>, <em>1.00000000e+39</em>, <em>1.38949549e+39</em>, <em>1.93069773e+39</em>, <em>2.68269580e+39</em>, <em>3.72759372e+39</em>, <em>5.17947468e+39</em>, <em>7.19685673e+39</em>, <em>1.00000000e+40</em>, <em>1.38949549e+40</em>, <em>1.93069773e+40</em>, <em>2.68269580e+40</em>, <em>3.72759372e+40</em>, <em>5.17947468e+40</em>, <em>7.19685673e+40</em>, <em>1.00000000e+41</em>, <em>1.38949549e+41</em>, <em>1.93069773e+41</em>, <em>2.68269580e+41</em>, <em>3.72759372e+41</em>, <em>5.17947468e+41</em>, <em>7.19685673e+41</em>, <em>1.00000000e+42</em>, <em>1.38949549e+42</em>, <em>1.93069773e+42</em>, <em>2.68269580e+42</em>, <em>3.72759372e+42</em>, <em>5.17947468e+42</em>, <em>7.19685673e+42</em>, <em>1.00000000e+43</em>, <em>1.38949549e+43</em>, <em>1.93069773e+43</em>, <em>2.68269580e+43</em>, <em>3.72759372e+43</em>, <em>5.17947468e+43</em>, <em>7.19685673e+43</em>, <em>1.00000000e+44</em>, <em>1.38949549e+44</em>, <em>1.93069773e+44</em>, <em>2.68269580e+44</em>, <em>3.72759372e+44</em>, <em>5.17947468e+44</em>, <em>7.19685673e+44</em>, <em>1.00000000e+45])</em>, <em>Nstack=400</em>, <em>Nclustering=400</em>, <em>outputFolder='emissionLineLuminosityFunctions/'</em>, <em>zmin=0.6</em>, <em>zmax=0.8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/LineLuminosityFunction.html#LineLuminosityFunction"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>The line luminosity function class
 :param lineWavelength: restframe wavelength in the air
 :param lineName: name of the line used in the catalogs.
@@ -73,7 +73,7 @@
 :param SNlimit: signal to noise ratio limit. For a line measurement to be included SN of the line must be greater than SNlimit.
 :param luminosityBins: bins in luminosity equally spaced in log space.
 :param Nstack: number of spectra per stack
-:param Nclustering: number of spectra per clustering sample from the brightest to the faintest
+:param Nclustering:     number of spectra per clustering sample from the brightest to the faintest
 :param outputFolder: folder where the results will be written
 :param zmin: minimum redshift included
 :param zmax: maximum redshift included</p>
@@ -149,7 +149,7 @@ Divides the weight by the volume of the bin stores it in self.weight.</p>
 
 <dl class="class">
 <dt>
-<em class="property">class </em><code class="descclassname">LineLuminosityFunction.</code><code class="descname">ModelLuminosityFunction</code><span class="sig-paren">(</span><em>lineWavelength=3727.4228417998916, lineName='O2_3728', cosmology=FlatLambdaCDM(H0=70 km / (Mpc s), Om0=0.3, Tcmb0=2.725 K, Neff=3.04, m_nu=[ 0.  0.  0.] eV, Ob0=None), LF_file_list=[], model='Saunders', p0=[1.0], outputDirectory='', fileName='', fixedSigma=0.5, fixedAlpha=-1.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/LineLuminosityFunction.html#ModelLuminosityFunction"><span class="viewcode-link">[source]</span></a></dt>
+<em class="property">class </em><code class="descclassname">LineLuminosityFunction.</code><code class="descname">ModelLuminosityFunction</code><span class="sig-paren">(</span><em>lineWavelength=3727.4228417998916, lineName='O2_3728', cosmology=FlatLambdaCDM(name=&quot;Planck15&quot;, H0=67.7 km / (Mpc s), Om0=0.307, Tcmb0=2.725 K, Neff=3.05, m_nu=[ 0.    0.    0.06] eV, Ob0=0.0486), LF_file_list=[], model='Saunders', p0=[1.0], outputDirectory='', fileName='', fixedSigma=0.5, fixedAlpha=-1.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/LineLuminosityFunction.html#ModelLuminosityFunction"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>The model luminosity function class
 :param lineWavelength: restframe wavelength in the air
 :param lineName: name of the line used in the catalogs.
@@ -184,8 +184,8 @@ Divides the weight by the volume of the bin stores it in self.weight.</p>
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, johan comparat.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+        &#169; Copyright 2015, johan comparat.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
     </div>
   </body>
 </html>

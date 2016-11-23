@@ -1,5 +1,5 @@
 DEEP2 Spectra
-#############
+##########
 
 This class is dedicated to handling the spectra from DEEP2 galaxy redshift survey, see Newman et al. 2013.
 

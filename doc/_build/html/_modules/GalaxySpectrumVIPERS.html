@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>GalaxySpectrumVIPERS &mdash; pySU, python Skies and Universes 1.0 documentation</title>
+    <title>GalaxySpectrumVIPERS &#8212; pySU, python Skies and Universes 1.0 documentation</title>
     
     <link rel="stylesheet" href="../_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -43,7 +43,7 @@
         
         
   <h1>Source code for GalaxySpectrumVIPERS</h1><div class="highlight"><pre>
-<span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">.. class:: GalaxySpectrumVIPERS</span>
 
 <span class="sd">.. moduleauthor:: Johan Comparat &lt;johan.comparat__at__gmail.com&gt;</span>
@@ -51,10 +51,10 @@
 <span class="sd">The class GalaxySpectrumVIPERS is dedicated to handling VIPERS spectra</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">join</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="k">import</span> <span class="n">join</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">n</span>
-<span class="kn">import</span> <span class="nn">astropy.io.fits</span> <span class="kn">as</span> <span class="nn">fits</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">n</span>
+<span class="kn">import</span> <span class="nn">astropy.io.fits</span> <span class="k">as</span> <span class="nn">fits</span>
 <span class="kn">import</span> <span class="nn">glob</span>
 
 <div class="viewcode-block" id="GalaxySpectrumVIPERS"><a class="viewcode-back" href="../GalaxySpectrumVIPERS.html#GalaxySpectrumVIPERS.GalaxySpectrumVIPERS">[docs]</a><span class="k">class</span> <span class="nc">GalaxySpectrumVIPERS</span><span class="p">:</span>
@@ -67,29 +67,33 @@
 <span class="sd">        :param calibration: if the class is loaded with intention of flux calibrating the vipers data.</span>
 <span class="sd">        :param lineFits: if the class is loaded with intention of fitting line fluxes on the vipers spectra.</span>
 <span class="sd">	&quot;&quot;&quot;</span>
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">catalog_entry</span><span class="p">,</span><span class="n">calibration</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">lineFits</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">catalog_entry</span><span class="p">,</span><span class="n">calibration</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">lineFits</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">catalog_entry</span><span class="o">=</span><span class="n">catalog_entry</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">database_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;DATA_DIR&#39;</span><span class="p">]</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">vipers_dir</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">database_dir</span><span class="p">,</span><span class="s">&quot;VIPERS&quot;</span><span class="p">)</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">vipers_catalog_dir</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vipers_dir</span><span class="p">,</span><span class="s">&quot;catalogs&quot;</span><span class="p">)</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">vipers_spectra_dir</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vipers_dir</span><span class="p">,</span><span class="s">&quot;spectra&quot;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">database_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;DATA_DIR&#39;</span><span class="p">]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">vipers_dir</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">database_dir</span><span class="p">,</span><span class="s2">&quot;VIPERS&quot;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">vipers_catalog_dir</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vipers_dir</span><span class="p">,</span><span class="s2">&quot;catalogs&quot;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">vipers_spectra_dir</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vipers_dir</span><span class="p">,</span><span class="s2">&quot;spectra&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="GalaxySpectrumVIPERS.openObservedSpectrum"><a class="viewcode-back" href="../GalaxySpectrumVIPERS.html#GalaxySpectrumVIPERS.GalaxySpectrumVIPERS.openObservedSpectrum">[docs]</a>	<span class="k">def</span> <span class="nf">openObservedSpectrum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">		reads a VIPERS pectrum</span>
 <span class="sd">		returns the wavelength, the flux and the error on the flux and two arrays for masking purpose</span>
 <span class="sd">		&quot;&quot;&quot;</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">=</span><span class="s">&#39;W&#39;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">catalog_entry</span><span class="p">[</span><span class="s">&#39;id_IAU&#39;</span><span class="p">][</span><span class="mi">7</span><span class="p">]</span>
-		<span class="n">specFileName</span><span class="o">=</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vipers_spectra_dir</span><span class="p">,</span><span class="s">&quot;VIPERS_&quot;</span><span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">+</span> <span class="s">&quot;_PDR1_SPECTRA_1D&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">catalog_entry</span><span class="p">[</span><span class="s">&#39;id_IAU&#39;</span><span class="p">][:</span><span class="mi">6</span><span class="p">]</span><span class="o">+</span><span class="s">&quot;_&quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">catalog_entry</span><span class="p">[</span><span class="s">&#39;id_IAU&#39;</span><span class="p">][</span><span class="mi">7</span><span class="p">:]</span><span class="o">+</span><span class="s">&quot;.fits&quot;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">=</span><span class="s1">&#39;W&#39;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">catalog_entry</span><span class="p">[</span><span class="s1">&#39;id_IAU&#39;</span><span class="p">][</span><span class="mi">7</span><span class="p">]</span>
+		<span class="n">specFileName</span><span class="o">=</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vipers_spectra_dir</span><span class="p">,</span><span class="s2">&quot;VIPERS_&quot;</span><span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">+</span> <span class="s2">&quot;_PDR1_SPECTRA_1D&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">catalog_entry</span><span class="p">[</span><span class="s1">&#39;id_IAU&#39;</span><span class="p">][:</span><span class="mi">6</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;_&quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">catalog_entry</span><span class="p">[</span><span class="s1">&#39;id_IAU&#39;</span><span class="p">][</span><span class="mi">7</span><span class="p">:]</span><span class="o">+</span><span class="s2">&quot;.fits&quot;</span><span class="p">)</span>
 		<span class="n">spectraHDU</span><span class="o">=</span><span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">specFileName</span><span class="p">)</span>
-		<span class="n">wlA</span><span class="o">=</span><span class="n">spectraHDU</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;WAVES&#39;</span><span class="p">]</span>
-		<span class="n">flA</span><span class="o">=</span><span class="n">spectraHDU</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;FLUXES&#39;</span><span class="p">]</span>
-		<span class="n">flErrA</span><span class="o">=</span><span class="n">spectraHDU</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;NOISE&#39;</span><span class="p">]</span>
-		<span class="n">edit</span><span class="o">=</span><span class="n">spectraHDU</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;EDIT&#39;</span><span class="p">]</span>
-		<span class="n">mask</span><span class="o">=</span><span class="n">spectraHDU</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;MASK&#39;</span><span class="p">]</span>
+		<span class="n">wlA</span><span class="o">=</span><span class="n">spectraHDU</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;WAVES&#39;</span><span class="p">]</span>
+		<span class="n">flA</span><span class="o">=</span><span class="n">spectraHDU</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;FLUXES&#39;</span><span class="p">]</span>
+		<span class="n">flErrA</span><span class="o">=</span><span class="n">spectraHDU</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;NOISE&#39;</span><span class="p">]</span>
+		<span class="n">edit</span><span class="o">=</span><span class="n">spectraHDU</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;EDIT&#39;</span><span class="p">]</span>
+		<span class="n">mask</span><span class="o">=</span><span class="n">spectraHDU</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;MASK&#39;</span><span class="p">]</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">wavelength</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">fluxl</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">fluxlErr</span><span class="o">=</span> <span class="n">wlA</span><span class="p">[(</span><span class="n">mask</span><span class="o">==</span><span class="mi">0</span><span class="p">)],</span> <span class="n">flA</span><span class="p">[(</span><span class="n">mask</span><span class="o">==</span><span class="mi">0</span><span class="p">)],</span> <span class="n">flErrA</span><span class="p">[(</span><span class="n">mask</span><span class="o">==</span><span class="mi">0</span><span class="p">)]</span>
-		<span class="n">spectraHDU</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</pre></div></div></div>
+		<span class="n">spectraHDU</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div></div>
+
+
+
+
+</pre></div>
 
       </div>
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
@@ -101,8 +105,8 @@
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, johan comparat.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+        &#169; Copyright 2015, johan comparat.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
     </div>
   </body>
 </html>

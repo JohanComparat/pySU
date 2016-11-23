@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Library of functions to fit lines &mdash; pySU, python Skies and Universes 1.0 documentation</title>
+    <title>Library of functions to fit lines &#8212; pySU, python Skies and Universes 1.0 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="pySU, python Skies and Universes 1.0 documentation" href="index.html" />
     <link rel="next" title="Library of functions to estimate luminosity functions" href="LineLuminosityFunction.html" />
-    <link rel="prev" title="Welcome to Skies and Universes python documentation" href="index.html" /> 
+    <link rel="prev" title="Library of functions to produce stacks of spectra" href="SpectraStacking.html" /> 
   </head>
   <body role="document">
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
@@ -36,7 +36,7 @@
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        «&#160;&#160;<a href="index.html">Welcome to Skies and Universes python documentation</a>
+        «&#160;&#160;<a href="SpectraStacking.html">Library of functions to produce stacks of spectra</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
@@ -58,7 +58,7 @@
 <p>This class contains a variety of function to fit emission or absorption lines in galaxy spectra.</p>
 <dl class="class">
 <dt>
-<em class="property">class </em><code class="descclassname">LineFittingLibrary.</code><code class="descname">LineFittingLibrary</code><span class="sig-paren">(</span><em>dV=-9999.99</em>, <em>fitWidth=35</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/LineFittingLibrary.html#LineFittingLibrary"><span class="viewcode-link">[source]</span></a></dt>
+<em class="property">class </em><code class="descclassname">LineFittingLibrary.</code><code class="descname">LineFittingLibrary</code><span class="sig-paren">(</span><em>dV=-9999.99</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/LineFittingLibrary.html#LineFittingLibrary"><span class="viewcode-link">[source]</span></a></dt>
 <dd><dl class="docutils">
 <dt>Loads the environement proper to fit lines :</dt>
 <dd><ul class="first last simple">
@@ -73,17 +73,13 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dV</strong> &#8211; the default value  (def: -9999.99)</li>
-<li><strong>fitWidth</strong> &#8211; width in Angstrom around the line where the fit is performed, default 35 Angstrom</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dV</strong> &#8211; the default value  (def: -9999.99)</td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
 <dt id="LineFittingLibrary.LineFittingLibrary.fit_Line">
-<code class="descname">fit_Line</code><span class="sig-paren">(</span><em>wl</em>, <em>spec1d</em>, <em>err1d</em>, <em>a0</em>, <em>lineName='AL'</em>, <em>DLC=230</em>, <em>p0_sigma=15.0</em>, <em>p0_flux=8e-17</em>, <em>p0_share=0.5</em>, <em>continuumSide='left'</em>, <em>model='gaussian'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/LineFittingLibrary.html#LineFittingLibrary.fit_Line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#LineFittingLibrary.LineFittingLibrary.fit_Line" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fit_Line</code><span class="sig-paren">(</span><em>wl</em>, <em>spec1d</em>, <em>err1d</em>, <em>a0</em>, <em>lineName='AL'</em>, <em>fitWidth=20</em>, <em>DLC=20</em>, <em>p0_sigma=15.0</em>, <em>p0_flux=8e-17</em>, <em>p0_share=0.5</em>, <em>continuumSide='left'</em>, <em>model='gaussian'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/LineFittingLibrary.html#LineFittingLibrary.fit_Line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#LineFittingLibrary.LineFittingLibrary.fit_Line" title="Permalink to this definition">¶</a></dt>
 <dd><p>fits a line profile to a spectrum around a fixed line position</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -119,7 +115,7 @@
 
 <dl class="method">
 <dt id="LineFittingLibrary.LineFittingLibrary.fit_Line_OIIdoublet">
-<code class="descname">fit_Line_OIIdoublet</code><span class="sig-paren">(</span><em>wl</em>, <em>spec1d</em>, <em>err1d</em>, <em>a0=array([ 3726.03217354</em>, <em>3728.81454843])</em>, <em>lineName='OII'</em>, <em>DLC=230</em>, <em>p0_sigma=4.0</em>, <em>p0_flux=1e-16</em>, <em>p0_share=0.58</em>, <em>model='gaussian'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/LineFittingLibrary.html#LineFittingLibrary.fit_Line_OIIdoublet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#LineFittingLibrary.LineFittingLibrary.fit_Line_OIIdoublet" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fit_Line_OIIdoublet</code><span class="sig-paren">(</span><em>wl</em>, <em>spec1d</em>, <em>err1d</em>, <em>a0=3726.0321735398957</em>, <em>lineName='OII'</em>, <em>fitWidth=20</em>, <em>DLC=20</em>, <em>p0_sigma=4.0</em>, <em>p0_flux=1e-16</em>, <em>p0_share=0.58</em>, <em>model='gaussian'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/LineFittingLibrary.html#LineFittingLibrary.fit_Line_OIIdoublet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#LineFittingLibrary.LineFittingLibrary.fit_Line_OIIdoublet" title="Permalink to this definition">¶</a></dt>
 <dd><p>fits the [OII] doublet line profile</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -154,8 +150,153 @@
 </dd></dl>
 
 <dl class="method">
+<dt id="LineFittingLibrary.LineFittingLibrary.fit_Line_OIIdoublet_position">
+<code class="descname">fit_Line_OIIdoublet_position</code><span class="sig-paren">(</span><em>wl</em>, <em>spec1d</em>, <em>err1d</em>, <em>a0=3726.0321</em>, <em>lineName='O2_3728'</em>, <em>fitWidth=20</em>, <em>DLC=20</em>, <em>p0_sigma=4.0</em>, <em>p0_flux=1e-16</em>, <em>p0_share=0.58</em>, <em>model='gaussian'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/LineFittingLibrary.html#LineFittingLibrary.fit_Line_OIIdoublet_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#LineFittingLibrary.LineFittingLibrary.fit_Line_OIIdoublet_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>fits the [OII] doublet line profile</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>wl</strong> &#8211; wavelength (array, Angstrom)</li>
+<li><strong>spec1d</strong> &#8211; flux observed in the broad band (array, f lambda)</li>
+<li><strong>err1d</strong> &#8211; error on the flux observed in the broad band (array, f lambda)</li>
+<li><strong>a0</strong> &#8211; expected position of the peak of the line in the observed frame (redshifted). 2 positions given.</li>
+<li><strong>lineName</strong> &#8211; suffix characterizing the line in the headers of the output</li>
+<li><strong>DLC</strong> &#8211; wavelength extent to fit the continuum around the line. (def: 230 Angstrom)</li>
+<li><strong>p0_sigma</strong> &#8211; prior on the line width in A (def: 15 A)</li>
+<li><strong>p0_flux</strong> &#8211; prior on the line flux in erg/cm2/s/A (def: 8e-17)</li>
+<li><strong>p0_share</strong> &#8211; prior on the share between the two [OII] lines. (def: 0.58)</li>
+<li><strong>continuumSide</strong> &#8211; &#8220;left&#8221; = bluewards of the line or &#8220;right&#8221; = redwards of the line</li>
+<li><strong>model</strong> &#8211; line model to be fitted : &#8220;gaussian&#8221;, &#8220;lorentz&#8221; or &#8220;pseudoVoigt&#8221;</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Returns :</dt>
+<dd><ul class="first last simple">
+<li>array 1 with the parameters of the model</li>
+<li>array 2 with the model (wavelength, flux model)</li>
+<li>header corresponding to the array 1</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="LineFittingLibrary.LineFittingLibrary.fit_Line_OIIdoublet_position_C0noise">
+<code class="descname">fit_Line_OIIdoublet_position_C0noise</code><span class="sig-paren">(</span><em>wl</em>, <em>spec1d</em>, <em>err1d</em>, <em>a0=3726.0321</em>, <em>lineName='O2_3728'</em>, <em>fitWidth=20</em>, <em>DLC=20</em>, <em>p0_sigma=4.0</em>, <em>p0_flux=1e-16</em>, <em>p0_share=0.58</em>, <em>model='gaussian'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/LineFittingLibrary.html#LineFittingLibrary.fit_Line_OIIdoublet_position_C0noise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#LineFittingLibrary.LineFittingLibrary.fit_Line_OIIdoublet_position_C0noise" title="Permalink to this definition">¶</a></dt>
+<dd><p>fits the [OII] doublet line profile</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>wl</strong> &#8211; wavelength (array, Angstrom)</li>
+<li><strong>spec1d</strong> &#8211; flux observed in the broad band (array, f lambda)</li>
+<li><strong>err1d</strong> &#8211; error on the flux observed in the broad band (array, f lambda)</li>
+<li><strong>a0</strong> &#8211; expected position of the peak of the line in the observed frame (redshifted). 2 positions given.</li>
+<li><strong>lineName</strong> &#8211; suffix characterizing the line in the headers of the output</li>
+<li><strong>DLC</strong> &#8211; wavelength extent to fit the continuum around the line. (def: 230 Angstrom)</li>
+<li><strong>p0_sigma</strong> &#8211; prior on the line width in A (def: 15 A)</li>
+<li><strong>p0_flux</strong> &#8211; prior on the line flux in erg/cm2/s/A (def: 8e-17)</li>
+<li><strong>p0_share</strong> &#8211; prior on the share between the two [OII] lines. (def: 0.58)</li>
+<li><strong>continuumSide</strong> &#8211; &#8220;left&#8221; = bluewards of the line or &#8220;right&#8221; = redwards of the line</li>
+<li><strong>model</strong> &#8211; line model to be fitted : &#8220;gaussian&#8221;, &#8220;lorentz&#8221; or &#8220;pseudoVoigt&#8221;</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Returns :</dt>
+<dd><ul class="first last simple">
+<li>array 1 with the parameters of the model</li>
+<li>array 2 with the model (wavelength, flux model)</li>
+<li>header corresponding to the array 1</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="LineFittingLibrary.LineFittingLibrary.fit_Line_position">
+<code class="descname">fit_Line_position</code><span class="sig-paren">(</span><em>wl</em>, <em>spec1d</em>, <em>err1d</em>, <em>a0=5007.0</em>, <em>lineName='AL'</em>, <em>fitWidth=20</em>, <em>DLC=20</em>, <em>p0_sigma=15.0</em>, <em>p0_flux=8e-17</em>, <em>p0_share=0.5</em>, <em>continuumSide='left'</em>, <em>model='gaussian'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/LineFittingLibrary.html#LineFittingLibrary.fit_Line_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#LineFittingLibrary.LineFittingLibrary.fit_Line_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>fits a line profile to a spectrum around a fixed line position</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>wl</strong> &#8211; wavelength (array, Angstrom)</li>
+<li><strong>spec1d</strong> &#8211; flux observed in the broad band (array, f lambda)</li>
+<li><strong>err1d</strong> &#8211; error on the flux observed in the broad band (array, f lambda)</li>
+<li><strong>a0</strong> &#8211; expected position of the peak of the line in the observed frame (redshifted). a0 is not fitted, it is given.</li>
+<li><strong>lineName</strong> &#8211; suffix characterizing the line in the headers of the output</li>
+<li><strong>DLC</strong> &#8211; wavelength extent to fit the continuum around the line. (def: 230 Angstrom)</li>
+<li><strong>p0_sigma</strong> &#8211; prior on the line width in A (def: 15 A)</li>
+<li><strong>p0_flux</strong> &#8211; prior on the line flux in erg/cm2/s/A (def: 8e-17)</li>
+<li><strong>p0_share</strong> &#8211; prior on the share of Gaussian and Lorentzian model. Only used if the line is fitted with a pseudoVoigt profile width (def: 0.5 no units)</li>
+<li><strong>continuumSide</strong> &#8211; &#8220;left&#8221; = bluewards of the line or &#8220;right&#8221; = redwards of the line</li>
+<li><strong>model</strong> &#8211; line model to be fitted : &#8220;gaussian&#8221;, &#8220;lorentz&#8221; or &#8220;pseudoVoigt&#8221;.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Returns :</dt>
+<dd><ul class="first last simple">
+<li>array 1 with the parameters of the model</li>
+<li>array 2 with the model (wavelength, flux model)</li>
+<li>header corresponding to the array 1</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="LineFittingLibrary.LineFittingLibrary.fit_Line_position_C0noise">
+<code class="descname">fit_Line_position_C0noise</code><span class="sig-paren">(</span><em>wl</em>, <em>spec1d</em>, <em>err1d</em>, <em>a0=5007.0</em>, <em>lineName='AL'</em>, <em>fitWidth=20</em>, <em>DLC=20</em>, <em>p0_sigma=15.0</em>, <em>p0_flux=8e-17</em>, <em>p0_share=0.5</em>, <em>continuumSide='left'</em>, <em>model='gaussian'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/LineFittingLibrary.html#LineFittingLibrary.fit_Line_position_C0noise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#LineFittingLibrary.LineFittingLibrary.fit_Line_position_C0noise" title="Permalink to this definition">¶</a></dt>
+<dd><p>fits a line profile to a spectrum where the error model is takes the value of the continuum.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>wl</strong> &#8211; wavelength (array, Angstrom)</li>
+<li><strong>spec1d</strong> &#8211; flux observed in the broad band (array, f lambda)</li>
+<li><strong>err1d</strong> &#8211; error on the flux observed in the broad band (array, f lambda)</li>
+<li><strong>a0</strong> &#8211; expected position of the peak of the line in the observed frame (redshifted). a0 is  fitted.</li>
+<li><strong>lineName</strong> &#8211; suffix characterizing the line in the headers of the output</li>
+<li><strong>fitWidth</strong> &#8211; width in Angstrom around the line where the fit is performed, default 20 Angstrom</li>
+<li><strong>continuumSide</strong> &#8211; &#8220;left&#8221; = bluewards of the line or &#8220;right&#8221; = redwards of the line</li>
+<li><strong>DLC</strong> &#8211; wavelength extent to fit the continuum around the line. (def: 230 Angstrom)</li>
+<li><strong>p0_sigma</strong> &#8211; prior on the line width in A (def: 15 A)</li>
+<li><strong>p0_flux</strong> &#8211; prior on the line flux in erg/cm2/s/A (def: 8e-17)</li>
+<li><strong>p0_share</strong> &#8211; prior on the share of Gaussian and Lorentzian model. Only used if the line is fitted with a pseudoVoigt profile width (def: 0.5 no units)</li>
+<li><strong>model</strong> &#8211; line model to be fitted : &#8220;gaussian&#8221;, &#8220;lorentz&#8221; or &#8220;pseudoVoigt&#8221;.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Returns :</dt>
+<dd><ul class="first last simple">
+<li>array 1 with the parameters of the model</li>
+<li>array 2 with the model (wavelength, flux model)</li>
+<li>header corresponding to the array 1</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="LineFittingLibrary.LineFittingLibrary.fit_recLine">
-<code class="descname">fit_recLine</code><span class="sig-paren">(</span><em>wl</em>, <em>spec1d</em>, <em>err1d</em>, <em>a0</em>, <em>lineName='AL'</em>, <em>DLC=230</em>, <em>p0_sigma=5.0</em>, <em>p0_flux=5e-17</em>, <em>continuumSide='left'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/LineFittingLibrary.html#LineFittingLibrary.fit_recLine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#LineFittingLibrary.LineFittingLibrary.fit_recLine" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fit_recLine</code><span class="sig-paren">(</span><em>wl</em>, <em>spec1d</em>, <em>err1d</em>, <em>a0</em>, <em>lineName='AL'</em>, <em>fitWidth=20</em>, <em>DLC=20</em>, <em>p0_sigma=5.0</em>, <em>p0_flux=5e-17</em>, <em>continuumSide='left'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/LineFittingLibrary.html#LineFittingLibrary.fit_recLine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#LineFittingLibrary.LineFittingLibrary.fit_recLine" title="Permalink to this definition">¶</a></dt>
 <dd><p>fits a recombination line profile : emission and absorption modeled by Gaussians. Only for high SNR spectra.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -281,7 +422,7 @@
 
 <dl class="method">
 <dt id="LineFittingLibrary.LineFittingLibrary.plotLineFit">
-<code class="descname">plotLineFit</code><span class="sig-paren">(</span><em>wl</em>, <em>fl</em>, <em>flErr</em>, <em>lineModel</em>, <em>a0</em>, <em>path_to_fig='plot.pdf'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/LineFittingLibrary.html#LineFittingLibrary.plotLineFit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#LineFittingLibrary.LineFittingLibrary.plotLineFit" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plotLineFit</code><span class="sig-paren">(</span><em>wl</em>, <em>fl</em>, <em>flErr</em>, <em>lineModel</em>, <em>a0</em>, <em>path_to_fig='plot.pdf'</em>, <em>title=' - '</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/LineFittingLibrary.html#LineFittingLibrary.plotLineFit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#LineFittingLibrary.LineFittingLibrary.plotLineFit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots a spectrum and the emission line model fitted.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -310,7 +451,7 @@
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
-        «&#160;&#160;<a href="index.html">Welcome to Skies and Universes python documentation</a>
+        «&#160;&#160;<a href="SpectraStacking.html">Library of functions to produce stacks of spectra</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
@@ -320,8 +461,8 @@
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, johan comparat.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+        &#169; Copyright 2015, johan comparat.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
     </div>
   </body>
 </html>

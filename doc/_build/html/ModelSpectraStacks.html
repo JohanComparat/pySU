@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Library of functions to model stacks of spectra &mdash; pySU, python Skies and Universes 1.0 documentation</title>
+    <title>Library of functions to model stacks of spectra &#8212; pySU, python Skies and Universes 1.0 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="pySU, python Skies and Universes 1.0 documentation" href="index.html" />
-    <link rel="next" title="DEEP2 Survey" href="GalaxySurveyDEEP2.html" />
+    <link rel="next" title="Library of functions to produce plots related to galaxy surveys" href="lib_plot.html" />
     <link rel="prev" title="Library of functions to estimate luminosity functions" href="LineLuminosityFunction.html" /> 
   </head>
   <body role="document">
@@ -40,7 +40,7 @@
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="GalaxySurveyDEEP2.html">DEEP2 Survey</a>&#160;&#160;»
+        <a href="lib_plot.html">Library of functions to produce plots related to galaxy surveys</a>&#160;&#160;»
         </p>
 
       </div>
@@ -54,26 +54,26 @@
 <h2>General purpose:<a class="headerlink" href="#general-purpose" title="Permalink to this headline">¶</a></h2>
 <p>The class ModelSpectraStacks is dedicated to modelling and extracting information from stacks of spectra.</p>
 <p><em>Imports</em>:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">matplotlib</span>
-<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s">&#39;pdf&#39;</span><span class="p">)</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">p</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;pdf&#39;</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">p</span>
 <span class="kn">import</span> <span class="nn">os</span> 
-<span class="kn">import</span> <span class="nn">astropy.cosmology</span> <span class="kn">as</span> <span class="nn">co</span>
+<span class="kn">import</span> <span class="nn">astropy.cosmology</span> <span class="k">as</span> <span class="nn">co</span>
 <span class="n">cosmo</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">FlatLambdaCDM</span><span class="p">(</span><span class="n">H0</span><span class="o">=</span><span class="mi">70</span><span class="p">,</span><span class="n">Om0</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
-<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="kn">as</span> <span class="nn">u</span>
-<span class="kn">import</span> <span class="nn">astropy.io.fits</span> <span class="kn">as</span> <span class="nn">fits</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">n</span>
-<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">curve_fit</span>
-<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>
-<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">scoreatpercentile</span>
-<span class="kn">import</span> <span class="nn">astropy.io.fits</span> <span class="kn">as</span> <span class="nn">fits</span>
-<span class="kn">from</span> <span class="nn">lineListAir</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">import</span> <span class="nn">LineFittingLibrary</span> <span class="kn">as</span> <span class="nn">lineFit</span>
+<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+<span class="kn">import</span> <span class="nn">astropy.io.fits</span> <span class="k">as</span> <span class="nn">fits</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">n</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">curve_fit</span>
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="k">import</span> <span class="n">interp1d</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="k">import</span> <span class="n">scoreatpercentile</span>
+<span class="kn">import</span> <span class="nn">astropy.io.fits</span> <span class="k">as</span> <span class="nn">fits</span>
+<span class="kn">from</span> <span class="nn">lineListAir</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">LineFittingLibrary</span> <span class="k">as</span> <span class="nn">lineFit</span>
 </pre></div>
 </div>
 <dl class="class">
 <dt id="ModelSpectraStacks.ModelSpectraStacks">
-<em class="property">class </em><code class="descclassname">ModelSpectraStacks.</code><code class="descname">ModelSpectraStacks</code><span class="sig-paren">(</span><em>stack_file</em>, <em>mode='MILES'</em>, <em>cosmo=FlatLambdaCDM(H0=70 km / (Mpc s)</em>, <em>Om0=0.3</em>, <em>Tcmb0=2.725 K</em>, <em>Neff=3.04</em>, <em>m_nu=[ 0.  0.  0.] eV</em>, <em>Ob0=None)</em>, <em>firefly_min_wavelength=1000.0</em>, <em>firefly_max_wavelength=7500.0</em>, <em>dV=-9999.99</em>, <em>N_spectra_limitFraction=0.8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelSpectraStacks.html#ModelSpectraStacks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelSpectraStacks.ModelSpectraStacks" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">ModelSpectraStacks.</code><code class="descname">ModelSpectraStacks</code><span class="sig-paren">(</span><em>stack_file</em>, <em>mode='MILES'</em>, <em>cosmo=FlatLambdaCDM(name=&quot;Planck15&quot;</em>, <em>H0=67.7 km / (Mpc s)</em>, <em>Om0=0.307</em>, <em>Tcmb0=2.725 K</em>, <em>Neff=3.05</em>, <em>m_nu=[ 0.    0.    0.06] eV</em>, <em>Ob0=0.0486)</em>, <em>firefly_min_wavelength=1000.0</em>, <em>firefly_max_wavelength=7500.0</em>, <em>dV=-9999.99</em>, <em>N_spectra_limitFraction=0.8</em>, <em>tutorial=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelSpectraStacks.html#ModelSpectraStacks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelSpectraStacks.ModelSpectraStacks" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class fits the emission lines on the continuum-subtracted stack.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -92,34 +92,26 @@
 </tbody>
 </table>
 <dl class="method">
-<dt id="ModelSpectraStacks.ModelSpectraStacks.compute_derived_quantities">
-<code class="descname">compute_derived_quantities</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelSpectraStacks.html#ModelSpectraStacks.compute_derived_quantities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelSpectraStacks.ModelSpectraStacks.compute_derived_quantities" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>Computes the different line ratios and converts to extinction :</dt>
-<dd><ul class="first last simple">
-<li>Balmer decrement and E(B-V) Correction using 4862 / 4341</li>
-<li>Balmer decrement and E(B-V) Correction using 4862 / 4102</li>
-<li>Balmer decrement and E(B-V) Correction using 4341 / 4102</li>
-<li>O32 : O3/O2</li>
-<li>intrinsic fluxes O3 4960 and 5007</li>
-<li>intrinsic fluxes O2</li>
-<li>intrinsic fluxes Hb</li>
-<li>SFR from [OII]</li>
-<li>SFR from Hbeta</li>
-<li>compute R23</li>
-<li>compute R23 intrinsic</li>
-<li>12 log(O/H) with Tremonti 04 estimator</li>
-<li>12 log OH with O2(3728)/Hbeta</li>
-<li>12 log OH with O3(4960+5007)/Hbeta</li>
-<li>12 log OH with O3(5007)/Hbeta</li>
-</ul>
-</dd>
-</dl>
+<dt id="ModelSpectraStacks.ModelSpectraStacks.fit_lines_to_fullSpectrum">
+<code class="descname">fit_lines_to_fullSpectrum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelSpectraStacks.html#ModelSpectraStacks.fit_lines_to_fullSpectrum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelSpectraStacks.ModelSpectraStacks.fit_lines_to_fullSpectrum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fits the emission lines on the line spectrum.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ModelSpectraStacks.ModelSpectraStacks.fit_lines_to_fullSpectrum_tutorial">
+<code class="descname">fit_lines_to_fullSpectrum_tutorial</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelSpectraStacks.html#ModelSpectraStacks.fit_lines_to_fullSpectrum_tutorial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelSpectraStacks.ModelSpectraStacks.fit_lines_to_fullSpectrum_tutorial" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fits the emission lines on the line spectrum.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="ModelSpectraStacks.ModelSpectraStacks.fit_lines_to_lineSpectrum">
 <code class="descname">fit_lines_to_lineSpectrum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelSpectraStacks.html#ModelSpectraStacks.fit_lines_to_lineSpectrum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelSpectraStacks.ModelSpectraStacks.fit_lines_to_lineSpectrum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fits the emission lines on the line spectrum.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ModelSpectraStacks.ModelSpectraStacks.fit_lines_to_lineSpectrum_tutorial">
+<code class="descname">fit_lines_to_lineSpectrum_tutorial</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelSpectraStacks.html#ModelSpectraStacks.fit_lines_to_lineSpectrum_tutorial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelSpectraStacks.ModelSpectraStacks.fit_lines_to_lineSpectrum_tutorial" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fits the emission lines on the line spectrum.</p>
 </dd></dl>
 
@@ -133,18 +125,6 @@
 <dt id="ModelSpectraStacks.ModelSpectraStacks.interpolate_stack">
 <code class="descname">interpolate_stack</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelSpectraStacks.html#ModelSpectraStacks.interpolate_stack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelSpectraStacks.ModelSpectraStacks.interpolate_stack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Divides the measured stack in overlapping and non-overlapping parts with the model.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="ModelSpectraStacks.ModelSpectraStacks.plot_fit">
-<code class="descname">plot_fit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelSpectraStacks.html#ModelSpectraStacks.plot_fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelSpectraStacks.ModelSpectraStacks.plot_fit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plots the fit.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="ModelSpectraStacks.ModelSpectraStacks.plot_spectrum">
-<code class="descname">plot_spectrum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelSpectraStacks.html#ModelSpectraStacks.plot_spectrum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelSpectraStacks.ModelSpectraStacks.plot_spectrum" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plots the stack spectrum and the model plus derived quantities.</p>
 </dd></dl>
 
 <dl class="method">
@@ -179,14 +159,14 @@
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="GalaxySurveyDEEP2.html">DEEP2 Survey</a>&#160;&#160;»
+        <a href="lib_plot.html">Library of functions to produce plots related to galaxy surveys</a>&#160;&#160;»
         </p>
 
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, johan comparat.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+        &#169; Copyright 2015, johan comparat.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
     </div>
   </body>
 </html>
