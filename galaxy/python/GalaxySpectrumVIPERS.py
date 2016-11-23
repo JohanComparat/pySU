@@ -40,7 +40,7 @@ class GalaxySpectrumVIPERS:
 		wlA=spectraHDU[1].data['WAVES']
 		flA=spectraHDU[1].data['FLUXES']
 		flErrA=spectraHDU[1].data['NOISE']
-		edit=spectraHDU[1].data['EDIT']
+		#edit=spectraHDU[1].data['EDIT']
 		mask=spectraHDU[1].data['MASK']
 		self.wavelength,self.fluxl,self.fluxlErr= wlA[(mask==0)], flA[(mask==0)], flErrA[(mask==0)]
 		spectraHDU.close()
