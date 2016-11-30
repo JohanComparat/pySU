@@ -111,7 +111,7 @@ class LineFittingLibrary:
 		fo_err=(LgU/Lfilt/goal-LgL/Lfilt/goal)/2
 		return fo, fo_err
 
-	def plotLineFit(self,wl,fl,flErr,lineModel,a0,path_to_fig="plot.pdf", title=" - "):
+	def plotLineFit(self,wl,fl,flErr,lineModel,a0,datI,path_to_fig="plot.pdf", title=" - ", fitWidth = 70., DLC=50, doublet=False):
 		"""
 		Plots a spectrum and the emission line model fitted.
 
@@ -126,15 +126,34 @@ class LineFittingLibrary:
 		p.plot(wl,fl,'k')
 		p.plot(wl,fl+flErr,'g--')
 		p.plot(wl,fl-flErr,'g--')
-		p.axvline(a0)
-		wlMod=lineModel[0]
-		p.plot(wlMod,lineModel[1],'r')
-		p.xlim((wlMod.min()-50,wlMod.max()+50))
+		p.axvline(a0, c='k')
+		p.axvline(a0 - fitWidth/2., c='k')
+		p.axvline(a0 - fitWidth/2. - DLC, c='k')
+		p.axvline(a0 + fitWidth/2., c='k')
+		p.axvline(a0 + fitWidth/2. + DLC, c='k')
+		p.plot(lineModel[0], lineModel[1],'r')
+		p.xlim((a0 - fitWidth/2. - DLC - 5, a0 + fitWidth/2. + DLC + 5))
 		p.yscale('log')
 		p.ylim((n.max([lineModel[1].min() / 5., 1e-18]), lineModel[1].max() * 5.))
-		p.title(title)
-		p.savefig(path_to_fig)
-		p.clf()
+		x_model = n.arange(a0 - fitWidth/2. - DLC, a0 + fitWidth/2. + DLC, 0.1)
+		
+		if doublet:
+			a0_0, a0_1, flux, fluxErr, sigma, sigmaErr, continu, continuErr, EW, share, shareErr, fd_a0_l, fd_a0_r, chi2, ndof= datI
+			y_model_1 = continu/2. +self.gaussianLineNC( x_model, sigma, share*flux, a0_1)
+			y_model_2 = continu/2. + self.gaussianLineNC(x_model, sigma, (1-share) * flux, a0_0)
+			p.title(title+" doublet")
+			p.plot(x_model, y_model_1, 'c', ls='dashed', lw=2)
+			p.plot(x_model, y_model_2, 'm', ls='dotted', lw=2)
+			#p.plot(x_model, y_model_1 + y_model_2, '')
+		else:
+			a0,flux,fluxErr,sigma,sigmaErr,continu,continuErr,EW,fd_a0_l,fd_a0_r,chi2,ndof = datI
+			y_model = self.gaussianLine(x_model, sigma, flux, a0, continu)
+			p.title(title)
+			p.plot(x_model, y_model, 'm--')
+		
+		#p.savefig(path_to_fig)
+		p.show()
+
 
 	def fit_Line_position_C0noise(self,wl,spec1d,err1d,a0=5007.,lineName="AL",fitWidth=20,DLC=20, p0_sigma=15.,p0_flux=8e-17,p0_share=0.5,continuumSide="left",model="gaussian"):
 		"""
@@ -229,7 +248,7 @@ class LineFittingLibrary:
 					if model=="pseudoVoigt" :
 						return n.array([a0,self.dV,self.dV,self.dV,self.dV,continu,continuErr,self.dV,self.dV,self.dV,fd_a0_l,fd_a0_r,self.dV,self.dV]),modNF,headerPV
 			else :
-				print "not enough space to fit the line"
+				#print "not enough space to fit the line"
 				if  model=="gaussian" or model=="lorentz" :
 					return outPutNF,modNF,header
 				if model=="pseudoVoigt" :
@@ -301,7 +320,7 @@ class LineFittingLibrary:
 					if model=="pseudoVoigt" :
 						return n.array([a0,self.dV,self.dV,self.dV,self.dV,continu,continuErr,self.dV,self.dV,self.dV,fd_a0_l,fd_a0_r,self.dV,self.dV]),modNF,headerPV
 			else :
-				print "not enough space to fit the line"
+				#print "not enough space to fit the line"
 				if  model=="gaussian" or model=="lorentz" :
 					return outPutNF,modNF,header
 				if model=="pseudoVoigt" :
@@ -399,7 +418,7 @@ class LineFittingLibrary:
 					if model=="pseudoVoigt" :
 						return n.array([a0,self.dV,self.dV,self.dV,self.dV,continu,continuErr,self.dV,self.dV,self.dV,fd_a0_l,fd_a0_r,self.dV,self.dV]),modNF,headerPV
 			else :
-				print "not enough space to fit the line"
+				#print "not enough space to fit the line"
 				if  model=="gaussian" or model=="lorentz" :
 					return outPutNF,modNF,header
 				if model=="pseudoVoigt" :
@@ -471,7 +490,7 @@ class LineFittingLibrary:
 					if model=="pseudoVoigt" :
 						return n.array([a0,self.dV,self.dV,self.dV,self.dV,continu,continuErr,self.dV,self.dV,self.dV,fd_a0_l,fd_a0_r,self.dV,self.dV]),modNF,headerPV
 			else :
-				print "not enough space to fit the line"
+				#print "not enough space to fit the line"
 				if  model=="gaussian" or model=="lorentz" :
 					return outPutNF,modNF,header
 				if model=="pseudoVoigt" :
@@ -561,7 +580,7 @@ class LineFittingLibrary:
 					if model=="pseudoVoigt" :
 						return n.array([a0,self.dV,self.dV,self.dV,self.dV,continu,continuErr,self.dV,self.dV,self.dV,fd_a0_l,fd_a0_r,self.dV,self.dV]),modNF,headerPV
 			else :
-				print "not enough space to fit the line"
+				#print "not enough space to fit the line"
 				if  model=="gaussian" or model=="lorentz" :
 					return outPutNF,modNF,header
 				if model=="pseudoVoigt" :
@@ -625,7 +644,7 @@ class LineFittingLibrary:
 					if model=="pseudoVoigt" :
 						return n.array([a0,self.dV,self.dV,self.dV,self.dV,continu,continuErr,self.dV,self.dV,self.dV,fd_a0_l,fd_a0_r,self.dV,self.dV]),modNF,headerPV
 			else :
-				print "not enough space to fit the line"
+				#print "not enough space to fit the line"
 				if  model=="gaussian" or model=="lorentz" :
 					return outPutNF,modNF,header
 				if model=="pseudoVoigt" :
@@ -690,7 +709,7 @@ class LineFittingLibrary:
 			else :
 				return n.array([a0[0],a0[1],self.dV,self.dV,self.dV,self.dV,continu,continuErr,self.dV,self.dV,self.dV,fd_a0_l,fd_a0_r,self.dV,self.dV]),modNF,header
 		else :
-			print "not enough space to fit the line"
+			#print "not enough space to fit the line"
 			return outPutNF,modNF,header
 
 	def fit_Line_OIIdoublet_position(self,wl,spec1d,err1d,a0=3726.0321,lineName="O2_3728",fitWidth=20,DLC=20,p0_sigma=4.,p0_flux=1e-16,p0_share=0.58,model="gaussian"):
@@ -755,7 +774,7 @@ class LineFittingLibrary:
 			else :
 				return n.array([a0,a0+2.782374,self.dV,self.dV,self.dV,self.dV,continu,continuErr,self.dV,self.dV,self.dV,fd_a0_l,fd_a0_r,self.dV,self.dV]),modNF,header
 		else :
-			print "not enough space to fit the line"
+			#print "not enough space to fit the line"
 			return outPutNF,modNF,header
 
 	def fit_Line_OIIdoublet_position_C0noise(self,wl,spec1d,err1d,a0=3726.0321,lineName="O2_3728",fitWidth=20,DLC=20,p0_sigma=4.,p0_flux=1e-16,p0_share=0.58,model="gaussian"):
@@ -820,7 +839,7 @@ class LineFittingLibrary:
 			else :
 				return n.array([a0,a0+2.782374,self.dV,self.dV,self.dV,self.dV,continu,continuErr,self.dV,self.dV,self.dV,fd_a0_l,fd_a0_r,self.dV,self.dV]),modNF,header
 		else :
-			print "not enough space to fit the line"
+			#print "not enough space to fit the line"
 			return outPutNF,modNF,header
 
 	def fit_recLine(self,wl,spec1d,err1d,a0,lineName="AL",fitWidth=20,DLC=20,p0_sigma=5.,p0_flux=5e-17,continuumSide="left"):
@@ -878,7 +897,7 @@ class LineFittingLibrary:
 				else :
 					return n.array([a0,self.dV,self.dV,self.dV, self.dV,continu,continuErr,self.dV,fd_a0_l,fd_a0_r,self.dV,self.dV ]),modNF,header
 			else :
-				print "not enough space to fit the line"
+				#print "not enough space to fit the line"
 				return outPutNF,modNF,header
 
 		elif continuumSide=="right" :
@@ -913,6 +932,6 @@ class LineFittingLibrary:
 				else :
 					return n.array([a0,self.dV,self.dV,self.dV, self.dV,continu,continuErr,self.dV,fd_a0_l,fd_a0_r,self.dV,self.dV ]),modNF,header
 			else :
-				print "not enough space to fit the line"
+				#print "not enough space to fit the line"
 				return outPutNF,modNF,header
 

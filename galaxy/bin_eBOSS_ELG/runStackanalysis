@@ -1,0 +1,25 @@
+#!/bin/bash/
+cd $PYSU_DIR/galaxy/bin_eBOSS_ELG
+
+# stacks after the luminosity function from $LFMODELS_DIR
+python stack_spectra_all
+
+# fit firefly stellar population continuum models
+python spm_model_stacks_EBOSS
+
+# fit line model
+python line_model_stacked_EBOSS
+
+# writes to to $SPECTRASTACKS_DIR/model/
+# model files hdus :
+# hdu[0] : header : contains LF information (no data)
+# hdu[1] : stack
+# hdu[2] : stellar population best fit. header contains output parameters
+# hdu[3] : emission line spectrum = stack - firefly continuum model
+# hdu[4] : emissiion line fit to the emission line spectrum
+# hdu[5] : emissiion line fit to the stack
+
+# concatenates results
+python create_master_table
+# computes balmer decrements, line ratios, metallicities ...
+python process_master_table

@@ -7,8 +7,6 @@ The class SpectraStacking is dedicated to stacking spectra
 
 """
 import os 
-#import astropy.cosmology as co
-#cosmo=co.Planck15 # co.FlatLambdaCDM(H0=70,Om0=0.3)
 import astropy.io.fits as fits
 import numpy as n
 from scipy.optimize import curve_fit
@@ -20,7 +18,6 @@ from GalaxySpectrumVIPERS import *
 from GalaxySpectrumVVDS import *
 from MiscellanousFunctionsLibrary import *
 from HandleSdssPlate import *
-#SpectraStacking("/home/comparat/database/DEEP2/products/emissionLineLuminosityFunctions/O2_3728/O2_3728-DEEP2-z0.925.fits")
 
 class SpectraStacking:
 	"""
@@ -175,4 +172,3 @@ class SpectraStacking:
 			outPutFileName = outPutFileName_inter.replace("emissionLineLuminosityFunctions","spectraStacks")
 			os.system('rm '+outPutFileName)
 			thdulist.writeto(outPutFileName)
-

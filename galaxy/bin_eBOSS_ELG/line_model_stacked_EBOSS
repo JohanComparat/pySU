@@ -1,0 +1,30 @@
+#! /usr/bin/env python
+import os
+from os.path import join
+
+from ModelSpectraStacks import *
+import glob
+
+stack_files = n.array(glob.glob(join(os.environ['DATA_DIR'],"ELG-composite", "stacks", "data","*.stack")))
+stack_files.sort()
+fitsList = n.array(glob.glob(join(os.environ['DATA_DIR'],"ELG-composite", "stacks", "fits", "*-SPM-MILES.fits")))
+
+for file in stack_files:
+	print( file )
+	mm=ModelSpectraStacks(file,mode="MILES", eboss_stack=True)
+	#mm.plot_fit()
+	mm.fit_lines_to_fullSpectrum()
+	mm.fit_lines_to_lineSpectrum()
+	#mm.compute_derived_quantities()
+	mm.save_spectrum()
+	#mm.plot_spectrum()
+
+"""
+file="/users/jcomparat/skies_universes_production/spectraStacks/data/O2_3728/O2_3728-DEEP2R24.2-z0.925_stack_N_400_R_8686_L_4.09036870021e+41.fits"
+mm=ModelSpectraStacks(file,mode="MILES")
+#mm.plot_fit()
+
+mm.fit_lines_to_lineSpectrum()
+mm.compute_derived_quantities()
+mm.save_spectrum()
+"""

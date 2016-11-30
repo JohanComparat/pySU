@@ -44,8 +44,9 @@ import astropy.io.fits as fits
 
 from lineListVac import *
 
-allLinesList = n.array([ [Ne3,Ne3_3869,"Ne3_3869","left"], [Ne3,Ne3_3968,"Ne3_3968","left"], [O3,O3_4363,"O3_4363","right"], [O3,O3_4960,"O3_4960","left"], [O3,O3_5007,"O3_5007","right"], [N2,N2_6549,"N2_6549","left"], [N2,N2_6585,"N2_6585","right"], [H1,H1_3970,"H1_3970","right"], [H1,H1_4102,"H1_4102","right"], [H1,H1_4341,"H1_4341","right"], [H1,H1_4862,"H1_4862","left"], [H1,H1_6564,"H1_6564","left"]]) 
+allLinesList = n.array([ [Ne3,Ne3_3869,"Ne3_3869","left"], [Ne3,Ne3_3968,"Ne3_3968","left"], [O3,O3_4363,"O3_4363","right"], [O3,O3_4960,"O3_4960","left"], [O3,O3_5007,"O3_5007","right"], [H1,H1_3970,"H1_3970","right"], [H1,H1_4102,"H1_4102","right"], [H1,H1_4341,"H1_4341","right"], [H1,H1_4862,"H1_4862","left"]]) 
 # other lines that are optional
+# [N2,N2_6549,"N2_6549","left"], [N2,N2_6585,"N2_6585","right"] , [H1,H1_6564,"H1_6564","left"]
 # , [S2,S2_6718,"S2_6718","left"], [S2,S2_6732,"S2_6732","right"], [Ar3,Ar3_7137,"Ar3_7137","left"], [H1,H1_1216,"H1_1216","right"]
 
 doubletList = n.array([[O2_3727,"O2_3727",O2_3729,"O2_3729",O2_mean]])
@@ -87,19 +88,29 @@ class ModelSpectraStacks:
 	:param dV: default value that hold the place (default : -9999.99) 
 	:param N_spectra_limitFraction: If the stack was made with N spectra. N_spectra_limitFraction selects the points that have were computed using more thant N_spectra_limitFraction * N spectra. (default : 0.8)
 	"""
-	def __init__(self, stack_file, mode="MILES", cosmo=cosmo, firefly_min_wavelength= 1000., firefly_max_wavelength=7500., dV=-9999.99, N_spectra_limitFraction=0.8, tutorial = False):
+	def __init__(self, stack_file, mode="MILES", cosmo=cosmo, firefly_min_wavelength= 1000., firefly_max_wavelength=7500., dV=-9999.99, N_spectra_limitFraction=0.8, tutorial = False, eboss_stack = False):
 		self.stack_file = stack_file
 		self.stack_file_base = os.path.basename(stack_file)
 		self.mode = mode
 		self.lineName = os.path.basename(self.stack_file)[:7]
 		self.tutorial = tutorial
+		self.eboss_stack = eboss_stack
+		
 		if self.mode=="MILES":
-			self.stack_model_file = os.path.join( os.environ['SPECTRASTACKS_DIR'], "fits", self.lineName, self.stack_file_base + "-SPM-MILES.fits")
+			self.stack_model_file = join( os.environ['SPECTRASTACKS_DIR'], "fits", self.lineName, self.stack_file_base + "-SPM-MILES.fits")
+			
 		if self.mode=="STELIB":
-			self.stack_model_file = os.path.join( os.environ['SPECTRASTACKS_DIR'], "fits", self.lineName, self.stack_file_base + "-SPM-STELIB.fits")
-		if self.tutorial :
-			self.stack_model_file = os.path.join( os.environ['DATA_DIR'], "ELG-composite", self.stack_file_base + "-SPM-MILES.fits")
+			self.stack_model_file = join( os.environ['SPECTRASTACKS_DIR'], "fits", self.lineName, self.stack_file_base + "-SPM-STELIB.fits")
 
+		if self.tutorial :
+			self.stack_model_file = join( os.environ['DATA_DIR'], "ELG-composite", self.stack_file_base + "-SPM-MILES.fits")
+			
+		if eboss_stack :
+			self.stack_model_file = join(os.environ['DATA_DIR'],"ELG-composite", "stacks", "fits", self.stack_file_base[:-6] + "-SPM-MILES.fits")
+			self.redshift = 0.85
+		else :
+			self.redshift = float(self.stack_file_base.split('-')[2].split('_')[0][1:])
+			
 		self.cosmo = cosmo
 		self.firefly_max_wavelength	= firefly_max_wavelength
 		self.firefly_min_wavelength	= firefly_min_wavelength
@@ -107,12 +118,12 @@ class ModelSpectraStacks:
 		self.side = ''
 		self.N_spectra_limitFraction = N_spectra_limitFraction
 		# define self.sphereCM, find redshift ...
-		self.redshift = float(self.stack_file_base.split('-')[2].split('_')[0][1:])
+		
 		sphere=4*n.pi*( self.cosmo.luminosity_distance(self.redshift) )**2.
 		self.sphereCM=sphere.to(u.cm**2)
-		hdus = fits.open(self.stack_file)
-		self.hdR = hdus[0].header
-		self.hdu1 = hdus[1] # .data
+		self.hdus = fits.open(self.stack_file)
+		self.hdR = self.hdus[0].header
+		self.hdu1 = self.hdus[1] # .data
 		print "Loads the data."
 		#print self.hdu1.data.dtype
 		if self.tutorial :
@@ -132,6 +143,24 @@ class ModelSpectraStacks:
 			self.fl_frac_LineSpectrum=n.array([self.stack(xx)/self.model(xx) for xx in self.wlLineSpectrum])
 			self.flErrLineSpectrum=self.stackErr(self.wlLineSpectrum)
 
+		elif eboss_stack :
+			print self.hdu1.data.dtype
+			wlA,flA,flErrA = self.hdu1.data['wavelength'], self.hdu1.data['meanWeightedStack']*10**(-17), self.hdu1.data['jackknifStackErrors'] * 10**(-17)
+			self.selection = (flA>0) 
+			self.wl,self.fl,self.flErr = wlA[self.selection], flA[self.selection], flErrA[self.selection] 
+			self.stack=interp1d(self.wl,self.fl)
+			self.stackErr=interp1d(self.wl,self.flErr)
+			# loads model :
+			hdus = fits.open(self.stack_model_file)
+			self.hdu2 = hdus[1] # .data
+			self.wlModel,self.flModel = self.hdu2.data['wavelength'], self.hdu2.data['firefly_model']*10**(-17)
+			self.model=interp1d(n.hstack((self.wlModel,[n.max(self.wlModel)+10,11000])), n.hstack(( self.flModel, [n.median(self.flModel[:-20]),n.median(self.flModel[:-20])] )) )
+			# wavelength range common to the stack and the model :
+			self.wlLineSpectrum  = n.arange(n.max([self.stack.x.min(),self.model.x.min()]), n.min([self.stack.x.max(),self.model.x.max()]), 0.5)[2:-1]
+			self.flLineSpectrum=n.array([self.stack(xx)-self.model(xx) for xx in self.wlLineSpectrum])
+			self.fl_frac_LineSpectrum=n.array([self.stack(xx)/self.model(xx) for xx in self.wlLineSpectrum])
+			self.flErrLineSpectrum=self.stackErr(self.wlLineSpectrum)
+			
 		else:
 			wlA,flA,flErrA = self.hdu1.data['wavelength'], self.hdu1.data['meanWeightedStack'], self.hdu1.data['jackknifStackErrors']
 			self.selection = (flA>0) & (self.hdu1.data['NspectraPerPixel']  > float( self.stack_file.split('_')[-5]) * self.N_spectra_limitFraction )
@@ -465,6 +494,9 @@ class ModelSpectraStacks:
 		outFile = n.core.defchararray.replace(outPutFileName, "fits", "model").item()
 		if self.tutorial:
 			outFile = join( os.environ['DATA_DIR'], "ELG-composite", self.stack_file_base[:-5]+".model" ) 
+		if self.eboss_stack:
+			outFile = join(os.environ['DATA_DIR'],"ELG-composite", "stacks", "model", self.stack_file_base[:-6] + ".model.fits") 
+			
 		if os.path.isfile(outFile):
 			os.remove(outFile)
 		

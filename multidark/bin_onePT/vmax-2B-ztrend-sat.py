@@ -37,10 +37,10 @@ limits_40 =  [800, 1400] #max : 2e14
 
 p0 = n.array([-3, 3., 0.3, 1.])
 
-zmin = 0. #-0.01
-zmax = 1.
+zmin = 1. #-0.01
+zmax = 2.3
 
-cos = "cen"
+cos = "sat"
 
 tolerance = 0.06
 
@@ -272,7 +272,7 @@ cb = p.colorbar(shrink=0.8)
 cb.set_label("redshift")
 p.xlabel(r'log$_{10}[V_{max}/(km \; s^{-1})]$')
 p.ylabel(r'log$_{10} [V^3/H^3(z)\; dn(V)/dlnV]$') # log$_{10}[ n(>M)]')
-p.ylim((-3.5,0))
+p.ylim((-5.5,0))
 gl = p.legend(loc=3,fontsize=10)
 gl.set_frame_on(False)
 #p.yscale('log')

@@ -15,7 +15,7 @@ from scipy.optimize import curve_fit
 
 # plotting modules
 import matplotlib
-matplotlib.use('pdf')
+#matplotlib.use('pdf')
 matplotlib.rcParams['font.size']=12
 import matplotlib.pyplot as p
 
@@ -25,9 +25,13 @@ from astropy.cosmology import FlatLambdaCDM
 import astropy.units as u
 cosmo = FlatLambdaCDM(H0=67.77*u.km/u.s/u.Mpc, Om0=0.307115, Ob0=0.048206)
 
+from scipy.interpolate import interp1d
+from scipy.integrate import quad
+
 # Fitting functions
 # velocity function
-vf = lambda v, A, v0, alpha, beta : n.log10( 10**A * (10**v/10**v0)**(-beta) * n.e**(- (10**v/10**v0)**(alpha) ) )
+vf = lambda v, A, v0, alpha, beta : n.log10( 10**A * ( 01.+(10**v/10**v0)**(-beta)) * n.e**(- (10**v/10**v0)**(alpha) ) )
+vf_ps = lambda v, ps : vf( v, ps[0], ps[1], ps[2], ps[3])
 """
 # sheth and tormen function
 fnu_ST = lambda nu, A, a, p: A * (2./n.pi)**(0.5) * (a*nu) * ( 1 + (a * nu) **(-2.*p) ) * n.e**( -( a * nu )**2. / 2.) 
@@ -54,7 +58,7 @@ log_fsigma_T08_ps = lambda logsigma, ps : log_fsigma_T08(logsigma, ps[0], ps[1],
 
 delta_c = 1.686
 sigma = n.arange(0.05,10,0.05)
-X = n.arange(-0.6, 0.4, 0.01) #n.log10(1./sigma)
+X = n.arange(-0.6, 0.5, 0.01) #n.log10(1./sigma)
 sigma = 10**-X 
 
 f_dsp_nu = lambda nu, A, a, p: A* (a / (nu * 2 * n.pi))**(0.5) * ( 1 + 1. / (a*nu) **p ) * n.e**( - a * nu / 2.)
@@ -68,6 +72,8 @@ f_dsp = lambda sigma, A, a, p: A * ((2. * a * (delta_c/sigma)**2.) / (  n.pi))**
 f_T08 = lambda sigma, A, a, b, c : A*( (sigma/b)**(-a) + 1 )*n.e**(-c/sigma**2.)
 f_ST = lambda sigma, A, a, p: A* (2*a/n.pi)**0.5 * ( 1 + (delta_c**2./(a*sigma**2.))**(p) )*(delta_c/sigma)*n.e**(-a*delta_c**2./(2.*sigma**2.))
 f_BH = lambda sigma, A, a, p, q: A* (2./n.pi)**0.5 * ( 1 + (sigma**2./(a**delta_c*2.))**(p) )*(delta_c*a**0.5/sigma)**(q)*n.e**(-a*delta_c**2./(2.*sigma**2.))
+b_BH = lambda sigma, a, p, q:  1 + (a*(delta_c/sigma)**2. - q) / delta_c + (2*p/delta_c)/(1 + (a*(delta_c/sigma)**2.))**p
+
 
 """
 M200c
@@ -81,8 +87,8 @@ ftST01 = f_ST(sigma, 0.3222, 0.707, 0.3)
 ftC16 = f_T08(sigma, 0.12, 1.19, 3.98, 1.35)
 ftC16st = f_dsp(sigma, 0.2906, 0.8962, 0.1935 )
 """
-ftC16 = f_T08(sigma, 0.12, 1.19, 3.98, 1.35)
-ftC16st = f_dsp(sigma, 0.2906, 0.8962, 0.1935 )
+ftC16 = f_BH(sigma, 0.279, 0.908, 0.671, 1.737)
+ftC16st = f_dsp(sigma, 0.317, 0.819, 0.113)
 
 ftD16 = f_dsp(sigma, 0.333, 0.794, 0.247 )
 ftRP16 = f_T08 (sigma, 0.144, 1.351, 3.113, 1.187)
@@ -92,10 +98,11 @@ ftST02 = f_ST(sigma, 0.3222, 0.75, 0.3)
 ftBH11 = f_BH(sigma, 0.333, 0.788, 0.807, 1.795)
 
 
+
 # MULTIDARK TABLE GENERIC FUNCTIONS
 mSelection = lambda data, qty, logNpmin : (data["log_"+qty]>data["logMpart"]+logNpmin)
-#, limits_04, limits_10, limits_25, limits_40
-#((data["boxLength"]==400.)&(data["log_"+qty+"_min"]>limits_04[0]) &(data["log_"+qty+"_max"]<limits_04[1])) | ((data["boxLength"]==1000.)&(data["log_"+qty+"_min"]>limits_10[0]) &(data["log_"+qty+"_max"]<limits_10[1])) |  ((data["boxLength"]==2500.)&(data["log_"+qty+"_min"]>limits_25[0]) &(data["log_"+qty+"_max"]<limits_25[1])) |  ((data["boxLength"]==4000.)&(data["log_"+qty+"_min"]>limits_40[0])&(data["log_"+qty+"_max"]<limits_40[1])) 
+
+vSelection = lambda data, qty, limits_04, limits_10, limits_25, limits_40 : ((data["boxLengthComoving"]==400.)&(data[qty+"_min"]>limits_04[0]) &(data[qty+"_max"]<limits_04[1])) | ((data["boxLengthComoving"]==1000.)&(data[qty+"_min"]>limits_10[0]) &(data[qty+"_max"]<limits_10[1])) |  ((data["boxLengthComoving"]==2500.)&(data[qty+"_min"]>limits_25[0]) &(data[qty+"_max"]<limits_25[1])) |  ((data["boxLengthComoving"]==4000.)&(data[qty+"_min"]>limits_40[0])&(data[qty+"_max"]<limits_40[1])) 
 
 zSelection = lambda data, zmin, zmax : (data["redshift"]>zmin)&(data["redshift"]<zmax)
 
@@ -124,11 +131,12 @@ def plot_mvir_function_data(log_mvir, logsigM1, logNu, log_MF, log_MF_c, redshif
 	sigs = n.arange(-0.5,.6, 0.01)
 	#p.plot(X, n.log10(ftT08), 'k--', label='T08', lw=2)
 	p.plot(X, n.log10(ftD16), 'k--', label='D16', lw=2)
-	#p.plot(X, n.log10(ftBH11), 'r--', label='B11', lw=2)
+	p.plot(X, n.log10(ftBH11), 'g--', label='B11', lw=2)
+	#p.plot(X, n.log10(ftC16), 'r--', label='this work', lw=2)
 	p.xlabel(r'$ln(\sigma^{-1})$')
 	p.ylabel(r'$\log_{10}\left[ \frac{M}{\rho_m} \frac{dn}{d\ln M} \left|\frac{d\ln M }{d\ln \sigma}\right|\right] $') 
 	 # log$_{10}[ n(>M)]')
-	gl = p.legend(loc=3,fontsize=10)
+	gl = p.legend(loc=0,fontsize=10)
 	gl.set_frame_on(False)
 	p.ylim((-3.5,0))
 	p.grid()
@@ -147,7 +155,7 @@ def plot_mvir_function_data(log_mvir, logsigM1, logNu, log_MF, log_MF_c, redshif
 	p.xlabel(r'$ln(\nu)$')
 	p.ylabel(r'$\log_{10}\left[ \frac{M}{\rho_m} \frac{dn}{d\ln M} \left|\frac{d\ln M }{d\ln \sigma}\right|\right] $') 
 	 # log$_{10}[ n(>M)]')
-	gl = p.legend(loc=3,fontsize=10)
+	gl = p.legend(loc=0,fontsize=10)
 	gl.set_frame_on(False)
 	p.ylim((-3.5,0))
 	p.xlim((-0.3, 0.8))
@@ -164,7 +172,7 @@ def plot_mvir_function_data(log_mvir, logsigM1, logNu, log_MF, log_MF_c, redshif
 	p.xlabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
 	p.ylabel(r'log$_{10} (M^2/\rho_m) dn(M)/dM$') 
 	 # log$_{10}[ n(>M)]')
-	gl = p.legend(loc=3,fontsize=10)
+	gl = p.legend(loc=0,fontsize=10)
 	gl.set_frame_on(False)
 	p.ylim((-4.5,-1))
 	p.xlim((9.5,16))
@@ -181,7 +189,7 @@ def plot_mvir_function_data(log_mvir, logsigM1, logNu, log_MF, log_MF_c, redshif
 	p.xlabel(r'$ln(\sigma^{-1})$')
 	p.ylabel(r'log$_{10} (M^2/\rho_m) dn(M)/dM$') 
 	 # log$_{10}[ n(>M)]')
-	gl = p.legend(loc=3,fontsize=10)
+	gl = p.legend(loc=0,fontsize=10)
 	gl.set_frame_on(False)
 	p.ylim((-4.5,-1))
 	p.grid()
@@ -196,7 +204,7 @@ def plot_mvir_function_data(log_mvir, logsigM1, logNu, log_MF, log_MF_c, redshif
 	cb.set_label("redshift")
 	p.xlabel(r'log$_{10}[M_{vir}/(h^{-1}M_\odot)]$')
 	p.ylabel(r'log$_{10} (M^2/\rho_m) n(>M)$') 
-	gl = p.legend(loc=3,fontsize=10)
+	gl = p.legend(loc=0,fontsize=10)
 	gl.set_frame_on(False)
 	p.ylim((-4.5,-1))
 	p.xlim((9.5,16))
@@ -223,7 +231,7 @@ def plot_mvir_function_data_perBox(log_mvir, log_VF, MD04, MD10, MD25, MD25NW, M
 	p.plot(log_mvir[MD40NW], log_VF[MD40NW],marker='x',label="MD40NW",ls='')
 	p.xlabel(r'log$_{10}[M_{vir}/(M_\odot)]$')
 	p.ylabel(r'$\log_{10}\left[ \frac{M}{\rho_m} \frac{dn}{d\ln M} \left|\frac{d\ln M }{d\ln \sigma}\right|\right] $') 
-	gl = p.legend(loc=3,fontsize=10)
+	gl = p.legend(loc=0,fontsize=10)
 	gl.set_frame_on(False)
 	p.ylim((-4.5,0))
 	p.xlim((9.5,16))
@@ -284,7 +292,7 @@ def plot_mvir_function_data_error(log_mvir, error, redshift, label, zmin, zmax, 
 	cb.set_label("redshift")
 	p.xlabel(r'log$_{10}[V_{max}/(km \; s^{-1})]$')
 	p.ylabel(r'JK relative error [%]') 
-	gl = p.legend(loc=3,fontsize=10)
+	gl = p.legend(loc=0,fontsize=10)
 	gl.set_frame_on(False)
 	p.ylim((2e-2,30))
 	#p.xlim((1.5, 3.5))
@@ -507,7 +515,7 @@ def plot_vmax_function_data_error(log_vmax, error, redshift, label, zmin, zmax, 
 	cb.set_label("redshift")
 	p.xlabel(r'log$_{10}[V_{max}/(km \; s^{-1})]$')
 	p.ylabel(r'JK relative error [%]') 
-	gl = p.legend(loc=3,fontsize=10)
+	gl = p.legend(loc=0,fontsize=10)
 	gl.set_frame_on(False)
 	p.ylim((2e-2,30))
 	#p.xlim((1.5, 3.5))
@@ -535,8 +543,8 @@ def plot_vmax_function_data(log_vmax, log_VF, log_VF_c, redshift, zmin, zmax, co
 	cb = p.colorbar(shrink=0.8)
 	cb.set_label("redshift")
 	p.xlabel(r'log$_{10}[V_{max}/(km \; s^{-1})]$')
-	p.ylabel(r'log$_{10} [(V^3/H^3(z)\; dn(V)/dlnV]$') # log$_{10}[ n(>M)]')
-	gl = p.legend(loc=3,fontsize=10)
+	p.ylabel(r'log$_{10} [V^3/H^3(z)\; dn(V)/dlnV]$') # log$_{10}[ n(>M)]')
+	gl = p.legend(loc=0,fontsize=10)
 	gl.set_frame_on(False)
 	p.ylim((-5.5,0))
 	#p.xlim((1.5, 3.5))
@@ -553,7 +561,7 @@ def plot_vmax_function_data(log_vmax, log_VF, log_VF_c, redshift, zmin, zmax, co
 	cb.set_label("redshift")
 	p.xlabel(r'log$_{10}[V_{max}/(km \; s^{-1})]$')
 	p.ylabel(r'log$_{10} [V^3/H^3(z)\; n(>V)]$') # log$_{10}[ n(>M)]')
-	gl = p.legend(loc=3,fontsize=10)
+	gl = p.legend(loc=0,fontsize=10)
 	gl.set_frame_on(False)
 	#p.ylim((-8,1))
 	#p.xlim((1.5, 3.5))
@@ -581,7 +589,7 @@ def plot_vmax_function_data_perBox(log_vmax, log_VF, log_VF_c, MD04, MD10, MD25,
 	p.plot(log_vmax[MD40NW], log_VF[MD40NW],marker='x',label="MD40NW",ls='')
 	p.xlabel(r'log$_{10}[V_{max}/(km \; s^{-1})]$')
 	p.ylabel(r'log$_{10} [(V^3/H^3(z)\; dn(V)/dlnV]$') # log$_{10}[ n(>M)]')
-	gl = p.legend(loc=3,fontsize=10)
+	gl = p.legend(loc=0,fontsize=10)
 	gl.set_frame_on(False)
 	#p.ylim((-8,1))
 	#p.xlim((1.5, 3.5))
@@ -590,7 +598,7 @@ def plot_vmax_function_data_perBox(log_vmax, log_VF, log_VF_c, MD04, MD10, MD25,
 	p.savefig(join(dir,"vmax-"+figName+cos+"-differential-function-data-perBox.png"))
 	p.clf()
 
-def fit_vmax_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, cos = "cen", mode = "curve_fit", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'vmax')):
+def fit_vmax_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, cos = "cen", mode = "curve_fit", dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'vmax'), suffix='0'):
 	"""
 	Fits a function to the vmax data
 	:param data: data table of the selected points for the fit
@@ -606,32 +614,34 @@ def fit_vmax_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, co
 	:return: result of the fit: best parameter array and covariance matrix
 	produces a plot of the residuals
 	"""
+	chi2fun = lambda ps : n.sum( (vf_ps(x_data, ps) - y_data)**2. / (y_err)**2. )/(len(y_data) - len(ps))
 	if mode == "curve_fit":
 		print "mode: curve_fit"
-		pOpt, pCov=curve_fit(vf, x_data, y_data, p0, y_err, maxfev=500000)#, bounds=boundaries)
+		pOpt, pCov=curve_fit(vf, x_data, y_data, p0, y_err, maxfev=500000000)#, bounds=boundaries)
 		print "best params=",pOpt[0], pOpt[1], pOpt[2], pOpt[3]
 		print "err=",pCov[0][0]**0.5, pCov[1][1]**0.5, pCov[2][2]**0.5, pCov[3][3]**0.5
+		print "Rchi2, ndof, chi2", chi2fun(pOpt), len(x_data)-len(pOpt), chi2fun(pOpt)*( len(x_data)-len(pOpt) ) 
 		
 	if mode == "minimize":
 		print "mode: minimize"
-		chi2fun = lambda ps : n.sum( (vf(x_data, ps) - y_data)**2. / (y_err)**2. )/(len(y_data) - len(ps))
 		res = minimize(chi2fun, p0, method='Powell',options={'xtol': 1e-8, 'disp': True, 'maxiter' : 5000000000000})
 		pOpt = res.x
 		pCov = res.direc
 		print "best params=",pOpt[0], pOpt[1], pOpt[2], pOpt[3]
 		print "err=",pCov[0][0]**0.5, pCov[1][1]**0.5, pCov[2][2]**0.5, pCov[3][3]**0.5
+		print "Rchi2, ndof, chi2", chi2fun(pOpt), len(x_data)-len(pOpt), chi2fun(pOpt)*( len(x_data)-len(pOpt) ) 
 		
 	x_model = n.arange(n.min(x_data),n.max(x_data),0.005)
 	y_model = vf(x_model, pOpt[0], pOpt[1], pOpt[2], pOpt[3])
 	n.savetxt(join(dir,"vmax-"+cos+"-differential-function-z0-model-pts.txt"),n.transpose([x_model, y_model]) )
-	outfile=open(join(dir,"vmax-"+cos+"-diff-function-z0-params.pkl"), 'w')
+	outfile=open(join(dir,"vmax-"+cos+"-diff-function-params-"+suffix+".pkl"), 'w')
 	cPickle.dump([pOpt, pCov], outfile)
 	outfile.close()
 			
 	f_diff =  y_data - vf(x_data, pOpt[0], pOpt[1], pOpt[2], pOpt[3])
 	
 	MD_sel_fun=lambda name : (data["boxName"]==name)
-	MDnames= n.array(['MD_0.4Gpc', 'MD_1Gpc', 'MD_2.5Gpc','MD_4Gpc','MD_2.5GpcNW','MD_4GpcNW'])
+	MDnames= n.array(['MD_0.4Gpc', 'MD_1Gpc', 'MD_2.5Gpc', 'MD_4Gpc', 'MD_2.5GpcNW', 'MD_4GpcNW'])
 	MDsels=n.array([MD_sel_fun(name) for name in MDnames])
 	
 	f_diff_fun = lambda MDs:  y_data[MDs] - vf(x_data[MDs], pOpt[0], pOpt[1], pOpt[2], pOpt[3])
@@ -656,7 +666,7 @@ def fit_vmax_function_z0(data, x_data, y_data , y_err, p0, 	tolerance = 0.03, co
 	gl = p.legend(loc=0,fontsize=10)
 	gl.set_frame_on(False)
 	#p.xlim((-0.7,0.6))
-	#p.ylim((-0.05,0.05))
+	p.ylim((0.8,1.2))
 	#p.yscale('log')
 	p.grid()
 	p.savefig(join(dir,"vmax-"+cos+"-differential-function-fit-residual-log.png"))
@@ -723,9 +733,11 @@ def get_basic_info(fileC, boxZN, delta_wrt='mean'):
 		conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
 		boxRedshift =  conversion[boxZN] 
 		hf = get_hf(0.8228*0.953**0.5, boxRedshift, delta_wrt=delta_wrt)
+		# hf_ref = get_hf(0.8228, boxRedshift, delta_wrt=delta_wrt)
 		logmp = n.log10(9.63 * 10**7/cosmo.h)
 		boxLength = 400./cosmo.h/cosmo.efunc(boxRedshift)
 		massCorrection = 1. - 0.0002
+		boxLengthComoving = 400.
 		
 	elif fileC.find('MD_1Gpc')>0 :
 		boxName='MD_1Gpc'
@@ -734,9 +746,11 @@ def get_basic_info(fileC, boxZN, delta_wrt='mean'):
 		boxRedshift =  conversion[boxZN] 
 		#boxRedshift = 1./boxZN - 1.
 		hf = get_hf(0.8228*1.004**0.5, boxRedshift, delta_wrt=delta_wrt)
+		# hf_ref = get_hf(0.8228, boxRedshift, delta_wrt=delta_wrt)
 		logmp = n.log10(1.51 * 10**9/cosmo.h)
 		boxLength = 1000./cosmo.h/cosmo.efunc(boxRedshift)
 		massCorrection = 1. - 0.0005
+		boxLengthComoving = 1000.
 
 	elif fileC.find('MD_2.5GpcNW')>0 :
 		boxName='MD_2.5GpcNW'
@@ -744,10 +758,12 @@ def get_basic_info(fileC, boxZN, delta_wrt='mean'):
 		conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
 		boxRedshift =  conversion[boxZN] 
 		hf = get_hf(0.8228*1.01**0.5, boxRedshift, delta_wrt=delta_wrt)
+		# hf_ref = get_hf(0.8228, boxRedshift, delta_wrt=delta_wrt)
 		hz = 1.# hf.cosmo.H( boxRedshift ).value / 100.
 		logmp = n.log10(2.359 * 10**10/cosmo.h )
 		boxLength = 2500./cosmo.h/cosmo.efunc(boxRedshift)
 		massCorrection = 1. - 0.001
+		boxLengthComoving = 2500.
 
 	elif fileC.find('MD_4GpcNW')>0 :
 		boxName='MD_4GpcNW'
@@ -755,9 +771,11 @@ def get_basic_info(fileC, boxZN, delta_wrt='mean'):
 		conversion = dict(n.transpose([ nSN, redshift40 ]))
 		boxRedshift =  conversion[boxZN] 
 		hf = get_hf(0.8228*1.008**0.5, boxRedshift, delta_wrt=delta_wrt)
+		# hf_ref = get_hf(0.8228, boxRedshift, delta_wrt=delta_wrt)
 		hz = 1.# hf.cosmo.H( boxRedshift ).value / 100. 
 		logmp = n.log10(9.6 * 10**10/cosmo.h )
 		boxLength = 4000./cosmo.h/cosmo.efunc(boxRedshift)
+		boxLengthComoving = 4000.
 		massCorrection = 1. - 0.003
 	
 	elif fileC.find('MD_2.5Gpc')>0 :
@@ -766,9 +784,11 @@ def get_basic_info(fileC, boxZN, delta_wrt='mean'):
 		conversion = dict(n.transpose([ nSN, redshift25 ]))
 		boxRedshift =  conversion[boxZN] 
 		hf = get_hf(0.8228*1.01**0.5, boxRedshift, delta_wrt=delta_wrt)
+		# hf_ref = get_hf(0.8228, boxRedshift, delta_wrt=delta_wrt)
 		hz = 1.# hf.cosmo.H( boxRedshift ).value / 100.
 		logmp = n.log10(2.359 * 10**10/cosmo.h)
 		boxLength = 2500./cosmo.h/cosmo.efunc(boxRedshift)
+		boxLengthComoving = 2500.
 		massCorrection = 1. - 0.001
 
 	elif fileC.find('MD_4Gpc')>0 :
@@ -777,13 +797,14 @@ def get_basic_info(fileC, boxZN, delta_wrt='mean'):
 		conversion = dict(n.transpose([ nSN, redshift40 ]))
 		boxRedshift =  conversion[boxZN] 
 		hf = get_hf(0.8228*1.008**0.5, boxRedshift, delta_wrt=delta_wrt)
+		# hf_ref = get_hf(0.8228, boxRedshift, delta_wrt=delta_wrt)
 		hz = 1.# hf.cosmo.H( boxRedshift ).value / 100.
 		logmp = n.log10(9.6 * 10**10 /cosmo.h )
 		boxLength = 4000./cosmo.h/cosmo.efunc(boxRedshift)
+		boxLengthComoving = 4000.
 		massCorrection = 1. - 0.003
 	
-	boxLengthComoving = boxLength * cosmo.efunc(boxRedshift)
-	return hf, boxLength, boxName, boxRedshift, logmp, boxLengthComoving, massCorrection
+	return hf, boxLength, boxName, boxRedshift, logmp, boxLengthComoving, massCorrection, 
 
 def convert_pkl_mass(fileC, fileS, binFile, qty='mvir', delta_wrt='mean'):
 	"""
@@ -887,7 +908,8 @@ def convert_pkl_mass(fileC, fileS, binFile, qty='mvir', delta_wrt='mean'):
 	thdulist.writeto(writeName)
 	#return hf
 
-def convert_pkl_velocity(fileC, fileS, binFile, zList_files, qty='vmax'):
+
+def convert_pkl_velocity(fileC, fileS, binFile, qty='vmax'):
 	"""
 	:param qty: one point function variable. Default vmax.
 	:param fileC: file with the central halo statistics
@@ -896,58 +918,33 @@ def convert_pkl_velocity(fileC, fileS, binFile, zList_files, qty='vmax'):
 	:param zList_files: list of file with linking snapshot number and redshift
 	:return: a fits table containing the one point function histograms
 	"""
-	print fileC.split('/')[6]
-	boxName = fileC.split('/')[6]
-	boxZN = float(fileC.split('/')[-1].split('_')[1])
+	print "qty", qty
+	boxZN = float(os.path.basename(fileC).split('_')[1])
+	print boxZN
+	extraName =  os.path.basename(fileS)[:-27]
+	hf, boxLength, boxName, boxRedshift, logmp, boxLengthComoving, massCorrection = get_basic_info(fileC, boxZN, delta_wrt='mean')
+	
 	bins = n.loadtxt(binFile)
-	#10**n.arange(0,3.5,0.01)
-	dX = ( bins[1:]  - bins[:-1] ) #* n.log(10)
-	dlnbin = dX / (( bins[1:]  + bins[:-1] )/2.)
-	print boxName
-	if boxName=='MD_0.4Gpc' :
-		boxLength = 400.
-		boxRedshift = 1./boxZN - 1.
-		logmp = n.log10(9.63 * 10**7)
-		
-	if boxName=='MD_1Gpc' :
-		boxLength = 1000.
-		boxRedshift = 1./boxZN - 1.
-		logmp = n.log10(1.51 * 10**9)
-
-	if boxName=='MD_2.5Gpc' :
-		boxLength = 2500.
-		nSN, aSN = n.loadtxt(zList_files[2], unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
-		conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
-		boxRedshift =  conversion[boxZN] 
-		logmp = n.log10(2.359 * 10**10)
-
-	if boxName=='MD_4Gpc' :
-		boxLength = 4000.
-		nSN, aSN = n.loadtxt(zList_files[3], unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
-		conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
-		boxRedshift =  conversion[boxZN] 
-		logmp = n.log10(9.6 * 10**10)
-
-	if boxName=='MD_2.5GpcNW' :
-		boxLength = 2500.
-		nSN, aSN = n.loadtxt(zList_files[4], unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
-		conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
-		boxRedshift =  conversion[boxZN] 
-		logmp = n.log10(2.359 * 10**10)
-
-	if boxName=='MD_4GpcNW' :
-		boxLength = 4000.
-		nSN, aSN = n.loadtxt(zList_files[5], unpack=True, dtype={'names': ('nSN', 'aSN'), 'formats': ('i4', 'f4')})
-		conversion = dict(n.transpose([ nSN, 1/aSN-1 ]))
-		boxRedshift =  conversion[boxZN] 
-		logmp = n.log10(9.6 * 10**10)
-
+	vmax = ( bins[1:]  + bins[:-1] )/2.
+	dX = ( bins[1:]  - bins[:-1] ) 
+	dlnbin = dX / vmax
+	
+	hz = cosmo.H( boxRedshift ).value / 100.
+	rhom_units = cosmo.Om(boxRedshift)*cosmo.critical_density(boxRedshift).to(u.solMass/(u.Mpc)**3.)#/(cosmo.h)**2.
+	# in units (Msun/h) / (Mpc/h)**3
+	rhom = rhom_units.value 
+	
 	col0 = fits.Column( name="boxName",format="14A", array= n.array([boxName for i in range(len(bins[:-1]))]))
-	col1 = fits.Column( name="log_"+qty+"_min",format="D", array= bins[:-1] )
-	col2 = fits.Column( name="log_"+qty+"_max",format="D", array= bins[1:] )
-	col3 = fits.Column( name="redshift",format="D", array= boxRedshift * n.ones_like(bins[:-1]) )
-	col4 = fits.Column( name="boxLength",format="D", array= boxLength * n.ones_like(bins[:-1]) )
-	col4_2 = fits.Column( name="Mpart",format="D", array=  logmp* n.ones_like(bins[:-1]) )
+	col1 = fits.Column( name="redshift",format="D", array= boxRedshift * n.ones( len(bins[:-1]) ) )
+	col1b = fits.Column( name="h",format="D", array= hz * n.ones( len(bins[:-1]) ) )
+	col2a = fits.Column( name="boxLengthProper",format="D", array= boxLength * n.ones( len(bins[:-1]) ) )
+	col2b = fits.Column( name="boxLengthComoving",format="D", array= boxLengthComoving * n.ones( len(bins[:-1]) ) )
+	col3 = fits.Column( name="logMpart",format="D", array=  logmp* n.ones( len(bins[:-1]) ) )
+	col4 = fits.Column( name="rhom",format="D", array= rhom* n.ones( len(bins[:-1]) ) )
+
+	col5_0 = fits.Column( name=qty+"_min",format="D", array= bins[:-1] )
+	col5_1 = fits.Column( name=qty+"_max",format="D", array= bins[1:] )
+	col5_2 = fits.Column( name=qty, format="D", array= vmax)
 
 	unitVolume =  (boxLength*0.10)**3.
 	volume = (boxLength)**3.
@@ -958,10 +955,10 @@ def convert_pkl_velocity(fileC, fileS, binFile, zList_files, qty='vmax'):
 	col6 = fits.Column( name="dN_counts_cen_c",format="D", array= Ncounts_c)
 	col7 = fits.Column( name="dNdV_cen",format="D", array= Nall )
 	col8 = fits.Column( name="dNdV_cen_c",format="D", array= Nall_c )
-	col9 = fits.Column( name="dNdlnM_cen",format="D", array= Nall/dlnbin )
-	col10 = fits.Column( name="dNdlnM_cen_c",format="D", array= Nall_c/dlnbin )
+	col9 = fits.Column( name="dNdVdlnV_cen",format="D", array= Nall/dlnbin )
+	col10 = fits.Column( name="dNdVdlnV_cen_c",format="D", array= Nall_c/dlnbin )
 	col11 = fits.Column( name="std90_pc_cen",format="D", array= std90 )
-	col12 = fits.Column( name="std90_pc_cen_c",format="D", array= std90_c )
+	col12 = fits.Column( name = "std90_pc_cen_c", format="D", array= std90_c )
 
 	Ncounts, Ncounts_c, Nall, Nall_c, mean90, std90, mean90_c, std90_c = getStat(fileS,volume,unitVolume)
 
@@ -969,15 +966,62 @@ def convert_pkl_velocity(fileC, fileS, binFile, zList_files, qty='vmax'):
 	col6_s = fits.Column( name="dN_counts_sat_c",format="D", array= Ncounts_c)
 	col7_s = fits.Column( name="dNdV_sat",format="D", array= Nall )
 	col8_s = fits.Column( name="dNdV_sat_c",format="D", array= Nall_c )
-	col9_s = fits.Column( name="dNdlnM_sat",format="D", array= Nall/dlnbin )
-	col10_s = fits.Column( name="dNdlnM_sat_c",format="D", array= Nall_c / dlnbin )
+	col9_s = fits.Column( name="dNdVdlnV_sat",format="D", array= Nall/dlnbin )
+	col10_s = fits.Column( name="dNdVdlnV_sat_c",format="D", array= Nall_c / dlnbin )
 	col11_s = fits.Column( name="std90_pc_sat",format="D", array= std90 )
-	col12_s = fits.Column( name="std90_pc_sat_c",format="D", array= std90_c )
+	col12_s = fits.Column( name="std90_pc_sat_c",format="D", array= std90_c)
 
+	tbhdu = fits.BinTableHDU.from_columns([col0, col1,col1b, col2a, col2b, col3, col4, col5_0, col5_1, col5_2, col5, col6, col7, col8, col9, col10, col11, col12, col5_s, col6_s, col7_s, col8_s, col9_s, col10_s, col11_s, col12_s])
 
-	hdu2 = fits.BinTableHDU.from_columns([col0, col1, col2, col3, col4, col4_2, col5, col6, col7, col8, col9, col10, col11, col12, col5_s, col6_s, col7_s, col8_s, col9_s, col10_s, col11_s, col12_s])
-	
+	prihdr = fits.Header()
+	prihdr['AUTHOR'] = 'J. Comparat'
+	prihdr['DATE'] = time.time()
+	prihdu = fits.PrimaryHDU(header=prihdr)
+	thdulist = fits.HDUList([prihdu, tbhdu])
+
 	writeName = join(os.environ['MULTIDARK_LIGHTCONE_DIR'], qty, "data", boxName+"_"+str(boxRedshift)+"_"+qty+".fits")
-	os.system("rm -rf "+ writeName)
-	hdu2.writeto(writeName)
+	if os.path.isfile(writeName):
+		os.remove(writeName)
+	
+	thdulist.writeto(writeName)
 
+
+redshift = 0.
+hmf = get_hf(sigma_val=0.8228, boxRedshift=0., delta_wrt='mean')
+ks = hmf.k
+pks = hmf.power
+hmf.rho_gtm
+nbar = interp1d(hmf.sigma, hmf.rho_gtm/hmf.m) # dndlog10m*hmf.dlog10m)
+shot_noise = lambda sigma, volume : (nbar(sigma) * volume)**(-1.)
+meanDensity = (3840.**3.)*1.51 # (Msun/h) / (Mpc/h)**3
+
+def integral(fun):
+	xmin = n.log10(fun.x.min())
+	xmax = n.log10(fun.x.max())
+	innerbounds = n.arange(xmin, xmax,1)[1:]
+	bounds = n.hstack((xmin, innerbounds, xmax))
+	out = n.empty(len(innerbounds)+1)
+	out_err = n.empty(len(innerbounds)+1)
+	for ii in range(len(innerbounds)+1):
+		out[ii], out_err[ii] = quad(fun, 10**bounds[ii], 10**bounds[ii+1])
+		 
+	return n.sum(out), n.sum(out_err)
+		
+# window function, 
+# -------------------
+# tophat
+w_th = lambda k, r : 3*(n.sin(k*r) - (k*r) * n.cos(k*r) )/(k*r)**3.
+
+# computes the moments of the linear pk
+# ---------------------------------------------
+Lboxes = n.array([400., 1000., 2500., 4000.]) # Mpc/h
+volumes = Lboxes**3.
+rboxes = (3. * volumes/(4.*n.pi))**(1./3.)
+
+sigs = []
+for rbox in rboxes:
+	ws_th = w_th(ks, rbox)**2.
+	fun = interp1d(ks, ws_th * pks/(2*n.pi**2.)**3.)
+	sigs.append(integral(fun))
+
+covariance_factor = n.transpose(sigs)[0]

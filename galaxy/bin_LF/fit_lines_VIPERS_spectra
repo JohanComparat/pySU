@@ -11,8 +11,8 @@ from os.path import join
 survey = gs.GalaxySurveyVIPERS(redshift_catalog="VIPERS_W14_summary_v2.fits")
 
 # global parameters to add to the survey class
-survey.zmin = 0.5 # minimum redshift considered
-survey.zmax = 1.4 # maximum redshift considered
+survey.zmin = 0.001 # 0.5 # minimum redshift considered
+survey.zmax = 1.4 # 1.4 # maximum redshift considered
 survey.WLmin = 5800. # lambda min
 survey.WLmax = 9200. # lambda max of the spectrum
 survey.resolution = 200. # resolution of the Keck deimos setting used
@@ -21,8 +21,10 @@ survey.Ngalaxies=len(survey.catalog)
 
 # line list to be fitted
 from lineListAir import *
-lineList = n.array([ [O2, O2_mean, "O2_3728", "left"], [Ne3,Ne3_3869,"Ne3_3869","left"], [O3,O3_4363,"O3_4363","right"], [O3,O3_4960,"O3_4960","left"], [O3,O3_5007,"O3_5007","right"], [N2,N2_6549,"N2_6549","left"], [N2,N2_6585,"N2_6585","right"], [S2,S2_6718,"S2_6718","left"], [S2,S2_6732,"S2_6732","right"]])
-recLineList = n.array([[H1,H1_3970,"H1_3970","right"],[H1,H1_4102,"H1_4102","right"],[H1,H1_4341,"H1_4341","right"],[H1,H1_4862,"H1_4862","left"],[H1,H1_6564,"H1_6564","left"]])
+lineList = n.array([ [O2, O2_mean, "O2_3728", "left"], [O3,O3_5007,"O3_5007","right"], [H1,H1_4862,"H1_4862","left"], [H1,H1_6564,"H1_6564","left"] ])
+
+#, [Ne3,Ne3_3869,"Ne3_3869","left"], [O3,O3_4363,"O3_4363","right"], [O3,O3_4960,"O3_4960","left"], [O3,O3_5007,"O3_5007","right"], [N2,N2_6549,"N2_6549","left"], [N2,N2_6585,"N2_6585","right"], [S2,S2_6718,"S2_6718","left"], [S2,S2_6732,"S2_6732","right"]])
+# recLineList = n.array([[H1,H1_3970,"H1_3970","right"],[H1,H1_4102,"H1_4102","right"],[H1,H1_4341,"H1_4341","right"],[H1,H1_4862,"H1_4862","left"],[H1,H1_6564,"H1_6564","left"]])
 #doubletList = n.array([[O2_3727,"O2_3727",O2_3729,"O2_3729",O2_mean]])
 
 # import the fitting routines
@@ -34,14 +36,15 @@ import GalaxySpectrumVIPERS as gsp
 
 # construct a magnitude array T05 updated to T07 when possible.
 # first loads the filter list
+
 from filterList import *
 
-mag0=n.zeros(survey.Ngalaxies)
-mag1=n.zeros(survey.Ngalaxies)
+#mag0=n.zeros(survey.Ngalaxies)
+#mag1=n.zeros(survey.Ngalaxies)
 mag2=n.zeros(survey.Ngalaxies)
 mag3=n.zeros(survey.Ngalaxies)
-mag4=n.zeros(survey.Ngalaxies)
-
+#mag4=n.zeros(survey.Ngalaxies)
+"""
 mCFHT07=(survey.catalog['u_T07']>12.)&(survey.catalog['u_T07']<29.)
 mCFHT05=(survey.catalog['u']>12.)&(survey.catalog['u']<29.)&(mCFHT07==False)
 mNoPhot=(mCFHT05==False)&(mCFHT07==False)
@@ -55,7 +58,7 @@ mNoPhot=(mCFHT05==False)&(mCFHT07==False)
 mag1[mCFHT07]=survey.catalog['g_T07'][mCFHT07]
 mag1[mCFHT05]=survey.catalog['g'][mCFHT05]
 mag1[mNoPhot]=n.ones_like(survey.catalog['g'][mNoPhot])*lfit.dV
-
+"""
 mCFHT07=(survey.catalog['r_T07']>12.)&(survey.catalog['r_T07']<29.)
 mCFHT05=(survey.catalog['r']>12.)&(survey.catalog['r']<29.)&(mCFHT07==False)
 mNoPhot=(mCFHT05==False)&(mCFHT07==False)
@@ -67,7 +70,7 @@ mCFHT07=(survey.catalog['i_T07']>12.)&(survey.catalog['i_T07']<29.)
 mCFHT05=(survey.catalog['i']>12.)&(survey.catalog['i']<29.)&(mCFHT07==False)
 mag3[mCFHT07]=survey.catalog['i_T07'][mCFHT07]
 mag3[mCFHT05]=survey.catalog['i'][mCFHT05]
-
+"""
 mCFHT07=(survey.catalog['z_T07']>12.)&(survey.catalog['z_T07']<29.)
 mCFHT05=(survey.catalog['z']>12.)&(survey.catalog['z']<29.)&(mCFHT07==False)
 mNoPhot=(mCFHT05==False)&(mCFHT07==False)
@@ -75,10 +78,10 @@ mag4[mCFHT07]=survey.catalog['z_T07'][mCFHT07]
 mag4[mCFHT05]=survey.catalog['z'][mCFHT05]
 mag4[mNoPhot]=n.ones_like(survey.catalog['z'][mNoPhot])*lfit.dV
 
-
+"""
 #sel=(survey.catalog['NUM']==112154559)
 #catalog_entry = survey.catalog[sel][0]
-output = n.ones_like(n.empty([survey.Ngalaxies,179]))*lfit.dV
+output = n.ones_like(n.empty([survey.Ngalaxies, 54]))*lfit.dV
 for jj in range(survey.Ngalaxies):
 	catalog_entry = survey.catalog[jj]
 	spectrum = gsp.GalaxySpectrumVIPERS(catalog_entry,calibration = False,lineFits = True)
@@ -103,22 +106,49 @@ for jj in range(survey.Ngalaxies):
 		#d_out.append(datI)
 		#m.append(mI)
 		#h.append(hI)
-		for li in lineList:
-			datI,mI,hI=lfit.fit_Line(wl,fl,flErr,li[1]*(1+catalog_entry['zspec']), lineName=li[2], continuumSide=li[3],model="gaussian",p0_sigma=1,fitWidth = 70.)
+	
+
+		"""
+		# doublet double gaussian: totaly WRONG FITS
+		li = [O2_3727,"O2_3727",O2_3729,"O2_3729",O2]
+		datI,mI,hI=lfit.fit_Line_OIIdoublet(wl,fl,flErr,n.array([li[0], li[2]])*(1+catalog_entry['zspec']), lineName=li[1], model="gaussian",p0_sigma=7, p0_flux=1e-16, fitWidth = 70., DLC=50)
+		d_out.append(datI)
+		m.append(mI)
+		h.append(hI)
+		print datI
+		if datI[1]>0 and datI[1]>datI[2]:
+			lfit.plotLineFit(wl,fl,flErr,mI,a0=li[0]*(1+catalog_entry['zspec']), datI = datI, path_to_fig="plot.pdf", title=li[1], fitWidth = 70., DLC=50, doublet=True)
+		"""
+		# doublet single gaussian 
+		li = lineList[0]
+		datI,mI,hI=lfit.fit_Line(wl,fl,flErr,li[1]*(1+catalog_entry['zspec']), lineName=li[2], continuumSide=li[3],model="gaussian",p0_sigma=10, p0_flux=1e-16, fitWidth = 70., DLC=50)
+		d_out.append(datI)
+		m.append(mI)
+		h.append(hI)
+		#print datI
+		#if datI[1]>0 and datI[1]>datI[2]:
+			#lfit.plotLineFit(wl,fl,flErr,mI,a0=li[1]*(1+catalog_entry['zspec']), datI = datI, path_to_fig="plot.pdf", title=li[2], fitWidth = 70., DLC=50)
+
+		for li in lineList[1:]:
+			datI,mI,hI=lfit.fit_Line(wl,fl,flErr,li[1]*(1+catalog_entry['zspec']), lineName=li[2], continuumSide=li[3],model="gaussian",p0_sigma=6, p0_flux=1e-16, fitWidth = 70., DLC=50)
 			d_out.append(datI)
 			m.append(mI)
 			h.append(hI)
+			#print datI
+			#if datI[1]>0 and datI[1]>datI[2]:
+				#lfit.plotLineFit(wl,fl,flErr,mI,a0=li[1]*(1+catalog_entry['zspec']), datI = datI, path_to_fig="plot.pdf", title=li[2], fitWidth = 70., DLC=50)
 		# now fits the recombination lines 
+		"""
 		for li in recLineList:
 			datI,mI,hI=lfit.fit_Line(wl,fl,flErr,li[1]*(1+catalog_entry['zspec']), lineName=li[2], continuumSide=li[3],model="gaussian",p0_sigma=1,fitWidth = 70.)
 			d_out.append(datI)
 			m.append(mI)
 			h.append(hI)
-
+		"""
 		# now outputs the result table
-		head=n.hstack((["foR foR_err foI foI_err fo fo_err MAGU MAGG MAGR MAGI MAGZ"],h))
+		head=n.hstack((["foR foR_err foI foI_err fo fo_err"],h))
 		heading="".join(head)
-		out=n.hstack((n.hstack((n.array([foR, foR_err, foI, foI_err, fo, fo_err, mag0[jj], mag1[jj], mag2[jj], mag3[jj], mag4[jj]]))), n.hstack((d_out))))
+		out=n.hstack((n.hstack((n.array([foR, foR_err, foI, foI_err, fo, fo_err]))), n.hstack((d_out))))
 		out[n.isnan(out)]=n.ones_like(out[n.isnan(out)])*lfit.dV
 		output[jj]=out
 		#print out

@@ -1,0 +1,20 @@
+#! /usr/bin/env python
+
+"""
+This script produces the stacks for emission line luminosity limited samples.
+"""
+import sys
+import os 
+from os.path import join
+import glob
+import numpy as n
+import SpectraStackingEBOSS as sse
+
+
+dataList = n.aray(glob.glob(join(os.environ['DATA_DIR'],"ELG-composite", "stacks", "data", "*.asc")))
+
+for specList in dataList:
+	print specList
+	stack=sse.SpectraStackingEBOSS(specList, specList[:-4]+".stack")
+	stack.stackSpectraSDSS()
+		

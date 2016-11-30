@@ -1,0 +1,59 @@
+#! /usr/bin/env python
+
+"""
+This script produces the stacks for emission line luminosity limited samples.
+"""
+import glob
+import os
+from os.path import join
+from InterpretSpectraStacksEBOSS import *
+import sys
+
+stackList = n.array(glob.glob(join(os.environ['DATA_DIR'],"ELG-composite", "stacks", "model", "*model.fits")))
+
+path_to_output_table_full = join(os.environ['DATA_DIR'],"ELG-composite", "stacks", "tables", "table_fullSpecFit_v0.data")
+path_to_output_table_line = join(os.environ['DATA_DIR'],"ELG-composite", "stacks", "tables", "table_lineSpecFit_v0.data")
+
+tableFull = n.empty((len(stackList), 194 ))
+tablePG = n.empty((len(stackList), 194 ))
+stackListNames = n.array([os.path.basename(el) for el in stackList])
+n.savetxt(join(os.environ['DATA_DIR'],"ELG-composite", "stacks", "tables", "files.index.ascii"), n.transpose([n.arange(len(stackList)).astype('str'), stackListNames ]), fmt = '%s', header = 'index filename')
+
+
+for ii, el in enumerate(stackList):
+	obj = InterpretSpectraStacksEBOSS(el, ii)
+	arrFull, headerA = obj.get_table_entry_full()
+	arrLine, headerA = obj.get_table_entry_line()
+	# print arrFull, arrLine
+	tableFull[ii] = arrFull
+	tablePG[ii] = arrLine
+
+headerB = " O2_3728_a0a  O2_3728_a0b  O2_3728_flux  O2_3728_fluxErr  O2_3728_sigma  O2_3728_sigmaErr  O2_3728_continu  O2_3728_continuErr  O2_3728_EW  O2_3728_share  O2_3728_shareErr  O2_3728_fd_a0_l  O2_3728_fd_a0_r  O2_3728_chi2  O2_3728_ndof  Ne3_3869_a0  Ne3_3869_flux  Ne3_3869_fluxErr  Ne3_3869_sigma  Ne3_3869_sigmaErr  Ne3_3869_continu  Ne3_3869_continuErr  Ne3_3869_EW  Ne3_3869_fd_a0_l  Ne3_3869_fd_a0_r  Ne3_3869_chi2  Ne3_3869_ndof  Ne3_3968_a0  Ne3_3968_flux  Ne3_3968_fluxErr  Ne3_3968_sigma  Ne3_3968_sigmaErr  Ne3_3968_continu  Ne3_3968_continuErr  Ne3_3968_EW  Ne3_3968_fd_a0_l  Ne3_3968_fd_a0_r  Ne3_3968_chi2  Ne3_3968_ndof  O3_4363_a0  O3_4363_flux  O3_4363_fluxErr  O3_4363_sigma  O3_4363_sigmaErr  O3_4363_continu  O3_4363_continuErr  O3_4363_EW  O3_4363_fd_a0_l  O3_4363_fd_a0_r  O3_4363_chi2  O3_4363_ndof  O3_4960_a0  O3_4960_flux  O3_4960_fluxErr  O3_4960_sigma  O3_4960_sigmaErr  O3_4960_continu  O3_4960_continuErr  O3_4960_EW  O3_4960_fd_a0_l  O3_4960_fd_a0_r  O3_4960_chi2  O3_4960_ndof  O3_5007_a0  O3_5007_flux  O3_5007_fluxErr  O3_5007_sigma  O3_5007_sigmaErr  O3_5007_continu  O3_5007_continuErr  O3_5007_EW  O3_5007_fd_a0_l  O3_5007_fd_a0_r  O3_5007_chi2  O3_5007_ndof  H1_3970_a0  H1_3970_flux  H1_3970_fluxErr  H1_3970_sigma  H1_3970_sigmaErr  H1_3970_continu  H1_3970_continuErr  H1_3970_EW  H1_3970_fd_a0_l  H1_3970_fd_a0_r  H1_3970_chi2  H1_3970_ndof  H1_4102_a0  H1_4102_flux  H1_4102_fluxErr  H1_4102_sigma  H1_4102_sigmaErr  H1_4102_continu  H1_4102_continuErr  H1_4102_EW  H1_4102_fd_a0_l  H1_4102_fd_a0_r  H1_4102_chi2  H1_4102_ndof  H1_4341_a0  H1_4341_flux  H1_4341_fluxErr  H1_4341_sigma  H1_4341_sigmaErr  H1_4341_continu  H1_4341_continuErr  H1_4341_EW  H1_4341_fd_a0_l  H1_4341_fd_a0_r  H1_4341_chi2  H1_4341_ndof  H1_4862_a0  H1_4862_flux  H1_4862_fluxErr  H1_4862_sigma  H1_4862_sigmaErr  H1_4862_continu  H1_4862_continuErr  H1_4862_EW  H1_4862_fd_a0_l  H1_4862_fd_a0_r  H1_4862_chi2  H1_4862_ndof  "
+
+head = headerA + headerB
+
+n.savetxt(path_to_output_table_full, tableFull, header = head)	
+
+n.savetxt(path_to_output_table_line, tablePG, header = head)	
+
+sys.exit()
+
+stiltsC = """java -jar """+join(os.environ['DATA_DIR'],"stilts.jar")
+inF = join(os.environ['SPECTRASTACKS_DIR'], "results", "table_fullSpecFit_v0.data")
+outF = join(os.environ['SPECTRASTACKS_DIR'],"results", "table_fullSpecFit_v0.fits" )
+conv_fits = stiltsC + " tpipe in=" + inF +" ifmt=ascii out=" + outF + " omode=out ofmt=fits"
+os.system(conv_fits)
+
+stiltsC = """java -jar """+join(os.environ['DATA_DIR'],"stilts.jar")
+inF = join(os.environ['SPECTRASTACKS_DIR'], "results", "table_lineSpecFit_v0.data")
+outF = join(os.environ['SPECTRASTACKS_DIR'],"results", "table_lineSpecFit_v0.fits" )
+conv_fits = stiltsC + " tpipe in=" + inF +" ifmt=ascii out=" + outF + " omode=out ofmt=fits"
+os.system(conv_fits)
+
+#conv_fits = """java -jar ~/stilts.jar tpipe in=$SPECTRASTACKS_DIR/results/table_fullSpecFit_v0.data ifmt=ascii out=$SPECTRASTACKS_DIR/results/table_fullSpecFit_v0.fits omode=out ofmt=fits"""
+#os.system(conv_fits)
+#conv_fits = """java -jar ~/stilts.jar tpipe in=$SPECTRASTACKS_DIR/results/table_lineSpecFit_v0.data ifmt=ascii out=$SPECTRASTACKS_DIR/results/table_lineSpecFit_v0.fits omode=out ofmt=fits"""
+#os.system(conv_fits)
+
+
+

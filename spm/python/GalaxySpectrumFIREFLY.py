@@ -272,3 +272,47 @@ class GalaxySpectrumFIREFLY:
 			self.ebv_mw = 0.0
 
 		print"there are", len(self.wavelength),"data points at redshift",self.redshift," between", np.min(self.wavelength[bad_data==False]), np.max(self.wavelength[bad_data==False]), "Angstrom.", np.min(self.restframe_wavelength[bad_data==False]), np.max(self.restframe_wavelength[bad_data==False]), "Angstrom in the rest frame."
+		
+	def openStackEBOSS(self, redshift = 0.85):
+		self.hdulist = pyfits.open(self.path_to_spectrum)
+		self.ra = 0. #self.hdulist[0].header['RA']
+		self.dec = 0. #self.hdulist[0].header['DEC']
+		self.redshift = redshift
+		self.restframe_wavelength = self.hdulist[1].data['wavelength']
+		self.wavelength = self.restframe_wavelength * (1. + self.redshift)
+		
+		meanWL = (self.wavelength[1:]+self.wavelength[:-1])/2.
+		deltaWL = self.wavelength[1:]-self.wavelength[:-1]
+		resolution = np.ones_like(self.wavelength)*np.mean(meanWL / deltaWL)
+		
+		self.flux = self.hdulist[1].data['meanWeightedStack'] #* 10**(-17)
+		self.error = self.hdulist[1].data['jackknifStackErrors'] #* 10**(-17)
+		self.bad_flags = np.ones(len(self.restframe_wavelength))
+		
+		lines_mask = ((self.restframe_wavelength > 3728 - self.N_angstrom_masked) & (self.restframe_wavelength < 3728 + self.N_angstrom_masked)) | ((self.restframe_wavelength > 5007 - self.N_angstrom_masked) & (self.restframe_wavelength < 5007 + self.N_angstrom_masked)) | ((self.restframe_wavelength > 4861 - self.N_angstrom_masked) & (self.restframe_wavelength < 4861 + self.N_angstrom_masked)) | ((self.restframe_wavelength > 6564 - self.N_angstrom_masked) & (self.restframe_wavelength < 6564 + self.N_angstrom_masked)) 
+
+		self.restframe_wavelength = self.restframe_wavelength[(lines_mask==False)] 
+		self.wavelength = self.wavelength[(lines_mask==False)] 
+		self.flux = self.flux[(lines_mask==False)] 
+		self.error = self.error[(lines_mask==False)] 
+		self.bad_flags = self.bad_flags[(lines_mask==False)] 
+		self.r_instrument = resolution[(lines_mask==False)] 
+
+		bad_data 	= np.isnan(self.flux) | np.isinf(self.flux) | (self.flux <= 0.0) | np.isnan(self.error) | np.isinf(self.error) 
+		# removes the bad data from the spectrum 
+		self.flux[bad_data] 	= 0.0
+		self.error[bad_data] 	= np.max(self.flux) * 99999999999.9
+		self.bad_flags[bad_data] = 0
+		
+		self.vdisp = 70. # km/s
+
+		self.trust_flag = 1
+		self.objid = 0
+
+		if self.milky_way_reddening :
+			# gets the amount of MW reddening on the models
+			self.ebv_mw = get_dust_radec(self.ra,self.dec,'ebv')
+		else:
+			self.ebv_mw = 0.0
+
+		print"there are", len(self.wavelength),"data points at redshift",self.redshift," between", np.min(self.wavelength[bad_data==False]), np.max(self.wavelength[bad_data==False]), "Angstrom.", np.min(self.restframe_wavelength[bad_data==False]), np.max(self.restframe_wavelength[bad_data==False]), "Angstrom in the rest frame."
