@@ -31,7 +31,7 @@ matplotlib.use('pdf')
 import matplotlib.pyplot as p
 import os 
 import astropy.cosmology as co
-cosmo=co.Planck15 #co.FlatLambdaCDM(H0=70,Om0=0.3)
+cosmo=co.Planck13 #co.FlatLambdaCDM(H0=70,Om0=0.3)
 import astropy.units as u
 import astropy.io.fits as fits
 import numpy as n
