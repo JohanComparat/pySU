@@ -9,15 +9,15 @@ from os.path import join
 from InterpretSpectraStacksEBOSS import *
 import sys
 
-stackList = n.array(glob.glob(join(os.environ['DATA_DIR'],"ELG-composite", "stacks", "model", "*model.fits")))
+stackList = n.array(glob.glob(join(os.environ['EBOSS_TARGET'],"elg", "tests", "stacks", "model", "*model.fits")))
 
-path_to_output_table_full = join(os.environ['DATA_DIR'],"ELG-composite", "stacks", "tables", "table_fullSpecFit_v0.data")
-path_to_output_table_line = join(os.environ['DATA_DIR'],"ELG-composite", "stacks", "tables", "table_lineSpecFit_v0.data")
+path_to_output_table_full = join(os.environ['EBOSS_TARGET'],"elg", "tests", "stacks", "tables", "table_fullSpecFit_v0.data")
+path_to_output_table_line = join(os.environ['EBOSS_TARGET'],"elg", "tests", "stacks", "table_lineSpecFit_v0.data")
 
 tableFull = n.empty((len(stackList), 194 ))
 tablePG = n.empty((len(stackList), 194 ))
 stackListNames = n.array([os.path.basename(el) for el in stackList])
-n.savetxt(join(os.environ['DATA_DIR'],"ELG-composite", "stacks", "tables", "files.index.ascii"), n.transpose([n.arange(len(stackList)).astype('str'), stackListNames ]), fmt = '%s', header = 'index filename')
+n.savetxt(join(os.environ['EBOSS_TARGET'],"elg", "tests", "stacks", "tables", "files.index.ascii"), n.transpose([n.arange(len(stackList)).astype('str'), stackListNames ]), fmt = '%s', header = 'index filename')
 
 
 for ii, el in enumerate(stackList):
