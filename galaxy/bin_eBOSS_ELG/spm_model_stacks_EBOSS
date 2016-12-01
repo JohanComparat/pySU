@@ -9,7 +9,6 @@ stackList = n.array(glob.glob(join(os.environ['EBOSS_TARGET'],"elg", "tests", "s
 
 executable = join(os.environ['PYSU_DIR'], "spm", "bin", "stellarpop_stacks_EBOSS")
 
-
 for ii, el in enumerate(stackList):
 	command = "python  " + executable + " " + el
 	os.system( command )

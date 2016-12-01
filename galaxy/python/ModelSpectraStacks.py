@@ -495,7 +495,8 @@ class ModelSpectraStacks:
 		if self.tutorial:
 			outFile = join( os.environ['DATA_DIR'], "ELG-composite", self.stack_file_base[:-5]+".model" ) 
 		if self.eboss_stack:
-			outFile = join(os.environ['DATA_DIR'],"ELG-composite", "stacks", "model", self.stack_file_base[:-6] + ".model.fits") 
+			#outFile = join(os.environ['DATA_DIR'],"ELG-composite", "stacks", "model", self.stack_file_base[:-6] + ".model.fits")
+			outFile = join(os.environ['EBOSS_TARGET'],"elg", "tests", "stacks", "model",  self.stack_file_base[:-6] + ".model")
 			
 		if os.path.isfile(outFile):
 			os.remove(outFile)

@@ -5,9 +5,8 @@ from os.path import join
 from ModelSpectraStacks import *
 import glob
 
-stack_files = n.array(glob.glob(join(os.environ['DATA_DIR'],"ELG-composite", "stacks", "data","*.stack")))
-stack_files.sort()
-fitsList = n.array(glob.glob(join(os.environ['DATA_DIR'],"ELG-composite", "stacks", "fits", "*-SPM-MILES.fits")))
+
+stackList = n.array(glob.glob(join(os.environ['EBOSS_TARGET'],"elg", "tests", "stacks", "data", "*.stack")))
 
 for file in stack_files:
 	print( file )
