@@ -8,8 +8,9 @@ import os
 from os.path import join
 from InterpretSpectraStacksEBOSS import *
 import sys
+import numpy as n
 
-stackList = n.array(glob.glob(join(os.environ['EBOSS_TARGET'],"elg", "tests", "stacks", "model", "*model.fits")))
+stackList = n.array(glob.glob(join(os.environ['EBOSS_TARGET'],"elg", "tests", "stacks", "model", "*model")))
 
 path_to_output_table_full = join(os.environ['EBOSS_TARGET'],"elg", "tests", "stacks", "tables", "table_fullSpecFit_v0.data")
 path_to_output_table_line = join(os.environ['EBOSS_TARGET'],"elg", "tests", "stacks", "table_lineSpecFit_v0.data")
