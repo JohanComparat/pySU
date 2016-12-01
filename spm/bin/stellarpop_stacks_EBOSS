@@ -21,9 +21,9 @@ t0=time.time()
 # initiates the spectrum and gets the data
 spec=gs.GalaxySpectrumFIREFLY(specFile, milky_way_reddening=False)
 spec.openStackEBOSS()
-
+EBOSS_TARGET/
 file = os.path.basename(specFile)
-outFile = join(os.environ['DATA_DIR'], "ELG-composite", "stacks", "fits",  file[:-6])
+outFile = join(os.environ['EBOSS_TARGET'], "elg", "tests", "stacks", "fits",  file[:-6])
 print outFile
 print '========================='
 # gets the model for MILES, fits and writes

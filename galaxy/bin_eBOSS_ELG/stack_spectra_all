@@ -10,11 +10,11 @@ import glob
 import numpy as n
 import SpectraStackingEBOSS as sse
 
-
-dataList = n.aray(glob.glob(join(os.environ['DATA_DIR'],"ELG-composite", "stacks", "data", "*.asc")))
+dataList = n.aray(glob.glob(join(os.environ['EBOSS_TARGET'],"elg", "tests", "stacks", "lists_2_stack", "*.asc")))
 
 for specList in dataList:
 	print specList
-	stack=sse.SpectraStackingEBOSS(specList, specList[:-4]+".stack")
+	outfile = join(os.environ['EBOSS_TARGET'],"elg", "tests", "stacks", os.path.basename(specList)[:-4]+".stack")
+	stack=sse.SpectraStackingEBOSS(specList, outfile)
 	stack.stackSpectraSDSS()
 		
