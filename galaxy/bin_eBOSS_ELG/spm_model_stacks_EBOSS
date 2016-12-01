@@ -5,16 +5,11 @@ import os
 import glob
 import numpy as n
 
-dataList = n.array(glob.glob(join(os.environ['DATA_DIR'],"ELG-composite", "stacks", "data", "*.asc")))
-dataList.sort()
-stackList = n.array([ spec[:-4]+".stack" for spec in dataList ])
+stackList = n.array(glob.glob(join(os.environ['EBOSS_TARGET'],"elg", "tests", "stacks", "data", "*.stack")))
 
 executable = join(os.environ['PYSU_DIR'], "spm", "bin", "stellarpop_stacks_EBOSS")
-el = stackList[0]
-command = "python  " + executable + " " + el
-os.system( command )
+
+
 for ii, el in enumerate(stackList):
-	if os.path.isfile(el) :
-		print ii
-		command = "python  " + executable + " " + el
-		os.system( command )
+	command = "python  " + executable + " " + el
+	os.system( command )

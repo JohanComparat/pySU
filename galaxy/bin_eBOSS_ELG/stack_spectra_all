@@ -10,7 +10,7 @@ import glob
 import numpy as n
 import SpectraStackingEBOSS as sse
 
-dataList = n.aray(glob.glob(join(os.environ['EBOSS_TARGET'],"elg", "tests", "stacks", "lists_2_stack", "*.asc")))
+dataList = n.array(glob.glob(join(os.environ['EBOSS_TARGET'],"elg", "tests", "stacks", "lists_2_stack", "*.asc")))
 
 for specList in dataList:
 	print specList
