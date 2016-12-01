@@ -6,11 +6,11 @@ from ModelSpectraStacks import *
 import glob
 
 
-stackList = n.array(glob.glob(join(os.environ['EBOSS_TARGET'],"elg", "tests", "stacks", "data", "*.stack")))
+stack_files = n.array(glob.glob(join(os.environ['EBOSS_TARGET'],"elg", "tests", "stacks", "data", "*.stack")))
 
 for file in stack_files:
 	print( file )
-	mm=ModelSpectraStacks(file,mode="MILES", eboss_stack=True)
+	mm=ModelSpectraStacks(file,mode="EBOSS", eboss_stack=True)
 	#mm.plot_fit()
 	mm.fit_lines_to_fullSpectrum()
 	mm.fit_lines_to_lineSpectrum()

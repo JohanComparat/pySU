@@ -105,8 +105,8 @@ class ModelSpectraStacks:
 		if self.tutorial :
 			self.stack_model_file = join( os.environ['DATA_DIR'], "ELG-composite", self.stack_file_base + "-SPM-MILES.fits")
 			
-		if eboss_stack :
-			self.stack_model_file = join(os.environ['DATA_DIR'],"ELG-composite", "stacks", "fits", self.stack_file_base[:-6] + "-SPM-MILES.fits")
+		if self.mode=="EBOSS": #eboss_stack :
+			self.stack_model_file = join(os.environ['EBOSS_TARGET'],"elg", "tests", "stacks", "fits", self.stack_file_base[:-6]+ "-SPM-MILES.fits")
 			self.redshift = 0.85
 		else :
 			self.redshift = float(self.stack_file_base.split('-')[2].split('_')[0][1:])
