@@ -61,17 +61,13 @@ sigma = n.arange(0.05,10,0.05)
 X = n.arange(-0.6, 0.5, 0.01) #n.log10(1./sigma)
 sigma = 10**-X 
 
-f_dsp_nu = lambda nu, A, a, p: A* (a / (nu * 2 * n.pi))**(0.5) * ( 1 + 1. / (a*nu) **p ) * n.e**( - a * nu / 2.)
-nufnu_dsp = lambda nu, A, a, p: A* ((2 * a * nu) / ( n.pi))**(0.5) * ( 1 + (a*nu) **(-p) ) * n.e**( - a * nu / 2.)
-
+#f_dsp_nu = lambda nu, A, a, p: A* (a / (nu * 2 * n.pi))**(0.5) * ( 1 + 1. / (a*nu) **p ) * n.e**( - a * nu / 2.)
+#nufnu_dsp = lambda nu, A, a, p: A* ((2 * a * nu) / ( n.pi))**(0.5) * ( 1 + (a*nu) **(-p) ) * n.e**( - a * nu / 2.)
 # nu = (delta_c/sigma)**2.
 
-#f_dsp = lambda sigma, A, a, p : A* (a / ((delta_c/sigma)**2. * 2 * n.pi))**(0.5) * ( 1 + 1. / (a*(delta_c/sigma)**2.) **p ) * n.e**( - a * (delta_c/sigma)**2. / 2.)
-f_dsp = lambda sigma, A, a, p: A * ((2. * a * (delta_c/sigma)**2.) / (  n.pi))**(0.5) * ( 1 + (a*(delta_c/sigma)**2.) **(-p) ) * n.e**( - a * (delta_c/sigma)**2. / 2.)
-
 f_T08 = lambda sigma, A, a, b, c : A*( (sigma/b)**(-a) + 1 )*n.e**(-c/sigma**2.)
-f_ST = lambda sigma, A, a, p: A* (2*a/n.pi)**0.5 * ( 1 + (delta_c**2./(a*sigma**2.))**(p) )*(delta_c/sigma)*n.e**(-a*delta_c**2./(2.*sigma**2.))
-f_BH = lambda sigma, A, a, p, q: A* (2./n.pi)**0.5 * ( 1 + (sigma**2./(a**delta_c*2.))**(p) )*(delta_c*a**0.5/sigma)**(q)*n.e**(-a*delta_c**2./(2.*sigma**2.))
+f_ST = lambda sigma, A, a, p: A* (2./n.pi)**(0.5) * ( 1 + (sigma**2./(a**delta_c*2.))**(p) )*(delta_c*a**0.5/sigma)*n.e**(-a*delta_c**2./(2.*sigma**2.))
+f_BH = lambda sigma, A, a, p, q: A* (2./n.pi)**(0.5) * ( 1 + (sigma**2./(a**delta_c*2.))**(p) )*(delta_c*a**0.5/sigma)**(q)*n.e**(-a*delta_c**2./(2.*sigma**2.))
 b_BH = lambda sigma, a, p, q:  1 + (a*(delta_c/sigma)**2. - q) / delta_c + (2*p/delta_c)/(1 + (a*(delta_c/sigma)**2.))**p
 
 
@@ -87,10 +83,11 @@ ftST01 = f_ST(sigma, 0.3222, 0.707, 0.3)
 ftC16 = f_T08(sigma, 0.12, 1.19, 3.98, 1.35)
 ftC16st = f_dsp(sigma, 0.2906, 0.8962, 0.1935 )
 """
-ftC16 = f_BH(sigma, 0.279, 0.908, 0.671, 1.737)
-ftC16st = f_dsp(sigma, 0.317, 0.819, 0.113)
+ftC16 = f_BH(sigma, 0.279, 0.908, 0.669, 1.736)
+ftC16st = f_ST(sigma, 0.317, 0.820, 0.106)
+ftC16st_sat = f_ST(sigma, 0.042, 1.67, 0.90)
 
-ftD16 = f_dsp(sigma, 0.333, 0.794, 0.247 )
+ftD16 = f_ST(sigma, 0.333, 0.794, 0.247 )
 ftRP16 = f_T08 (sigma, 0.144, 1.351, 3.113, 1.187)
 ftT08 = f_T08(sigma, 0.200, 1.47, 2.57, 1.19) # 300 at z=0
 #ftST01 = f_ST(sigma, 0.3222, 0.707, 0.3)
@@ -130,8 +127,8 @@ def plot_mvir_function_data(log_mvir, logsigM1, logNu, log_MF, log_MF_c, redshif
 	cb.set_label("redshift")
 	sigs = n.arange(-0.5,.6, 0.01)
 	#p.plot(X, n.log10(ftT08), 'k--', label='T08', lw=2)
-	p.plot(X, n.log10(ftD16), 'k--', label='D16', lw=2)
-	p.plot(X, n.log10(ftBH11), 'g--', label='B11', lw=2)
+	p.plot(X, n.log10(ftC16), 'k--', label='fit', lw=2)
+	#p.plot(X, n.log10(ftBH11), 'g--', label='B11', lw=2)
 	#p.plot(X, n.log10(ftC16), 'r--', label='this work', lw=2)
 	p.xlabel(r'$ln(\sigma^{-1})$')
 	p.ylabel(r'$\log_{10}\left[ \frac{M}{\rho_m} \frac{dn}{d\ln M} \left|\frac{d\ln M }{d\ln \sigma}\right|\right] $') 

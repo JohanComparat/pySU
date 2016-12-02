@@ -26,7 +26,7 @@ NminCount = 1000
 logNpmin = 3
 
 zmin = -0.01
-zmax = 2.5
+zmax = 0.001
 
 
 # x coordinates definition
@@ -68,13 +68,47 @@ MD40NW=(data["boxName"]=='MD_4GpcNW')
 # NOW PLOTTING ALL THE DATA
 lib.plot_mvir_function_data(log_mvir[ok], logsig[ok], lognu[ok], log_MF[ok], log_MF_c[ok], data['redshift'][ok], zmin, zmax, cos = cos)
 
-lib.plot_mvir_function_data_perBox(log_mvir, log_MF, MD04, MD10, MD25, MD25NW, MD40, MD40NW, cos=cos)
-
 # ERROR PLOT: JK vs. POISSON
 x = data["std90_pc_"+cos] 
 y = data["dN_counts_"+cos]**(-0.5)
 lib.plot_jackknife_poisson_error(x, y, MD04, MD10, MD25, MD25NW, MD40, MD40NW, cos = cos, dir=join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir'))
 
+
+
+
+p.figure(0,(6,6))
+p.axes([0.17,0.17,0.75,0.75])
+# log_mvir, logsigM1, logNu, log_MF, log_MF_c, redshift  = log_mvir[ok], logsig[ok], lognu[ok], log_MF[ok], log_MF_c[ok], data['redshift'][ok]
+x_data = logsig[ok]
+y_data = log_MF[ok]
+y_data_err = (data["std90_pc_cen"][ok]**2. + data["dN_counts_cen"][ok]**(-1.))**(0.5)
+p.errorbar(x_data, y_data, yerr = y_data_err, rasterized=True, fmt='none', label='distinct halos z=0', lw=2)
+p.plot(lib.X, n.log10(lib.ftC16), 'k--', label='fit', lw=2)
+
+cos = 'sat'
+ff = mvir *  data["dNdlnM_"+cos] / data["rhom"]  / abs(data["dlnsigmaMdlnM"]) 
+ff_c = mvir *  data["dNdlnM_"+cos+"_c"] / data["rhom"]  / abs(data["dlnsigmaMdlnM"]) 
+log_MF = n.log10( ff )
+log_MF_c = n.log10(  ff_c )
+nSelSat = lib.nSelection(data, NminCount, cos )
+ok = (zSel) & (mSel)& (mSel2)  & (nSelSat)
+x_data = logsig[ok]
+y_data = log_MF[ok]
+y_data_err = (data["std90_pc_"+cos][ok]**2. + data["dN_counts_"+cos][ok]**(-1.))**(0.5)
+p.errorbar(x_data, y_data, yerr = y_data_err, rasterized=True, fmt='none', label='satellite subhalos z=0', lw=2)
+sigs = n.arange(-0.5,.6, 0.01)
+p.plot(lib.X, n.log10(lib.ftC16st_sat), 'k--', lw=2)
+
+p.xlabel(r'$ln(\sigma^{-1})$')
+p.ylabel(r'$\log_{10}\left[ \frac{M}{\rho_m} \frac{dn}{d\ln M} \left|\frac{d\ln M }{d\ln \sigma}\right|\right] $') 
+ # log$_{10}[ n(>M)]')
+gl = p.legend(loc=0, fontsize=12)
+gl.set_frame_on(False)
+p.ylim((-3., -0.4))
+p.xlim((-0.5, 0.5))
+p.grid()
+p.savefig(join(os.environ['MULTIDARK_LIGHTCONE_DIR'], 'mvir',"mvir-AL-z0-differential-function-data-xSigma.png"))
+p.clf()
 #=======================
 #=======================
 cos = 'sat'

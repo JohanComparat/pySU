@@ -153,15 +153,14 @@ def plotSel(MDsel, label):
 		p.errorbar(x_data, 10**(y_data-y_model), yerr = y_data_err , rasterized=True, fmt='none', label=label)
 
 
-p.figure(0,(6,6))
-p.axes([0.17,0.17,0.75,0.75])
+p.figure(0,(6,3))
+p.axes([0.17,0.17,0.75,0.6])
 plotSel(MD04, "MD04")
 plotSel(MD10, "MD10")
 plotSel(MD25, "MD25")
 plotSel(MD40, "MD40")
 plotSel(MD25NW, "MD25NW")
 plotSel(MD40NW, "MD40NW")
-
 p.axhline(1.025,c='k',ls='--',label=r'$\pm2.5\%$')
 p.axhline(0.975,c='k',ls='--')
 p.xlabel(r'$log_{10}(\sigma^{-1})$')
@@ -186,8 +185,8 @@ def plotAll(MDsel, label):
 		p.errorbar(x_plot, 10**(y_data-y_model), yerr = y_data_err , rasterized=True, label=label)
 
 		
-p.figure(0,(6,6))
-p.axes([0.17,0.17,0.75,0.75])
+p.figure(0,(6,3))
+p.axes([0.17,0.17,0.75,0.6])
 plotAll(MD04, "MD04")
 plotAll(MD10, "MD10")
 plotAll(MD25, "MD25")
