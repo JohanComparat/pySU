@@ -69,7 +69,7 @@ class DarkSkiesSimulation :
 		count = 0
 		output = n.zeros((NperBatch,7))
 		for line in fl:
-			if line[0] == "#" :
+			if line[1] == "#" :
 				continue
 
 			line = line.split()
@@ -145,7 +145,7 @@ class DarkSkiesSimulation :
 		:param Ljk: length of the resampled box
 		:param overlap: allowed overlap between resampled realizations : 1 = no overlap 2 : 50% overlap ... 
 		"""		
-		output_dir = join(self.wdir,self.boxDir,"properties",name)
+		output_dir = join(self.wdir,"properties",name)
 		os.system('mkdir '+ output_dir)
 		# define boundaries
 		NBoundariesPerSide = int(overlap*self.Lbox.value/Ljk)
