@@ -27,7 +27,7 @@ def runSpec(specLiteFile):
 	# path to lite spectra
 	#specLiteFile = join( os.environ['SDSSDR12_DIR'], str(plate), 'spec-'+str(plate)+ '-'+str(mjd)+'-' +str(fibre).zfill(4)+'.fits')
 	# join( os.environ['BOSS_SPECTRO_REDUX'], os.environ['RUN2D'], 'spectra', 'lite' , str(plate), 'spec-'+str(plate)+ '-'+str(mjd)+'-' +str(fibre).zfill(4)+'.fits')
-	outputFolder = join( os.environ['SDSSDR12_DIR'],'stellarpop', str(plate))
+	outputFolder = join( os.environ['SDSSDR12_DIR'], 'stellarpop-m11-kroupa', 'stellarpop', str(plate))
 	if os.path.isdir(outputFolder)==False:
 		os.mkdir(outputFolder)
 
@@ -40,7 +40,7 @@ def runSpec(specLiteFile):
 
 	if spec.redshift>0 and spec.redshift<1.7 and spec.hdulist[2].data['CLASS'][0]=="GALAXY" :#and spec.hdulist[2].data['ZWARNING'][0] ==0 :
 
-		model = spm.StellarPopulationModel(spec, join(outputFolder , specLiteFile.split('/')[-1][:-5]), cosmo, models = 'm11', model_libs = ['MILES'], imfs = ['ss'], age_limits = [6,10], downgrade_models = True, data_wave_medium = 'vacuum', Z_limits = [-3.,1.],suffix="-SPM-MILES.fits", use_downgraded_models = True)
+		model = spm.StellarPopulationModel(spec, join(outputFolder , os.path.basename(specLiteFile)[:-5] ), cosmo, models = 'm11', model_libs = ['MILES'], imfs = ['kr'], age_limits = [6,10], downgrade_models = True, data_wave_medium = 'vacuum', Z_limits = [-3.,1.],suffix="-SPM-MILES.fits", use_downgraded_models = True)
 		try :
 			model.fit_models_to_data()
 			#model = spm.StellarPopulationModel(spec, join( outputFolder , specLiteFile.split('/')[-1][:-5]), cosmo, models = 'm11', model_libs = ['STELIB'], imfs = ['ss'], age_limits = [6,10], downgrade_models = True, data_wave_medium = 'vacuum', Z_limits = [-3.,1.],suffix="-SPM-STELIB.fits", use_downgraded_models = True)
@@ -52,7 +52,7 @@ def runSpec(specLiteFile):
 	print "time used =", time.time()-t0 ,"seconds"
 	return spec
 
-fileList = np.array(glob.glob(join( os.environ['SDSSDR12_DIR'], str(plate), 'spec-*.fits')))
+fileList = np.array(glob.glob(join( os.environ['SDSSDR12_DIR'], 'spectra', str(plate), 'spec-*.fits')))
 fileList.sort()
 
 for el in fileList:

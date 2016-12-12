@@ -4,7 +4,7 @@ import numpy as n
 def writeScript(rootName, plate):
 	f=open(rootName+".sh",'w')
 	f.write("#!/bin/bash \n")
-	f.write("#PBS -l walltime=48:00:00 \n")
+	f.write("#PBS -l walltime=90:00:00 \n")
 	f.write("#PBS -o "+plate+".o.$PBS_JOBID \n")
 	f.write("#PBS -e "+plate+".e$PBS_JOBID \n")
 	f.write("#PBS -M johan.comparat@gmail.com \n")
@@ -17,11 +17,11 @@ def writeScript(rootName, plate):
 	f.write("export PYTHONPATH=$PYTHONPATH:/users/comparat/pySU/targetselection/python/ \n")
 	f.write(" \n")
 	f.write("cd /users/comparat/pySU/spm/bin \n")
-	f.write("python stellarpop_sdss_single_salpeter "+plate+" \n")
+	f.write("python stellarpop_sdss_single_kroupa "+plate+" \n")
 	f.write(" \n")
 	f.close()
 
 plates = n.loadtxt( join(os.environ['SDSSDR12_DIR'], "plateNumberList"), unpack=True, dtype='str')
 for plate in plates:
-	rootName = join(os.environ['HOME'], "batchscripts_firefly", plate)
+	rootName = join(os.environ['HOME'], "batchscripts_firefly_kroupa", plate)
 	writeScript(rootName, plate)
