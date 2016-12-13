@@ -32,11 +32,13 @@ def get_unprocessed_fiber_lists_per_plate(plate, dir ='stellarpop-m11-salpeter')
 	gal = (in_plate) & (hdus[1].data['CLASS']=="GALAXY") & (hdus[1].data['Z']>0) & (hdus[1].data['Z']<1.7)
 	fiber_2_fit = hdus[1].data['FIBERID'][in_plate]
 	mjd_2_fit = hdus[1].data['MJD'][in_plate]
+	
 	specList = n.array(glob.glob(join( os.environ['SDSSDR12_DIR'], 'spectra', str(plate), 'spec-*.fits')))
 	specList.sort()
 	fib_spec = n.array([int(os.path.basename(fl).split('-')[3][:-5]) for fl in specList ])
-	mjd_spec = n.array([int(os.path.basename(fl).split('-')[2]) for fl in specList ]
-	fitList = n.array(glob.glob(join( os.environ['SDSSDR12_DIR'], dir, "stellarpop", str(plate), '*.fits')))
+	mjd_spec = n.array([int(os.path.basename(fl).split('-')[2]) for fl in specList ])
+	
+	fitList = n.array(glob.glob(join( os.environ['SDSSDR12_DIR'], dir, "stellarpop", str(plate)+'*.fits')))
 	fitList.sort()	
 	fib_fitted = n.array([int(os.path.basename(fl).split('-')[3][:-5]) for fl in fitList ])
 	mjd_fitted = n.array([int(os.path.basename(fl).split('-')[2]) for fl in fitList ])
