@@ -3,6 +3,10 @@ import os
 import numpy as n
 import glob 
 import sys 
+import time
+import astropy.io.fits as fits
+
+hdus = fits.open( join( os.environ['SDSSDR12_DIR'], "catalogs", "specObj-dr12.fits") )
 
 def get_plate_lists(plate, dir ='stellarpop-m11-salpeter'):
 	specList = n.array(glob.glob(join( os.environ['SDSSDR12_DIR'], 'spectra', str(plate), 'spec-*.fits')))
@@ -22,6 +26,10 @@ def get_plate_lists(plate, dir ='stellarpop-m11-salpeter'):
 	
 	return specList, fitList, modList, tabList_l, tabList_f
 
+def get_info_from_catalog(plate):
+	in_plate = (hdus[1].data['PLATE']==int(plate))
+	gal = (in_plate) & (hdus[1].data['CLASS']=="GALAXY") & (hdus[1].data['Z']>0) & (hdus[1].data['Z']<1.7)
+	return len(hdus[1].data['Z'][gal])
 
 def get_plate_lists_light(plate, dir ='stellarpop-m11-salpeter'):
 	specList = n.array(glob.glob(join( os.environ['SDSSDR12_DIR'], 'spectra', str(plate), 'spec-*.fits')))
@@ -49,43 +57,60 @@ def create_light_table(plates, outname = "run-status-table.ascii",  dir ='stella
 			
 def create_basic_table(plates, outname = "run-status-table.ascii",  dir ='stellarpop-m11-salpeter'):
 	Nspec = n.zeros(len(plates))
+	Ngal = n.zeros(len(plates))
 	Nmodel = n.zeros(len(plates))
 	Nfit = n.zeros(len(plates))
 	lenTableLine = n.zeros(len(plates))
 	lenTableFull = n.zeros(len(plates))
 	for ii, plate in enumerate(plates):
+		t0 = time.time()
 		specList, fitList, modList, tabList_l, tabList_f = get_plate_lists(plate)
+		n_fittable_gal = get_info_from_catalog(plate)
 		Nspec[ii]=len(specList)
 		Nfit[ii]=len(fitList)
+		Ngal[ii]= n_fittable_gal
 		Nmodel[ii]=len(modList)
 		if len(tabList_l)>0:
 			tab_l = n.loadtxt(tabList_l[0],unpack=True)
 			tab_f = n.loadtxt(tabList_f[0],unpack=True)
 			lenTableLine[ii] = len(tab_l)
 			lenTableFull[ii] = len(tab_f)
-	n.savetxt(join( os.environ['SDSSDR12_DIR'], dir, outname), n.transpose([plates.astype('int'), Nspec, Nfit,Nmodel, lenTableLine, lenTableFull]), header='plate Nspec Nfit Nmodel NinTable_l NinTable_f')
+		print ii, plate, time.time() - t0
+	n.savetxt(join( os.environ['SDSSDR12_DIR'], dir, outname), n.transpose([plates.astype('int'), Nspec, Ngal, Nfit, Nmodel, lenTableLine, lenTableFull]), header='plate Nspec Ngal Nfit Nmodel NinTable_l NinTable_f')
 			
 plates_all = n.loadtxt( join(os.environ['SDSSDR12_DIR'], "plateNumberList"), unpack=True, dtype='str')
 plates = plates_all[:-2]
-#create_basic_table(plates)
+
+create_basic_table(plates)
 create_light_table("run-status-table-light.ascii")
 
 # now exploit the data created
 outname = "run-status-table.ascii"
 dir ='stellarpop-m11-salpeter'
-plates, Nspec, Nfit, Nmodel, lenTableLine,lenTableFull = n.loadtxt(join( os.environ['SDSSDR12_DIR'], dir, outname))
+plates, Nspec, Ngal, Nfit, Nmodel, lenTableLine,lenTableFull = n.loadtxt(join( os.environ['SDSSDR12_DIR'], dir, outname), unpack= True)
 
+comp = 0.9
 isSpec = (Nspec > 0)
-done_fit = (Nspec == Nfit) & (isSpec)
-done_model = (Nspec == Nmodel) & (isSpec)
-done_table_l = (Nspec == lenTableLine) & (isSpec)
-done_table_f = (Nspec == lenTableFull) & (isSpec)
+isGal = (Ngal > 0) & (isSpec)
+done_fit = (Ngal *comp <= Nfit) & (isGal)
+done_model = (Ngal * comp <= Nmodel) & (isGal)
+done_table_l = (Ngal * comp <= lenTableLine) & (isGal)
+done_table_f = (Ngal * comp <= lenTableFull) & (isGal)
 
-print len(Nspec[isSpec]), "plates for fit conatining ", n.sum(Nspec)," spectra."
-print len(Nspec[done_fit]), "plates were fitted by firefly."
-print len(Nspec[done_model]), "plates were line-modeled."
-print len(Nspec[done_table_l]), "plates have a line table."
-print len(Nspec[done_table_f]), "plates have a full table."
+f=open(join( os.environ['SDSSDR12_DIR'], dir, "status.txt"), 'w')
+f.write("Status of the run \n")
+f.write("----------------------------------------\n")
+f.write("Author: JC \n")
+f.write("last update: "+time.ctime()+" \n")
+f.write("----------------------------------------\n")
+f.write("Total data: " + str(len(Nspec[isSpec])) + " plates containing " + str(int(n.sum(Nspec)))+ " spectra (contains sky and std star fibers) \n")
+f.write("Total galaxy: "+ str(int(n.sum(Ngal))) + " galaxies with CLASS=GALAXY AND 0<z<1.7 \n")
+f.write("Total FFfit: " + str(int(n.sum(Nfit))) + " , i.e. "+str(n.round(100.*n.sum(Nfit)/n.sum(Ngal),2))+" per cent \n")
+f.write("Total emission line:" str(int(n.sum(Nmodel)))+" spectra have an emission line model, i.e. "+str(n.round(100.*n.sum(Nmodel)/n.sum(Ngal),2))+" per cent \n")
+
+f.write( str(int(n.sum(lenTableLine)))+" spectra are in a summary table, i.e. "+str(n.round(100.*n.sum(lenTableLine)/n.sum(Ngal),2))+" per cent \n")
+
+f.close()
 
 sys.exit()
 
