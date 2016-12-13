@@ -104,7 +104,7 @@ plates = plates_all[:-2]
 
 #create_basic_table(plates)
 
-create_light_table(plates, "run-status-table-light.ascii")
+# create_light_table(plates, "run-status-table-light.ascii")
 
 for plate in plates:
 	fibs = get_unprocessed_fiber_lists_per_plate(plate)
