@@ -11,7 +11,13 @@ from os.path import join
 import InterpretFirefly as itf 
 import numpy as n
 
-plateList = n.loadtxt("plateList", unpack = True)
+import sys
+for arg in sys.argv:
+    print arg
+
+plate = sys.argv[1]
+
+#plateList = n.loadtxt("plateList", unpack = True)
 
 def create_master_table(plate=1000):
 	stellarpop_files=n.array(glob.glob( join( os.environ['SDSSDR12_DIR'], "stellarpop", str(int(plate)), "*.fits" ) ) )
@@ -38,9 +44,7 @@ def create_master_table(plate=1000):
 		n.savetxt(path_to_output_table_full, tableFull, header = head)	
 		n.savetxt(path_to_output_table_line, tablePG, header = head)	
 
-for plate in plateList[893:]:
-	print plate
-	create_master_table(plate)
+create_master_table(plate)
 
 sys.exit()
 
