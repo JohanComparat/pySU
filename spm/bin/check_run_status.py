@@ -106,7 +106,7 @@ f.write("----------------------------------------\n")
 f.write("Total data: " + str(len(Nspec[isSpec])) + " plates containing " + str(int(n.sum(Nspec)))+ " spectra (contains sky and std star fibers) \n")
 f.write("Total galaxy: "+ str(int(n.sum(Ngal))) + " galaxies with CLASS=GALAXY AND 0<z<1.7 \n")
 f.write("Total FFfit: " + str(int(n.sum(Nfit))) + " , i.e. "+str(n.round(100.*n.sum(Nfit)/n.sum(Ngal),2))+" per cent \n")
-f.write("Total emission line:" str(int(n.sum(Nmodel)))+" spectra have an emission line model, i.e. "+str(n.round(100.*n.sum(Nmodel)/n.sum(Ngal),2))+" per cent \n")
+f.write("Total emission line:" + str(int(n.sum(Nmodel)))+" spectra have an emission line model, i.e. "+str(n.round(100.*n.sum(Nmodel)/n.sum(Ngal),2))+" per cent \n")
 
 f.write( str(int(n.sum(lenTableLine)))+" spectra are in a summary table, i.e. "+str(n.round(100.*n.sum(lenTableLine)/n.sum(Ngal),2))+" per cent \n")
 
