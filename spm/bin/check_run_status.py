@@ -26,6 +26,27 @@ def get_plate_lists(plate, dir ='stellarpop-m11-salpeter'):
 	
 	return specList, fitList, modList, tabList_l, tabList_f
 
+
+def get_unprocessed_fiber_lists_per_plate(plate, dir ='stellarpop-m11-salpeter'):
+	in_plate = (hdus[1].data['PLATE']==int(plate))
+	gal = (in_plate) & (hdus[1].data['CLASS']=="GALAXY") & (hdus[1].data['Z']>0) & (hdus[1].data['Z']<1.7)
+	fiber_2_fit = hdus[1].data['FIBERID'][in_plate]
+	mjd_2_fit = hdus[1].data['MJD'][in_plate]
+	
+	specList = n.array(glob.glob(join( os.environ['SDSSDR12_DIR'], 'spectra', str(plate), 'spec-*.fits')))
+	specList.sort()
+	fib_spec = n.array([int(os.path.basename(fl).split('-')[3]) for fl in specList ])
+	mjd_spec = n.array([int(os.path.basename(fl).split('-')[2]) for fl in specList ])
+	
+	fitList = n.array(glob.glob(join( os.environ['SDSSDR12_DIR'], dir, "stellarpop", str(plate), '*.fits')))
+	fitList.sort()	
+	fib_fitted = n.array([int(os.path.basename(fl).split('-')[3]) for fl in fitList ])
+	mjd_fitted = n.array([int(os.path.basename(fl).split('-')[2]) for fl in fitList ])
+	
+	remaining_fibers = set(fib_fitted).difference(set(fiber_2_fit))
+		
+	return remaining_fibers 
+
 def get_info_from_catalog(plate):
 	in_plate = (hdus[1].data['PLATE']==int(plate))
 	gal = (in_plate) & (hdus[1].data['CLASS']=="GALAXY") & (hdus[1].data['Z']>0) & (hdus[1].data['Z']<1.7)
@@ -81,9 +102,14 @@ def create_basic_table(plates, outname = "run-status-table.ascii",  dir ='stella
 plates_all = n.loadtxt( join(os.environ['SDSSDR12_DIR'], "plateNumberList"), unpack=True, dtype='str')
 plates = plates_all[:-2]
 
-create_basic_table(plates)
-create_light_table("run-status-table-light.ascii")
+#create_basic_table(plates)
 
+create_light_table(plates, "run-status-table-light.ascii")
+
+for plate in plates:
+	fibs = get_unprocessed_fiber_lists_per_plate(plate)
+	n.savetxt(join( os.environ['SDSSDR12_DIR'], dir, "remaining_2_process" "remaining_fibers_"+plate+".txt"), n.transpose([n.ones_like(n.array(list(fibs)))*int(plate),n.array(list(fibs))]))
+	
 # now exploit the data created
 outname = "run-status-table.ascii"
 dir ='stellarpop-m11-salpeter'
@@ -92,7 +118,7 @@ plates, Nspec, Ngal, Nfit, Nmodel, lenTableLine,lenTableFull = n.loadtxt(join( o
 comp = 0.9
 isSpec = (Nspec > 0)
 isGal = (Ngal > 0) & (isSpec)
-done_fit = (Ngal *comp <= Nfit) & (isGal)
+not_fitted_FF = ( Nfit < Ngal ) & (isGal)
 done_model = (Ngal * comp <= Nmodel) & (isGal)
 done_table_l = (Ngal * comp <= lenTableLine) & (isGal)
 done_table_f = (Ngal * comp <= lenTableFull) & (isGal)
@@ -106,7 +132,11 @@ f.write("----------------------------------------\n")
 f.write("Total data: " + str(len(Nspec[isSpec])) + " plates containing " + str(int(n.sum(Nspec)))+ " spectra (contains sky and std star fibers) \n")
 f.write("Total galaxy: "+ str(int(n.sum(Ngal))) + " galaxies with CLASS=GALAXY AND 0<z<1.7 \n")
 f.write("Total FFfit: " + str(int(n.sum(Nfit))) + " , i.e. "+str(n.round(100.*n.sum(Nfit)/n.sum(Ngal),2))+" per cent \n")
-f.write("Total emission line:" + str(int(n.sum(Nmodel)))+" spectra have an emission line model, i.e. "+str(n.round(100.*n.sum(Nmodel)/n.sum(Ngal),2))+" per cent \n")
+
+# incomplete plate list
+len(plates[not_fitted_FF])
+
+f.write("Total emission line: " + str(int(n.sum(Nmodel)))+" spectra have an emission line model, i.e. "+str(n.round(100.*n.sum(Nmodel)/n.sum(Ngal),2))+" per cent \n")
 
 f.write( str(int(n.sum(lenTableLine)))+" spectra are in a summary table, i.e. "+str(n.round(100.*n.sum(lenTableLine)/n.sum(Ngal),2))+" per cent \n")
 
