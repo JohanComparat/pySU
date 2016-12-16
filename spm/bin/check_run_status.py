@@ -105,8 +105,10 @@ plates = plates_all[:-2]
 # create_light_table(plates, "run-status-table-light.ascii")
 
 for plate in plates:
+	print plate
 	fibs = get_unprocessed_fiber_lists_per_plate(plate)
-	n.savetxt(join( os.environ['SDSSDR12_DIR'], dir, "remaining_2_process" "remaining_fibers_"+plate+".txt"), n.transpose([n.ones_like(n.array(list(fibs)))*int(plate),n.array(list(fibs))]))
+	if len(fibs)>0:
+		n.savetxt(join( os.environ['SDSSDR12_DIR'], dir, "remaining_2_process", "remaining_fibers_"+plate+".txt"), n.transpose([n.ones_like(n.array(list(fibs)))*int(plate),n.array(list(fibs))]))
 	
 # now exploit the data created
 outname = "run-status-table.ascii"
