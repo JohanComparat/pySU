@@ -68,41 +68,52 @@ def process_MD(files, outs):
 		print "match", time.time()-t0
 		
 
+def match_cats(outs):
+	t0=time.time()
+	for file in outs:
+		match_sat_cen(file)
+		print "match", time.time()-t0
+		
 files = n.array(glob.glob("/data2/DATA/eBOSS/Multidark-lightcones/MD_0.4Gpc/snapshots/out_*_PM_Nb_?.fits"))
 files.sort()
 outs = n.array(glob.glob("/data2/DATA/eBOSS/Multidark-lightcones/MD_0.4Gpc/snapshots/out_*.list"))
 outs.sort()
 #process_MD(files, outs)
-
+match_cats(outs)
 
 files = n.array(glob.glob("/data2/DATA/eBOSS/Multidark-lightcones/MD_1Gpc/snapshots/out_*_PM_Nb_?.fits"))
 files.sort()
 outs = n.array(glob.glob("/data2/DATA/eBOSS/Multidark-lightcones/MD_1Gpc/snapshots/out_*.list"))
 outs.sort()
-process_MD(files, outs)
+#process_MD(files, outs)
+match_cats(outs)
 
 
 files = n.array(glob.glob("/data2/DATA/eBOSS/Multidark-lightcones/MD_2.5Gpc/snapshots/out_*_PM_Nb_?.fits"))
 files.sort()
 outs = n.array(glob.glob("/data2/DATA/eBOSS/Multidark-lightcones/MD_2.5Gpc/snapshots/out_*.list"))
 outs.sort()
-process_MD(files, outs)
+#process_MD(files, outs)
+match_cats(outs)
 
 files = n.array(glob.glob("/data2/DATA/eBOSS/Multidark-lightcones/MD_2.5GpcNW/snapshots/out_*_PM_Nb_?.fits"))
 files.sort()
 outs = n.array(glob.glob("/data2/DATA/eBOSS/Multidark-lightcones/MD_2.5GpcNW/snapshots/out_*.list"))
 outs.sort()
-process_MD(files, outs)
+#process_MD(files, outs)
+match_cats(outs)
 
 files = n.array(glob.glob("/data2/DATA/eBOSS/Multidark-lightcones/MD_4GpcNW/snapshots/out_*_PM_Nb_?.fits"))
 files.sort()
 outs = n.array(glob.glob("/data2/DATA/eBOSS/Multidark-lightcones/MD_4GpcNW/snapshots/out_*.list"))
 outs.sort()
-process_MD(files, outs)
+#process_MD(files, outs)
+match_cats(outs)
 
 files = n.array(glob.glob("/data2/DATA/eBOSS/Multidark-lightcones/MD_4Gpc/snapshots/out_*_PM_Nb_?.fits"))
 files.sort()
 outs = n.array(glob.glob("/data2/DATA/eBOSS/Multidark-lightcones/MD_4Gpc/snapshots/out_*.list"))
 outs.sort()
-process_MD(files, outs)
+#process_MD(files, outs)
+match_cats(outs)
 
