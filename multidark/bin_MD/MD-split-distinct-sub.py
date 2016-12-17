@@ -31,17 +31,16 @@ def concat_cen_files(fileName):
 def match_sat_cen(fileName):
 	satFileName = fileName[:-5] + "_sat_all.fits"
 	cenFileName = fileName[:-5] + "_cen_all.fits"
-	outFileNameA = fileName[:-5] + "_subhalos_A.fits"
-	outFileNameB = fileName[:-5] + "_subhalos_B.fits"
-	outFileName = fileName[:-5] + "_subhalos.fits"
+	outFileNameA = fileName[:-5] + "_subhalos_inDistinct.fits"
+	outFileNameB = fileName[:-5] + "_subhalos_inSat.fits"
 	command = """java -jar /home2/jcomparat/code/stilts.jar tmatch2 ifmt1=fits in1="""+satFileName+""" ifmt2=fits in2="""+cenFileName+""" find=all matcher=exact join=1and2 suffix1="_sat" suffix2="_cen" values1=pid values2=id omode=out ofmt=fits out="""+outFileNameA
 	os.system(command)
 	command = """java -jar /home2/jcomparat/code/stilts.jar tmatch2 ifmt1=fits in1="""+satFileName+""" ifmt2=fits in2="""+satFileName+""" find=all matcher=exact join=1and2 suffix1="_sat" suffix2="_cen" values1=pid values2=id omode=out ofmt=fits out="""+outFileNameB
 	os.system(command)
-	command = """java -jar /home2/jcomparat/code/stilts.jar tcat ifmt=fits in="""+outFileNameA+""" in="""+outFileNameB+""" omode=out ofmt=fits out="""+outFileName
-	os.system(command)
-	os.system("rm "+outFileNameA)
-	os.system("rm "+outFileNameB)
+	#command = """java -jar /home2/jcomparat/code/stilts.jar tcat ifmt=fits in="""+outFileNameA+""" in="""+outFileNameB+""" omode=out ofmt=fits out="""+outFileName
+	#os.system(command)
+	#os.system("rm "+outFileNameA)
+	#os.system("rm "+outFileNameB)
 	
 def process_MD(files, outs):
 	t0=time.time()
