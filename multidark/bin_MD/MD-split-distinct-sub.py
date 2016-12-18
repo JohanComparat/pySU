@@ -89,7 +89,7 @@ def process_MD(files, outs):
 def match_cats(outs):
 	t0=time.time()
 	for file in outs:
-		match_sat_cen(file)
+		#match_sat_cen(file)
 		match_sat_cen_d2(file)
 		match_sat_cen_d3(file)
 		print "match", time.time()-t0
