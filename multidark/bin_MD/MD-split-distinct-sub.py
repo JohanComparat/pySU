@@ -33,15 +33,34 @@ def match_sat_cen(fileName):
 	cenFileName = fileName[:-5] + "_cen_all.fits"
 	outFileNameA = fileName[:-5] + "_subhalos_inDistinct.fits"
 	outFileNameB = fileName[:-5] + "_subhalos_inSat.fits"
-	command = """java -jar /home2/jcomparat/code/stilts.jar tmatch2 ifmt1=fits in1="""+satFileName+""" ifmt2=fits in2="""+cenFileName+""" find=all matcher=exact join=1and2 suffix1="_sat" suffix2="_cen" values1=pid values2=id omode=out ofmt=fits out="""+outFileNameA
+	command = """java -jar /home2/jcomparat/code/stilts.jar tmatch2 ifmt1=fits in1="""+satFileName+""" ifmt2=fits in2="""+cenFileName+""" find=all matcher=exact join=1and2 fixcols=all suffix1="_sat" suffix2="_cen" values1=pid values2=id omode=out ofmt=fits out="""+outFileNameA
 	os.system(command)
-	command = """java -jar /home2/jcomparat/code/stilts.jar tmatch2 ifmt1=fits in1="""+satFileName+""" ifmt2=fits in2="""+satFileName+""" find=all matcher=exact join=1and2 suffix1="_sat" suffix2="_cen" values1=pid values2=id omode=out ofmt=fits out="""+outFileNameB
+	command = """java -jar /home2/jcomparat/code/stilts.jar tmatch2 ifmt1=fits in1="""+satFileName+""" ifmt2=fits in2="""+satFileName+""" find=all matcher=exact join=1and2 fixcols=all suffix1="_sat_n" suffix2="_sat_n_1" values1=pid values2=id omode=out ofmt=fits out="""+outFileNameB
 	os.system(command)
-	#command = """java -jar /home2/jcomparat/code/stilts.jar tcat ifmt=fits in="""+outFileNameA+""" in="""+outFileNameB+""" omode=out ofmt=fits out="""+outFileName
-	#os.system(command)
-	#os.system("rm "+outFileNameA)
-	#os.system("rm "+outFileNameB)
-	
+
+def match_sat_cen_d2(fileName):
+	satFileName = fileName[:-5] + "_sat_all.fits"
+	cenFileName = fileName[:-5] + "_cen_all.fits"
+	sat_in_sat_file = fileName[:-5] + "_subhalos_inSat.fits"
+	outFileNameB = fileName[:-5] + "_subhalos_inSat2.fits"
+	outFileNameA = fileName[:-5] + "_subhalos_inDistinct2.fits"
+	command = """java -jar /home2/jcomparat/code/stilts.jar tmatch2 ifmt1=fits in1="""+sat_in_sat_file+""" ifmt2=fits in2="""+cenFileName+""" find=all matcher=exact join=1and2 fixcols=all suffix1="_sat_n_1" suffix2="_cen" values1=pid_sat_n_1 values2=id omode=out ofmt=fits out="""+outFileNameA
+	os.system(command)
+	command = """java -jar /home2/jcomparat/code/stilts.jar tmatch2 ifmt1=fits in1="""+sat_in_sat_file+""" ifmt2=fits in2="""+satFileName+""" find=all matcher=exact join=1and2 fixcols=all suffix1="_sat_n_1" suffix2="_sat_n_2" values1=pid_sat_n_1 values2=id omode=out ofmt=fits out="""+outFileNameB
+	os.system(command)
+
+
+def match_sat_cen_d3(fileName):
+	satFileName = fileName[:-5] + "_sat_all.fits"
+	cenFileName = fileName[:-5] + "_cen_all.fits"
+	sat_in_sat_file = fileName[:-5] + "_subhalos_inSat2.fits"
+	outFileNameB = fileName[:-5] + "_subhalos_inSat3.fits"
+	outFileNameA = fileName[:-5] + "_subhalos_inDistinct3.fits"
+	command = """java -jar /home2/jcomparat/code/stilts.jar tmatch2 ifmt1=fits in1="""+sat_in_sat_file+""" ifmt2=fits in2="""+cenFileName+""" find=all matcher=exact join=1and2 fixcols=all suffix1="_sat_n_2" suffix2="_cen" values1=pid_sat_n_2 values2=id omode=out ofmt=fits out="""+outFileNameA
+	os.system(command)
+	command = """java -jar /home2/jcomparat/code/stilts.jar tmatch2 ifmt1=fits in1="""+sat_in_sat_file+""" ifmt2=fits in2="""+satFileName+""" find=all matcher=exact join=1and2 fixcols=all suffix1="_sat_n_2" suffix2="_sat_n_3" values1=pid_sat_n_2 values2=id omode=out ofmt=fits out="""+outFileNameB
+	os.system(command)
+
 def process_MD(files, outs):
 	t0=time.time()
 	for file in files:
@@ -71,6 +90,8 @@ def match_cats(outs):
 	t0=time.time()
 	for file in outs:
 		match_sat_cen(file)
+		match_sat_cen_d2(file)
+		match_sat_cen_d3(file)
 		print "match", time.time()-t0
 		
 files = n.array(glob.glob("/data2/DATA/eBOSS/Multidark-lightcones/MD_0.4Gpc/snapshots/out_*_PM_Nb_?.fits"))
