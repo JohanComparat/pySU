@@ -22,7 +22,7 @@ def modelPlate(plate):
 	#print spec_files
 	
 	for file in spec_files:
-		outFile =  join( os.environ['SDSSDR12_DIR'], version, "model", os.path.basename(file)[:-5] + ".model")
+		outFile =  join( os.environ['SDSSDR12_DIR'], version, "model", str(int(plate)), os.path.basename(file)[:-5] + ".model")
 		if os.path.isfile(outFile) :
 			print outFile, "exists"
 			pass
