@@ -18,16 +18,21 @@ def modelPlate(plate):
 	stellarpop_files=n.array(glob.glob( join( os.environ['SDSSDR12_DIR'], "stellarpop-m11-salpeter", "stellarpop", str(int(plate)), "*.fits" ) ) )
 	spec_files = n.array([join( os.environ['SDSSDR12_DIR'],  str(int(plate)),  os.path.basename(el)[:-15] + ".fits") for el in stellarpop_files ])
 	spec_files.sort()
-	print spec_files
+	#print spec_files
 	
 	for file in spec_files:
-		print( file )
-		mm=ModelSpectraStacks(file,mode="MILES")
-		#mm.plot_fit()
-		mm.fit_lines_to_fullSpectrum()
-		mm.fit_lines_to_lineSpectrum()
-		#mm.compute_derived_quantities()
-		mm.save_spectrum()
-		#mm.plot_spectrum()
+		outFile =  join( os.environ['SDSSDR12_DIR'], "stellarpop-m11-salpeter", "model", os.path.basename(self.file)[:-5] + ".model")
+		if os.path.isfile(outFile) :
+			print outFile, "exists"
+			pass
+		else:
+			print( file ), "fits ongoing"
+			mm=ModelSpectraStacks(file,mode="MILES")
+			#mm.plot_fit()
+			mm.fit_lines_to_fullSpectrum()
+			mm.fit_lines_to_lineSpectrum()
+			#mm.compute_derived_quantities()
+			mm.save_spectrum()
+			#mm.plot_spectrum()
 
 modelPlate(plate)
