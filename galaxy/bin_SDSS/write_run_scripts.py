@@ -17,11 +17,11 @@ def writeScript(rootName, plate):
 	f.write("export PYTHONPATH=$PYTHONPATH:/users/comparat/pySU/targetselection/python/ \n")
 	f.write(" \n")
 	f.write("cd /users/comparat/pySU/galaxy/bin_SDSS \n")
-	f.write("python model_stacked_spectra_SDSS "+plate+" \n")
+	f.write("python model_stacked_spectra_SDSS_kr "+plate+" \n")
 	f.write(" \n")
 	f.close()
 
 plateList = n.loadtxt("plateList", unpack = True)
 for plate in plateList:
-	rootName = join(os.environ['HOME'], "batchscripts_firefly_model", str(int(plate)))
+	rootName = join(os.environ['HOME'], "batchscripts_firefly_model_kr", str(int(plate)))
 	writeScript(rootName, str(int(plate)))

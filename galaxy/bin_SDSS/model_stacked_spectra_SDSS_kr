@@ -1,0 +1,39 @@
+#! /usr/bin/env python
+
+from ModelSdssSpectra import *
+import glob
+from os.path import join
+import os
+import numpy as n
+# plateList = n.loadtxt("plateList", unpack = True)
+# for plate in plateList[696:699]:
+#plate = plateList[1000]
+import sys
+for arg in sys.argv:
+    print arg
+
+plate = sys.argv[1]
+version =  "stellarpop-m11-kroupa"
+
+def modelPlate(plate):
+	stellarpop_files=n.array(glob.glob( join( os.environ['SDSSDR12_DIR'], version, "stellarpop", str(int(plate)), "*.fits" ) ) )
+	spec_files = n.array([join( os.environ['SDSSDR12_DIR'], "spectra", str(int(plate)),  os.path.basename(el)[:-15] + ".fits") for el in stellarpop_files ])
+	spec_files.sort()
+	#print spec_files
+	
+	for file in spec_files:
+		outFile =  join( os.environ['SDSSDR12_DIR'], version, "model", os.path.basename(file)[:-5] + ".model")
+		if os.path.isfile(outFile) :
+			print outFile, "exists"
+			pass
+		else:
+			print( file ), "fits ongoing"
+			mm=ModelSpectraStacks(file, mode="MILES", version=version)
+			#mm.plot_fit()
+			mm.fit_lines_to_fullSpectrum()
+			mm.fit_lines_to_lineSpectrum()
+			#mm.compute_derived_quantities()
+			mm.save_spectrum()
+			#mm.plot_spectrum()
+
+modelPlate(plate)

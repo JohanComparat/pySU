@@ -66,7 +66,7 @@ class ModelSpectraStacks:
 	:param sdss_max_wavelength: minimum wavelength considered by firefly (default : 7500)
 	:param dV: default value that hold the place (default : -9999.99) 
 	"""
-	def __init__(self, spec_file, mode="MILES", cosmo=cosmo, sdss_min_wavelength= 1000., sdss_max_wavelength=7500., dV=-9999.99):
+	def __init__(self, spec_file, mode="MILES", cosmo=cosmo, sdss_min_wavelength= 1000., sdss_max_wavelength=7500., dV=-9999.99, version="stellarpop-m11-salpeter"):
 		self.mode = mode
 		
 		self.spec_file = spec_file
@@ -75,8 +75,8 @@ class ModelSpectraStacks:
 		self.plate = spl[1]
 		self.mjd = spl[2]
 		self.fiber = spl[3]			
-		self.spec_model_file = os.path.join( os.environ['SDSSDR12_DIR'], "stellarpop-m11-salpeter", "stellarpop", self.plate, self.spec_file_base[:-5] + "-SPM-MILES.fits")
-		outPutDir = os.path.join( os.environ['SDSSDR12_DIR'], "stellarpop-m11-salpeter", "model", self.plate)
+		self.spec_model_file = os.path.join( os.environ['SDSSDR12_DIR'], version, "stellarpop", self.plate, self.spec_file_base[:-5] + "-SPM-MILES.fits")
+		outPutDir = os.path.join( os.environ['SDSSDR12_DIR'], version, "model", self.plate)
 		if os.path.isdir(outPutDir)==False:
 			os.mkdir(outPutDir)
 		
