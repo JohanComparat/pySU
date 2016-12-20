@@ -134,7 +134,7 @@ f.write("Total galaxy: "+ str(int(n.sum(Ngal))) + " galaxies with CLASS=GALAXY A
 f.write("Total FFfit: " + str(int(n.sum(Nfit))) + " , i.e. "+str(n.round(100.*n.sum(Nfit)/n.sum(Ngal),2))+" per cent \n")
 
 # incomplete plate list
-len(plates[not_fitted_FF])
+print len(plates[not_fitted_FF])
 
 f.write("Total emission line: " + str(int(n.sum(Nmodel)))+" spectra have an emission line model, i.e. "+str(n.round(100.*n.sum(Nmodel)/n.sum(Ngal),2))+" per cent \n")
 
