@@ -75,7 +75,7 @@ class ModelSpectraStacks:
 		self.plate = spl[1]
 		self.mjd = spl[2]
 		self.fiber = spl[3]			
-		self.spec_model_file = os.path.join( os.environ['SDSSDR12_DIR'], "stellarpop", self.plate, self.spec_file_base[:-5] + "-SPM-MILES.fits")
+		self.spec_model_file = os.path.join( os.environ['SDSSDR12_DIR'], "stellarpop-m11-salpeter",, "stellarpop", self.plate, self.spec_file_base[:-5] + "-SPM-MILES.fits")
 		outPutDir = os.path.join( os.environ['SDSSDR12_DIR'], "stellarpop-m11-salpeter", "model", self.plate)
 		if os.path.isdir(outPutDir)==False:
 			os.mkdir(outPutDir)
