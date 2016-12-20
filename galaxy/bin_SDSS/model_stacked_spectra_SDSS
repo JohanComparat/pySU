@@ -15,7 +15,7 @@ for arg in sys.argv:
 plate = sys.argv[1]
 
 def modelPlate(plate):
-	stellarpop_files=n.array(glob.glob( join( os.environ['SDSSDR12_DIR'], "stellarpop", str(int(plate)), "*.fits" ) ) )
+	stellarpop_files=n.array(glob.glob( join( os.environ['SDSSDR12_DIR'], "stellarpop-m11-salpeter", "stellarpop", str(int(plate)), "*.fits" ) ) )
 	spec_files = n.array([join( os.environ['SDSSDR12_DIR'],  str(int(plate)),  os.path.basename(el)[:-15] + ".fits") for el in stellarpop_files ])
 	spec_files.sort()
 	print spec_files
