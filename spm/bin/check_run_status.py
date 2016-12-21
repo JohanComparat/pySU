@@ -113,7 +113,7 @@ def create_basic_table(plates, outname = "run-status-table.ascii",  dir ='stella
 plates_all = n.loadtxt( join(os.environ['SDSSDR12_DIR'], "plateNumberList"), unpack=True, dtype='str')
 plates = plates_all[:-2]
 
-#create_basic_table(plates)
+create_basic_table(plates)
 
 # create_light_table(plates, "run-status-table-light.ascii")
 	
