@@ -5,9 +5,22 @@ import glob
 import sys 
 import time
 import astropy.io.fits as fits
-
+dir ='stellarpop-m11-salpeter'
 hdus = fits.open( join( os.environ['SDSSDR12_DIR'], "catalogs", "specObj-dr12.fits") )
 
+def get_lists_fits_models(plate, dir ='stellarpop-m11-salpeter'):
+	fitList = n.array(glob.glob(join( os.environ['SDSSDR12_DIR'], dir, "stellarpop", str(int(plate)), '*.fits')))
+	modList = n.array(glob.glob(join( os.environ['SDSSDR12_DIR'], dir, "model", str(int(plate)), '*.model')))
+	return len(fitList), len(modList)
+
+"""
+nF=n.zeros_like(plates)
+nM=n.zeros_like(plates)
+for ii, plate in enumerate(plates):
+	nF[ii], nM[ii] = get_lists_fits_models(plate, dir=dir)
+	print ii, plate, nF[ii], nM[ii], nM[ii] *100./nF[ii]
+
+"""
 def get_plate_lists(plate, dir ='stellarpop-m11-salpeter'):
 	specList = n.array(glob.glob(join( os.environ['SDSSDR12_DIR'], 'spectra', str(plate), 'spec-*.fits')))
 	specList.sort()
@@ -103,7 +116,7 @@ plates = plates_all[:-2]
 #create_basic_table(plates)
 
 # create_light_table(plates, "run-status-table-light.ascii")
-
+	
 for plate in plates:
 	print plate
 	fibs = get_unprocessed_fiber_lists_per_plate(plate)
@@ -141,6 +154,8 @@ f.write("Total emission line: " + str(int(n.sum(Nmodel)))+" spectra have an emis
 f.write( str(int(n.sum(lenTableLine)))+" spectra are in a summary table, i.e. "+str(n.round(100.*n.sum(lenTableLine)/n.sum(Ngal),2))+" per cent \n")
 
 f.close()
+
+
 
 sys.exit()
 
