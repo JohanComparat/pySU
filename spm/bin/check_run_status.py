@@ -8,8 +8,16 @@ import astropy.io.fits as fits
 dir ='stellarpop-m11-salpeter'
 hdus = fits.open( join( os.environ['SDSSDR12_DIR'], "catalogs", "specObj-dr12.fits") )
 
+plates_all = n.loadtxt( join(os.environ['SDSSDR12_DIR'], "plateNumberList"), unpack=True, dtype='str')
+plates = plates_all[:-2]
+
 def get_lists_fits_models(plate, dir ='stellarpop-m11-salpeter'):
 	fitList = n.array(glob.glob(join( os.environ['SDSSDR12_DIR'], dir, "stellarpop", str(int(plate)), '*.fits')))
+	modList = n.array(glob.glob(join( os.environ['SDSSDR12_DIR'], dir, "model", str(int(plate)), '*.model')))
+	return len(fitList), len(modList)
+
+def get_lists_fits_tables(plate, dir ='stellarpop-m11-salpeter'):
+	fitList = n.array(glob.glob(join( os.environ['SDSSDR12_DIR'], dir, "tables", str(int(plate))+ '_full.data')))
 	modList = n.array(glob.glob(join( os.environ['SDSSDR12_DIR'], dir, "model", str(int(plate)), '*.model')))
 	return len(fitList), len(modList)
 
@@ -18,8 +26,20 @@ nF=n.zeros_like(plates)
 nM=n.zeros_like(plates)
 for ii, plate in enumerate(plates):
 	nF[ii], nM[ii] = get_lists_fits_models(plate, dir=dir)
-	print ii, plate, nF[ii], nM[ii], nM[ii] *100./nF[ii]
+	print ii, plate, nF[ii], nM[ii]#, nM[ii] *100./nF[ii]
 
+plates[(nM<nF)]
+
+
+nF=n.zeros_like(plates)
+nM=n.zeros_like(plates)
+for ii, plate in enumerate(plates):
+	nF[ii], nM[ii] = get_lists_fits_tables(plate, dir=dir)
+	print ii, plate, nF[ii], nM[ii]#, nM[ii] *100./nF[ii]
+
+plates[(nF=='0')]
+
+n.savetxt("plates_to_run.ascii", n.transpose(plates[(nF=='0')]), fmt='%s')
 """
 def get_plate_lists(plate, dir ='stellarpop-m11-salpeter'):
 	specList = n.array(glob.glob(join( os.environ['SDSSDR12_DIR'], 'spectra', str(plate), 'spec-*.fits')))
@@ -110,9 +130,6 @@ def create_basic_table(plates, outname = "run-status-table.ascii",  dir ='stella
 		print ii, plate, time.time() - t0
 	n.savetxt(join( os.environ['SDSSDR12_DIR'], dir, outname), n.transpose([plates.astype('int'), Nspec, Ngal, Nfit, Nmodel, lenTableLine, lenTableFull]), header='plate Nspec Ngal Nfit Nmodel NinTable_l NinTable_f')
 			
-plates_all = n.loadtxt( join(os.environ['SDSSDR12_DIR'], "plateNumberList"), unpack=True, dtype='str')
-plates = plates_all[:-2]
-
 create_basic_table(plates)
 
 # create_light_table(plates, "run-status-table-light.ascii")
