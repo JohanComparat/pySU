@@ -26,11 +26,11 @@ nF=n.zeros_like(plates)
 nM=n.zeros_like(plates)
 for ii, plate in enumerate(plates):
 	nF[ii], nM[ii] = get_lists_fits_models(plate, dir=dir)
-	print ii, plate, nF[ii], nM[ii]#, nM[ii] *100./nF[ii]
+	#print ii, plate, nF[ii], nM[ii]#, nM[ii] *100./nF[ii]
 
 plates[(nM<nF)]
 
-
+ 
 nF=n.zeros_like(plates)
 nM=n.zeros_like(plates)
 for ii, plate in enumerate(plates):
@@ -39,7 +39,7 @@ for ii, plate in enumerate(plates):
 
 plates[(nF=='0')]
 
-n.savetxt("plates_to_run.ascii", n.transpose(plates[(nF=='0')]), fmt='%s')
+n.savetxt("/users/comparat/batchscripts_firefly_salpeter_table/plates_to_run.ascii", n.transpose(plates[(nF=='0')]), fmt='%s')
 """
 def get_plate_lists(plate, dir ='stellarpop-m11-salpeter'):
 	specList = n.array(glob.glob(join( os.environ['SDSSDR12_DIR'], 'spectra', str(plate), 'spec-*.fits')))

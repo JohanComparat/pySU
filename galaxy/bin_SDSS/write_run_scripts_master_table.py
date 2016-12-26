@@ -10,7 +10,7 @@ def writeScript(rootName, plate):
 	f.write("#PBS -M johan.comparat@gmail.com \n")
 	f.write("module load apps/anaconda/2.4.1 \n")
 	f.write("module load apps/python/2.7.8/gcc-4.4.7 \n")
-	f.write("export PYTHONPATH=$PYTHONPATH:/users/comparat/pySU/galaxy/python/ \\n")
+	f.write("export PYTHONPATH=$PYTHONPATH:/users/comparat/pySU/galaxy/python/ \n")
 	f.write("export PYTHONPATH=$PYTHONPATH:/users/comparat/pySU/simulations/python/ \n")
 	f.write("export PYTHONPATH=$PYTHONPATH:/users/comparat/pySU/multidark/python/ \n")
 	f.write("export PYTHONPATH=$PYTHONPATH:/users/comparat/pySU/spm/python/ \n")

@@ -94,6 +94,14 @@ def match_cats(outs):
 		match_sat_cen_d3(file)
 		print "match", time.time()-t0
 		
+files = n.array(glob.glob("/data2/DATA/eBOSS/DarkSkies/snapshots/ds14_*_PM_Nb_*.fits"))
+files.sort()
+outs = n.array(glob.glob("/data2/DATA/eBOSS/DarkSkies/snapshots/ds14_*.dat"))
+outs.sort()
+process_MD(files, outs)
+#match_cats(outs)
+sys.exit()
+
 files = n.array(glob.glob("/data2/DATA/eBOSS/Multidark-lightcones/MD_0.4Gpc/snapshots/out_*_PM_Nb_?.fits"))
 files.sort()
 outs = n.array(glob.glob("/data2/DATA/eBOSS/Multidark-lightcones/MD_0.4Gpc/snapshots/out_*.list"))
