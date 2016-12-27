@@ -21,20 +21,15 @@ import shlex
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
 # root package
-sys.path.insert(0, os.path.abspath('/users/jcomparat/skies_universes_production/pySU/'))
+sys.path.insert(0, os.path.abspath(os.environ['GIT_PYSU']))
 
 # galaxy package
-sys.path.insert(0, os.path.abspath('/users/jcomparat/skies_universes_production/pySU/galaxy/'))
-sys.path.insert(0, os.path.abspath('/users/jcomparat/skies_universes_production/pySU/galaxy/python/'))
-
-# MultiDark
-sys.path.insert(0, os.path.abspath('/users/jcomparat/skies_universes_production/pySU/multidark/'))
-sys.path.insert(0, os.path.abspath('/users/jcomparat/skies_universes_production/pySU/multidark/python/'))
+sys.path.insert(0, os.path.abspath(os.environ['GIT_PYSU_GAL']))
+sys.path.insert(0, os.path.abspath(os.path.join(os.environ['GIT_PYSU_GAL'],'python')))
 
 # stellar population model
-sys.path.insert(0, os.path.abspath('/users/jcomparat/skies_universes_production/pySU/spm/'))
-sys.path.insert(0, os.path.abspath('/users/jcomparat/skies_universes_production/pySU/spm/python/'))
-
+sys.path.insert(0, os.path.abspath(os.environ['GIT_PYSU_SPM']))
+sys.path.insert(0, os.path.abspath(os.path.join(os.environ['GIT_PYSU_SPM'],'python')))
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
