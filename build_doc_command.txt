@@ -1,0 +1,1 @@
+C:\Python27\Scripts\sphinx-build.exe -b html D:\documents\GitHub\pySU\doc D:\documents\GitHub\pySU\doc\_build

@@ -153,7 +153,7 @@ done_model = (Ngal * comp <= Nmodel) & (isGal)
 done_table_l = (Ngal * comp <= lenTableLine) & (isGal)
 done_table_f = (Ngal * comp <= lenTableFull) & (isGal)
 
-f=open(join( os.environ['SDSSDR12_DIR'], dir, "status.txt"), 'w')
+f=open(join( os.environ['SDSSDR12_DIR'], dir, "status-30-12.txt"), 'w')
 f.write("Status of the run \n")
 f.write("----------------------------------------\n")
 f.write("Author: JC \n")
