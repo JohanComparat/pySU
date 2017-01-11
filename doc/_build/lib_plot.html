@@ -52,6 +52,96 @@
   <div class="section" id="library-of-functions-to-produce-plots-related-to-galaxy-surveys">
 <h1>Library of functions to produce plots related to galaxy surveys<a class="headerlink" href="#library-of-functions-to-produce-plots-related-to-galaxy-surveys" title="Permalink to this headline">¶</a></h1>
 <p>This library provides plotting functions to compare different galaxy surveys</p>
+<span class="target" id="module-lib_plot"></span><p>This library enables to plot the different surveys on the same basis.</p>
+<dl class="function">
+<dt id="lib_plot.plotRaDecEBV">
+<code class="descclassname">lib_plot.</code><code class="descname">plotRaDecEBV</code><span class="sig-paren">(</span><em>ra</em>, <em>dec</em>, <em>ebv</em>, <em>name</em>, <em>pDir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lib_plot.html#plotRaDecEBV"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lib_plot.plotRaDecEBV" title="Permalink to this definition">¶</a></dt>
+<dd><p>creates a figure with ra, dec, coded with E(B-V).
+:param ra: column right ascension
+:param dec: column declination
+:param ebv: column E(B-V)
+:param name: name of the figure.
+:param pDir: where the figure will be saved.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lib_plot.plotZ_EW">
+<code class="descclassname">lib_plot.</code><code class="descname">plotZ_EW</code><span class="sig-paren">(</span><em>zz</em>, <em>ew</em>, <em>name</em>, <em>ylab</em>, <em>pDir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lib_plot.html#plotZ_EW"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lib_plot.plotZ_EW" title="Permalink to this definition">¶</a></dt>
+<dd><p>creates a figure with redshift, equivalent width.
+:param zz: column redshift
+:param ew: column equivalent width
+:param name: name of the figure.
+:param ylab : y axis label
+:param pDir: where the figure will be saved.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lib_plot.plotZ_Flux">
+<code class="descclassname">lib_plot.</code><code class="descname">plotZ_Flux</code><span class="sig-paren">(</span><em>zz</em>, <em>ff</em>, <em>name</em>, <em>ylab</em>, <em>pDir</em>, <em>flux_limit=3e-17</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lib_plot.html#plotZ_Flux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lib_plot.plotZ_Flux" title="Permalink to this definition">¶</a></dt>
+<dd><p>creates a figure with redshift, line flux.
+:param zz: column redshift
+:param ff: column line flux
+:param name: name of the figure.
+:param ylab : y axis label
+:param pDir: where the figure will be saved.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lib_plot.plotZ_Luminosity">
+<code class="descclassname">lib_plot.</code><code class="descname">plotZ_Luminosity</code><span class="sig-paren">(</span><em>zz</em>, <em>lum</em>, <em>name</em>, <em>ylab</em>, <em>pDir</em>, <em>flux_limit=3e-17</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lib_plot.html#plotZ_Luminosity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lib_plot.plotZ_Luminosity" title="Permalink to this definition">¶</a></dt>
+<dd><p>creates a figure with redshift, luminosity.
+:param zz: column redshift
+:param ew: column luminosity
+:param name: name of the figure.
+:param ylab : y axis label
+:param pDir: where the figure will be saved.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lib_plot.plotZ_Luminosity_Pdeg2">
+<code class="descclassname">lib_plot.</code><code class="descname">plotZ_Luminosity_Pdeg2</code><span class="sig-paren">(</span><em>zz</em>, <em>lum</em>, <em>WW</em>, <em>name</em>, <em>ylab</em>, <em>pDir</em>, <em>flux_limit=3e-17</em>, <em>line='O2_3728'</em>, <em>cmax=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lib_plot.html#plotZ_Luminosity_Pdeg2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lib_plot.plotZ_Luminosity_Pdeg2" title="Permalink to this definition">¶</a></dt>
+<dd><p>creates a figure with redshift, luminosity.
+:param zz: column redshift
+:param ew: column luminosity
+:param name: name of the figure.
+:param ylab : y axis label
+:param pDir: where the figure will be saved.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lib_plot.plotZ_SSR">
+<code class="descclassname">lib_plot.</code><code class="descname">plotZ_SSR</code><span class="sig-paren">(</span><em>zz</em>, <em>ssr</em>, <em>name</em>, <em>ylab</em>, <em>pDir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lib_plot.html#plotZ_SSR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lib_plot.plotZ_SSR" title="Permalink to this definition">¶</a></dt>
+<dd><p>creates a figure with redshift, spectroscopic success rate.
+:param zz: column redshift
+:param ssr: column spectroscopic success rate
+:param name: name of the figure.
+:param ylab : y axis label
+:param pDir: where the figure will be saved.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lib_plot.plot_EW_LF_measurement">
+<code class="descclassname">lib_plot.</code><code class="descname">plot_EW_LF_measurement</code><span class="sig-paren">(</span><em>lf_fits_file</em>, <em>lf_measurement_file</em>, <em>plotDir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lib_plot.html#plot_EW_LF_measurement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lib_plot.plot_EW_LF_measurement" title="Permalink to this definition">¶</a></dt>
+<dd><p>plot the LF and histograms of EW and luminosity.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lib_plot.plot_EW_LF_measurement_simulation">
+<code class="descclassname">lib_plot.</code><code class="descname">plot_EW_LF_measurement_simulation</code><span class="sig-paren">(</span><em>lf_fits_file</em>, <em>lf_measurement_file</em>, <em>plotDir</em>, <em>lfsdata</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lib_plot.html#plot_EW_LF_measurement_simulation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lib_plot.plot_EW_LF_measurement_simulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>plot the LF and histograms of EW and luminosity.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lib_plot.plot_I_TSR">
+<code class="descclassname">lib_plot.</code><code class="descname">plot_I_TSR</code><span class="sig-paren">(</span><em>mag</em>, <em>tsr</em>, <em>name</em>, <em>ylab</em>, <em>pDir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lib_plot.html#plot_I_TSR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lib_plot.plot_I_TSR" title="Permalink to this definition">¶</a></dt>
+<dd><p>creates a figure with magnitude and target sampling rate.
+:param mag: column selection band magnitude
+:param tsr: column target sampling rate
+:param name: name of the figure.
+:param ylab : y axis label
+:param pDir: where the figure will be saved.</p>
+</dd></dl>
+
 </div>
 
 

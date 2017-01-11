@@ -52,6 +52,28 @@
   <div class="section" id="firefly-fitter">
 <h1>firefly fitter<a class="headerlink" href="#firefly-fitter" title="Permalink to this headline">¶</a></h1>
 <p>This class is the engine of the FIREFLY code.</p>
+<span class="target" id="module-firefly_fitter"></span><dl class="function">
+<dt id="firefly_fitter.fitter">
+<code class="descclassname">firefly_fitter.</code><code class="descname">fitter</code><span class="sig-paren">(</span><em>wavelength_in</em>, <em>data_in</em>, <em>error_in</em>, <em>models_in</em>, <em>SPM</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/firefly_fitter.html#fitter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#firefly_fitter.fitter" title="Permalink to this definition">¶</a></dt>
+<dd><p>The essential ingredient of FIREFLY!</p>
+<p>Taking each base model as an initial guess, the fitter iteratively
+creates combinations of these base models when they improve the
+modified chi-squared value:
+value = chi-squared + BIC term - exploration term</p>
+<dl class="docutils">
+<dt>Input: data, base models, wavelength (for plotting) [, options]</dt>
+<dd>(data must be an array of length N)
+(base models must be a matrix of num_models x N)</dd>
+</dl>
+<p>Options: plot_eps: True/False (plot to fit.eps if True, X if False)</p>
+<dl class="docutils">
+<dt>Output: a set of model weight combinations and their associated chi-squared values,</dt>
+<dd>via an array of &#8216;fit&#8217; objects.
+Weights are arrays with length num_models.
+Fit arrays may be any size up to 10000.</dd>
+</dl>
+</dd></dl>
+
 </div>
 
 
