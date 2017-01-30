@@ -37,9 +37,8 @@ def runSpec(specLiteFile):
 	spec.openObservedSDSSSpectrum()
 	ageMax = np.log10(cosmo.age(spec.redshift).value*1e9)
 	print spec.redshift,  spec.hdulist[2].data['CLASS'][0], spec.hdulist[2].data['ZWARNING'][0]
-
-	if spec.redshift>0 and spec.redshift<1.7 and spec.hdulist[2].data['CLASS'][0]=="GALAXY" :#and spec.hdulist[2].data['ZWARNING'][0] ==0 :
-
+	#if spec.redshift>0 and spec.redshift<1.7 and spec.hdulist[2].data['CLASS'][0]=="GALAXY" :#and spec.hdulist[2].data['ZWARNING'][0] ==0 :
+	if spec.hdulist[2].data['CLASS_NOQSO'][0]=="GALAXY" and spec.hdulist[2].data['Z_NOQSO'][0] >  spec.hdulist[2].data['ZERR_NOQSO'][0] and spec.hdulist[2].data['ZERR_NOQSO'][0]>0 and spec.hdulist[2].data['ZWARNING'][0] ==0 and abs(spec.hdulist[2].data['Z_NOQSO'][0] - spec.hdulist[2].data['Z'][0])>abs(spec.hdulist[2].data['ZERR_NOQSO'][0]):
 		model = spm.StellarPopulationModel(spec, join(outputFolder , os.path.basename(specLiteFile)[:-5] ), cosmo, models = 'm11', model_libs = ['MILES'], imfs = ['kr'], age_limits = [6,10], downgrade_models = True, data_wave_medium = 'vacuum', Z_limits = [-3.,1.],suffix="-SPM-MILES.fits", use_downgraded_models = True)
 		try :
 			model.fit_models_to_data()

@@ -106,7 +106,7 @@ class GalaxySpectrumFIREFLY:
 		self.error = self.hdulist[1].data['ivar']**(-0.5)
 		self.bad_flags = np.ones(len(self.wavelength))
 		
-		self.redshift = self.hdulist[2].data['Z'][0]
+		self.redshift = self.hdulist[2].data['Z_NOQSO'][0] # can be 'Z'
 		self.vdisp = self.hdulist[2].data['VDISP'][0]
 		self.restframe_wavelength = self.wavelength / (1.0+self.redshift)
 
