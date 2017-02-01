@@ -83,7 +83,7 @@ def get_unprocessed_fiber_lists_per_plate(plate, dir = dir):
 
 def get_info_from_catalog(plate):
 	in_plate = (hdus[1].data['PLATE']==int(plate))
-	gal = (in_plate) & (hdus[1].data['CLASS']=="GALAXY") & (hdus[1].data['Z']>0) & (hdus[1].data['Z']<1.7)
+	gal = (in_plate) & (hdus[1].data['ZWARNING']==0) & (hdus[1].data['CLASS_NOQSO']=="GALAXY") & (hdus[1].data['Z_NOQSO'] > hdus[1].data['Z_ERR_NOQSO']) & (hdus[1].data['Z_ERR_NOQSO']>0)
 	return len(hdus[1].data['Z'][gal])
 
 def get_plate_lists_light(plate, dir = dir):
