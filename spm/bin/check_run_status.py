@@ -5,18 +5,21 @@ import glob
 import sys 
 import time
 import astropy.io.fits as fits
-dir ='stellarpop-m11-salpeter'
+
+dir = sys.argv[1]
+#dir ='stellarpop-m11-salpeter'
+
 hdus = fits.open( join( os.environ['SDSSDR12_DIR'], "catalogs", "specObj-dr12.fits") )
 
 plates_all = n.loadtxt( join(os.environ['SDSSDR12_DIR'], "plateNumberList"), unpack=True, dtype='str')
 plates = plates_all[:-2]
 
-def get_lists_fits_models(plate, dir ='stellarpop-m11-salpeter'):
+def get_lists_fits_models(plate, dir = dir):
 	fitList = n.array(glob.glob(join( os.environ['SDSSDR12_DIR'], dir, "stellarpop", str(int(plate)), '*.fits')))
 	modList = n.array(glob.glob(join( os.environ['SDSSDR12_DIR'], dir, "model", str(int(plate)), '*.model')))
 	return len(fitList), len(modList)
 
-def get_lists_fits_tables(plate, dir ='stellarpop-m11-salpeter'):
+def get_lists_fits_tables(plate, dir = dir):
 	fitList = n.array(glob.glob(join( os.environ['SDSSDR12_DIR'], dir, "tables", str(int(plate))+ '_full.data')))
 	modList = n.array(glob.glob(join( os.environ['SDSSDR12_DIR'], dir, "model", str(int(plate)), '*.model')))
 	return len(fitList), len(modList)
@@ -41,7 +44,7 @@ plates[(nF=='0')]
 
 n.savetxt("/users/comparat/batchscripts_firefly_salpeter_table/plates_to_run.ascii", n.transpose(plates[(nF=='0')]), fmt='%s')
 """
-def get_plate_lists(plate, dir ='stellarpop-m11-salpeter'):
+def get_plate_lists(plate, dir = dir):
 	specList = n.array(glob.glob(join( os.environ['SDSSDR12_DIR'], 'spectra', str(plate), 'spec-*.fits')))
 	specList.sort()
 	
@@ -60,7 +63,7 @@ def get_plate_lists(plate, dir ='stellarpop-m11-salpeter'):
 	return specList, fitList, modList, tabList_l, tabList_f
 
 
-def get_unprocessed_fiber_lists_per_plate(plate, dir ='stellarpop-m11-salpeter'):
+def get_unprocessed_fiber_lists_per_plate(plate, dir = dir):
 	in_plate = (hdus[1].data['PLATE']==int(plate))
 	gal = (in_plate) & (hdus[1].data['CLASS']=="GALAXY") & (hdus[1].data['Z']>0) & (hdus[1].data['Z']<1.7)
 	fiber_2_fit = hdus[1].data['FIBERID'][in_plate]
@@ -83,7 +86,7 @@ def get_info_from_catalog(plate):
 	gal = (in_plate) & (hdus[1].data['CLASS']=="GALAXY") & (hdus[1].data['Z']>0) & (hdus[1].data['Z']<1.7)
 	return len(hdus[1].data['Z'][gal])
 
-def get_plate_lists_light(plate, dir ='stellarpop-m11-salpeter'):
+def get_plate_lists_light(plate, dir = dir):
 	specList = n.array(glob.glob(join( os.environ['SDSSDR12_DIR'], 'spectra', str(plate), 'spec-*.fits')))
 	specList.sort()
 	
@@ -95,7 +98,7 @@ def get_plate_lists_light(plate, dir ='stellarpop-m11-salpeter'):
 	
 	return specList, fitList, modList
 
-def create_light_table(plates, outname = "run-status-table.ascii",  dir ='stellarpop-m11-salpeter'):
+def create_light_table(plates, outname = "run-status-table.ascii",  dir = dir):
 	Nspec = n.zeros(len(plates))
 	Nmodel = n.zeros(len(plates))
 	Nfit = n.zeros(len(plates))
@@ -107,7 +110,7 @@ def create_light_table(plates, outname = "run-status-table.ascii",  dir ='stella
 		
 	n.savetxt(join( os.environ['SDSSDR12_DIR'], dir, outname), n.transpose([plates.astype('int'), Nspec, Nfit,Nmodel]), header='plate Nspec Nfit Nmodel')
 			
-def create_basic_table(plates, outname = "run-status-table.ascii",  dir ='stellarpop-m11-salpeter'):
+def create_basic_table(plates, outname = "run-status-table.ascii",  dir = dir):
 	Nspec = n.zeros(len(plates))
 	Ngal = n.zeros(len(plates))
 	Nmodel = n.zeros(len(plates))
@@ -142,7 +145,6 @@ for plate in plates:
 	
 # now exploit the data created
 outname = "run-status-table.ascii"
-dir ='stellarpop-m11-salpeter'
 plates, Nspec, Ngal, Nfit, Nmodel, lenTableLine,lenTableFull = n.loadtxt(join( os.environ['SDSSDR12_DIR'], dir, outname), unpack= True)
 
 comp = 0.9
@@ -176,12 +178,12 @@ f.close()
 
 sys.exit()
 
-def runSpec(specLiteFile):
+def runSpec(specLiteFile, dir = dir):
 	baseN = os.path.basename(specLiteFile).split('-')
 	plate = baseN[1] #7457# sys.argv[1] #7619
 	mjd = baseN[2] # 56746#sys.argv[2] # 56900
 	fibre = baseN[3] # 471#sys.argv[3] #300
-	outputFolder = join( os.environ['SDSSDR12_DIR'], 'stellarpop-m11-salpeter', 'stellarpop', str(plate))
+	outputFolder = join( os.environ['SDSSDR12_DIR'], dir, 'stellarpop', str(plate))
 	if os.path.isdir(outputFolder)==False:
 		os.mkdir(outputFolder)
 
