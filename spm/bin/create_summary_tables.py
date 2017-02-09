@@ -8,7 +8,7 @@ import time
 import astropy.io.fits as fits
 
 plate = sys.argv[1]
-dir ='stellarpop-m11-kroupa'
+dir ='stellarpop-m11-salpeter'
 
 hdus = fits.open( join( os.environ['SDSSDR12_DIR'], "catalogs", "specObj-dr12.fits") )
 
