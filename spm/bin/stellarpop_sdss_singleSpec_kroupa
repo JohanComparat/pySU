@@ -54,7 +54,7 @@ def runSpec(specLiteFile):
 	print "time used =", time.time()-t0 ,"seconds"
 	return spec
 
-fileList = np.array(glob.glob(join( os.environ['SDSSDR12_DIR'], 'spectra', str(plate), 'spec-*'+plate+'-'+mjd+'-*'+fiber+'.fits')))
+fileList = np.array(glob.glob(join( os.environ['SDSSDR12_DIR'], 'spectra', str(plate), 'spec-'+plate.zfill(4)+'-'+mjd+'-'+fiber.zfill(4)+'.fits')))
 fileList.sort()
 print fileList
 for el in fileList:

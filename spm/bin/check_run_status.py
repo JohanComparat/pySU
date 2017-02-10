@@ -35,13 +35,16 @@ def get_info_from_catalog(plate):
 	else :
 		return n.array([0,0,0]), hdus
 
-
+outs=n.array([0,0,0])
 for plate in plates[:10]:
 	out, hdus=get_info_from_catalog(plate)
+	outs = n.vstack((outs, out.T))
+	
+remove = (outs.T[0]==0.)
 
+n.savetxt("to-process.txt", outs[remove==False], fmt='str')
 
-
-
+0274 51913 49
 
 
 
