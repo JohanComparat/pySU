@@ -328,8 +328,6 @@ class GalaxySpectrumFIREFLY:
 			self.ebv_mw = catalog_entry['EBV_MW']
 		else:
 			self.ebv_mw = 0.0
-			
-			
 
 	def openObservedMuseSpectrum(self, catalog):
 		"""Loads an observed MUSE spectrum in counts.
