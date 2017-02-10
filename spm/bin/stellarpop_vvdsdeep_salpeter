@@ -25,7 +25,7 @@ def runSpec(catalog_entry):
 		spec.openObservedVVDSpectrum(catalog_entry)
 		ageMax = np.log10(cosmo.age(spec.redshift).value*1e9)
 		if spec.redshift>0.01 and spec.redshift < 1.7 :
-			model = spm.StellarPopulationModel(spec, join(outputFolder , 'spec-'+str(catalog_entry['NUM']) ), cosmo, models = 'm11', model_libs = ['MILES'], imfs = ['ss'], age_limits = [6,10], downgrade_models = True, data_wave_medium = 'vacuum', Z_limits = [-3.,1.],suffix="-SPM-MILES.fits", use_downgraded_models = True)
+			model = spm.StellarPopulationModel(spec, join(outputFolder , 'spec-vvdsdeep-'+str(catalog_entry['NUM']) ), cosmo, models = 'm11', model_libs = ['MILES'], imfs = ['ss'], age_limits = [6,10], downgrade_models = True, data_wave_medium = 'vacuum', Z_limits = [-3.,1.],suffix="-SPM-MILES.fits", use_downgraded_models = True)
 			try :
 				model.fit_models_to_data()
 				#print( model.averages )
