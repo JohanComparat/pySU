@@ -35,27 +35,46 @@ def runSpec(specLiteFile):
 
 	print( specLiteFile )
 	t0=time.time()
-	spec=gs.GalaxySpectrumFIREFLY(specLiteFile, milky_way_reddening=True)
-	spec.openObservedSDSSSpectrum()
-	ageMax = np.log10(cosmo.age(spec.redshift).value*1e9)
-	print spec.redshift,  spec.hdulist[2].data['CLASS'][0], spec.hdulist[2].data['ZWARNING'][0]
-	#if spec.redshift>0 and spec.redshift<1.7 and spec.hdulist[2].data['CLASS'][0]=="GALAXY" :#and spec.hdulist[2].data['ZWARNING'][0] ==0 :
-	print spec.hdulist[2].data.dtype
-	if spec.hdulist[2].data['CLASS_NOQSO'][0]=="GALAXY" and spec.hdulist[2].data['Z_NOQSO'][0] >  spec.hdulist[2].data['Z_ERR_NOQSO'][0] and spec.hdulist[2].data['Z_ERR_NOQSO'][0]>0 and spec.hdulist[2].data['ZWARNING'][0] ==0 and abs(spec.hdulist[2].data['Z_NOQSO'][0] - spec.hdulist[2].data['Z'][0])>abs(spec.hdulist[2].data['Z_ERR_NOQSO'][0]):
-		model = spm.StellarPopulationModel(spec, join(outputFolder , os.path.basename(specLiteFile)[:-5] ), cosmo, models = 'm11', model_libs = ['MILES'], imfs = ['kr'], age_limits = [6,10], downgrade_models = True, data_wave_medium = 'vacuum', Z_limits = [-3.,1.],suffix="-SPM-MILES.fits", use_downgraded_models = True)
-		try :
-			model.fit_models_to_data()
-			#model = spm.StellarPopulationModel(spec, join( outputFolder , specLiteFile.split('/')[-1][:-5]), cosmo, models = 'm11', model_libs = ['STELIB'], imfs = ['ss'], age_limits = [6,10], downgrade_models = True, data_wave_medium = 'vacuum', Z_limits = [-3.,1.],suffix="-SPM-STELIB.fits", use_downgraded_models = True)
-			#model.fit_models_to_data()
-			#print( model.averages )
-		except (ValueError):
-			pass
+	if int(plate)<=2974:
+		spec=gs.GalaxySpectrumFIREFLY(specLiteFile, milky_way_reddening=True, survey='sdssMain')
+		spec.openObservedSDSSSpectrum()
+			ageMax = np.log10(cosmo.age(spec.redshift).value*1e9)
+		print spec.redshift,  spec.hdulist[2].data['CLASS'][0], spec.hdulist[2].data['ZWARNING'][0]
+		#if spec.redshift>0 and spec.redshift<1.7 and spec.hdulist[2].data['CLASS'][0]=="GALAXY" :#and spec.hdulist[2].data['ZWARNING'][0] ==0 :
+		print spec.hdulist[2].data.dtype
+		if spec.hdulist[2].data['CLASS'][0]=="GALAXY" and spec.hdulist[2].data['Z'][0] >  spec.hdulist[2].data['Z_ERR'][0] and spec.hdulist[2].data['Z_ERR'][0]>0 and spec.hdulist[2].data['ZWARNING'][0] ==0 and abs(spec.hdulist[2].data['Z'][0] - spec.hdulist[2].data['Z'][0])>abs(spec.hdulist[2].data['Z_ERR'][0]):
+			model = spm.StellarPopulationModel(spec, join(outputFolder , os.path.basename(specLiteFile)[:-5] ), cosmo, models = 'm11', model_libs = ['MILES'], imfs = ['kr'], age_limits = [6,10], downgrade_models = True, data_wave_medium = 'vacuum', Z_limits = [-3.,1.],suffix="-SPM-MILES.fits", use_downgraded_models = True)
+			try :
+				model.fit_models_to_data()
+				#model = spm.StellarPopulationModel(spec, join( outputFolder , specLiteFile.split('/')[-1][:-5]), cosmo, models = 'm11', model_libs = ['STELIB'], imfs = ['ss'], age_limits = [6,10], downgrade_models = True, data_wave_medium = 'vacuum', Z_limits = [-3.,1.],suffix="-SPM-STELIB.fits", use_downgraded_models = True)
+				#model.fit_models_to_data()
+				#print( model.averages )
+			except (ValueError):
+				pass
 
-	print "time used =", time.time()-t0 ,"seconds"
-	return spec
+		print "time used =", time.time()-t0 ,"seconds"
+		return spec
 
-fileList = np.array(glob.glob(join( os.environ['SDSSDR12_DIR'], 'spectra', str(plate), 'spec-'+plate.zfill(4)+'-'+mjd+'-'+fiber.zfill(4)+'.fits')))
-fileList.sort()
-print fileList
-for el in fileList:
-	spec = runSpec(el)
+	else :
+		spec=gs.GalaxySpectrumFIREFLY(specLiteFile, milky_way_reddening=True, survey='sdss3')
+		spec.openObservedSDSSSpectrum()
+		ageMax = np.log10(cosmo.age(spec.redshift).value*1e9)
+		print spec.redshift,  spec.hdulist[2].data['CLASS_NOQSO'][0], spec.hdulist[2].data['ZWARNING_NOQSO'][0]
+		#if spec.redshift>0 and spec.redshift<1.7 and spec.hdulist[2].data['CLASS'][0]=="GALAXY" :#and spec.hdulist[2].data['ZWARNING'][0] ==0 :
+		print spec.hdulist[2].data.dtype
+		if spec.hdulist[2].data['CLASS_NOQSO'][0]=="GALAXY" and spec.hdulist[2].data['Z_NOQSO'][0] >  spec.hdulist[2].data['Z_ERR_NOQSO'][0] and spec.hdulist[2].data['Z_ERR_NOQSO'][0]>0 and spec.hdulist[2].data['ZWARNING'][0] ==0 and abs(spec.hdulist[2].data['Z_NOQSO'][0] - spec.hdulist[2].data['Z'][0])>abs(spec.hdulist[2].data['Z_ERR_NOQSO'][0]):
+			model = spm.StellarPopulationModel(spec, join(outputFolder , os.path.basename(specLiteFile)[:-5] ), cosmo, models = 'm11', model_libs = ['MILES'], imfs = ['kr'], age_limits = [6,10], downgrade_models = True, data_wave_medium = 'vacuum', Z_limits = [-3.,1.],suffix="-SPM-MILES.fits", use_downgraded_models = True)
+			try :
+				model.fit_models_to_data()
+				#model = spm.StellarPopulationModel(spec, join( outputFolder , specLiteFile.split('/')[-1][:-5]), cosmo, models = 'm11', model_libs = ['STELIB'], imfs = ['ss'], age_limits = [6,10], downgrade_models = True, data_wave_medium = 'vacuum', Z_limits = [-3.,1.],suffix="-SPM-STELIB.fits", use_downgraded_models = True)
+				#model.fit_models_to_data()
+				#print( model.averages )
+			except (ValueError):
+				pass
+
+		print "time used =", time.time()-t0 ,"seconds"
+		return spec
+
+specFile = join( os.environ['SDSSDR12_DIR'], 'spectra', str(plate.zfill(4)), 'spec-'+plate.zfill(4)+'-'+mjd+'-'+fiber.zfill(4)+'.fits')
+print specFile
+spec = runSpec(specFile)

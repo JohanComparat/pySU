@@ -30,7 +30,7 @@ class GalaxySpectrumFIREFLY:
 	:param milky_way_reddening: True if you want to correct from the Milky way redenning using the Schlegel 98 dust maps.
 	:param hpf_mode: models the dust attenuation observed in the spectrum using high pass filter.
 	"""
-	def __init__(self,path_to_spectrum, milky_way_reddening=True , hpf_mode = 'on'):
+	def __init__(self,path_to_spectrum, milky_way_reddening=True , hpf_mode = 'on', survey='sdssMain'):
 		self.path_to_spectrum=path_to_spectrum
 		self.milky_way_reddening = milky_way_reddening
 		self.N_angstrom_masked = 20.
@@ -76,7 +76,7 @@ class GalaxySpectrumFIREFLY:
 		else:
 			self.ebv_mw = 0.0
 
-	def openObservedSDSSSpectrum(self):
+	def openObservedSDSSSpectrum(self, survey='sdssMain'):
 		"""
 		It reads an SDSS spectrum and provides the input for the firefly fitting routine.
 		:param path_to_spectrum:
@@ -105,8 +105,11 @@ class GalaxySpectrumFIREFLY:
 		self.flux = self.hdulist[1].data['flux']
 		self.error = self.hdulist[1].data['ivar']**(-0.5)
 		self.bad_flags = np.ones(len(self.wavelength))
-		
-		self.redshift = self.hdulist[2].data['Z_NOQSO'][0] # can be 'Z'
+		if survey=='sdssMain':
+			self.redshift = self.hdulist[2].data['Z'][0] 
+		if survey=='sdss3':
+			self.redshift = self.hdulist[2].data['Z_NOQSO'][0] 
+			
 		self.vdisp = self.hdulist[2].data['VDISP'][0]
 		self.restframe_wavelength = self.wavelength / (1.0+self.redshift)
 
