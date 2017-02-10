@@ -8,12 +8,13 @@ import numpy as np
 import glob
 import astropy.cosmology as co
 cosmo = co.Planck13
+import astropy.io.fits as fits
 
 # for one galaxy spectrum
 import GalaxySpectrumFIREFLY as gs
 import StellarPopulationModel as spm
 
-catalog=gs.pyfits.open(join(os.environ['VVDS_DIR'], catalogs, "VVDS_DEEP_summary.fits"))[1].data
+catalog=fits.open(join(os.environ['VVDS_DIR'], "catalogs", "VVDS_DEEP_summary.fits"))[1].data
 
 def runSpec(catalog_entry):
 	# path to lite spectra

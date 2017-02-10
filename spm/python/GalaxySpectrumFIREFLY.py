@@ -370,4 +370,4 @@ class GalaxySpectrumFIREFLY:
 			# gets the amount of MW reddening on the models
 			self.ebv_mw = get_dust_radec(catalog['ALPHA'], catalog['DELTA'], 'ebv')
 		else:
-			self.ebv_mw = 0.0º
+			self.ebv_mw = 0.
