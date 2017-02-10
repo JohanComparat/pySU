@@ -14,6 +14,7 @@ The class GalaxySpectrumFIREFLY is dedicated to handling spectra to be fed to FI
 
 
 """
+
 import numpy as np
 import astropy.io.fits as pyfits
 import glob
@@ -281,13 +282,13 @@ class GalaxySpectrumFIREFLY:
 		"""
 		It reads a VVDS spectrum and provides the input for the firefly fitting routine.
 		"""
-		self.hdulist = pyfits.open(join(os.environ['VVDS_DIR'], 'spectra',"sc_*" + str(catalog_entry['NUM']) + "*atm_clean.fits"))
+		self.hdulist = pyfits.open(os.path.join(os.environ['VVDS_DIR'], 'spectra',"sc_*" + str(catalog_entry['NUM']) + "*atm_clean.fits"))
 		wl=self.hdulist[0].header['CRVAL1'] + self.hdulist[0].header['CDELT1'] * n.arange(2,self.hdulist[0].header['NAXIS1']+2)
 		fl=self.hdulist[0].data[0]
 		
 		correctionAperture = 1. / catalog_entry['fo']
 		
-		noiseFileName=glob.glob(join(os.environ['VVDS_DIR'], 'spectra', "sc_*"+str(catalog_entry['NUM'])+"*noise.fits"))[0]
+		noiseFileName=glob.glob(os.path.join(os.environ['VVDS_DIR'], 'spectra', "sc_*"+str(catalog_entry['NUM'])+"*noise.fits"))[0]
 		noiseHDU=pyfits.open(noiseFileName)
 		flErr=noiseHDU[0].data[0]
 		
