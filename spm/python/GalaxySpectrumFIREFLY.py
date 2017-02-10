@@ -294,8 +294,8 @@ class GalaxySpectrumFIREFLY:
 		
 		self.wavelength,self.flux,self.error=wl, fl*correctionAperture * 1e17, flErr*correctionAperture * 1e17
 		
-		self.ra = catalog_entry['RA']
-		self.dec = catalog_entry['DEC']
+		self.ra = catalog_entry['ALPHA']
+		self.dec = catalog_entry['DELTA']
 
 		self.bad_flags = np.ones(len(self.wavelength))
 		self.redshift = catalog_entry['Z']
