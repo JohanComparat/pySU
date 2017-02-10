@@ -1,4 +1,66 @@
 
+from os.path import join
+import os
+import numpy as n
+import glob 
+import sys 
+import time
+import astropy.io.fits as fits
+
+# plate = sys.argv[1]
+dir ='stellarpop-m11-salpeter'
+dV=-9999.99
+
+plates_all = n.loadtxt( join(os.environ['SDSSDR12_DIR'], "plateNumberList"), unpack=True, dtype='str')
+plates = plates_all[:-2]
+
+
+def get_info_from_catalog(plate):
+	path_2_file = join(os.environ['SDSSDR12_DIR'], dir, "catalogs", "spFly-"+plate+".fits")
+	hdus = fits.open(path_2_file)
+	
+	not_processed_all = (hdus[1].data['age_universe']==dV)
+	processed_all = (not_processed_all==False)
+	if int(plate)<=2974:
+		galaxies = (hdus[1].data['ZWARNING']==0) & (hdus[1].data['CLASS']=="GALAXY") & (hdus[1].data['Z'] > hdus[1].data['Z_ERR']) & (hdus[1].data['Z_ERR']>0)
+	else :
+		galaxies = (hdus[1].data['ZWARNING']==0) & (hdus[1].data['CLASS_NOQSO']=="GALAXY") & (hdus[1].data['Z_NOQSO'] > hdus[1].data['Z_ERR_NOQSO']) & (hdus[1].data['Z_ERR_NOQSO']>0)
+	
+	not_processed = (galaxies) & (not_processed_all)
+	processed = (galaxies) & (not_processed==False)
+	print plate, len(hdus[1].data['PLATE']), len(processed_all.nonzero()[0]), len(not_processed_all.nonzero()[0]), len(galaxies.nonzero()[0]),len(processed.nonzero()[0]), len(not_processed.nonzero()[0])
+	if len(not_processed.nonzero()[0])>=1:
+		out = n.array([hdus[1].data['PLATE'][not_processed], hdus[1].data['MJD'][not_processed], hdus[1].data['FIBERID'][not_processed]])
+		return out, hdus
+	else :
+		return n.array([0,0,0]), hdus
+
+
+for plate in plates[:10]:
+	out, hdus=get_info_from_catalog(plate)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	Adam wanted all objects that the pipeline listed as class_noqso = GALAXY, with ZWARNING=0 and with z_noqso > zerr_noqso (i.e good galaxy positive definite redshifts).
+
 #plate = plates[0]
 tbdata = hdus[1].data
 
@@ -114,9 +176,6 @@ def get_model_result(fitFile):
 modList = n.array(glob.glob(join( os.environ['SDSSDR12_DIR'], dir, "model", plate, '*.model')))
 print time.time()-t1 #30 seconde
 
-
-
-
 def get_lists_fits_models(plate, dir = dir):
 	fitList = n.array(glob.glob(join( os.environ['SDSSDR12_DIR'], dir, "stellarpop", str(int(plate)), '*.fits')))
 	modList = n.array(glob.glob(join( os.environ['SDSSDR12_DIR'], dir, "model", str(int(plate)), '*.model')))
@@ -183,12 +242,6 @@ def get_unprocessed_fiber_lists_per_plate(plate, dir = dir):
 	mjd_fitted = n.array([int(os.path.basename(fl).split('-')[2]) for fl in fitList ])
 	remaining_fibers = set(fib_fitted).difference(set(fiber_2_fit))
 	return remaining_fibers 
-
-def get_info_from_catalog(plate):
-	in_plate = (hdus[1].data['PLATE']==int(plate))
-	gal = (in_plate) & (hdus[1].data['ZWARNING']==0) & (hdus[1].data['CLASS_NOQSO']=="GALAXY") & (hdus[1].data['Z_NOQSO'] > hdus[1].data['Z_ERR_NOQSO']) & (hdus[1].data['Z_ERR_NOQSO']>0)
-	#spec.hdulist[2].data['CLASS_NOQSO'][0]=="GALAXY" and spec.hdulist[2].data['Z_NOQSO'][0] >  spec.hdulist[2].data['Z_ERR_NOQSO'][0] and spec.hdulist[2].data['Z_ERR_NOQSO'][0]>0 and spec.hdulist[2].data['ZWARNING'][0] ==0 and abs(spec.hdulist[2].data['Z_NOQSO'][0] - spec.hdulist[2].data['Z'][0])>abs(spec.hdulist[2].data['Z_ERR_NOQSO'][0])
-	return len(hdus[1].data['Z'][gal])
 
 def get_plate_lists_light(plate, dir = dir):
 	specList = n.array(glob.glob(join( os.environ['SDSSDR12_DIR'], 'spectra', str(plate), 'spec-*.fits')))
