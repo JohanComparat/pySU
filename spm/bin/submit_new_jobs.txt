@@ -1,48 +1,18 @@
 
-awk 'NR==1, NR==10000' to-process-all.txt > runX.sh
-awk 'NR==10000, NR==20000' to-process-all.txt > runa1.sh
-awk 'NR==20000, NR==30000' to-process-all.txt > runa2.sh
-awk 'NR==30000, NR==40000' to-process-all.txt > runa3.sh
-awk 'NR==40000, NR==50000' to-process-all.txt > runa4.sh
-awk 'NR==50000, NR==60000' to-process-all.txt > runa5.sh
-awk 'NR==60000, NR==70000' to-process-all.txt > runa6.sh
-awk 'NR==70000, NR==80000' to-process-all.txt > runa7.sh
-awk 'NR==80000, NR==90000' to-process-all.txt > runa8.sh
-awk 'NR==90000, NR==100000' to-process-all.txt > runa9.sh
-awk 'NR==100000, NR==110000' to-process-all.txt > runa.sh
-awk 'NR==110000, NR==120000' to-process-all.txt > runb.sh
-awk 'NR==120000, NR==130000' to-process-all.txt > runc.sh
-awk 'NR==130000, NR==140000' to-process-all.txt > rund.sh
-awk 'NR==140000, NR==150000' to-process-all.txt > rune.sh
-awk 'NR==150000, NR==160000' to-process-all.txt > runf.sh
-awk 'NR==160000, NR==170000' to-process-all.txt > rung.sh
-awk 'NR==170000, NR==180000' to-process-all.txt > runh.sh
-awk 'NR==180000, NR==190000' to-process-all.txt > runi.sh
-awk 'NR==190000, NR==100000' to-process-all.txt > runj.sh
-awk 'NR==200000, NR==215145' to-process-all.txt > runk.sh
+awk 'NR==1, NR==4000' to-process-all.txt > runX.sh
+awk 'NR==4000, NR==8000' to-process-all.txt > runa1.sh
+awk 'NR==8000, NR==12000' to-process-all.txt > runa2.sh
+awk 'NR==12000, NR==16000' to-process-all.txt > runa3.sh
+awk 'NR==16000, NR==20000' to-process-all.txt > runa4.sh
+awk 'NR==20000, NR==22568' to-process-all.txt > runa5.sh
 
  
 cat header runX.sh > run_X.sh  
 cat header runa1.sh > run_1.sh  
-cat header runa3.sh > run_2.sh  
-cat header runa5.sh > run_3.sh  
-cat header runa7.sh > run_4.sh  
-cat header runa9.sh > run_5.sh  
-cat header runb.sh   > run_6.sh
-cat header rund.sh   > run_7.sh
-cat header runf.sh    > run_8.sh
-cat header runh.sh   > run_9.sh
-cat header runj.sh    > run_0.sh
-cat header runa2.sh > run_q.sh  
-cat header runa4.sh > run_w.sh  
-cat header runa6.sh > run_e.sh  
-cat header runa8.sh > run_r.sh  
-cat header runa.sh   > run_t.sh 
-cat header runc.sh   > run_y.sh
-cat header rune.sh   > run_d.sh
-cat header rung.sh   > run_s.sh
-cat header runi.sh    > run_a.sh
-cat header runk.sh   > run_f.sh
+cat header runa2.sh > run_2.sh  
+cat header runa3.sh > run_3.sh  
+cat header runa4.sh > run_4.sh  
+cat header runa5.sh > run_5.sh  
 
 
 qsub run_X.sh  
@@ -50,21 +20,24 @@ qsub run_2.sh
 qsub run_3.sh  
 qsub run_4.sh  
 qsub run_5.sh  
-qsub run_6.sh
-qsub run_7.sh
-qsub run_8.sh
-qsub run_9.sh
-qsub run_0.sh
-qsub run_q.sh  
-qsub run_w.sh  
-qsub run_e.sh  
-qsub run_r.sh  
-qsub run_t.sh 
-qsub run_y.sh
-qsub run_d.sh
-qsub run_s.sh
-qsub run_a.sh
-qsub run_f.sh
+
+
+scp -r catalogs  comparat@login5.sciama.icg.port.ac.uk:/mnt/lustre/sdss-dr12/vipers/
+
+J0h@n_1234
+
+scp -r catalogs  comparat@login5.sciama.icg.port.ac.uk:/mnt/lustre/sdss-dr12/vvds/
+
+J0h@n_1234
+
+scp -r spectra  comparat@login5.sciama.icg.port.ac.uk:/mnt/lustre/sdss-dr12/vipers/
+
+J0h@n_1234
+
+scp -r spectra  comparat@login5.sciama.icg.port.ac.uk:/mnt/lustre/sdss-dr12/vvds/
+
+J0h@n_1234
 
 
 
+ /mnt/lustre/sdss-dr12/deep2
