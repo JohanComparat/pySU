@@ -17,34 +17,58 @@ plates = plates_all[:-2]
 
 def get_info_from_catalog(plate):
 	path_2_file = join(os.environ['SDSSDR12_DIR'], dir, "catalogs", "spFly-"+plate+".fits")
-	hdus = fits.open(path_2_file)
-	
-	not_processed_all = (hdus[1].data['age_universe']==dV)
-	processed_all = (not_processed_all==False)
-	if int(plate)<=2974:
-		galaxies = (hdus[1].data['ZWARNING']==0) & (hdus[1].data['CLASS']=="GALAXY") & (hdus[1].data['Z'] > hdus[1].data['Z_ERR']) & (hdus[1].data['Z_ERR']>0)
+	if os.path.isfile(path_2_file):
+		hdus = fits.open(path_2_file)
+		
+		not_processed_all = (hdus[1].data['age_universe']==dV)
+		processed_all = (not_processed_all==False)
+		if int(plate)<=2974:
+			galaxies = (hdus[1].data['ZWARNING']==0) & (hdus[1].data['CLASS']=="GALAXY") & (hdus[1].data['Z'] > hdus[1].data['Z_ERR']) & (hdus[1].data['Z_ERR']>0)
+		else :
+			galaxies = (hdus[1].data['ZWARNING']==0) & (hdus[1].data['CLASS_NOQSO']=="GALAXY") & (hdus[1].data['Z_NOQSO'] > hdus[1].data['Z_ERR_NOQSO']) & (hdus[1].data['Z_ERR_NOQSO']>0)
+		
+		not_processed = (galaxies) & (not_processed_all)
+		processed = (galaxies) & (not_processed==False)
+		print plate, len(hdus[1].data['PLATE']), len(processed_all.nonzero()[0]), len(not_processed_all.nonzero()[0]), len(galaxies.nonzero()[0]),len(processed.nonzero()[0]), len(not_processed.nonzero()[0])
+		if len(not_processed.nonzero()[0])>=1:
+			out = n.array([hdus[1].data['PLATE'][not_processed], hdus[1].data['MJD'][not_processed], hdus[1].data['FIBERID'][not_processed]])
+			return out, hdus
+		else :
+			return n.array([0,0,0]), hdus
 	else :
-		galaxies = (hdus[1].data['ZWARNING']==0) & (hdus[1].data['CLASS_NOQSO']=="GALAXY") & (hdus[1].data['Z_NOQSO'] > hdus[1].data['Z_ERR_NOQSO']) & (hdus[1].data['Z_ERR_NOQSO']>0)
-	
-	not_processed = (galaxies) & (not_processed_all)
-	processed = (galaxies) & (not_processed==False)
-	print plate, len(hdus[1].data['PLATE']), len(processed_all.nonzero()[0]), len(not_processed_all.nonzero()[0]), len(galaxies.nonzero()[0]),len(processed.nonzero()[0]), len(not_processed.nonzero()[0])
-	if len(not_processed.nonzero()[0])>=1:
-		out = n.array([hdus[1].data['PLATE'][not_processed], hdus[1].data['MJD'][not_processed], hdus[1].data['FIBERID'][not_processed]])
-		return out, hdus
-	else :
-		return n.array([0,0,0]), hdus
+		return n.array([0,0,0]), 0.
 
 outs=n.array([0,0,0])
-for plate in plates[:10]:
+for plate in plates:
 	out, hdus=get_info_from_catalog(plate)
 	outs = n.vstack((outs, out.T))
 	
 remove = (outs.T[0]==0.)
 
-n.savetxt("to-process.txt", outs[remove==False], fmt='str')
 
-0274 51913 49
+head = """#!/bin/bash 
+#PBS -l walltime=90:00:00 
+#PBS -o missing.o.$PBS_JOBID 
+#PBS -e missing.e.$PBS_JOBID 
+#PBS -M johan.comparat@gmail.com 
+module load apps/anaconda/2.4.1 
+module load apps/python/2.7.8/gcc-4.4.7 
+export PYTHONPATH=$PYTHONPATH:/users/comparat/pySU/galaxy/python/
+export PYTHONPATH=$PYTHONPATH:/users/comparat/pySU/spm/python/ 
+ 
+cd /users/comparat/pySU/spm/bin 
+
+"""
+n.savetxt("to-process-1k.txt", outs[remove==False], fmt='%s', newline='\n python stellarpop_sdss_singleSpec_kroupa ', header=head)
+
+outs=n.array([0,0,0])
+for plate in plates[1000:]:
+	out, hdus=get_info_from_catalog(plate)
+	outs = n.vstack((outs, out.T))
+	
+remove = (outs.T[0]==0.)
+
+n.savetxt("to-process-rest.txt", outs[remove==False], fmt='%s')
 
 
 
