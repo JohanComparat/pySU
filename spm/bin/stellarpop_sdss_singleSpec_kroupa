@@ -38,7 +38,7 @@ def runSpec(specLiteFile):
 	if int(plate)<=2974:
 		spec=gs.GalaxySpectrumFIREFLY(specLiteFile, milky_way_reddening=True, survey='sdssMain')
 		spec.openObservedSDSSSpectrum()
-			ageMax = np.log10(cosmo.age(spec.redshift).value*1e9)
+		ageMax = np.log10(cosmo.age(spec.redshift).value*1e9)
 		print spec.redshift,  spec.hdulist[2].data['CLASS'][0], spec.hdulist[2].data['ZWARNING'][0]
 		#if spec.redshift>0 and spec.redshift<1.7 and spec.hdulist[2].data['CLASS'][0]=="GALAXY" :#and spec.hdulist[2].data['ZWARNING'][0] ==0 :
 		print spec.hdulist[2].data.dtype
