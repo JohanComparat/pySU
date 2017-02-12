@@ -66,4 +66,7 @@ for data_array, head in zip(newDat, headers.split()):
 
 new_cols = fits.ColDefs(all_cols)
 hdu = fits.BinTableHDU.from_columns(orig_cols + new_cols)
+if os.path.isfile(plate_catalog):
+	os.remove(plate_catalog)
+
 hdu.writeto(plate_catalog)
