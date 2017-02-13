@@ -385,6 +385,62 @@ class GalaxySpectrumFIREFLY:
 			self.ebv_mw = catalog_entry['EBV']
 		else:
 			self.ebv_mw = 0.0
+
+
+	def openObservedDEEP2pectrum(self, catalog_entry, survey='deep2'):
+		"""
+		It reads a VVDS spectrum and provides the input for the firefly fitting routine.
+		"""
+		self.field='W'+catalog_entry['id_IAU'][7]
+		specFileName=os.path.join(os.environ['DEEP2_DIR'], 'spectra',"VIPERS_"+ self.field+ "_PDR2_SPECTRA_1D",catalog_entry['id_IAU'][:6]+"_"+catalog_entry['id_IAU'][7:]+".fits")
+		
+		self.hdulist = pyfits.open(specFileName)
+		
+		wlA=self.hdulist[1].data['WAVES']
+		flA=self.hdulist[1].data['FLUXES']
+		flErrA=self.hdulist[1].data['NOISE']
+		mask=self.hdulist[1].data['MASK']
+		wl, fl, flErr= wlA[(mask==0)], flA[(mask==0)], flErrA[(mask==0)]
+
+		correctionAperture = 1. / catalog_entry['fo']
+		
+		self.wavelength,self.flux,self.error=wl, fl*correctionAperture * 1e17, flErr*correctionAperture * 1e17
+		
+		self.ra = catalog_entry['ALPHA']
+		self.dec = catalog_entry['DELTA']
+
+		self.bad_flags = np.ones(len(self.wavelength))
+		self.redshift = catalog_entry['zspec']
+			
+		self.vdisp = 2000. #catalog_entry['VDISP']
+		self.restframe_wavelength = self.wavelength / (1.0+self.redshift)
+
+		self.trust_flag = 1
+		self.objid = 0
+
+		# masking emission lines
+		lines_mask = ((self.restframe_wavelength > 3728 - self.N_angstrom_masked) & (self.restframe_wavelength < 3728 + self.N_angstrom_masked)) | ((self.restframe_wavelength > 5007 - self.N_angstrom_masked) & (self.restframe_wavelength < 5007 + self.N_angstrom_masked)) | ((self.restframe_wavelength > 4861 - self.N_angstrom_masked) & (self.restframe_wavelength < 4861 + self.N_angstrom_masked)) | ((self.restframe_wavelength > 6564 - self.N_angstrom_masked) & (self.restframe_wavelength < 6564 + self.N_angstrom_masked)) 
+
+		self.restframe_wavelength = self.restframe_wavelength[(lines_mask==False)] 
+		self.wavelength = self.wavelength[(lines_mask==False)] 
+		self.flux = self.flux[(lines_mask==False)] 
+		self.error = self.error[(lines_mask==False)] 
+		self.bad_flags = self.bad_flags[(lines_mask==False)] 		
+		
+		bad_data = np.isnan(self.flux) | np.isinf(self.flux) | (self.flux <= 0.0) | np.isnan(self.error) | np.isinf(self.error)
+		# removes the bad data from the spectrum 
+		self.flux[bad_data] 	= 0.0
+		self.error[bad_data] 	= np.max(self.flux) * 99999999999.9
+		self.bad_flags[bad_data] = 0
+
+		self.r_instrument = np.zeros(len(self.wavelength))
+		for wi,w in enumerate(self.wavelength):
+			self.r_instrument[wi] = 6000.
+
+		if self.milky_way_reddening :
+			self.ebv_mw = catalog_entry['EBV']
+		else:
+			self.ebv_mw = 0.0
 			
 	def openObservedMuseSpectrum(self, catalog):
 		"""Loads an observed MUSE spectrum in counts.
