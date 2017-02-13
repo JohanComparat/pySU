@@ -391,28 +391,25 @@ class GalaxySpectrumFIREFLY:
 		"""
 		It reads a VVDS spectrum and provides the input for the firefly fitting routine.
 		"""
-		self.field='W'+catalog_entry['id_IAU'][7]
-		specFileName=os.path.join(os.environ['DEEP2_DIR'], 'spectra',"VIPERS_"+ self.field+ "_PDR2_SPECTRA_1D",catalog_entry['id_IAU'][:6]+"_"+catalog_entry['id_IAU'][7:]+".fits")
-		
-		self.hdulist = pyfits.open(specFileName)
-		
-		wlA=self.hdulist[1].data['WAVES']
-		flA=self.hdulist[1].data['FLUXES']
-		flErrA=self.hdulist[1].data['NOISE']
-		mask=self.hdulist[1].data['MASK']
-		wl, fl, flErr= wlA[(mask==0)], flA[(mask==0)], flErrA[(mask==0)]
+		path_to_spectrum
+			
+		mask=str(catalog_entry['MASK'])
+		slit=catalog_entry['SLIT']
+		objno=str(catalog_entry['OBJNO'])
 
-		correctionAperture = 1. / catalog_entry['fo']
+		path_to_spectrum = glob.glob(join(os.environ['DEEP2_DIR'], 'spectra', mask, '*', '*' + objno + '*_fc_tc.dat'))
 		
-		self.wavelength,self.flux,self.error=wl, fl*correctionAperture * 1e17, flErr*correctionAperture * 1e17
+		self.wavelength, fl, flErr= n.loadtxt(path_to_spectrum, unpack=True)
+				
+		self.flux, self.error= fl * 1e17, flErr * 1e17
 		
-		self.ra = catalog_entry['ALPHA']
-		self.dec = catalog_entry['DELTA']
+		self.ra = catalog_entry['RA']
+		self.dec = catalog_entry['DEC']
 
 		self.bad_flags = np.ones(len(self.wavelength))
-		self.redshift = catalog_entry['zspec']
+		self.redshift = catalog_entry['ZBEST']
 			
-		self.vdisp = 2000. #catalog_entry['VDISP']
+		self.vdisp = 60. #catalog_entry['VDISP']
 		self.restframe_wavelength = self.wavelength / (1.0+self.redshift)
 
 		self.trust_flag = 1
@@ -438,7 +435,7 @@ class GalaxySpectrumFIREFLY:
 			self.r_instrument[wi] = 6000.
 
 		if self.milky_way_reddening :
-			self.ebv_mw = catalog_entry['EBV']
+			self.ebv_mw = catalog_entry['SFD_EBV']
 		else:
 			self.ebv_mw = 0.0
 			
