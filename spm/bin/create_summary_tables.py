@@ -44,6 +44,7 @@ orig_cols = orig_table.columns
 
 orig_cols.del_col('CHUNK'                      )
 orig_cols.del_col('PROGRAMNAME'         )
+
 orig_cols.del_col('PLATERUN'                 )
 orig_cols.del_col('PLATEQUALITY'           )
 orig_cols.del_col('PLATESN2'                  )
@@ -61,10 +62,14 @@ orig_cols.del_col('SPECSEGUE1'             )
 orig_cols.del_col('SPECSEGUE2'             )
 orig_cols.del_col('SPECBOSS'                 )
 orig_cols.del_col('BOSS_SPECOBJ_ID'    )
-orig_cols.del_col('SPECOBJID'                )
-orig_cols.del_col('FLUXOBJID'                )
-orig_cols.del_col('BESTOBJID'                )
-orig_cols.del_col('TARGETOBJID'           )
+
+orig_cols.del_col('SEGUE1_TARGET1'     )
+orig_cols.del_col('SEGUE1_TARGET2'     )
+orig_cols.del_col('SEGUE2_TARGET1'     )
+orig_cols.del_col('SEGUE2_TARGET2'     )
+orig_cols.del_col('MARVELS_TARGET1'   )
+orig_cols.del_col('MARVELS_TARGET2'   )
+
 orig_cols.del_col('PLATEID'                    )
 orig_cols.del_col('NSPECOBS'                 )
 orig_cols.del_col('FIRSTRELEASE'           )
