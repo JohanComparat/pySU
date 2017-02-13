@@ -369,10 +369,10 @@ class GalaxySpectrumFIREFLY:
 		self.wavelength = self.wavelength[(lines_mask==False)] 
 		self.flux = self.flux[(lines_mask==False)] 
 		self.error = self.error[(lines_mask==False)] 
-		self.bad_flags = self.bad_flags[(lines_mask==False)] 		
+		self.bad_flags = self.bad_flags[(lines_mask==False)] 
 		
 		bad_data = np.isnan(self.flux) | np.isinf(self.flux) | (self.flux <= 0.0) | np.isnan(self.error) | np.isinf(self.error)
-		# removes the bad data from the spectrum 
+
 		self.flux[bad_data] 	= 0.0
 		self.error[bad_data] 	= np.max(self.flux) * 99999999999.9
 		self.bad_flags[bad_data] = 0
@@ -436,7 +436,7 @@ class GalaxySpectrumFIREFLY:
 			self.ebv_mw = catalog_entry['SFD_EBV']
 		else:
 			self.ebv_mw = 0.0
-			
+
 	def openObservedMuseSpectrum(self, catalog):
 		"""Loads an observed MUSE spectrum in counts.
 		:param catalog: name of the catalog with redshifts.
