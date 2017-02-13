@@ -391,10 +391,7 @@ class GalaxySpectrumFIREFLY:
 		"""
 		It reads a VVDS spectrum and provides the input for the firefly fitting routine.
 		"""
-		path_to_spectrum
-			
 		mask=str(catalog_entry['MASK'])
-		slit=catalog_entry['SLIT']
 		objno=str(catalog_entry['OBJNO'])
 
 		path_to_spectrum = glob.glob(join(os.environ['DEEP2_DIR'], 'spectra', mask, '*', '*' + objno + '*_fc_tc.dat'))

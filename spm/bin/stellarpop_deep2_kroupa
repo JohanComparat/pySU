@@ -21,7 +21,6 @@ def runSpec(catalog_entry):
 	print catalog_entry['zspec'],  catalog_entry['fo'],  catalog_entry['ALPHA'],  catalog_entry['DELTA'],  catalog_entry['zflg'] 
 	t0=time.time()
 	mask=str(catalog_entry['MASK'])
-	slit=catalog_entry['SLIT']
 	objno=str(catalog_entry['OBJNO'])
 	path_to_spectrum = glob.glob(join(os.environ['DEEP2_DIR'], 'spectra', mask, '*', '*' + objno + '*_fc_tc.dat'))
 	if len(path_to_spectrum)>=1:
