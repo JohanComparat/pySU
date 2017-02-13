@@ -396,7 +396,7 @@ class GalaxySpectrumFIREFLY:
 
 		path_to_spectrum = glob.glob(os.path.join(os.environ['DEEP2_DIR'], 'spectra', mask, '*', '*' + objno + '*_fc_tc.dat'))
 		
-		self.wavelength, fl, flErr= n.loadtxt(path_to_spectrum, unpack=True)
+		self.wavelength, fl, flErr= np.loadtxt(path_to_spectrum, unpack=True)
 				
 		self.flux, self.error= fl * 1e17, flErr * 1e17
 		
