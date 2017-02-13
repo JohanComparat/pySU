@@ -22,7 +22,7 @@ def runSpec(catalog_entry):
 	t0=time.time()
 	try:
 		spec=gs.GalaxySpectrumFIREFLY("-", milky_way_reddening=True, survey='vipers')
-		spec.openObservedVVDSpectrum(catalog_entry)
+		spec.openObservedVIPERSpectrum(catalog_entry)
 		ageMax = np.log10(cosmo.age(spec.redshift).value*1e9)
 		if spec.redshift>0.01 and spec.redshift < 1.7 :
 			model = spm.StellarPopulationModel(spec, join(outputFolder , 'spec-vipers-'+catalog_entry['id_IAU'][7:] ), cosmo, models = 'm11', model_libs = ['MILES'], imfs = ['kr'], age_limits = [6,10], downgrade_models = True, data_wave_medium = 'vacuum', Z_limits = [-3.,1.],suffix="-SPM-MILES.fits", use_downgraded_models = True)

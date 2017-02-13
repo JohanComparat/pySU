@@ -382,7 +382,7 @@ class GalaxySpectrumFIREFLY:
 			self.r_instrument[wi] = 220.
 
 		if self.milky_way_reddening :
-			self.ebv_mw = catalog_entry['E_BV']
+			self.ebv_mw = catalog_entry['EBV']
 		else:
 			self.ebv_mw = 0.0
 			
