@@ -394,10 +394,11 @@ class GalaxySpectrumFIREFLY:
 		mask=str(catalog_entry['MASK'])
 		objno=str(catalog_entry['OBJNO'])
 
-		path_to_spectrum = glob.glob(os.path.join(os.environ['DEEP2_DIR'], 'spectra', mask, '*', '*' + objno + '*_fc_tc.dat'))
+		path_to_spectrum = glob.glob(os.path.join(os.environ['DEEP2_DIR'], 'spectra', mask, '*', '*' + objno + '*_fc_tc.dat'))[0]
 		
-		self.wavelength, fl, flErr= np.loadtxt(path_to_spectrum, unpack=True)
-				
+		wl, fl, flErr= np.loadtxt(path_to_spectrum, unpack=True)
+		
+		self.wavelength = wl	
 		self.flux, self.error= fl * 1e17, flErr * 1e17
 		
 		self.ra = catalog_entry['RA']
