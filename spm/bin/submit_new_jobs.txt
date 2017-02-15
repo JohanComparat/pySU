@@ -1,26 +1,39 @@
 
-awk 'NR==1, NR==4000' to-process-all.txt > runX.sh
-awk 'NR==4000, NR==8000' to-process-all.txt > runa1.sh
-awk 'NR==8000, NR==12000' to-process-all.txt > runa2.sh
-awk 'NR==12000, NR==16000' to-process-all.txt > runa3.sh
-awk 'NR==16000, NR==20000' to-process-all.txt > runa4.sh
-awk 'NR==20000, NR==22568' to-process-all.txt > runa5.sh
+awk 'NR==1, NR==10000' to-process-all.txt > runB1.sh
+awk 'NR==10000, NR==20000' to-process-all.txt > runB2.sh
+awk 'NR==20000, NR==30000' to-process-all.txt > runB3.sh
+awk 'NR==30000, NR==40000' to-process-all.txt > runB4.sh
+awk 'NR==40000, NR==50000' to-process-all.txt > runB5.sh
+awk 'NR==50000, NR==60000' to-process-all.txt > runB6.sh
+awk 'NR==60000, NR==70000' to-process-all.txt > runB7.sh
+awk 'NR==70000, NR==80000' to-process-all.txt > runB8.sh
+awk 'NR==80000, NR==90000' to-process-all.txt > runB9.sh
+awk 'NR==90000, NR==100000' to-process-all.txt > runB10.sh
+awk 'NR==100000, NR==114704' to-process-all.txt > runB11.sh
 
- 
-cat header runX.sh > run_X.sh  
-cat header runa1.sh > run_1.sh  
-cat header runa2.sh > run_2.sh  
-cat header runa3.sh > run_3.sh  
-cat header runa4.sh > run_4.sh  
-cat header runa5.sh > run_5.sh  
+cat header runB1.sh > run_B1.sh  
+cat header runB2.sh > run_B2.sh  
+cat header runB3.sh > run_B3.sh  
+cat header runB4.sh > run_B4.sh  
+cat header runB5.sh > run_B5.sh  
+cat header runB6.sh > run_B6.sh  
+cat header runB7.sh > run_B7.sh  
+cat header runB8.sh > run_B8.sh  
+cat header runB9.sh > run_B9.sh  
+cat header runB10.sh > run_B10.sh  
+cat header runB11.sh > run_B11.sh  
 
-
-qsub run_X.sh  
-qsub run_2.sh  
-qsub run_3.sh  
-qsub run_4.sh  
-qsub run_5.sh  
-
+qsub run_B1.sh  
+qsub run_B2.sh  
+qsub run_B3.sh  
+qsub run_B4.sh  
+qsub run_B5.sh  
+qsub run_B6.sh  
+qsub run_B7.sh  
+qsub run_B8.sh  
+qsub run_B9.sh  
+qsub run_B10.sh  
+qsub run_B11.sh  
 
 scp -r catalogs  comparat@login5.sciama.icg.port.ac.uk:/mnt/lustre/sdss-dr12/vipers/
 
