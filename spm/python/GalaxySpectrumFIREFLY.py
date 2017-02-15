@@ -83,6 +83,8 @@ class GalaxySpectrumFIREFLY:
 			self.redshift = self.hdulist[2].data['Z'][0] 
 		if survey=='sdss3':
 			self.redshift = self.hdulist[2].data['Z_NOQSO'][0] 
+		if survey=='sdss4':
+			self.redshift = self.hdulist[2].data['Z_NOQSO'][0] 
 			
 		self.vdisp = self.hdulist[2].data['VDISP'][0]
 		self.restframe_wavelength = self.wavelength / (1.0+self.redshift)

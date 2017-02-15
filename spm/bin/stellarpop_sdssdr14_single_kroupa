@@ -31,13 +31,12 @@ def runSpec(specLiteFile):
 	if os.path.isdir(outputFolder)==False:
 		os.mkdir(outputFolder)
 
-	print( specLiteFile )
 	t0=time.time()
-	spec=gs.GalaxySpectrumFIREFLY(specLiteFile, milky_way_reddening=True)
+	spec=gs.GalaxySpectrumFIREFLY(specLiteFile, milky_way_reddening=True, survey='sdss4')
 	spec.openObservedSDSSSpectrum()
 	ageMax = np.log10(cosmo.age(spec.redshift).value*1e9)
-	print spec.redshift,  spec.hdulist[2].data['CLASS'][0]
-	if spec.hdulist[2].data['CLASS_NOQSO'][0]=="GALAXY" and spec.hdulist[2].data['Z_NOQSO'][0] >  spec.hdulist[2].data['Z_ERR_NOQSO'][0] and spec.hdulist[2].data['Z_ERR_NOQSO'][0]>0 and spec.hdulist[2].data['ZWARNING_NOQSO'][0] ==0 and abs(spec.hdulist[2].data['Z_NOQSO'][0] - spec.hdulist[2].data['Z'][0])>abs(spec.hdulist[2].data['Z_ERR_NOQSO'][0]):
+	print spec.redshift,  spec.hdulist[2].data['CLASS_NOQSO'][0],  spec.hdulist[2].data['Z_NOQSO'][0],  spec.hdulist[2].data['Z_ERR_NOQSO'][0],  spec.hdulist[2].data['ZWARNING_NOQSO'][0]
+	if spec.hdulist[2].data['CLASS_NOQSO'][0]=="GALAXY" and spec.hdulist[2].data['Z_NOQSO'][0] >  spec.hdulist[2].data['Z_ERR_NOQSO'][0] and spec.hdulist[2].data['Z_ERR_NOQSO'][0]>0 and (spec.hdulist[2].data['ZWARNING_NOQSO'][0] ==0 or spec.hdulist[2].data['ZWARNING_NOQSO'][0] ==4):
 		model = spm.StellarPopulationModel(spec, join(outputFolder , 'spFly-' + os.path.basename(specLiteFile)[5:-5] ), cosmo, models = 'm11', model_libs = ['MILES'], imfs = ['kr'], age_limits = [6,10], downgrade_models = True, data_wave_medium = 'vacuum', Z_limits = [-3.,1.],suffix="-kr.fits", use_downgraded_models = True)
 		try :
 			model.fit_models_to_data()
@@ -54,4 +53,11 @@ fileList = np.array(glob.glob(join( os.environ['SDSSDR14_DIR'], 'spectra', str(p
 fileList.sort()
 
 for el in fileList:
-	spec = runSpec(el)
+	print( el )	
+	outputFile = join( os.environ['SDSSDR14_DIR'], 'stellarpop-m11-kroupa', 'stellarpop', str(plate), 'spFly-' + os.path.basename(el)[5:-5]+"-kr.fits")
+	if os.path.isfile(outputFile) :
+		print( outputFile )
+	else :
+		spec = runSpec(el)
+	
+		
