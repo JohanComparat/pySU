@@ -9,70 +9,89 @@ import astropy.io.fits as fits
 
 imf='ss'
 dir ='stellarpop-m11-salpeter'
-
-all_cat = join( os.environ['SDSSDR12_DIR'], dir, "spFlyAll-"+imf+".fits")
+all_cat = join( os.environ['SDSSDR12_DIR'], dir, "flyAll_catalogs", "spFlyAll-"+imf) # +"-10.fits")
 
 dV=-9999.99
 #def get_table_entry_full(hduSPM):
 
 # step 2 : match to thecreated data set
-spFlyCats = glob.glob( join( os.environ['SDSSDR12_DIR'], dir, "catalogs","spFly-*.fits") )
+spFlyCats = n.array( glob.glob( join( os.environ['SDSSDR12_DIR'], dir, "catalogs","spFly-*.fits") ) )
 spFlyCats.sort()
-init_cat = spFlyCats[0] # join( os.environ['SDSSDR12_DIR'], dir, "catalogs", "spFly-"+plate+".fits")
-	
-hdu_orig_table = fits.open(init_cat)
-orig_table = hdu_orig_table[1].data
-orig_cols = orig_table.columns
 
-table_all = orig_table
+NperCat = 100
+bds = n.arange(0, len(spFlyCats)+NperCat, NperCat)
+for bd in bds:
+	t0 = time.time()
+	init_cat = spFlyCats[bd] # join( os.environ['SDSSDR12_DIR'], dir, "catalogs", "spFly-"+plate+".fits")
 
-for fitFile in spFlyCats[1:100]:
-	table_all = n.hstack((table_all, fits.open(fitFile)[1].data ))
-	
-newDat = n.transpose(table_all)
+	hdu_orig_table = fits.open(init_cat)
+	orig_table = hdu_orig_table[1].data
+	orig_cols = orig_table.columns
 
-new_cols = fits.ColDefs(newDat)
+	table_all = orig_table
 
-new_cols.del_col('SURVEY'                     )
-new_cols.del_col('INSTRUMENT'             )
-new_cols.del_col('CHUNK'                      )
-new_cols.del_col('PROGRAMNAME'         )
-new_cols.del_col('PLATERUN'                 )
-new_cols.del_col('PLATEQUALITY'           )
-new_cols.del_col('PLATESN2'                  )
-new_cols.del_col('DEREDSN2'                )
-new_cols.del_col('LAMBDA_EFF'             )
-new_cols.del_col('BLUEFIBER'                )
-new_cols.del_col('ZOFFSET'                   )
-new_cols.del_col('SNTURNOFF'              )
-new_cols.del_col('NTURNOFF'                )
-new_cols.del_col('SPECPRIMARY'            )
-new_cols.del_col('SPECSDSS'                 )
-new_cols.del_col('SPECLEGACY'             )
-new_cols.del_col('SPECSEGUE'               )
-new_cols.del_col('SPECSEGUE1'             )
-new_cols.del_col('SPECSEGUE2'             )
-new_cols.del_col('SPECBOSS'                 )
+	for fitFile in spFlyCats[bd+1:bd+NperCat]:
+		table_all = n.hstack((table_all, fits.open(fitFile)[1].data ))
+		
+	newDat = n.transpose(table_all)
+
+	new_cols = fits.ColDefs(newDat)
+
+	hdu = fits.BinTableHDU.from_columns(new_cols)
+	write_cat = all_cat+"-"+str(NperCat)+".fits"
+	if os.path.isfile(write_cat):
+		os.remove(write_cat)
+
+	hdu.writeto(write_cat)
+	print bd, time.time()-t0
+
+
+sys.exit()
+headers = n.array(['specObjID','mjd','plate','fiberID','run1d','run2d','ra','dec','z_noqso','zErr_noqso','zWarning_noqso','class_noqso','subClass_noqso','u','g','r','i','z','err_u','err_g','err_r','err_i','err_z','dered_u','dered_g','dered_r','dered_i','dered_z','age_mean','age_err_plus','age_err_minus','metallicity_mean','metallicity_mean_err_plus','metallicity_mean_err_minus','stellar_mass','stellar_mass_err_plus	','stellar_mass_err_minus','spm_EBV','nComponentsSSP'])
+
+
+
+
+new_cols.del_col('SURVEY'             )
+new_cols.del_col('INSTRUMENT'     )
+#new_cols.del_col('CHUNK'              )
+new_cols.del_col('PROGRAMNAME' )
+new_cols.del_col('PLATERUN'         )
+new_cols.del_col('PLATEQUALITY'   )
+new_cols.del_col('PLATESN2'          )
+new_cols.del_col('DEREDSN2'        )
+new_cols.del_col('LAMBDA_EFF'     )
+new_cols.del_col('BLUEFIBER'        )
+new_cols.del_col('ZOFFSET')
+new_cols.del_col('SNTURNOFF'      )
+new_cols.del_col('NTURNOFF'        )
+new_cols.del_col('SPECPRIMARY'    )
+new_cols.del_col('SPECSDSS'         )
+new_cols.del_col('SPECLEGACY'     )
+new_cols.del_col('SPECSEGUE'       )
+new_cols.del_col('SPECSEGUE1'     )
+new_cols.del_col('SPECSEGUE2'     )
+new_cols.del_col('SPECBOSS'         )
 new_cols.del_col('BOSS_SPECOBJ_ID'    )
 #new_cols.del_col('SPECOBJID'                )
-new_cols.del_col('FLUXOBJID'                )
-new_cols.del_col('BESTOBJID'                )
-new_cols.del_col('TARGETOBJID'           )
-new_cols.del_col('PLATEID'                    )
-new_cols.del_col('NSPECOBS'                 )
-new_cols.del_col('FIRSTRELEASE'           )
-#new_cols.del_col('RUN2D'                      )
-#new_cols.del_col('RUN1D'                      )
-new_cols.del_col('DESIGNID'                 )
-new_cols.del_col('CX'                             )
-new_cols.del_col('CY'                             )
-new_cols.del_col('CZ'                             )
-new_cols.del_col('XFOCAL'                     )
-new_cols.del_col('YFOCAL'                     )
-new_cols.del_col('SOURCETYPE'             )
-new_cols.del_col('TARGETTYPE'             )
-new_cols.del_col('PRIMTARGET'             )
-new_cols.del_col('SECTARGET'               )
+new_cols.del_col('FLUXOBJID'      )
+new_cols.del_col('BESTOBJID'      )
+new_cols.del_col('TARGETOBJID' )
+new_cols.del_col('PLATEID'          )
+new_cols.del_col('NSPECOBS'       )
+new_cols.del_col('FIRSTRELEASE' )
+#new_cols.del_col('RUN2D'            )
+#new_cols.del_col('RUN1D'            )
+new_cols.del_col('DESIGNID'       )
+new_cols.del_col('CX'                   )
+new_cols.del_col('CY'                   )
+new_cols.del_col('CZ'                   )
+new_cols.del_col('XFOCAL')
+new_cols.del_col('YFOCAL')
+new_cols.del_col('SOURCETYPE'   )
+new_cols.del_col('TARGETTYPE'   )
+new_cols.del_col('PRIMTARGET'   )
+new_cols.del_col('SECTARGET'     )
 new_cols.del_col('LEGACY_TARGET1'     )
 new_cols.del_col('LEGACY_TARGET2'     )
 new_cols.del_col('SPECIAL_TARGET1'    )
@@ -89,33 +108,33 @@ new_cols.del_col('EBOSS_TARGET0'       )
 new_cols.del_col('ANCILLARY_TARGET1')
 new_cols.del_col('ANCILLARY_TARGET2')
 new_cols.del_col('SPECTROGRAPHID'     )
-#new_cols.del_col('PLATE'                        )
-new_cols.del_col('TILE'                          )
-#new_cols.del_col('MJD'                           )
-#new_cols.del_col('FIBERID'                    )
-new_cols.del_col('OBJID'                        )
-#new_cols.del_col('PLUG_RA'                   )
-#new_cols.del_col('PLUG_DEC'                 )
-new_cols.del_col('CLASS'                       )
-new_cols.del_col('SUBCLASS'                 )
-new_cols.del_col('Z'                               )	
-new_cols.del_col('Z_ERR'                       )
-new_cols.del_col('RCHI2'                       )
-new_cols.del_col('DOF'                          )
-new_cols.del_col('RCHI2DIFF'                )
-new_cols.del_col('TFILE'                         )
-new_cols.del_col('TCOLUMN'                  )
-new_cols.del_col('NPOLY'                       )
-new_cols.del_col('THETA'                       )
-new_cols.del_col('VDISP'                        )
-new_cols.del_col('VDISP_ERR'                )
-new_cols.del_col('VDISPZ'                      )
-new_cols.del_col('VDISPZ_ERR'              )
-new_cols.del_col('VDISPCHI2'                )
-new_cols.del_col('VDISPNPIX'                )
-new_cols.del_col('VDISPDOF'                 )
-new_cols.del_col('WAVEMIN'                  )
-new_cols.del_col('WAVEMAX'                  )
+#new_cols.del_col('PLATE'            )
+new_cols.del_col('TILE')
+#new_cols.del_col('MJD'               )
+#new_cols.del_col('FIBERID'       )
+new_cols.del_col('OBJID'            )
+#new_cols.del_col('PLUG_RA'       )
+#new_cols.del_col('PLUG_DEC'     )
+new_cols.del_col('CLASS')
+new_cols.del_col('SUBCLASS'    )
+new_cols.del_col('Z')
+new_cols.del_col('Z_ERR'          )
+new_cols.del_col('RCHI2')
+new_cols.del_col('DOF'              )
+new_cols.del_col('RCHI2DIFF'    )
+new_cols.del_col('TFILE'             )
+new_cols.del_col('TCOLUMN'     )
+new_cols.del_col('NPOLY')
+new_cols.del_col('THETA')
+new_cols.del_col('VDISP'            )
+new_cols.del_col('VDISP_ERR'    )
+new_cols.del_col('VDISPZ'          )
+new_cols.del_col('VDISPZ_ERR'  )
+new_cols.del_col('VDISPCHI2'    )
+new_cols.del_col('VDISPNPIX'    )
+new_cols.del_col('VDISPDOF'     )
+new_cols.del_col('WAVEMIN'      )
+new_cols.del_col('WAVEMAX'      )
 new_cols.del_col('WCOVERAGE'             )
 new_cols.del_col('ZWARNING'                )
 new_cols.del_col('SN_MEDIAN_ALL'       )
@@ -124,11 +143,11 @@ new_cols.del_col('CHI68P'                      )
 new_cols.del_col('FRACNSIGMA'             )
 new_cols.del_col('FRACNSIGHI'              )
 new_cols.del_col('FRACNSIGLO'             )
-new_cols.del_col('SPECTROFLUX'           )
+new_cols.del_col('SPECTROFLUX')
 new_cols.del_col('SPECTROFLUX_IVAR'  )
 new_cols.del_col('SPECTROSYNFLUX'     )
 new_cols.del_col('SPECTROSYNFLUX_IVAR'  )
-new_cols.del_col('SPECTROSKYFLUX'           )
+new_cols.del_col('SPECTROSKYFLUX')
 new_cols.del_col('ANYANDMASK'                  )
 new_cols.del_col('ANYORMASK'                    )
 new_cols.del_col('SPEC1_G'                         )
@@ -164,21 +183,34 @@ new_cols.del_col('CALIBFLUX_IVAR'             )
 
 
 
-hdu = fits.BinTableHDU.from_columns(orig_cols + new_cols)
-if os.path.isfile(all_cat):
-	os.remove(all_cat)
-
-hdu.writeto(all_cat)
 
 
-sys.exit()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 orig_cols.del_col('CHUNK'                      )
 orig_cols.del_col('PROGRAMNAME'         )
 
 orig_cols.del_col('PLATERUN'                 )
-orig_cols.del_col('PLATEQUALITY'           )
+orig_cols.del_col('PLATEQUALITY')
 orig_cols.del_col('PLATESN2'                  )
 orig_cols.del_col('DEREDSN2'                )
 orig_cols.del_col('LAMBDA_EFF'             )
@@ -204,7 +236,7 @@ orig_cols.del_col('MARVELS_TARGET2'   )
 
 orig_cols.del_col('PLATEID'                    )
 orig_cols.del_col('NSPECOBS'                 )
-orig_cols.del_col('FIRSTRELEASE'           )
+orig_cols.del_col('FIRSTRELEASE')
 orig_cols.del_col('DESIGNID'                 )
 orig_cols.del_col('CX'                             )
 orig_cols.del_col('CY'                             )
@@ -227,11 +259,11 @@ orig_cols.del_col('CHI68P'                      )
 orig_cols.del_col('FRACNSIGMA'             )
 orig_cols.del_col('FRACNSIGHI'              )
 orig_cols.del_col('FRACNSIGLO'             )
-orig_cols.del_col('SPECTROFLUX'           )
+orig_cols.del_col('SPECTROFLUX')
 orig_cols.del_col('SPECTROFLUX_IVAR'  )
 orig_cols.del_col('SPECTROSYNFLUX'     )
 orig_cols.del_col('SPECTROSYNFLUX_IVAR'  )
-orig_cols.del_col('SPECTROSKYFLUX'           )
+orig_cols.del_col('SPECTROSKYFLUX')
 orig_cols.del_col('ANYANDMASK'                  )
 orig_cols.del_col('ANYORMASK'                    )
 orig_cols.del_col('SPEC1_G'                         )
@@ -266,7 +298,7 @@ orig_cols.del_col('INSTRUMENT'             )
 orig_cols.del_col('CHUNK'                      )
 orig_cols.del_col('PROGRAMNAME'         )
 orig_cols.del_col('PLATERUN'                 )
-orig_cols.del_col('PLATEQUALITY'           )
+orig_cols.del_col('PLATEQUALITY')
 orig_cols.del_col('PLATESN2'                  )
 orig_cols.del_col('DEREDSN2'                )
 orig_cols.del_col('LAMBDA_EFF'             )
@@ -285,10 +317,10 @@ orig_cols.del_col('BOSS_SPECOBJ_ID'    )
 orig_cols.del_col('SPECOBJID'                )
 orig_cols.del_col('FLUXOBJID'                )
 orig_cols.del_col('BESTOBJID'                )
-orig_cols.del_col('TARGETOBJID'           )
+orig_cols.del_col('TARGETOBJID')
 orig_cols.del_col('PLATEID'                    )
 orig_cols.del_col('NSPECOBS'                 )
-orig_cols.del_col('FIRSTRELEASE'           )
+orig_cols.del_col('FIRSTRELEASE')
 orig_cols.del_col('RUN2D'                      )
 orig_cols.del_col('RUN1D'                      )
 orig_cols.del_col('DESIGNID'                 )
@@ -352,11 +384,11 @@ orig_cols.del_col('CHI68P'                      )
 orig_cols.del_col('FRACNSIGMA'             )
 orig_cols.del_col('FRACNSIGHI'              )
 orig_cols.del_col('FRACNSIGLO'             )
-orig_cols.del_col('SPECTROFLUX'           )
+orig_cols.del_col('SPECTROFLUX')
 orig_cols.del_col('SPECTROFLUX_IVAR'  )
 orig_cols.del_col('SPECTROSYNFLUX'     )
 orig_cols.del_col('SPECTROSYNFLUX_IVAR'  )
-orig_cols.del_col('SPECTROSKYFLUX'           )
+orig_cols.del_col('SPECTROSKYFLUX')
 orig_cols.del_col('ANYANDMASK'                  )
 orig_cols.del_col('ANYORMASK'                    )
 orig_cols.del_col('SPEC1_G'                         )
