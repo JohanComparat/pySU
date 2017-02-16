@@ -38,7 +38,7 @@ for bd in bds:
 	new_cols = fits.ColDefs(newDat)
 
 	hdu = fits.BinTableHDU.from_columns(new_cols)
-	write_cat = all_cat+"-"+str(NperCat)+".fits"
+	write_cat = all_cat+"-"+str(bd)+".fits"
 	if os.path.isfile(write_cat):
 		os.remove(write_cat)
 
