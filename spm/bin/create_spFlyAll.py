@@ -7,50 +7,51 @@ import sys
 import time
 import astropy.io.fits as fits
 
+
+def concatenate_spFlyPlates(imf, dir, all_cat):
+	spFlyCats = n.array( glob.glob( join( os.environ['SDSSDR12_DIR'], dir, "catalogs","spFly-*.fits") ) )
+	spFlyCats.sort()
+
+	NperCat = 100
+	bds = n.arange(0, len(spFlyCats), NperCat)
+	for bd in bds:
+		t0 = time.time()
+		init_cat = spFlyCats[bd] # join( os.environ['SDSSDR12_DIR'], dir, "catalogs", "spFly-"+plate+".fits")
+
+		hdu_orig_table = fits.open(init_cat)
+		orig_table = hdu_orig_table[1].data
+		orig_cols = orig_table.columns
+
+		table_all = orig_table
+
+		for fitFile in spFlyCats[bd+1:bd+NperCat]:
+			table_all = n.hstack((table_all, fits.open(fitFile)[1].data ))
+			
+		newDat = n.transpose(table_all)
+
+		new_cols = fits.ColDefs(newDat)
+
+		hdu = fits.BinTableHDU.from_columns(new_cols)
+		write_cat = all_cat+"-"+str(bd)+".fits"
+		if os.path.isfile(write_cat):
+			os.remove(write_cat)
+
+		hdu.writeto(write_cat)
+		print bd, time.time()-t0
+
+imf='kr'
+dir ='stellarpop-m11-kroupa'
+all_cat = join( os.environ['SDSSDR12_DIR'], dir, "flyAll_catalogs", "spFlyAll-"+imf)
+concatenate_spFlyPlates(imf, dir , all_cat )
+
 imf='ss'
 dir ='stellarpop-m11-salpeter'
-all_cat = join( os.environ['SDSSDR12_DIR'], dir, "flyAll_catalogs", "spFlyAll-"+imf) # +"-10.fits")
-
-dV=-9999.99
-#def get_table_entry_full(hduSPM):
-
-# step 2 : match to thecreated data set
-spFlyCats = n.array( glob.glob( join( os.environ['SDSSDR12_DIR'], dir, "catalogs","spFly-*.fits") ) )
-spFlyCats.sort()
-
-NperCat = 100
-bds = n.arange(0, len(spFlyCats)+NperCat, NperCat)
-for bd in bds:
-	t0 = time.time()
-	init_cat = spFlyCats[bd] # join( os.environ['SDSSDR12_DIR'], dir, "catalogs", "spFly-"+plate+".fits")
-
-	hdu_orig_table = fits.open(init_cat)
-	orig_table = hdu_orig_table[1].data
-	orig_cols = orig_table.columns
-
-	table_all = orig_table
-
-	for fitFile in spFlyCats[bd+1:bd+NperCat]:
-		table_all = n.hstack((table_all, fits.open(fitFile)[1].data ))
-		
-	newDat = n.transpose(table_all)
-
-	new_cols = fits.ColDefs(newDat)
-
-	hdu = fits.BinTableHDU.from_columns(new_cols)
-	write_cat = all_cat+"-"+str(bd)+".fits"
-	if os.path.isfile(write_cat):
-		os.remove(write_cat)
-
-	hdu.writeto(write_cat)
-	print bd, time.time()-t0
-
+all_cat = join( os.environ['SDSSDR12_DIR'], dir, "flyAll_catalogs", "spFlyAll-"+imf)
+concatenate_spFlyPlates(imf, dir , all_cat )
 
 sys.exit()
+
 headers = n.array(['specObjID','mjd','plate','fiberID','run1d','run2d','ra','dec','z_noqso','zErr_noqso','zWarning_noqso','class_noqso','subClass_noqso','u','g','r','i','z','err_u','err_g','err_r','err_i','err_z','dered_u','dered_g','dered_r','dered_i','dered_z','age_mean','age_err_plus','age_err_minus','metallicity_mean','metallicity_mean_err_plus','metallicity_mean_err_minus','stellar_mass','stellar_mass_err_plus	','stellar_mass_err_minus','spm_EBV','nComponentsSSP'])
-
-
-
 
 new_cols.del_col('SURVEY'             )
 new_cols.del_col('INSTRUMENT'     )
