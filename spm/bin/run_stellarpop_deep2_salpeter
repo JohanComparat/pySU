@@ -20,8 +20,6 @@ outputFolder = join( os.environ['DEEP2_DIR'], 'stellarpop-m11-salpeter', 'stella
 def runSpec(catalog_entry):
 	print catalog_entry['ZBEST'], catalog_entry['RA'],  catalog_entry['DEC']
 	t0=time.time()
-	mask=str(catalog_entry['MASK'])
-	objno=str(catalog_entry['OBJNO'])
 	path_to_spectrum = glob.glob(join(os.environ['DEEP2_DIR'], 'spectra', mask, '*', '*' + objno + '*_fc_tc.dat'))
 	if len(path_to_spectrum)>=1:
 		try:
@@ -42,6 +40,8 @@ def runSpec(catalog_entry):
 
 
 for catalog_entry in catalog:
+	mask=str(catalog_entry['MASK'])
+	objno=str(catalog_entry['OBJNO'])
 	if os.path.isfile(join(outputFolder , 'spFly-deep2-'+mask+'-'+objno +"-ss.fits"))
 		pass
 	else:
