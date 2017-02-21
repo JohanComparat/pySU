@@ -29,7 +29,7 @@ def runSpec(specLiteFile):
 		os.mkdir(outputFolder)
 
 	t0=time.time()
-	spec=gs.GalaxySpectrumFIREFLY(specLiteFile, milky_way_reddening==True)
+	spec=gs.GalaxySpectrumFIREFLY(specLiteFile, milky_way_reddening=True)
 	spec.openObservedSDSSSpectrum(survey='sdssMain')
 	ageMax = np.log10(cosmo.age(spec.redshift).value*1e9)
 	if spec.hdulist[2].data['CLASS'][0]=="GALAXY" and spec.hdulist[2].data['Z'][0] >  spec.hdulist[2].data['Z_ERR'][0] and spec.hdulist[2].data['Z_ERR'][0]>0 and spec.hdulist[2].data['ZWARNING'][0] ==0 :
