@@ -15,9 +15,9 @@ import GalaxySpectrumFIREFLY as gs
 import StellarPopulationModel as spm
 
 catalog=fits.open(join(os.environ['VVDS_DIR'], "catalogs", "VVDS_WIDE_summary.v1.fits"))[1].data
+outputFolder = join( os.environ['VVDS_DIR'], 'stellarpop-m11-kroupa', 'stellarpop')
 
 def runSpec(catalog_entry):
-	outputFolder = join( os.environ['VVDS_DIR'], 'stellarpop-m11-salpeter', 'stellarpop')
 	print catalog_entry['Z'],  catalog_entry['fo'],  catalog_entry['ALPHA'],  catalog_entry['DELTA'],  catalog_entry['ZFLAGS'] 
 	t0=time.time()
 	try:
@@ -25,7 +25,7 @@ def runSpec(catalog_entry):
 		spec.openObservedVVDSpectrum(catalog_entry)
 		ageMax = np.log10(cosmo.age(spec.redshift).value*1e9)
 		if spec.redshift>0.01 and spec.redshift < 1.7 :
-			model = spm.StellarPopulationModel(spec, join(outputFolder , 'spFly-vvdswide-'+str(catalog_entry['NUM']) ), cosmo, models = 'm11', model_libs = ['MILES'], imfs = ['ss'], age_limits = [6,10], downgrade_models = True, data_wave_medium = 'air', Z_limits = [-3.,1.],suffix="-ss.fits", use_downgraded_models = True)
+			model = spm.StellarPopulationModel(spec, join(outputFolder , 'spFly-vvdswide-'+str(catalog_entry['NUM']) ), cosmo, models = 'm11', model_libs = ['MILES'], imfs = ['kr'], age_limits = [6,10], downgrade_models = True, data_wave_medium = 'air', Z_limits = [-3.,1.],suffix="-kr.fits", use_downgraded_models = True)
 			try :
 				model.fit_models_to_data()
 				#print( model.averages )
@@ -36,5 +36,13 @@ def runSpec(catalog_entry):
 	except (IndexError):
 				pass
 
-for el in catalog:
-	runSpec(el)
+for catalog_entry in catalog:
+	if os.path.isfile(join(outputFolder , 'spFly-vvdswide-'+str(catalog_entry['NUM']) +"-kr.fits"))
+		pass
+	else:
+		runSpec(catalog_entry)
+
+sys.exit()	
+
+sel = (catalog['Z']>0.01 )&( catalog['Z'] < 1.7 )
+print len(catalog), len(catalog[sel])

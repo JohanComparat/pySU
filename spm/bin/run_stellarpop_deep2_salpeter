@@ -15,9 +15,9 @@ import GalaxySpectrumFIREFLY as gs
 import StellarPopulationModel as spm
 
 catalog=fits.open(join(os.environ['DEEP2_DIR'], "catalogs", "zcat.deep2.dr4.v4.LFcatalogTC.Planck15.fits"))[1].data
+outputFolder = join( os.environ['DEEP2_DIR'], 'stellarpop-m11-salpeter', 'stellarpop')
 
 def runSpec(catalog_entry):
-	outputFolder = join( os.environ['DEEP2_DIR'], 'stellarpop-m11-salpeter', 'stellarpop')
 	print catalog_entry['ZBEST'], catalog_entry['RA'],  catalog_entry['DEC']
 	t0=time.time()
 	mask=str(catalog_entry['MASK'])
@@ -40,5 +40,10 @@ def runSpec(catalog_entry):
 		except (IndexError):
 					pass
 
-for el in catalog:
-	runSpec(el)
+
+for catalog_entry in catalog:
+	if os.path.isfile(join(outputFolder , 'spFly-deep2-'+mask+'-'+objno +"-ss.fits"))
+		pass
+	else:
+		runSpec(catalog_entry)
+		
