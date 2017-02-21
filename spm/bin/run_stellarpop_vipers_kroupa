@@ -37,7 +37,7 @@ def runSpec(catalog_entry):
 				pass
 	
 for catalog_entry in catalog:
-	if os.path.isfile(join(outputFolder , 'spFly-vipers-'+catalog_entry['id_IAU'][7:] +"-kr.fits"))
+	if os.path.isfile(join(outputFolder , 'spFly-vipers-'+catalog_entry['id_IAU'][7:] +"-kr.fits")):
 		pass
 	else:
 		runSpec(catalog_entry)
