@@ -21,7 +21,7 @@ def runSpec(catalog_entry):
 	print catalog_entry['zspec'],  catalog_entry['fo'],  catalog_entry['ALPHA'],  catalog_entry['DELTA'],  catalog_entry['zflg'] 
 	t0=time.time()
 	try:
-		spec=gs.GalaxySpectrumFIREFLY("-", milky_way_reddening=True, survey='vipers')
+		spec=gs.GalaxySpectrumFIREFLY("-", milky_way_reddening=True)
 		spec.openObservedVIPERSpectrum(catalog_entry)
 		ageMax = np.log10(cosmo.age(spec.redshift).value*1e9)
 		if spec.redshift>0.01 and spec.redshift < 1.7 :
