@@ -8,7 +8,8 @@ import time
 import astropy.io.fits as fits
 
 # plate = sys.argv[1]
-dir ='stellarpop-m11-salpeter'
+#dir ='stellarpop-m11-salpeter'
+dir ='stellarpop-m11-kroupa'
 dV=-9999.99
 
 plates_all = n.loadtxt( join(os.environ['SDSSDR12_DIR'], "plateNumberList"), unpack=True, dtype='str')
@@ -25,7 +26,7 @@ def get_info_from_catalog(plate):
 		if int(plate)<=2974:
 			galaxies = (hdus[1].data['ZWARNING']==0) & (hdus[1].data['CLASS']=="GALAXY") & (hdus[1].data['Z'] > hdus[1].data['Z_ERR']) & (hdus[1].data['Z_ERR']>0)
 		else :
-			galaxies = (hdus[1].data['ZWARNING']==0) & (hdus[1].data['CLASS_NOQSO']=="GALAXY") & (hdus[1].data['Z_NOQSO'] > hdus[1].data['Z_ERR_NOQSO']) & (hdus[1].data['Z_ERR_NOQSO']>0)
+			galaxies = (hdus[1].data['ZWARNING_NOQSO']==0) & (hdus[1].data['CLASS_NOQSO']=="GALAXY") & (hdus[1].data['Z_NOQSO'] > hdus[1].data['Z_ERR_NOQSO']) & (hdus[1].data['Z_ERR_NOQSO']>0)
 		
 		not_processed = (galaxies) & (not_processed_all)
 		processed = (galaxies) & (not_processed==False)
@@ -46,20 +47,23 @@ for plate in plates:
 remove = (outs.T[0]==0.)
 
 
-head = """#!/bin/bash 
-#PBS -l walltime=90:00:00 
-#PBS -o missing.o.$PBS_JOBID 
-#PBS -e missing.e.$PBS_JOBID 
-#PBS -M johan.comparat@gmail.com 
-module load apps/anaconda/2.4.1 
-module load apps/python/2.7.8/gcc-4.4.7 
-export PYTHONPATH=$PYTHONPATH:/users/comparat/pySU/galaxy/python/
-export PYTHONPATH=$PYTHONPATH:/users/comparat/pySU/spm/python/ 
- 
-cd /users/comparat/pySU/spm/bin 
+n.savetxt("to-process-all.txt", outs[remove==False], fmt='%s', newline='\n python stellarpop_sdss_singleSpec_kroupa ')
 
-"""
-n.savetxt("to-process-1k.txt", outs[remove==False], fmt='%s', newline='\n python stellarpop_sdss_singleSpec_kroupa ', header=head)
+plates = n.transpose(outs[remove==False])[0]
+
+sys.exit()
+
+
+
+
+
+
+
+
+
+
+
+
 
 outs=n.array([0,0,0])
 for plate in plates[1000:]:

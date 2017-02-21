@@ -38,3 +38,8 @@ def runSpec(catalog_entry):
 
 for el in catalog:
 	runSpec(el)
+
+sys.exit()	
+
+sel = (catalog['Z']>0.01 )&( catalog['Z'] < 1.7 )
+print len(catalog), len(catalog[sel])

@@ -14,11 +14,11 @@ def writeScript(rootName, plate):
 	f.write("export PYTHONPATH=$PYTHONPATH:/users/comparat/pySU/spm/python/ \n")
 	f.write(" \n")
 	f.write("cd /users/comparat/pySU/spm/bin \n")
-	f.write("python stellarpop_sdssdr14_single_kroupa "+plate+" \n")
+	f.write("python run_stellarpop_ebossdr14_kroupa "+plate+" \n")
 	f.write(" \n")
 	f.close()
 
-plates = n.loadtxt( join(os.environ['SDSSDR14_DIR'], "plateNumberList"), unpack=True, dtype='str')
+plates = n.loadtxt( join(os.environ['EBOSSDR14_DIR'], "catalogs", "plateNumberList"), unpack=True, dtype='str')
 for plate in plates:
 	rootName = join(os.environ['HOME'], "batch_dr14_firefly_kroupa", plate)
 	writeScript(rootName, plate)

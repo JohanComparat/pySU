@@ -1,0 +1,53 @@
+# Login to sciama
+
+
+cd $PYSU_DIR/spm/bin
+
+# executable scripts
+
+# SDSS DR7 and DR12
+python stellarpop_sdss_single_kroupa
+python stellarpop_sdss_single_salpeter
+# SDSS DR14
+python stellarpop_sdssdr14_single_kroupa
+python stellarpop_sdssdr14_single_salpeter
+# SDSS single spectrum
+python stellarpop_sdss_singleSpec_kroupa
+python stellarpop_sdss_singleSpec_salpeter
+
+# DEEP2, VIPERS, VVDS 
+python stellarpop_deep2_kroupa
+python stellarpop_deep2_salpeter
+python stellarpop_vipers_kroupa
+python stellarpop_vipers_salpeter
+python stellarpop_vvdsdeep_kroupa
+python stellarpop_vvdsdeep_salpeter
+python stellarpop_vvdswide_kroupa
+python stellarpop_vvdswide_salpeter
+
+# for single spectra or single stacks
+python stellarpop_single
+python stellarpop_stacks
+python stellarpop_stacks_EBOSS
+python stellarpop_stacks_tutorial
+
+# runs for the emission line LF stacks
+python setup_run_for_stacks_DEEP2
+python setup_run_for_stacks_VVDSDEEP
+
+# rountines to write and submit the batch scripts
+python write_run_scripts_dr14_kroupa.py
+python write_run_scripts_dr14_salpeter.py
+python write_run_scripts_summ_tables.py
+python submit_new_jobs.txt
+python submit_scripts.py
+
+# scripts to check the status
+python check_run_status.py
+python run_missing_fits.sh
+
+# summary table creation 
+python create_summary_tables.py
+python create_spFlyAll.py
+python merge_spFlyAll.sh
+

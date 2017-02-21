@@ -42,3 +42,15 @@ def runSpec(catalog_entry):
 
 for el in catalog:
 	runSpec(el)
+
+sys.exit()
+n_fc_tc = n.zeros_like(catalog['ZBEST']) 
+for ii, catalog_entry in enumerate(catalog):
+	mask=str(catalog_entry['MASK'])
+	objno=str(catalog_entry['OBJNO'])
+	path_to_spectrum = glob.glob(join(os.environ['DEEP2_DIR'], 'spectra', mask, '*', '*' + objno + '*_fc_tc.dat'))
+	n_fc_tc[ii] = len(path_to_spectrum )
+	
+ok=(catalog['ZBEST']>0.01)&(catalog['ZBEST']<1.7)&(n_fc_tc>=1)
+
+print len(catalog), len(catalog[ok])

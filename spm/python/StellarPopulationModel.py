@@ -58,7 +58,9 @@ class StellarPopulationModel:
 		* 'ss' for `Salpeter <http://adsabs.harvard.edu/abs/1955ApJ...121..161S>`_or 
 		* 'kr' for `Kroupa <http://adsabs.harvard.edu/cgi-bin/bib_query?arXiv:1112.3340>`_ or 
 		* 'cha' for `Chabrier <http://adsabs.harvard.edu/abs/2003PASP..115..763C>`_.
-
+	
+	:param hpf_mode: 'on' means the code uses HPF to dereden the spectrum, is 'hpf_only' then EBV=0.
+	
 	 Notes
 	 -----
 
@@ -72,6 +74,8 @@ class StellarPopulationModel:
 		 #. Convert chis into probabilities and calculates all average properties and errors (assuming the number of degrees of freedom is the number of wavelength points)
 		 #. Optionally produces a plot
 		 #. Finally, it writes the output files
+		  
+	
 
 	"""
 	def __init__(self, specObs, outputFile, cosmo, models = 'm11', model_libs = ['MILES_UVextended'], imfs = ['ss','kr'], hpf_mode = 'on', age_limits = [6,10.1], downgrade_models = True, dust_law = 'calzetti', max_ebv = 1.5, num_dust_vals = 200, dust_smoothing_length = 200, max_iterations = 10, fit_per_iteration_cap = 1000, pdf_sampling = 300, data_wave_medium = 'vacuum', Z_limits = [-0.1,0.1], wave_limits = [0,99999990], suffix = "-fireflyFits.fits",use_downgraded_models = False):
