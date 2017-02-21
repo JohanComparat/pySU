@@ -14,7 +14,7 @@ def writeScript(rootName, plate):
 	f.write("export PYTHONPATH=$PYTHONPATH:/users/comparat/pySU/spm/python/ \n")
 	f.write(" \n")
 	f.write("cd /users/comparat/pySU/spm/bin \n")
-	f.write("python run_stellarpop_sdssdr14_salpeter "+plate+" \n")
+	f.write("python run_stellarpop_ebossdr14_salpeter "+plate+" \n")
 	f.write(" \n")
 	f.close()
 
