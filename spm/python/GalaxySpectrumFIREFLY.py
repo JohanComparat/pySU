@@ -47,12 +47,11 @@ class GalaxySpectrumFIREFLY:
 			* objid : object id optional : set to 0
 		
 	"""
-	def __init__(self,path_to_spectrum, milky_way_reddening=True , hpf_mode = 'on', survey='sdssMain', N_angstrom_masked = 20.):
+	def __init__(self,path_to_spectrum, milky_way_reddening=True , hpf_mode = 'on', N_angstrom_masked = 20.):
 		self.path_to_spectrum=path_to_spectrum
 		self.milky_way_reddening = milky_way_reddening
 		self.hpf_mode = hpf_mode
 		self.N_angstrom_masked = N_angstrom_masked
-		self.survey = survey
 
 	def openObservedSDSSSpectrum(self, survey='sdssMain'):
 		"""
