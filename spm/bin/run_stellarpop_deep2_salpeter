@@ -43,7 +43,7 @@ for catalog_entry in catalog:
 	mask=str(catalog_entry['MASK'])
 	objno=str(catalog_entry['OBJNO'])
 	if os.path.isfile(join(outputFolder , 'spFly-deep2-'+mask+'-'+objno +"-ss.fits")):
-		pass
+		print "pass", join(outputFolder , 'spFly-deep2-'+mask+'-'+objno +"-ss.fits")
 	else:
 		runSpec(catalog_entry)
 		

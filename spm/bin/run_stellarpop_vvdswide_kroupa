@@ -38,7 +38,7 @@ def runSpec(catalog_entry):
 
 for catalog_entry in catalog:
 	if os.path.isfile(join(outputFolder , 'spFly-vvdswide-'+str(catalog_entry['NUM']) +"-kr.fits")):
-		pass
+		print "pass", join(outputFolder , 'spFly-vvdswide-'+str(catalog_entry['NUM']) +"-kr.fits")
 	else:
 		runSpec(catalog_entry)
 
