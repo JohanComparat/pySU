@@ -27,7 +27,7 @@ def runSpec(specLiteFile):
 	# path to lite spectra
 	#specLiteFile = join( os.environ['SDSSDR12_DIR'], str(plate), 'spec-'+str(plate)+ '-'+str(mjd)+'-' +str(fibre).zfill(4)+'.fits')
 	# join( os.environ['BOSS_SPECTRO_REDUX'], os.environ['RUN2D'], 'spectra', 'lite' , str(plate), 'spec-'+str(plate)+ '-'+str(mjd)+'-' +str(fibre).zfill(4)+'.fits')
-	outputFolder = join( os.environ['SDSSDR12_DIR'], 'stellarpop-m11-salpeter', 'stellarpop', str(plate))
+	outputFolder = join( os.environ['SDSSDR12_DIR'], 'stellarpop-m11-salpeter-nodust', 'stellarpop', str(plate))
 	if os.path.isdir(outputFolder)==False:
 		os.mkdir(outputFolder)
 

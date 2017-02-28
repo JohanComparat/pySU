@@ -24,7 +24,7 @@ def runSpec(specLiteFile):
 	plate = baseN[1] #7457# sys.argv[1] #7619
 	mjd = baseN[2] # 56746#sys.argv[2] # 56900
 	fibre = baseN[3] # 471#sys.argv[3] #300
-	outputFolder = join( os.environ['SDSSDR12_DIR'], 'stellarpop-m11-kroupa', 'stellarpop', str(plate))
+	outputFolder = join( os.environ['SDSSDR12_DIR'], 'stellarpop-m11-kroupa-nodust', 'stellarpop', str(plate))
 	if os.path.isdir(outputFolder)==False:
 		os.mkdir(outputFolder)
 
