@@ -1,4 +1,3 @@
-
 from os.path import join
 import os
 import numpy as n
@@ -7,11 +6,27 @@ import sys
 import time
 import astropy.io.fits as fits
 
-plate = "7457" # sys.argv[1]
-dir ='stellarpop-m11-salpeter'
+plate = sys.argv[1] # '9003'
+dir = sys.argv[2] # 'stellarpop-m11-kroupa'
+#python create_summary_tables.py 2578 stellarpop-m11-kroupa
+#python test.py 2578 stellarpop-m11-kroupa
+
+if dir == 'stellarpop-m11-salpeter' or dir == 'stellarpop-m11-salpeter-nodust' :
+	suffix = "-ss.fits"
+
+if dir == 'stellarpop-m11-kroupa' or dir == 'stellarpop-m11-kroupa-nodust' :
+	suffix = "-kr.fits"
+
+print plate
+# print dir
+# print suffix
+
+init_cat = join( os.environ['SDSSDR12_DIR'], "catalogs", "perPlate", "sp-"+plate.zfill(4)+".fits")
+plate_catalog = join( os.environ['SDSSDR12_DIR'], dir, "catalogs", "spFly-"+plate.zfill(4)+".fits")
 
 dV=-9999.99
 def get_table_entry_full(hduSPM):
+	# print "gets entry"
 	headerA =" age_universe age_lightW_mean age_lightW_err_plus age_lightW_err_minus metallicity_lightW_mean metallicity_lightW_mean_err_plus metallicity_lightW_mean_err_minus age_massW_mean age_massW_err_plus age_massW_err_minus metallicity_massW_mean metallicity_massW_mean_err_plus metallicity_massW_mean_err_minus stellar_mass stellar_mass_err_plus stellar_mass_err_minus spm_EBV nComponentsSSP"
 	
 	table_entry = [ 10**hduSPM.header['age_universe'], 10**hduSPM.header['age_lightW_mean'], 10**hduSPM.header['age_lightW_mean_up']-10**hduSPM.header['age_lightW_mean'], 10**hduSPM.header['age_lightW_mean']-10**hduSPM.header['age_lightW_mean_low'], hduSPM.header['metallicity_lightW_mean'], hduSPM.header['metallicity_lightW_mean_up'] - hduSPM.header['metallicity_lightW_mean'], hduSPM.header['metallicity_lightW_mean'] - hduSPM.header['metallicity_lightW_mean_low'], 10**hduSPM.header['age_massW_mean'], 10**hduSPM.header['age_massW_mean_up']-10**hduSPM.header['age_massW_mean'], 10**hduSPM.header['age_massW_mean']-10**hduSPM.header['age_massW_mean_low'], hduSPM.header['metallicity_massW_mean'], hduSPM.header['metallicity_massW_mean_up'] - hduSPM.header['metallicity_massW_mean'], hduSPM.header['metallicity_massW_mean'] - hduSPM.header['metallicity_massW_mean_low'], hduSPM.header['stellar_mass_mean'], hduSPM.header['stellar_mass_mean_up'] - hduSPM.header['stellar_mass_mean'], hduSPM.header['stellar_mass_mean'] - hduSPM.header['stellar_mass_mean_low'], hduSPM.header['EBV'], hduSPM.header['ssp_number']]
@@ -34,16 +49,13 @@ def get_table_entry_full(hduSPM):
 	#print table_entry.shape
 	return n.hstack((table_entry)), headerA
 	
-# step 2 : match to thecreated data set
-init_cat = join( os.environ['SDSSDR12_DIR'], "catalogs", "perPlate", "sp-"+plate+".fits")
-plate_catalog = join( os.environ['SDSSDR12_DIR'], dir, "catalogs", "spFly-"+plate+".fits")
-	
+# step 2 : match to thecreated data set	
 hdu_orig_table = fits.open(init_cat)
 orig_table = hdu_orig_table[1].data
 orig_cols = orig_table.columns
 
 orig_cols.del_col('CHUNK'                      )
-orig_cols.del_col('PROGRAMNAME'         )
+#orig_cols.del_col('PROGRAMNAME'         )
 
 orig_cols.del_col('PLATERUN'                 )
 orig_cols.del_col('PLATEQUALITY'           )
@@ -129,9 +141,10 @@ orig_cols.del_col('CALIBFLUX'                      )
 orig_cols.del_col('CALIBFLUX_IVAR'             )
 
 table_all = []
-
+headers = ""
 for fiber, mjd in zip(orig_table['FIBERID'], orig_table['MJD']):
-	fitFile = join( os.environ['SDSSDR12_DIR'], dir, "stellarpop", plate, "spec-"+plate+"-"+str(mjd)+"-"+str(fiber).zfill(4)+"-SPM-MILES.fits")
+	fitFile = join( os.environ['SDSSDR12_DIR'], dir, "stellarpop", plate, "spFly-"+plate.zfill(4)+"-"+str(mjd)+"-"+str(fiber).zfill(4)+suffix)
+	# print fitFile
 	if os.path.isfile(fitFile):
 		table_entry, headers = get_table_entry_full( hduSPM=fits.open(fitFile)[1] )
 		table_all.append(table_entry)
@@ -153,6 +166,9 @@ hdu.writeto(plate_catalog)
 
 
 sys.exit()
+
+
+
 orig_cols.del_col('SURVEY'                     )
 orig_cols.del_col('INSTRUMENT'             )
 orig_cols.del_col('CHUNK'                      )
