@@ -36,8 +36,8 @@ def runSpec(catalog_entry):
 	except (IndexError):
 				pass
 
-ids = n.arange(len(catalog))
-n.random.shuffle(ids)
+ids = np.arange(len(catalog))
+np.random.shuffle(ids)
 for catalog_entry in catalog[ids]:
 	if os.path.isfile(join(outputFolder , 'spFly-vvdswide-'+str(catalog_entry['NUM']) +"-kr.fits")):
 		print "pass", join(outputFolder , 'spFly-vvdswide-'+str(catalog_entry['NUM']) +"-kr.fits")
