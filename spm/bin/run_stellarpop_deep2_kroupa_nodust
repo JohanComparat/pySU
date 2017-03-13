@@ -15,7 +15,7 @@ import GalaxySpectrumFIREFLY as gs
 import StellarPopulationModel as spm
 
 catalog=fits.open(join(os.environ['DEEP2_DIR'], "catalogs", "zcat.deep2.dr4.v4.LFcatalogTC.Planck15.fits"))[1].data
-outputFolder = join( os.environ['DEEP2_DIR'], 'stellarpop-m11-kroupa_nodust', 'stellarpop')
+outputFolder = join( os.environ['DEEP2_DIR'], 'stellarpop-m11-kroupa-nodust', 'stellarpop')
 
 def runSpec(catalog_entry):
 	print catalog_entry['ZBEST'], catalog_entry['RA'],  catalog_entry['DEC']
