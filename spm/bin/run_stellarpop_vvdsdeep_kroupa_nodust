@@ -37,7 +37,9 @@ def runSpec(catalog_entry):
 				pass
 
 
-for catalog_entry in catalog:
+ids = n.arange(len(catalog))
+n.random.shuffle(ids)
+for catalog_entry in catalog[ids]:
 	if os.path.isfile(join(outputFolder , 'spFly-vvdsdeep-'+str(catalog_entry['NUM']) +"-kr.fits")):
 		print "pass", join(outputFolder , 'spFly-vvdsdeep-'+str(catalog_entry['NUM']) +"-kr.fits")
 	else:
