@@ -24,7 +24,13 @@ def concatenate_spFlyPlates(root_dir, imf, dir, all_cat):
 		table_all = orig_table
 
 		for fitFile in spFlyCats[bd+1:bd+NperCat]:
-			table_all = n.hstack((table_all, fits.open(fitFile)[1].data ))
+			print fitFile
+			nDATA = fits.open(fitFile)[1].data
+			#print nDATA
+			try :#if len(fits.open(fitFile)[1].data)>0:
+				table_all = n.hstack((table_all, nDATA))
+			except TypeError:
+				print "type error"
 			
 		newDat = n.transpose(table_all)
 
@@ -40,46 +46,46 @@ def concatenate_spFlyPlates(root_dir, imf, dir, all_cat):
 
 imf='kr'
 dir ='stellarpop-m11-kroupa'
-all_cat = join( os.environ['SDSSDR12_DIR'], dir, "flyAll_catalogs", "spFlyAll-"+imf)
-concatenate_spFlyPlates('SDSSDR12_DIR', imf, dir , all_cat )
+all_cat = join( os.environ['EBOSSDR14_DIR'], dir, "flyAll_catalogs", "spFlyAll-"+imf)
+concatenate_spFlyPlates('EBOSSDR14_DIR', imf, dir , all_cat )
 
 imf='ss'
 dir ='stellarpop-m11-salpeter'
-all_cat = join( os.environ['SDSSDR12_DIR'], dir, "flyAll_catalogs", "spFlyAll-"+imf)
-concatenate_spFlyPlates('SDSSDR12_DIR', imf, dir , all_cat )
+all_cat = join( os.environ['EBOSSDR14_DIR'], dir, "flyAll_catalogs", "spFlyAll-"+imf)
+concatenate_spFlyPlates('EBOSSDR14_DIR', imf, dir , all_cat )
 
 
 imf='kr'
 dir ='stellarpop-m11-kroupa-nodust'
-all_cat = join( os.environ['SDSSDR12_DIR'], dir, "flyAll_catalogs", "spFlyAll-"+imf)
-concatenate_spFlyPlates('SDSSDR12_DIR', imf, dir , all_cat )
+all_cat = join( os.environ['EBOSSDR14_DIR'], dir, "flyAll_catalogs", "spFlyAll-"+imf)
+concatenate_spFlyPlates('EBOSSDR14_DIR', imf, dir , all_cat )
 
 imf='ss'
 dir ='stellarpop-m11-salpeter-nodust'
-all_cat = join( os.environ['SDSSDR12_DIR'], dir, "flyAll_catalogs", "spFlyAll-"+imf)
-concatenate_spFlyPlates('SDSSDR12_DIR', imf, dir , all_cat )
+all_cat = join( os.environ['EBOSSDR14_DIR'], dir, "flyAll_catalogs", "spFlyAll-"+imf)
+concatenate_spFlyPlates('EBOSSDR14_DIR', imf, dir , all_cat )
 
 
 imf='kr'
 dir ='stellarpop-m11-kroupa'
-all_cat = join( os.environ['EBOSSDR14_DIR'], dir, "flyAll_catalogs", "spFlyAll-"+imf)
-concatenate_spFlyPlates('EBOSSDR14_DIR', imf, dir , all_cat )
+all_cat = join( os.environ['SDSSDR12_DIR'], dir, "flyAll_catalogs", "spFlyAll-"+imf)
+concatenate_spFlyPlates('SDSSDR12_DIR', imf, dir , all_cat )
 
 imf='ss'
 dir ='stellarpop-m11-salpeter'
-all_cat = join( os.environ['EBOSSDR14_DIR'], dir, "flyAll_catalogs", "spFlyAll-"+imf)
-concatenate_spFlyPlates('EBOSSDR14_DIR', imf, dir , all_cat )
+all_cat = join( os.environ['SDSSDR12_DIR'], dir, "flyAll_catalogs", "spFlyAll-"+imf)
+concatenate_spFlyPlates('SDSSDR12_DIR', imf, dir , all_cat )
 
 
 imf='kr'
 dir ='stellarpop-m11-kroupa-nodust'
-all_cat = join( os.environ['EBOSSDR14_DIR'], dir, "flyAll_catalogs", "spFlyAll-"+imf)
-concatenate_spFlyPlates('EBOSSDR14_DIR', imf, dir , all_cat )
+all_cat = join( os.environ['SDSSDR12_DIR'], dir, "flyAll_catalogs", "spFlyAll-"+imf)
+concatenate_spFlyPlates('SDSSDR12_DIR', imf, dir , all_cat )
 
 imf='ss'
 dir ='stellarpop-m11-salpeter-nodust'
-all_cat = join( os.environ['EBOSSDR14_DIR'], dir, "flyAll_catalogs", "spFlyAll-"+imf)
-concatenate_spFlyPlates('EBOSSDR14_DIR', imf, dir , all_cat )
+all_cat = join( os.environ['SDSSDR12_DIR'], dir, "flyAll_catalogs", "spFlyAll-"+imf)
+concatenate_spFlyPlates('SDSSDR12_DIR', imf, dir , all_cat )
 
 
 sys.exit()
