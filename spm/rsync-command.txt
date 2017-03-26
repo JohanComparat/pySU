@@ -1,0 +1,9 @@
+
+
+rsync -avz   comparat@login5.sciama.icg.port.ac.uk:/mnt/lustre/sdss-dr12/SDSS-DR12/stellarpop-m11-kroupa .          
+
+rsync -avz   comparat@login5.sciama.icg.port.ac.uk:/mnt/lustre/sdss-dr12/SDSS-DR12/stellarpop-m11-salpeter .
+
+rsync -avz   comparat@login5.sciama.icg.port.ac.uk:/mnt/lustre/sdss-dr12/SDSS-DR12/stellarpop-m11-kroupa-nodust .
+
+rsync -avz   comparat@login5.sciama.icg.port.ac.uk:/mnt/lustre/sdss-dr12/SDSS-DR12/stellarpop-m11-salpeter-nodust .
