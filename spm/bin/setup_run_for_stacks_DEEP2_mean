@@ -9,6 +9,6 @@ stackList.sort()
 n.random.shuffle(stackList)
 
 for el in stackList:
-	os.system("python stellarpop_stacks "+el)
+	os.system("python stellarpop_stacks_mean "+el)
 
 	

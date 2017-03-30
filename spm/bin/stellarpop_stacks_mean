@@ -1,0 +1,95 @@
+#! /usr/bin/env python
+
+import sys
+for arg in sys.argv:
+    print arg
+
+from os.path import join
+import os
+import time
+import glob
+import numpy as np
+import astropy.cosmology as co
+cosmo = co.Planck15
+#cosmo=co.FlatLambdaCDM(H0=70,Om0=0.3)
+
+# for one galaxy spectrum
+import GalaxySpectrumFIREFLY as gs
+import StellarPopulationModel as spm
+
+specFile = sys.argv[1] # stack file
+# specFile ="/home/comparat/database/DEEP2/products/emissionLineLuminosityFunctions/O3_5007/O3_5007-DEEP2-z0.451_stack_N_400_R_4343_L_2.68632605763e+40.fits"
+t0=time.time()
+# initiates the spectrum and gets the data
+spec=gs.GalaxySpectrumFIREFLY(specFile, milky_way_reddening=False)
+spec.openObservedStack(fluxKeyword='meanWeightedStack')
+
+#outFile = np.core.defchararray.replace(specFile[][:-5], "data", "fits").item()
+file =os.path.basename(specFile)
+outFile = join(os.environ['SPECTRASTACKS_DIR'], "fits", file[:7], file)
+print outFile
+print '========================='
+# gets the model for MILES, fits and writes
+if os.path.isfile(outFile+"-mean-kr-SPM-MILES.fits"):
+	print "pass",os.path.isfile(outFile+"-mean-kr-SPM-MILES.fits")
+else:
+	model = spm.StellarPopulationModel(spec, outFile, cosmo, models = 'm11', model_libs = ['MILES'], imfs = ['kr'], age_limits = [6, 9], downgrade_models = True, data_wave_medium = 'air', Z_limits = [-1., 1.],suffix="-mean-kr-SPM-MILES.fits", use_downgraded_models = False)
+	model.fit_models_to_data()
+
+if os.path.isfile(outFile+"-mean-ss-SPM-MILES.fits"):
+	print "pass",os.path.isfile(outFile+"-mean-ss-SPM-MILES.fits")
+else:
+	model = spm.StellarPopulationModel(spec, outFile, cosmo, models = 'm11', model_libs = ['MILES'], imfs = ['ss'], age_limits = [6, 9], downgrade_models = True, data_wave_medium = 'air', Z_limits = [-1., 1.],suffix="-mean-ss-SPM-MILES.fits", use_downgraded_models = False)
+	model.fit_models_to_data()
+
+if os.path.isfile(outFile+"-mean-any-SPM-MILES.fits"):
+	print "pass",os.path.isfile(outFile+"-mean-any-SPM-MILES.fits")
+else:
+	model = spm.StellarPopulationModel(spec, outFile, cosmo, models = 'm11', model_libs = ['MILES'], imfs = ['ss', 'kr', 'cha'], age_limits = [6, 9], downgrade_models = True, data_wave_medium = 'air', Z_limits = [-1., 1.],suffix="-mean-any-SPM-MILES.fits", use_downgraded_models = False)
+	model.fit_models_to_data()
+
+# gets the model for Stelib, fits and writes
+if os.path.isfile(outFile+"-mean-any-SPM-STELIB.fits"):
+	print "pass",os.path.isfile(outFile+"-mean-any-SPM-STELIB.fits")
+else:
+	model = spm.StellarPopulationModel(spec, outFile, cosmo, models = 'm11', model_libs = ['STELIB'], imfs = ['ss', 'kr', 'cha'], age_limits = [6,9], downgrade_models = False, data_wave_medium = 'air', Z_limits = [-1.,1.],suffix="-mean-any-SPM-STELIB.fits", use_downgraded_models = False)
+	model.fit_models_to_data()
+
+if os.path.isfile(outFile+"-mean-ss-SPM-STELIB.fits"):
+	print "pass",os.path.isfile(outFile+"-mean-ss-SPM-STELIB.fits")
+else:
+	model = spm.StellarPopulationModel(spec, outFile, cosmo, models = 'm11', model_libs = ['STELIB'], imfs = ['ss'], age_limits = [6,9], downgrade_models = False, data_wave_medium = 'air', Z_limits = [-1.,1.],suffix="-mean-ss-SPM-STELIB.fits", use_downgraded_models = False)
+	model.fit_models_to_data()
+	
+if os.path.isfile(outFile+"-mean-kr-SPM-STELIB.fits"):
+	print "pass",os.path.isfile(outFile+"-mean-kr-SPM-STELIB.fits")
+else:
+	model = spm.StellarPopulationModel(spec, outFile, cosmo, models = 'm11', model_libs = ['STELIB'], imfs = ['kr'], age_limits = [6,9], downgrade_models = False, data_wave_medium = 'air', Z_limits = [-1.,1.],suffix="-mean-kr-SPM-STELIB.fits", use_downgraded_models = False)
+	model.fit_models_to_data()
+
+print "time used =", time.time()-t0 ,"seconds"
+
+"""
+conversion_factor 	= 10.0**(-17) * 4 * np.pi * model.dist_lum**2.0 # unit 1e-17 cm2 
+
+model.age = np.array(model.age) # Gyr
+model.metal = np.array(model.metal)
+
+# per SSP : 
+bf_mass = (model.mass_weights[model.best_fit_index]>0)[0]
+bf_light = (model.light_weights[model.best_fit_index]>0)[0]
+mass_per_ssp = model.unnorm_mass[model.best_fit_index[0]][bf_mass]*conversion_factor
+age_per_ssp = model.age[bf_mass]*10**9
+metal_per_ssp = model.metal[bf_mass]
+weight_mass_per_ssp = model.mass_weights[model.best_fit_index[0]][bf_mass]
+weight_light_per_ssp = model.light_weights[model.best_fit_index[0]][bf_light]
+
+print "M Msun", model.averages['stellar_mass'], np.log10(mass_per_ssp)
+print "age Gyr", 10**model.averages['light_age'], 10**model.averages['mass_age'], age_per_ssp/1e9
+print "Z", model.averages['light_metal'], model.averages['mass_metal'], metal_per_ssp
+print "SFR Msun/yr", mass_per_ssp/age_per_ssp
+print "wm", weight_mass_per_ssp
+print "wl", weight_light_per_ssp
+
+print "z, age Gyr", model.specObs.redshift, model.cosmo.age(model.specObs.redshift).value
+"""

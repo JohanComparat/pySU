@@ -1,5 +1,5 @@
 #!/bin/bash/
-cd $PYSU_DIR/pyGalaxy/trunk/bin_stack
+cd $PYSU_DIR/galaxy/bin_stack
 
 # Stacking LF spectra
 # DATA

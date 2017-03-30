@@ -4,11 +4,11 @@ from os.path import join
 import os
 import glob
 import numpy as n
-stackList = n.array(glob.glob(join(os.environ['SPECTRASTACKS_DIR'],"data","??_????","*DEEP2*R_*.fits")))
+stackList = n.array(glob.glob(join(os.environ['SPECTRASTACKS_DIR'],"data","??_????","*VVDS*R_*.fits")))
 stackList.sort()
 n.random.shuffle(stackList)
 
 for el in stackList:
-	os.system("python stellarpop_stacks "+el)
+	os.system("python stellarpop_stacks_mean "+el)
 
 	

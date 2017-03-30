@@ -3,9 +3,10 @@
 from os.path import join
 import os
 import glob
-
-# list of all VVDS spectra
-stackList = glob.glob(join(os.environ['SPECTRASTACKS_DIR'],"data","??_????","*VVDS*R_*.fits"))
+import numpy as n
+stackList = n.array(glob.glob(join(os.environ['SPECTRASTACKS_DIR'],"data","??_????","*VVDS*R_*.fits")))
+stackList.sort()
+n.random.shuffle(stackList)
 
 for el in stackList:
 	os.system("python stellarpop_stacks "+el)

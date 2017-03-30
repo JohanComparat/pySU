@@ -28,6 +28,7 @@ import glob
 import pandas as pd
 import os
 from os.path import join
+import copy
 #from scipy.stats import sigmaclip
 
 #from firefly_dust import *

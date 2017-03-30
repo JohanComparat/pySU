@@ -22,7 +22,7 @@ specFile = sys.argv[1] # stack file
 t0=time.time()
 # initiates the spectrum and gets the data
 spec=gs.GalaxySpectrumFIREFLY(specFile, milky_way_reddening=False)
-spec.openObservedStack()
+spec.openObservedStack(fluxKeyword='medianStack')
 
 #outFile = np.core.defchararray.replace(specFile[][:-5], "data", "fits").item()
 file =os.path.basename(specFile)
@@ -30,12 +30,42 @@ outFile = join(os.environ['SPECTRASTACKS_DIR'], "fits", file[:7], file)
 print outFile
 print '========================='
 # gets the model for MILES, fits and writes
-model = spm.StellarPopulationModel(spec, outFile, cosmo, models = 'm11', model_libs = ['MILES'], imfs = ['ss', 'kr', 'cha'], age_limits = [6, 9], downgrade_models = True, data_wave_medium = 'air', Z_limits = [-1., 1.],suffix="-SPM-MILES.fits", use_downgraded_models = False)
-model.fit_models_to_data()
+if os.path.isfile(outFile+"-median-kr-SPM-MILES.fits"):
+	print "pass",os.path.isfile(outFile+"-median-kr-SPM-MILES.fits")
+else:
+	model = spm.StellarPopulationModel(spec, outFile, cosmo, models = 'm11', model_libs = ['MILES'], imfs = ['kr'], age_limits = [6, 9], downgrade_models = True, data_wave_medium = 'air', Z_limits = [-1., 1.],suffix="-median-kr-SPM-MILES.fits", use_downgraded_models = False)
+	model.fit_models_to_data()
+
+if os.path.isfile(outFile+"-median-ss-SPM-MILES.fits"):
+	print "pass",os.path.isfile(outFile+"-median-ss-SPM-MILES.fits")
+else:
+	model = spm.StellarPopulationModel(spec, outFile, cosmo, models = 'm11', model_libs = ['MILES'], imfs = ['ss'], age_limits = [6, 9], downgrade_models = True, data_wave_medium = 'air', Z_limits = [-1., 1.],suffix="-median-ss-SPM-MILES.fits", use_downgraded_models = False)
+	model.fit_models_to_data()
+
+if os.path.isfile(outFile+"-median-any-SPM-MILES.fits"):
+	print "pass",os.path.isfile(outFile+"-median-any-SPM-MILES.fits")
+else:
+	model = spm.StellarPopulationModel(spec, outFile, cosmo, models = 'm11', model_libs = ['MILES'], imfs = ['ss', 'kr', 'cha'], age_limits = [6, 9], downgrade_models = True, data_wave_medium = 'air', Z_limits = [-1., 1.],suffix="-median-any-SPM-MILES.fits", use_downgraded_models = False)
+	model.fit_models_to_data()
 
 # gets the model for Stelib, fits and writes
-model = spm.StellarPopulationModel(spec, outFile, cosmo, models = 'm11', model_libs = ['STELIB'], imfs = ['ss', 'kr', 'cha'], age_limits = [6,9], downgrade_models = False, data_wave_medium = 'air', Z_limits = [-1.,1.],suffix="-SPM-STELIB.fits", use_downgraded_models = False)
-model.fit_models_to_data()
+if os.path.isfile(outFile+"-median-any-SPM-STELIB.fits"):
+	print "pass",os.path.isfile(outFile+"-median-any-SPM-STELIB.fits")
+else:
+	model = spm.StellarPopulationModel(spec, outFile, cosmo, models = 'm11', model_libs = ['STELIB'], imfs = ['ss', 'kr', 'cha'], age_limits = [6,9], downgrade_models = False, data_wave_medium = 'air', Z_limits = [-1.,1.],suffix="-median-any-SPM-STELIB.fits", use_downgraded_models = False)
+	model.fit_models_to_data()
+
+if os.path.isfile(outFile+"-median-ss-SPM-STELIB.fits"):
+	print "pass",os.path.isfile(outFile+"-median-ss-SPM-STELIB.fits")
+else:
+	model = spm.StellarPopulationModel(spec, outFile, cosmo, models = 'm11', model_libs = ['STELIB'], imfs = ['ss'], age_limits = [6,9], downgrade_models = False, data_wave_medium = 'air', Z_limits = [-1.,1.],suffix="-median-ss-SPM-STELIB.fits", use_downgraded_models = False)
+	model.fit_models_to_data()
+	
+if os.path.isfile(outFile+"-median-kr-SPM-STELIB.fits"):
+	print "pass",os.path.isfile(outFile+"-median-kr-SPM-STELIB.fits")
+else:
+	model = spm.StellarPopulationModel(spec, outFile, cosmo, models = 'm11', model_libs = ['STELIB'], imfs = ['kr'], age_limits = [6,9], downgrade_models = False, data_wave_medium = 'air', Z_limits = [-1.,1.],suffix="-median-kr-SPM-STELIB.fits", use_downgraded_models = False)
+	model.fit_models_to_data()
 
 print "time used =", time.time()-t0 ,"seconds"
 

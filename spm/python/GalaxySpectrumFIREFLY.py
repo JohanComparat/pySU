@@ -121,10 +121,10 @@ class GalaxySpectrumFIREFLY:
 			self.ebv_mw = 0.0
 
 
-	def openObservedStack(self):
+	def openObservedStack(self, fluxKeyword='medianWeightedStack'):
 		"""
 		It reads an Stack spectrum from the LF analysis and provides the input for the firefly fitting routine.
-		
+		:param fluxKeyword: parameter to choose the mean or the median stack 'meanWeightedStack', 'medianWeightedStack'
 		"""
 		self.hdulist = pyfits.open(self.path_to_spectrum)
 		self.ra = 0. #self.hdulist[0].header['RA']
@@ -137,7 +137,8 @@ class GalaxySpectrumFIREFLY:
 		deltaWL = self.wavelength[1:]-self.wavelength[:-1]
 		resolution = np.ones_like(self.wavelength)*np.mean(meanWL / deltaWL)
 		
-		self.flux = self.hdulist[1].data['meanWeightedStack'] * 1e17
+		#self.flux = self.hdulist[1].data['meanWeightedStack'] * 1e17
+		self.flux = self.hdulist[1].data[fluxKeyword] * 1e17
 		self.error = self.hdulist[1].data['jackknifStackErrors'] * 1e17
 		self.bad_flags = np.ones(len(self.restframe_wavelength))
 		Nstacked = float(self.path_to_spectrum.split('-')[-1].split('_')[3])
@@ -235,7 +236,7 @@ class GalaxySpectrumFIREFLY:
 
 		print"there are", len(self.wavelength),"data points at redshift",self.redshift," between", np.min(self.wavelength[bad_data==False]), np.max(self.wavelength[bad_data==False]), "Angstrom.", np.min(self.restframe_wavelength[bad_data==False]), np.max(self.restframe_wavelength[bad_data==False]), "Angstrom in the rest frame."
 		
-	def openStackEBOSS(self, redshift = 0.85):
+	def openStackEBOSS(self, redshift = 0.85, fluxKeyword='medianWeightedStack'):
 		self.hdulist = pyfits.open(self.path_to_spectrum)
 		self.ra = 0. #self.hdulist[0].header['RA']
 		self.dec = 0. #self.hdulist[0].header['DEC']
@@ -247,7 +248,7 @@ class GalaxySpectrumFIREFLY:
 		deltaWL = self.wavelength[1:]-self.wavelength[:-1]
 		resolution = np.ones_like(self.wavelength)*np.mean(meanWL / deltaWL)
 		
-		self.flux = self.hdulist[1].data['meanWeightedStack'] #* 10**(-17)
+		self.flux = self.hdulist[1].data[fluxKeyword] #* 10**(-17)
 		self.error = self.hdulist[1].data['jackknifStackErrors'] #* 10**(-17)
 		self.bad_flags = np.ones(len(self.restframe_wavelength))
 		

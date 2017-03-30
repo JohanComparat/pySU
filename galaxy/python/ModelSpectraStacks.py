@@ -88,20 +88,23 @@ class ModelSpectraStacks:
 	:param dV: default value that hold the place (default : -9999.99) 
 	:param N_spectra_limitFraction: If the stack was made with N spectra. N_spectra_limitFraction selects the points that have were computed using more thant N_spectra_limitFraction * N spectra. (default : 0.8)
 	"""
-	def __init__(self, stack_file, mode="MILES", cosmo=cosmo, firefly_min_wavelength= 1000., firefly_max_wavelength=7500., dV=-9999.99, N_spectra_limitFraction=0.8, tutorial = False, eboss_stack = False):
+	def __init__(self, stack_file, model_file, mode="MILES", cosmo=cosmo, firefly_min_wavelength= 1000., firefly_max_wavelength=7500., dV=-9999.99, N_spectra_limitFraction=0.8, tutorial = False, eboss_stack = False):
 		self.stack_file = stack_file
-		self.stack_file_base = os.path.basename(stack_file)
+		self.stack_file_base = os.path.basename(stack_file)[:-5]
+		self.lineName = self.stack_file_base[:7]
+		self.stack_model_file = model_file
 		self.mode = mode
-		self.lineName = os.path.basename(self.stack_file)[:7]
 		self.tutorial = tutorial
 		self.eboss_stack = eboss_stack
 		
+		# retrieves the firefly model for the stack: stack_model_file
+		"""
 		if self.mode=="MILES":
 			self.stack_model_file = join( os.environ['SPECTRASTACKS_DIR'], "fits", self.lineName, self.stack_file_base + "-SPM-MILES.fits")
 			
 		if self.mode=="STELIB":
 			self.stack_model_file = join( os.environ['SPECTRASTACKS_DIR'], "fits", self.lineName, self.stack_file_base + "-SPM-STELIB.fits")
-
+		"""
 		if self.tutorial :
 			self.stack_model_file = join( os.environ['DATA_DIR'], "ELG-composite", self.stack_file_base + "-SPM-MILES.fits")
 			

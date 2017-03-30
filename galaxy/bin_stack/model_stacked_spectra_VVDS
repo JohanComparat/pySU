@@ -5,14 +5,42 @@ import glob
 from os.path import join
 import os
 
-stack_files=n.array(glob.glob( join( os.environ['SPECTRASTACKS_DIR'], "data", "??_????", "*VVDSDEEP*.fits" ) ) )
+stack_files=n.array(glob.glob( join( os.environ['SPECTRASTACKS_DIR'], "data", "??_????", "*VVDS*.fits" ) ) )
 stack_files.sort()
-
 #print stack_files
 
+for stack_file in stack_files[::-1]:
+	print( stack_file )
+	stack_file = stack_file
+	stack_file_base = os.path.basename(stack_file)[:-5]
+	lineName = stack_file_base[:7]
+	stack_model_files = glob.glob(join( os.environ['SPECTRASTACKS_DIR'], "fits", lineName, stack_file_base + "*MILES*fits"))
+	print( stack_model_files)
+	for stack_model in stack_model_files:
+		mm=ModelSpectraStacks(stack_file, stack_model, mode="MILES")
+		#mm.plot_fit()
+		mm.fit_lines_to_fullSpectrum()
+		mm.fit_lines_to_lineSpectrum()
+		#mm.compute_derived_quantities()
+		mm.save_spectrum()
+		#mm.plot_spectrum()	
+		
+	stack_model_files = glob.glob(join( os.environ['SPECTRASTACKS_DIR'], "fits", lineName, stack_file_base + "*STELIB*fits"))
+	print( stack_model_files)
+	for stack_model in stack_model_files:
+		mm=ModelSpectraStacks(stack_file, stack_model, mode="STELIB")
+		#mm.plot_fit()
+		mm.fit_lines_to_fullSpectrum()
+		mm.fit_lines_to_lineSpectrum()
+		#mm.compute_derived_quantities()
+		mm.save_spectrum()
+		#mm.plot_spectrum()	
+	
+sys.exit()
+	
 for file in stack_files:
-	print( file )
-	mm=ModelSpectraStacks(file,mode="MILES")
+	
+	mm=ModelSpectraStacks(file,mode="STELIB")
 	#mm.plot_fit()
 	mm.fit_lines_to_fullSpectrum()
 	mm.fit_lines_to_lineSpectrum()
