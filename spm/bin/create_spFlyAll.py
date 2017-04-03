@@ -90,7 +90,7 @@ concatenate_spFlyPlates('SDSSDR12_DIR', imf, dir , all_cat )
 
 sys.exit()
 
-headers = n.array(['specObjID','mjd','plate','fiberID','run1d','run2d','ra','dec','z_noqso','zErr_noqso','zWarning_noqso','class_noqso','subClass_noqso','u','g','r','i','z','err_u','err_g','err_r','err_i','err_z','dered_u','dered_g','dered_r','dered_i','dered_z','age_mean','age_err_plus','age_err_minus','metallicity_mean','metallicity_mean_err_plus','metallicity_mean_err_minus','stellar_mass','stellar_mass_err_plus	','stellar_mass_err_minus','spm_EBV','nComponentsSSP'])
+headers = n.array(['specObjID','mjd','plate','fiberID','run1d','run2d','ra','dec','z_noqso','zErr_noqso','zWarning_noqso','class_noqso','subClass_noqso','u','g','r','i','z','err_u','err_g','err_r','err_i','err_z','dered_u','dered_g','dered_r','dered_i','dered_z','age','age_err_plus','age_err_minus','metallicity','metallicity_err_plus','metallicity_err_minus','stellar_mass','stellar_mass_err_plus	','stellar_mass_err_minus','spm_EBV','nComponentsSSP'])
 
 new_cols.del_col('SURVEY'             )
 new_cols.del_col('INSTRUMENT'     )
