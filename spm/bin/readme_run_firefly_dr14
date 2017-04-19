@@ -1,6 +1,5 @@
 # Login to sciama
-
-
+sciama
 cd $PYSU_DIR/spm/bin
 
 # executable scripts
