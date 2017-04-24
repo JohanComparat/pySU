@@ -1,0 +1,43 @@
+#! /usr/bin/env python
+
+import sys
+from os.path import join
+import os
+import time
+import numpy as np
+import glob
+import astropy.cosmology as co
+cosmo = co.Planck13
+import astropy.io.fits as fits
+
+# for one galaxy spectrum
+import GalaxySpectrumFIREFLY as gs
+import StellarPopulationModel as spm
+
+catalog=fits.open(join(os.environ['VIPERS_DIR'], "catalogs", "VIPERS_W14_summary_v2.1.linesFitted.fits"))[1].data
+outputFolder = join( os.environ['VIPERS_DIR'], 'stellarpop-m11-salpeter-stelib', 'stellarpop')
+
+def runSpec(catalog_entry):
+	print catalog_entry['zspec'],  catalog_entry['fo'],  catalog_entry['ALPHA'],  catalog_entry['DELTA'],  catalog_entry['zflg'] 
+	t0=time.time()
+	try:
+		spec=gs.GalaxySpectrumFIREFLY("-", milky_way_reddening=True)
+		spec.openObservedVIPERSpectrum(catalog_entry)
+		ageMax = np.log10(cosmo.age(spec.redshift).value*1e9)
+		if spec.redshift>0.01 and spec.redshift < 1.7 :
+			model = spm.StellarPopulationModel(spec, join(outputFolder , 'spFly-vipers-'+catalog_entry['id_IAU'][7:] ), cosmo, models = 'm11', model_libs = ['STELIB'], imfs = ['ss'], age_limits = [6,10], downgrade_models = True, data_wave_medium = 'air', Z_limits = [-3.,1.],suffix="-ss.fits", use_downgraded_models = True)
+			try :
+				model.fit_models_to_data()
+				#print( model.averages )
+			except (ValueError):
+				pass
+
+		print "time used =", time.time()-t0 ,"seconds"
+	except (IndexError):
+				pass
+
+for catalog_entry in catalog:
+	if os.path.isfile(join(outputFolder , 'spFly-vipers-'+catalog_entry['id_IAU'][7:] +"-ss.fits")):
+		print "pass", join(outputFolder , 'spFly-vipers-'+catalog_entry['id_IAU'][7:] +"-ss.fits")
+	else:
+		runSpec(catalog_entry)

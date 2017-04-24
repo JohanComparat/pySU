@@ -1,0 +1,56 @@
+#! /usr/bin/env python
+
+import sys
+for arg in sys.argv:
+    print arg
+
+from os.path import join
+import os
+import time
+import numpy as np
+import glob
+import astropy.cosmology as co
+cosmo = co.Planck13
+#cosmo=co.FlatLambdaCDM(H0=70,Om0=0.3)
+
+# for one galaxy spectrum
+import GalaxySpectrumFIREFLY as gs
+import StellarPopulationModel as spm
+
+plate = sys.argv[1]
+
+def runSpec(specLiteFile):
+	baseN = os.path.basename(specLiteFile).split('-')
+	plate = baseN[1] #7457# sys.argv[1] #7619
+	mjd = baseN[2] # 56746#sys.argv[2] # 56900
+	fibre = baseN[3] # 471#sys.argv[3] #300
+	outputFolder = join( os.environ['SDSSDR12_DIR'], 'stellarpop-m11-chabrier-stelib', 'stellarpop', str(plate))
+	if os.path.isdir(outputFolder)==False:
+		os.mkdir(outputFolder)
+
+	t0=time.time()
+	spec=gs.GalaxySpectrumFIREFLY(specLiteFile, milky_way_reddening=True)
+	spec.openObservedSDSSSpectrum(survey='sdssMain')
+	ageMax = np.log10(cosmo.age(spec.redshift).value*1e9)
+	if spec.hdulist[2].data['CLASS'][0]=="GALAXY" and spec.hdulist[2].data['Z'][0] >  spec.hdulist[2].data['Z_ERR'][0] and spec.hdulist[2].data['Z_ERR'][0]>0 and spec.hdulist[2].data['ZWARNING'][0] ==0 :
+		model = spm.StellarPopulationModel(spec, join(outputFolder , 'spFly-' + os.path.basename(specLiteFile)[5:-5] ), cosmo, models = 'm11', model_libs = ['STELIB'], imfs = ['cha'], age_limits = [6,10], downgrade_models = True, data_wave_medium = 'vacuum', Z_limits = [-3.,1.],suffix="-cha.fits", use_downgraded_models = True)
+		try :
+			model.fit_models_to_data()
+		except (ValueError):
+			pass
+
+	print "time used =", time.time()-t0 ,"seconds"
+	return spec
+
+fileList = np.array(glob.glob(join( os.environ['SDSSDR12_DIR'], 'spectra', str(plate), 'spec-*.fits')))
+fileList.sort()
+
+for el in fileList:
+	print( el )	
+	outputFile = join( os.environ['SDSSDR12_DIR'], 'stellarpop-m11-chabrier', 'stellarpop', str(plate), 'spFly-' + os.path.basename(el)[5:-5]+"-cha.fits")
+	if os.path.isfile(outputFile) :
+		print( outputFile )
+	else :
+		spec = runSpec(el)
+	
+		

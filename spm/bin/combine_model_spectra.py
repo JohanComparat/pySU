@@ -1,25 +1,119 @@
+import time
+t0t=time.time()
 from os.path import join
 import os
 import numpy as n
 import glob 
 import sys 
-import time
 import astropy.io.fits as fits
 
-plate = sys.argv[1] # '9003'
-dir = sys.argv[2] # 'stellarpop-m11-kroupa'
-#python create_summary_tables.py 2578 stellarpop-m11-kroupa
-#python test.py 2578 stellarpop-m11-kroupa
+plate   = sys.argv[1]
+mjd     = sys.argv[2] 
+fiberid = sys.argv[3] 
 
-if dir == 'stellarpop-m11-salpeter' or dir == 'stellarpop-m11-salpeter-nodust' :
-	suffix = "-ss.fits"
+env = 'EBOSSDR14_DIR'
 
-if dir == 'stellarpop-m11-kroupa' or dir == 'stellarpop-m11-kroupa-nodust' :
-	suffix = "-kr.fits"
+dirs = ['stellarpop-m11-salpeter', 'stellarpop-m11-kroupa', 'stellarpop-m11-chabrier', 'stellarpop-m11-salpeter-stelib', 'stellarpop-m11-kroupa-stelib', 'stellarpop-m11-chabrier-stelib', 'stellarpop-m11-salpeter-elodie', 'stellarpop-m11-kroupa-elodie', 'stellarpop-m11-chabrier-elodie'] 
+suffixs = ["-ss.fits", "-kr.fits", "-cha.fits", "-ss.fits", "-kr.fits", "-cha.fits", "-ss.fits", "-kr.fits", "-cha.fits"]
 
-print plate
-# print dir
-# print suffix
+print plate, mjd, fiberid
+
+sp_cha = fits.open(os.path.join(os.environ[env], dirs[0], 'stellarpop', plate, 'spFly-'+plate+'-'+mjd+'-'+fiberid+suffixs[0]))
+sp_kr  = fits.open(os.path.join(os.environ[env], dirs[1], 'stellarpop', plate, 'spFly-'+plate+'-'+mjd+'-'+fiberid+suffixs[1]))
+sp_sa  = fits.open(os.path.join(os.environ[env], dirs[2], 'stellarpop', plate, 'spFly-'+plate+'-'+mjd+'-'+fiberid+suffixs[2]))
+sp_cha_nd = fits.open(os.path.join(os.environ[env],dirs[3], 'stellarpop', plate, 'spFly-'+plate+'-'+mjd+'-'+fiberid+suffixs[3]))
+sp_kr_nd = fits.open(os.path.join(os.environ[env], dirs[4], 'stellarpop', plate, 'spFly-'+plate+'-'+mjd+'-'+fiberid+suffixs[4]))
+sp_sa_nd = fits.open(os.path.join(os.environ[env], dirs[5], 'stellarpop', plate, 'spFly-'+plate+'-'+mjd+'-'+fiberid+suffixs[5]))
+sp_cha_el = fits.open(os.path.join(os.environ[env],dirs[6], 'stellarpop', plate, 'spFly-'+plate+'-'+mjd+'-'+fiberid+suffixs[6]))
+sp_kr_el = fits.open(os.path.join(os.environ[env], dirs[7], 'stellarpop', plate, 'spFly-'+plate+'-'+mjd+'-'+fiberid+suffixs[7]))
+sp_sa_el = fits.open(os.path.join(os.environ[env], dirs[8], 'stellarpop', plate, 'spFly-'+plate+'-'+mjd+'-'+fiberid+suffixs[8]))
+
+out_dir = os.path.join(os.environ[env], 'stellarpop', plate)
+if os.path.isdir(out_dir)==False:
+	os.makedirs(out_dir)
+out_file = 'spFly-'+plate+'-'+mjd+'-'+fiberid+'.fits'
+path_2_out_file = os.path.join(out_dir, out_file)
+
+
+def create_tbhdu(sp_cha, imf, lib):
+    c1 = fits.Column(name='wavelength', format='D', unit='Angstrom', array=sp_cha[1].data['wavelength'])
+    c2 = fits.Column(name='model_flux', format='D', unit='1e-17 erg/cm2/s', array=sp_cha[1].data['firefly_model'])
+    
+    coldefs = fits.ColDefs([c1, c2])
+    tbhdu = fits.BinTableHDU.from_columns(coldefs)
+    
+    tbhdu.header['HIERARCH library'] = lib 
+    tbhdu.header['HIERARCH IMF'] = imf 
+    tbhdu.header['HIERARCH age_lightW']             = sp_cha[1].header['HIERARCH age_lightW_mean']                                
+    tbhdu.header['HIERARCH age_lightW_up']          = sp_cha[1].header['HIERARCH age_lightW_mean_up']                                        
+    tbhdu.header['HIERARCH age_lightW_low']         = sp_cha[1].header['HIERARCH age_lightW_mean_low']                                       
+    tbhdu.header['HIERARCH metallicity_lightW']     = sp_cha[1].header['HIERARCH metallicity_lightW_mean']                                     
+    tbhdu.header['HIERARCH metallicity_lightW_up']  = sp_cha[1].header['HIERARCH metallicity_lightW_mean_up']                                          
+    tbhdu.header['HIERARCH metallicity_lightW_low'] = sp_cha[1].header['HIERARCH metallicity_lightW_mean_low']                                           
+    tbhdu.header['HIERARCH age_massW']              = sp_cha[1].header['HIERARCH age_massW_mean']                                                 
+    tbhdu.header['HIERARCH age_massW_up']           = sp_cha[1].header['HIERARCH age_massW_mean_up']                                                    
+    tbhdu.header['HIERARCH age_massW_low']          = sp_cha[1].header['HIERARCH age_massW_mean_low']                                                   
+    tbhdu.header['HIERARCH metallicity_massW']      = sp_cha[1].header['HIERARCH metallicity_massW_mean']                                       
+    tbhdu.header['HIERARCH metallicity_massW_up']   = sp_cha[1].header['HIERARCH metallicity_massW_mean_up']                                           
+    tbhdu.header['HIERARCH metallicity_massW_low']  = sp_cha[1].header['HIERARCH metallicity_massW_mean_low']                                          
+    tbhdu.header['HIERARCH EBV']                    = sp_cha[1].header['HIERARCH EBV']                                                                  
+    tbhdu.header['HIERARCH stellar_mass']           = sp_cha[1].header['HIERARCH stellar_mass_mean']                                                
+    tbhdu.header['HIERARCH stellar_mass_up']        = sp_cha[1].header['HIERARCH stellar_mass_mean_up']                                                   
+    tbhdu.header['HIERARCH stellar_mass_low']       = sp_cha[1].header['HIERARCH stellar_mass_mean_low']                                                  
+    tbhdu.header['HIERARCH ssp_number']             = sp_cha[1].header['HIERARCH ssp_number']
+    
+    for el in sp_cha[1].header[33:]:
+        tbhdu.header['HIERARCH '+el] = sp_cha[1].header[el]
+    
+    return tbhdu
+
+tbhdu_cha = create_tbhdu(sp_cha, 'Chabrier', 'MILES')
+tbhdu_kr  = create_tbhdu(sp_kr, 'Kroupa'   , 'MILES')
+tbhdu_sa  = create_tbhdu(sp_sa, 'Salpeter' , 'MILES')
+tbhdu_cha_nd = create_tbhdu(sp_cha_nd, 'Chabrier', 'STELIB')
+tbhdu_kr_nd  = create_tbhdu(sp_kr_nd, 'Kroupa'   , 'STELIB')
+tbhdu_sa_nd  = create_tbhdu(sp_sa_nd, 'Salpeter' , 'STELIB')
+tbhdu_cha_el = create_tbhdu(sp_cha_el, 'Chabrier', 'ELODIE')
+tbhdu_kr_el  = create_tbhdu(sp_kr_el, 'Kroupa'   , 'ELODIE')
+tbhdu_sa_el  = create_tbhdu(sp_sa_el, 'Salpeter' , 'ELODIE')
+
+prihdr = fits.Header()
+
+prihdr['file']   = out_file
+prihdr['plate']  = int(plate)
+prihdr['mjd']    = int(mjd)
+prihdr['fiberid']= int(fiberid)
+
+prihdr['fitter'] = 'FIREFLY'
+prihdr['model']  = sp_kr[0].header['model']
+prihdr['ageMin'] = sp_kr[0].header['ageMin']
+prihdr['ageMax'] = sp_kr[0].header['ageMax']
+prihdr['Zmin']   = sp_kr[0].header['Zmin']
+prihdr['Zmax']   = sp_kr[0].header['Zmax']
+
+prihdr['HIERARCH age_universe'] = sp_cha[1].header['HIERARCH age_universe']                                             
+prihdr['HIERARCH redshift']     = sp_cha[1].header['HIERARCH redshift']                                         
+
+prihdu = fits.PrimaryHDU(header=prihdr)
+
+thdulist = fits.HDUList([prihdu, tbhdu_cha, tbhdu_kr, tbhdu_sa, tbhdu_cha_nd, tbhdu_kr_nd, tbhdu_sa_nd, tbhdu_cha_el, tbhdu_kr_el, tbhdu_sa_el ])
+if os.path.isfile(path_2_out_file ):
+	os.remove(path_2_out_file )
+
+thdulist.writeto( path_2_out_file )
+
+print time.time()-t0t
+
+
+sys.exit()
+
+
+
+
+
+
+
+
 
 init_cat = join( os.environ['EBOSSDR14_DIR'], "catalogs", "perPlate", "sp-"+plate.zfill(4)+".fits")
 plate_catalog = join( os.environ['EBOSSDR14_DIR'], dir, "catalogs", "spFly-"+plate.zfill(4)+".fits")
