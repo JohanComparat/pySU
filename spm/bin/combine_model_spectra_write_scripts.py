@@ -3,7 +3,7 @@ import os
 from os.path import join
 import numpy as n
 
-def writeScript_begin(rootName, plate, env):
+def writeScript(rootName, plate, env):
 	f=open(rootName+".sh",'w')
 	f.write("#!/bin/bash \n")
 	f.write("#PBS -l walltime=4:00:00 \n")
