@@ -129,8 +129,8 @@ prihdr['ageMax'] = sp_cha[0].header['ageMax']
 prihdr['Zmin']   = sp_cha[0].header['Zmin']
 prihdr['Zmax']   = sp_cha[0].header['Zmax']
 
-prihdr['HIERARCH age_universe'] = sp_cha[1].header['HIERARCH age_universe']                                             
-prihdr['HIERARCH redshift']     = sp_cha[1].header['HIERARCH redshift']                                         
+prihdr['HIERARCH age_universe'] = sp_cha[1].header['age_universe']                                             
+prihdr['HIERARCH redshift']     = sp_cha[1].header['redshift']                                         
 
 
 # now creates the figure per model 
