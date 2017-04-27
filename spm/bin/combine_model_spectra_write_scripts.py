@@ -6,7 +6,7 @@ import numpy as n
 def writeScript(rootName, plate, env):
 	f=open(rootName+".sh",'w')
 	f.write("#!/bin/bash \n")
-	f.write("#PBS -l walltime=4:00:00 \n")
+	f.write("#PBS -l walltime=40:00:00 \n")
 	f.write("#PBS -o "+plate+".o.$PBS_JOBID \n")
 	f.write("#PBS -e "+plate+".e$PBS_JOBID \n")
 	f.write("#PBS -M comparat@mpe.mpg.de \n")
