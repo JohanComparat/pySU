@@ -13,8 +13,11 @@ fiberid = sys.argv[3]
 
 env = 'EBOSSDR14_DIR'
 
-dirs = ['stellarpop-m11-salpeter', 'stellarpop-m11-kroupa', 'stellarpop-m11-chabrier', 'stellarpop-m11-salpeter-stelib', 'stellarpop-m11-kroupa-stelib', 'stellarpop-m11-chabrier-stelib', 'stellarpop-m11-salpeter-elodie', 'stellarpop-m11-kroupa-elodie', 'stellarpop-m11-chabrier-elodie'] 
-suffixs = ["-ss.fits", "-kr.fits", "-cha.fits", "-ss.fits", "-kr.fits", "-cha.fits", "-ss.fits", "-kr.fits", "-cha.fits"]
+#dirs = ['stellarpop-m11-salpeter', 'stellarpop-m11-kroupa', 'stellarpop-m11-chabrier', 'stellarpop-m11-salpeter-stelib', 'stellarpop-m11-kroupa-stelib', 'stellarpop-m11-chabrier-stelib', 'stellarpop-m11-salpeter-elodie', 'stellarpop-m11-kroupa-elodie', 'stellarpop-m11-chabrier-elodie'] 
+#suffixs = ["-ss.fits", "-kr.fits", "-cha.fits", "-ss.fits", "-kr.fits", "-cha.fits", "-ss.fits", "-kr.fits", "-cha.fits"]
+
+dirs = ['stellarpop-m11-salpeter', 'stellarpop-m11-kroupa', 'stellarpop-m11-chabrier'] 
+suffixs = ["-ss.fits", "-kr.fits", "-cha.fits"]
 
 print plate, mjd, fiberid
 
