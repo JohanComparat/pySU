@@ -8,8 +8,8 @@ import os
 import sys
 
 # global cosmo quantities
-z_min = float(sys.argv[1])
-z_max = float(sys.argv[2])
+z_min = 0. # float(sys.argv[1])
+z_max = 6. # float(sys.argv[2])
 #imf = 'kroupa'
 #lO2_min = float(sys.argv[3]) # 'salpeter'
 
@@ -25,19 +25,53 @@ sdss_dir = os.path.join(os.environ['DATA_DIR'], 'SDSS')
 out_dir = os.path.join(os.environ['DATA_DIR'], 'spm', 'results')
 
 path_2_cosmos_cat = os.path.join( co_dir, "photoz_vers2.0_010312.fits")
-path_2_sdss_cat = os.path.join( ff_dir, "FireflyGalaxySdssDR14.fits" )
-path_2_eboss_cat = os.path.join( ff_dir, "FireflyGalaxyEbossDR14.fits" )
-path_2_pS_cat = os.path.join( ll_dir, "portsmouth_stellarmass_starforming_salp-26.fits.gz" )
-path_2_pB_cat = os.path.join( ll_dir, "portsmouth_stellarmass_starforming_salp-DR12-boss.fits.gz" )
+
+#path_2_sdss_cat = os.path.join( ff_dir, "FireflyGalaxySdssDR14.fits" )
+#path_2_eboss_cat = os.path.join( ff_dir, "FireflyGalaxyEbossDR14.fits" )
+
+path_2_spall_sdss_dr12_cat = os.path.join( sdss_dir, "specObj-SDSS-dr12.fits" )
+path_2_spall_sdss_dr14_cat = os.path.join( sdss_dir, "specObj-SDSS-dr14.fits" )
+path_2_spall_boss_dr12_cat = os.path.join( sdss_dir, "specObj-BOSS-dr12.fits" )
+path_2_spall_boss_dr14_cat = os.path.join( sdss_dir, "specObj-BOSS-dr14.fits" )
+
+#print "SDSS spAll DR12", len(fits.open(path_2_spall_sdss_dr12_cat)[1].data)
+print "SDSS spAll DR14", len(fits.open(path_2_spall_sdss_dr14_cat)[1].data)
+print "BOSS spAll DR12",len(fits.open(path_2_spall_boss_dr12_cat)[1].data)
+print "BOSS spAll DR14",len(fits.open(path_2_spall_boss_dr14_cat)[1].data)
+
+path_2_sdss_kroupa_cat = os.path.join( ff_dir, "spAll-SDSS-FireflyKroupa.fits" )
+path_2_sdss_salpeter_cat = os.path.join( ff_dir, "spAll-SDSS-FireflySalpeter.fits" )
+path_2_eboss_kroupa_cat = os.path.join( ff_dir, "spAll-eBOSS-FireflyKroupa.fits" )
+path_2_eboss_salpeter_cat = os.path.join( ff_dir, "spAll-eBOSS-FireflySalpeter.fits" )
+
+path_2_pS_salpeter_cat = os.path.join( ll_dir, "portsmouth_stellarmass_starforming_salp-26.fits.gz" )
+path_2_pB_salpeter_cat = os.path.join( ll_dir, "portsmouth_stellarmass_starforming_salp-DR12-boss.fits.gz" )
+
+path_2_pS_kroupa_cat = os.path.join( ll_dir, "portsmouth_stellarmass_starforming_krou-26.fits.gz" )
+path_2_pB_kroupa_cat = os.path.join( ll_dir, "portsmouth_stellarmass_starforming_krou-DR12-boss.fits.gz" )
+
+path_2_ppS_kroupa_cat = os.path.join( ll_dir, "portsmouth_stellarmass_passive_krou-26.fits")
+path_2_ppB_kroupa_cat = os.path.join( ll_dir, "portsmouth_stellarmass_passive_krou-DR12.fits")
+
 path_2_F16_cat = os.path.join( sdss_dir, "RA_DEC_z_w_fluxOII_Mstar_grcol_Mr_lumOII.dat" )
 
 RA, DEC, z, weigth, O2flux, M_star, gr_color, Mr_5logh, O2luminosity = n.loadtxt(path_2_F16_cat, unpack=True)
 
 cosmos = fits.open(path_2_cosmos_cat)[1].data
-sdss14   = fits.open(path_2_sdss_cat)[1].data
-boss14   = fits.open(path_2_eboss_cat)[1].data
-boss12   = fits.open(path_2_pB_cat)[1].data
-sdss12   = fits.open(path_2_pS_cat)[1].data
+sdss_k   = fits.open(path_2_sdss_kroupa_cat)[1].data
+boss_k   = fits.open(path_2_eboss_kroupa_cat)[1].data
+boss_s   = fits.open(path_2_eboss_salpeter_cat)[1].data
+sdss_s   = fits.open(path_2_sdss_salpeter_cat)[1].data
+
+sdss_12_portSF_kr   = fits.open(path_2_pS_kroupa_cat)[1].data
+boss_12_portSF_kr   = fits.open(path_2_pB_kroupa_cat)[1].data
+
+sdss_12_portPA_kr   = fits.open(path_2_ppS_kroupa_cat)[1].data
+boss_12_portPA_kr   = fits.open(path_2_ppB_kroupa_cat)[1].data
+
+sdss_12_portSF_sa   = fits.open(path_2_pS_salpeter_cat)[1].data
+boss_12_portSF_sa   = fits.open(path_2_pB_salpeter_cat)[1].data
+
 
 path_ilbert13_SMF = os.path.join(ll_dir, "ilbert_2013_mass_function_params.txt")
 zmin, zmax, N, M_comp, M_star, phi_1s, alpha_1s, phi_2s, alpha_2s, log_rho_s = n.loadtxt(os.path.join( ll_dir, "ilbert_2013_mass_function_params.txt"), unpack=True)
@@ -63,13 +97,33 @@ area_boss12 = 10000.
 
 area_cosmos = 1.52
 
-def get_basic_stat_DR12(catalog, z_name, z_err_name, name, zflg_val):
+
+def get_basic_stat_anyCat(catalog_name, z_name, z_err_name, name, zflg_val):
+    catalog = fits.open(catalog_name)[1].data
     catalog_zOk =(catalog[z_err_name] > 0.) & (catalog[z_name] > catalog[z_err_name]) 
-    catalog_stat = (catalog_zOk) & (catalog[z_name] > z_min) & (catalog[z_name] < z_max) 
-    catalog_sel = (catalog_stat) & (catalog['LOGMASS'] < 14. ) & (catalog['LOGMASS'] > 0 ) & (catalog['MAXLOGMASS'] - catalog['MINLOGMASS'] <0.4)
+    catalog_stat = (catalog_zOk) #& (catalog[z_name] > z_min) & (catalog[z_name] < z_max) 
+    catalog_sel = (catalog_stat) & (catalog['LOGMASS'] < 14. ) & (catalog['LOGMASS'] > 0 ) & (catalog['MAXLOGMASS'] - catalog['MINLOGMASS'] <0.4) & (catalog['LOGMASS'] < catalog['MAXLOGMASS'] ) & (catalog['LOGMASS'] > catalog['MINLOGMASS'] )
     m_catalog = catalog['LOGMASS']
     w_catalog =  n.ones_like(catalog['LOGMASS'])
-    print name, '& $',len(catalog), "$ & $", ld(catalog_zOk),"$ & $", ld(catalog_stat), "\\;(", ld(catalog_sel),")$ \\\\"
+    print catalog_name, "& - & $", ld(catalog_zOk),"$ & $", ld(catalog_sel),"$ \\\\"
+    #return catalog_sel, m_catalog, w_catalog
+
+def get_basic_stat_DR12(catalog, z_name, z_err_name, name, zflg_val):
+    catalog_zOk =(catalog[z_err_name] > 0.) & (catalog[z_name] > catalog[z_err_name]) 
+    catalog_stat = (catalog_zOk) #& (catalog[z_name] > z_min) & (catalog[z_name] < z_max) 
+    catalog_sel = (catalog_stat) & (catalog['LOGMASS'] < 14. ) & (catalog['LOGMASS'] > 0 ) & (catalog['MAXLOGMASS'] - catalog['MINLOGMASS'] <0.4) & (catalog['LOGMASS'] < catalog['MAXLOGMASS'] ) & (catalog['LOGMASS'] > catalog['MINLOGMASS'] )
+    m_catalog = catalog['LOGMASS']
+    w_catalog =  n.ones_like(catalog['LOGMASS'])
+    print name, "& - & $", ld(catalog_zOk),"$ & $", ld(catalog_sel),"$ \\\\"
+    return catalog_sel, m_catalog, w_catalog
+
+def get_basic_stat_DR14(catalog, z_name, z_err_name, class_name, zwarning, name, zflg_val):
+    catalog_zOk =(catalog[z_err_name] > 0.) & (catalog[z_name] > catalog[z_err_name])  & (catalog[class_name]=='GALAXY')  & (catalog[zwarning]==zflg_val)
+    catalog_stat = (catalog_zOk) #& (catalog[z_name] > z_min) & (catalog[z_name] < z_max) 
+    catalog_sel = (catalog_stat) & (catalog['stellar_mass'] < 14. ) & (catalog['stellar_mass'] > 0 )  & (catalog['stellar_mass'] > catalog['stellar_mass_err_plus'] ) & (catalog['stellar_mass'] > catalog['stellar_mass_err_minus'] ) & (catalog['stellar_mass_err_minus']  + catalog['stellar_mass_err_plus'] <0.4)
+    m_catalog = catalog['stellar_mass']
+    w_catalog =  n.ones_like(catalog['stellar_mass'])
+    print name, '& $',len(catalog), "$ & $", ld(catalog_zOk),"$ & $", ld(catalog_sel),"$ \\\\"
     return catalog_sel, m_catalog, w_catalog
 
 def get_basic_stat_FF(catalog, z_name, z_err_name, z_flg, name, zflg_val, imf='kroupa'):
@@ -86,6 +140,21 @@ def get_hist(masses, weights, mbins):
     NW = n.histogram(masses, mbins, weights = weights)[0]
     xx = (mbins[1:] + mbins[:-1])/2.
     return xx, NW, NN**(-0.5)*NW
+
+
+boss12_sel, boss12_m, boss12_w = get_basic_stat_DR14(boss_k, 'Z_NOQSO', 'Z_ERR_NOQSO', 'CLASS_NOQSO', 'ZWARNING_NOQSO', 'FIREFLY Kroupa & BOSS & 14 ', 0.)
+boss12_sel, boss12_m, boss12_w = get_basic_stat_DR14(boss_s, 'Z_NOQSO', 'Z_ERR_NOQSO', 'CLASS_NOQSO', 'ZWARNING_NOQSO', 'FIREFLY Salpeter & BOSS & 14', 0.)
+sdss12_sel, sdss12_m, sdss12_w = get_basic_stat_DR12(boss_12_portSF_kr, 'Z', 'Z_ERR', 'Portsmouth SF Kroupa   & BOSS & 12 ', 0.)
+sdss12_sel, sdss12_m, sdss12_w = get_basic_stat_DR12(boss_12_portPA_kr, 'Z', 'Z_ERR', 'Portsmouth Passive Kroupa   & BOSS & 12 ', 0.)
+sdss12_sel, sdss12_m, sdss12_w = get_basic_stat_DR12(boss_12_portSF_sa, 'Z', 'Z_ERR', 'Portsmouth SF Salpeter & BOSS & 12 ', 0.)
+
+sdss12_sel, sdss12_m, sdss12_w = get_basic_stat_DR14(sdss_k, 'Z', 'Z_ERR', 'CLASS', 'ZWARNING', 'FIREFLY Kroupa & SDSS & 14 ', 0.)
+sdss12_sel, sdss12_m, sdss12_w = get_basic_stat_DR14(sdss_s, 'Z', 'Z_ERR', 'CLASS', 'ZWARNING', 'FIREFLY Salpeter & SDSS & 14', 0.)
+sdss12_sel, sdss12_m, sdss12_w = get_basic_stat_DR12(sdss_12_portSF_kr, 'Z', 'Z_ERR', 'Portsmouth SF Kroupa   & SDSS & 12 ', 0.)
+sdss12_sel, sdss12_m, sdss12_w = get_basic_stat_DR12(sdss_12_portPA_kr, 'Z', 'Z_ERR', 'Portsmouth Passive Kroupa   & SDSS & 12 ', 0.)
+sdss12_sel, sdss12_m, sdss12_w = get_basic_stat_DR12(sdss_12_portSF_sa, 'Z', 'Z_ERR', 'Portsmouth SF Salpeter & SDSS & 12 ', 0.)
+
+sys.exit()
 
 def plotMF_raw(imf='kroupa'):
     sdss14_sel, sdss14_m, sdss14_w = get_basic_stat_FF(sdss14, 'Z', 'Z_ERR', 'ZWARNING', 'SDSS14', 0., imf=imf)

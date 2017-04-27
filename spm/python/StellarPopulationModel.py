@@ -60,7 +60,7 @@ class StellarPopulationModel:
 		* 'kr' for `Kroupa <http://adsabs.harvard.edu/cgi-bin/bib_query?arXiv:1112.3340>`_ or 
 		* 'cha' for `Chabrier <http://adsabs.harvard.edu/abs/2003PASP..115..763C>`_.
 	
-	:param hpf_mode: 'on' means the code uses HPF to dereden the spectrum, is 'hpf_only' then EBV=0.
+	:param hpf_mode: 'on' means the code uses HPF to dereden the spectrum, if 'hpf_only' then EBV=0.
 	
 	 Notes
 	 -----
@@ -370,7 +370,7 @@ class StellarPopulationModel:
 				hpf_error[:] = np.median(error_flux)/np.median(data_flux) * np.median(hpf_data)
 				hpf_error[zero_dat] = np.max(hpf_error)*999999.9
 
-				best_ebv = -99
+				best_ebv = 0.0
 				hpf_models,mass_factors = normalise_spec(hpf_data,hpf_models)
 				# 4. Fits the models to the data
 				light_weights, chis, branch = fitter(wave, hpf_data,hpf_error, hpf_models, self)
