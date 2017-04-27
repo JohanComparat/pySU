@@ -5,37 +5,71 @@ import os
 import numpy as n
 import glob 
 import sys 
+
+import matplotlib
+matplotlib.use('pdf')
+import matplotlib.pyplot as p
+
 import astropy.io.fits as fits
+
+from scipy.interpolate import interp1d
+from scipy.stats import norm as gaussD
 
 plate   = sys.argv[1]
 mjd     = sys.argv[2] 
 fiberid = sys.argv[3] 
+env = sys.argv[4]
+#env = 'EBOSSDR14_DIR'
 
-env = 'EBOSSDR14_DIR'
+if env == 'EBOSSDR14_DIR':
+	z_name = 'Z_NOQSO' 
+if env == 'SDSSDR12_DIR':
+	z_name = 'Z' 
+
+# open the observation file
+obs = fits.open(os.path.join(os.environ[env], 'spectra', plate, 'spec-'+plate+'-'+mjd+'-'+fiberid+".fits"))
+wl_data = 10**obs[1].data['loglam']/(1+obs[2].data[z_name])
+fl_data = obs[1].data['flux']
+err_data = obs[1].data['ivar']**(-0.5)
+ok_data = (obs[1].data['ivar']>0)
+spec = interp1d(wl_data[ok_data], fl_data[ok_data])
+err = interp1d(wl_data[ok_data], err_data[ok_data])
+wl_data_max = n.max(wl_data[ok_data])
+wl_data_min = n.min(wl_data[ok_data])
+N_data_points = len(wl_data)
+
 
 #dirs = ['stellarpop-m11-salpeter', 'stellarpop-m11-kroupa', 'stellarpop-m11-chabrier', 'stellarpop-m11-salpeter-stelib', 'stellarpop-m11-kroupa-stelib', 'stellarpop-m11-chabrier-stelib', 'stellarpop-m11-salpeter-elodie', 'stellarpop-m11-kroupa-elodie', 'stellarpop-m11-chabrier-elodie'] 
 #suffixs = ["-ss.fits", "-kr.fits", "-cha.fits", "-ss.fits", "-kr.fits", "-cha.fits", "-ss.fits", "-kr.fits", "-cha.fits"]
 
-dirs = ['stellarpop-m11-salpeter', 'stellarpop-m11-kroupa', 'stellarpop-m11-chabrier'] 
-suffixs = ["-ss.fits", "-kr.fits", "-cha.fits"]
+dirs = ['stellarpop-m11-chabrier', 'stellarpop-m11-kroupa', 'stellarpop-m11-salpeter'] 
+suffixs = ["-cha.fits", "-kr.fits", "-ss.fits"]
 
 print plate, mjd, fiberid
 
 sp_cha = fits.open(os.path.join(os.environ[env], dirs[0], 'stellarpop', plate, 'spFly-'+plate+'-'+mjd+'-'+fiberid+suffixs[0]))
 sp_kr  = fits.open(os.path.join(os.environ[env], dirs[1], 'stellarpop', plate, 'spFly-'+plate+'-'+mjd+'-'+fiberid+suffixs[1]))
 sp_sa  = fits.open(os.path.join(os.environ[env], dirs[2], 'stellarpop', plate, 'spFly-'+plate+'-'+mjd+'-'+fiberid+suffixs[2]))
-sp_cha_nd = fits.open(os.path.join(os.environ[env],dirs[3], 'stellarpop', plate, 'spFly-'+plate+'-'+mjd+'-'+fiberid+suffixs[3]))
-sp_kr_nd = fits.open(os.path.join(os.environ[env], dirs[4], 'stellarpop', plate, 'spFly-'+plate+'-'+mjd+'-'+fiberid+suffixs[4]))
-sp_sa_nd = fits.open(os.path.join(os.environ[env], dirs[5], 'stellarpop', plate, 'spFly-'+plate+'-'+mjd+'-'+fiberid+suffixs[5]))
-sp_cha_el = fits.open(os.path.join(os.environ[env],dirs[6], 'stellarpop', plate, 'spFly-'+plate+'-'+mjd+'-'+fiberid+suffixs[6]))
-sp_kr_el = fits.open(os.path.join(os.environ[env], dirs[7], 'stellarpop', plate, 'spFly-'+plate+'-'+mjd+'-'+fiberid+suffixs[7]))
-sp_sa_el = fits.open(os.path.join(os.environ[env], dirs[8], 'stellarpop', plate, 'spFly-'+plate+'-'+mjd+'-'+fiberid+suffixs[8]))
+#sp_cha_nd = fits.open(os.path.join(os.environ[env],dirs[3], 'stellarpop', plate, 'spFly-'+plate+'-'+mjd+'-'+fiberid+suffixs[3]))
+#sp_kr_nd = fits.open(os.path.join(os.environ[env], dirs[4], 'stellarpop', plate, 'spFly-'+plate+'-'+mjd+'-'+fiberid+suffixs[4]))
+#sp_sa_nd = fits.open(os.path.join(os.environ[env], dirs[5], 'stellarpop', plate, 'spFly-'+plate+'-'+mjd+'-'+fiberid+suffixs[5]))
+#sp_cha_el = fits.open(os.path.join(os.environ[env],dirs[6], 'stellarpop', plate, 'spFly-'+plate+'-'+mjd+'-'+fiberid+suffixs[6]))
+#sp_kr_el = fits.open(os.path.join(os.environ[env], dirs[7], 'stellarpop', plate, 'spFly-'+plate+'-'+mjd+'-'+fiberid+suffixs[7]))
+#sp_sa_el = fits.open(os.path.join(os.environ[env], dirs[8], 'stellarpop', plate, 'spFly-'+plate+'-'+mjd+'-'+fiberid+suffixs[8]))
 
 out_dir = os.path.join(os.environ[env], 'stellarpop', plate)
+im_dir = os.path.join(os.environ[env], 'stellarpop', plate, 'images')
+
 if os.path.isdir(out_dir)==False:
 	os.makedirs(out_dir)
+if os.path.isdir(im_dir)==False:
+	os.makedirs(im_dir)
+	
 out_file = 'spFly-'+plate+'-'+mjd+'-'+fiberid+'.fits'
 path_2_out_file = os.path.join(out_dir, out_file)
+
+im_file = 'spFly-'+plate+'-'+mjd+'-'+fiberid+'.png'
+path_2_im_file = os.path.join(im_dir, im_file)
 
 
 def create_tbhdu(sp_cha, imf, lib):
@@ -73,12 +107,13 @@ def create_tbhdu(sp_cha, imf, lib):
 tbhdu_cha = create_tbhdu(sp_cha, 'Chabrier', 'MILES')
 tbhdu_kr  = create_tbhdu(sp_kr, 'Kroupa'   , 'MILES')
 tbhdu_sa  = create_tbhdu(sp_sa, 'Salpeter' , 'MILES')
-tbhdu_cha_nd = create_tbhdu(sp_cha_nd, 'Chabrier', 'STELIB')
-tbhdu_kr_nd  = create_tbhdu(sp_kr_nd, 'Kroupa'   , 'STELIB')
-tbhdu_sa_nd  = create_tbhdu(sp_sa_nd, 'Salpeter' , 'STELIB')
-tbhdu_cha_el = create_tbhdu(sp_cha_el, 'Chabrier', 'ELODIE')
-tbhdu_kr_el  = create_tbhdu(sp_kr_el, 'Kroupa'   , 'ELODIE')
-tbhdu_sa_el  = create_tbhdu(sp_sa_el, 'Salpeter' , 'ELODIE')
+#tbhdu_cha_nd = create_tbhdu(sp_cha_nd, 'Chabrier', 'STELIB')
+#tbhdu_kr_nd  = create_tbhdu(sp_kr_nd, 'Kroupa'   , 'STELIB')
+#tbhdu_sa_nd  = create_tbhdu(sp_sa_nd, 'Salpeter' , 'STELIB')
+#tbhdu_cha_el = create_tbhdu(sp_cha_el, 'Chabrier', 'ELODIE')
+#tbhdu_kr_el  = create_tbhdu(sp_kr_el, 'Kroupa'   , 'ELODIE')
+#tbhdu_sa_el  = create_tbhdu(sp_sa_el, 'Salpeter' , 'ELODIE')
+
 
 prihdr = fits.Header()
 
@@ -86,20 +121,85 @@ prihdr['file']   = out_file
 prihdr['plate']  = int(plate)
 prihdr['mjd']    = int(mjd)
 prihdr['fiberid']= int(fiberid)
-
+prihdr['models'] = 'Maraston_2011'
 prihdr['fitter'] = 'FIREFLY'
-prihdr['model']  = sp_kr[0].header['model']
-prihdr['ageMin'] = sp_kr[0].header['ageMin']
-prihdr['ageMax'] = sp_kr[0].header['ageMax']
-prihdr['Zmin']   = sp_kr[0].header['Zmin']
-prihdr['Zmax']   = sp_kr[0].header['Zmax']
+prihdr['model']  = sp_cha[0].header['model']
+prihdr['ageMin'] = sp_cha[0].header['ageMin']
+prihdr['ageMax'] = sp_cha[0].header['ageMax']
+prihdr['Zmin']   = sp_cha[0].header['Zmin']
+prihdr['Zmax']   = sp_cha[0].header['Zmax']
 
 prihdr['HIERARCH age_universe'] = sp_cha[1].header['HIERARCH age_universe']                                             
 prihdr['HIERARCH redshift']     = sp_cha[1].header['HIERARCH redshift']                                         
 
+
+# now creates the figure per model 
+fig = p.figure(0, figsize = (7, 10), frameon=False)#, tight_layout=True)
+rect = 0.2, 0.15, 0.85, 0.95
+#ax = fig.add_axes(rect, frameon=False)
+
+# panel with the spectrum
+fig.add_subplot(3,1,1)
+p.plot(wl_data[::2], fl_data[::2], 'k', rasterized =True, alpha=0.5)
+p.yscale('log')
+mean_data = n.median(fl_data)
+p.ylim((mean_data/8., mean_data*8.))
+p.xlabel('Wavelength [Angstrom]')
+p.ylabel(r'Flux [$f_\lambda$ $10^{-17}$ erg/cm2/s/A]')
+p.title("plate=" + plate + ", mjd=" + mjd + ", fiber=" + fiberid + ", z=" + str(n.round(obs[2].data[z_name][0],3)))
+# second panel distribution of residuals
+fig.add_subplot(3,1,2)
+
+for hdu in [tbhdu_cha, tbhdu_kr, tbhdu_sa]:
+	ok_model = (hdu.data['wavelength']>wl_data_min)&(hdu.data['wavelength']<wl_data_max)
+	wl_model = hdu.data['wavelength'][ok_model]
+	#p.plot(wl_model, (spec(wl_model)-hdu.data['model_flux'][ok_model])/err(wl_model), 'k', rasterized =True, alpha=0.5)
+	chi2s=(spec(wl_model)-hdu.data['model_flux'][ok_model])/err(wl_model)
+	p.hist(chi2s, bins = n.arange(-2,2,0.1), normed = True, histtype='step', label=hdu.header['IMF']+hdu.header['library']+", EBV="+str(n.round(hdu.header['EBV'],3))+r", $\chi^2=$"+str(n.round(n.sum(chi2s**2.)/(len(chi2s)-2.),4)))
+	p.ylim((-0.02,1.02))
+	#p.yscale('log')
+	p.xlabel('(data-model)/error')
+	p.ylabel('Normed distribution')
+	hdu.header['chi2'] =  n.sum(chi2s**2.) 
+	hdu.header['ndof'] =  len(chi2s)-2.
+	
+p.plot(n.arange(-2,2,0.005), gaussD.pdf(n.arange(-2,2,0.005)), 'k--', label=r'N(0,1)', lw=0.5)
+p.grid()
+p.legend(frameon=False, loc=0, fontsize=8)
+
+fig.add_subplot(3,1,3)
+tpl = n.transpose(n.array([ [
+	hdu.header['age_lightW'],
+	hdu.header['stellar_mass'],
+	hdu.header['age_lightW_up']-hdu.header['age_lightW'], 
+	hdu.header['age_lightW']-hdu.header['age_lightW_low'],
+	hdu.header['stellar_mass_up']-hdu.header['stellar_mass'],
+	hdu.header['stellar_mass']-hdu.header['stellar_mass_low']]
+	for hdu in [tbhdu_cha, tbhdu_kr, tbhdu_sa] ]))
+
+ 
+p.errorbar(tpl[0], tpl[1], xerr=[tpl[2], tpl[3]], yerr=[tpl[4], tpl[5]], barsabove=True, fmt='o')
+#p.axvline(prihdr['age_universe'], color='r', ls='dashed')
+idsUP = n.argsort(tpl[1])
+
+iterList = n.array([tbhdu_cha, tbhdu_kr, tbhdu_sa])[idsUP]
+for jj, hdu in enumerate(iterList):
+	p.annotate(hdu.header['IMF']+hdu.header['library']+r", $\log(Z/Z_\odot)=$"+str(n.round(hdu.header['metallicity_lightW'],4)), 
+			xy = (hdu.header['age_lightW'], hdu.header['stellar_mass']), xycoords='data', 
+			xytext=(0.85, (jj+0.5)/len(iterList)), textcoords='axes fraction', 
+			arrowprops=dict(facecolor='black', shrink=0.05, width=0.2, headwidth=3), 
+			horizontalalignment='right', verticalalignment='top', fontsize=9)
+
+p.ylabel(r'$\log_{10}(M/[M_\odot])$')
+p.xlabel(r'$\log_{10}(age/[yr])$')
+#p.ylim((9,12.5))
+p.grid()
+p.savefig(path_2_im_file)
+p.clf()
+
 prihdu = fits.PrimaryHDU(header=prihdr)
 
-thdulist = fits.HDUList([prihdu, tbhdu_cha, tbhdu_kr, tbhdu_sa, tbhdu_cha_nd, tbhdu_kr_nd, tbhdu_sa_nd, tbhdu_cha_el, tbhdu_kr_el, tbhdu_sa_el ])
+thdulist = fits.HDUList([prihdu, tbhdu_cha, tbhdu_kr, tbhdu_sa]) # , tbhdu_cha_nd, tbhdu_kr_nd, tbhdu_sa_nd, tbhdu_cha_el, tbhdu_kr_el, tbhdu_sa_el ])
 if os.path.isfile(path_2_out_file ):
 	os.remove(path_2_out_file )
 
@@ -108,132 +208,6 @@ thdulist.writeto( path_2_out_file )
 print time.time()-t0t
 
 
-sys.exit()
 
 
-
-
-
-
-
-
-
-init_cat = join( os.environ['EBOSSDR14_DIR'], "catalogs", "perPlate", "sp-"+plate.zfill(4)+".fits")
-plate_catalog = join( os.environ['EBOSSDR14_DIR'], dir, "catalogs", "spFly-"+plate.zfill(4)+".fits")
-
-dV=-9999.99
-def get_table_entry_full(hduSPM):
-	# print "gets entry"
-	headerA =" age_universe age_lightW age_lightW_err_plus age_lightW_err_minus metallicity_lightW metallicity_lightW_err_plus metallicity_lightW_err_minus age_massW age_massW_err_plus age_massW_err_minus metallicity_massW metallicity_massW_err_plus metallicity_massW_err_minus stellar_mass stellar_mass_err_plus stellar_mass_err_minus spm_EBV nComponentsSSP"
-	
-	table_entry = [ 10**hduSPM.header['age_universe'], 10**hduSPM.header['age_lightW_mean'], 10**hduSPM.header['age_lightW_mean_up']-10**hduSPM.header['age_lightW_mean'], 10**hduSPM.header['age_lightW_mean']-10**hduSPM.header['age_lightW_mean_low'], hduSPM.header['metallicity_lightW_mean'], hduSPM.header['metallicity_lightW_mean_up'] - hduSPM.header['metallicity_lightW_mean'], hduSPM.header['metallicity_lightW_mean'] - hduSPM.header['metallicity_lightW_mean_low'], 10**hduSPM.header['age_massW_mean'], 10**hduSPM.header['age_massW_mean_up']-10**hduSPM.header['age_massW_mean'], 10**hduSPM.header['age_massW_mean']-10**hduSPM.header['age_massW_mean_low'], hduSPM.header['metallicity_massW_mean'], hduSPM.header['metallicity_massW_mean_up'] - hduSPM.header['metallicity_massW_mean'], hduSPM.header['metallicity_massW_mean'] - hduSPM.header['metallicity_massW_mean_low'], hduSPM.header['stellar_mass_mean'], hduSPM.header['stellar_mass_mean_up'] - hduSPM.header['stellar_mass_mean'], hduSPM.header['stellar_mass_mean'] - hduSPM.header['stellar_mass_mean_low'], hduSPM.header['EBV'], hduSPM.header['ssp_number']]
-	#print hduSPM.header
-	for iii in n.arange(hduSPM.header['ssp_number']):
-		table_entry.append( hduSPM.header['stellar_mass_ssp_'+str(iii)] )
-		table_entry.append( hduSPM.header['age_ssp_'+str(iii)] )
-		table_entry.append( hduSPM.header['metal_ssp_'+str(iii)] )
-		table_entry.append( hduSPM.header['SFR_ssp_'+str(iii)] )
-		table_entry.append( hduSPM.header['weightMass_ssp_'+str(iii)] )
-		table_entry.append( hduSPM.header['weightLight_ssp_'+str(iii)] )
-		headerA += ' stellar_mass_ssp_'+str(iii) + ' age_ssp_'+str(iii) + ' metal_ssp_'+str(iii) + ' SFR_ssp_'+str(iii) + ' weightMass_ssp_'+str(iii) + ' weightLight_ssp_'+str(iii)
-	
-	if hduSPM.header['ssp_number']<8 :
-		for iii in n.arange(hduSPM.header['ssp_number'], 8, 1):
-			table_entry.append([dV, dV, dV, dV, dV, dV])
-			headerA += ' stellar_mass_ssp_'+str(iii) + ' age_ssp_'+str(iii) + ' metal_ssp_'+str(iii) + ' SFR_ssp_'+str(iii) + ' weightMass_ssp_'+str(iii) + ' weightLight_ssp_'+str(iii)
-
-	table_entry = n.array( n.hstack((table_entry)) )
-	#print table_entry.shape
-	return n.hstack((table_entry)), headerA
-	
-# step 2 : match to thecreated data set	
-hdu_orig_table = fits.open(init_cat)
-orig_table = hdu_orig_table[1].data
-orig_cols = orig_table.columns
-
-#aaa=orig_cols.del_col('CHUNK'                      )
-#aaa=orig_cols.del_col('PLATEQUALITY'           )
-#aaa=orig_cols.del_col('PLATESN2'                  )
-aaa=orig_cols.del_col('DEREDSN2'                )
-aaa=orig_cols.del_col('LAMBDA_EFF'             )
-aaa=orig_cols.del_col('BLUEFIBER'                )
-aaa=orig_cols.del_col('ZOFFSET'                   )
-aaa=orig_cols.del_col('SPECPRIMARY'            )
-aaa=orig_cols.del_col('SPECBOSS'                 )
-#aaa=orig_cols.del_col('BOSS_SPECOBJ_ID'    )
-
-aaa=orig_cols.del_col('NSPECOBS'                 )
-aaa=orig_cols.del_col('CX'                             )
-aaa=orig_cols.del_col('CY'                             )
-aaa=orig_cols.del_col('CZ'                             )
-aaa=orig_cols.del_col('XFOCAL'                     )
-aaa=orig_cols.del_col('YFOCAL'                     )
-
-aaa=orig_cols.del_col('TFILE'                         )
-aaa=orig_cols.del_col('TCOLUMN'                  )
-aaa=orig_cols.del_col('NPOLY'                       )
-aaa=orig_cols.del_col('THETA'                       )
-
-aaa=orig_cols.del_col('WAVEMIN'                  )
-aaa=orig_cols.del_col('WAVEMAX'                  )
-aaa=orig_cols.del_col('WCOVERAGE'             )
-
-#aaa=orig_cols.del_col('SN_MEDIAN_ALL'       )
-#aaa=orig_cols.del_col('SN_MEDIAN'               )
-aaa=orig_cols.del_col('CHI68P'                      )
-aaa=orig_cols.del_col('FRACNSIGMA'             )
-aaa=orig_cols.del_col('FRACNSIGHI'              )
-aaa=orig_cols.del_col('FRACNSIGLO'             )
-aaa=orig_cols.del_col('SPECTROFLUX'           )
-aaa=orig_cols.del_col('SPECTROFLUX_IVAR'  )
-aaa=orig_cols.del_col('SPECTROSYNFLUX'     )
-aaa=orig_cols.del_col('SPECTROSYNFLUX_IVAR'  )
-aaa=orig_cols.del_col('SPECTROSKYFLUX'           )
-aaa=orig_cols.del_col('ANYANDMASK'                  )
-aaa=orig_cols.del_col('ANYORMASK'                    )
-aaa=orig_cols.del_col('SPEC1_G'                         )
-aaa=orig_cols.del_col('SPEC1_R'                          )
-aaa=orig_cols.del_col('SPEC1_I'                          )
-aaa=orig_cols.del_col('SPEC2_G'                         )
-aaa=orig_cols.del_col('SPEC2_R'                         ) 
-aaa=orig_cols.del_col('SPEC2_I'                          )
-aaa=orig_cols.del_col('ELODIE_FILENAME'          )
-aaa=orig_cols.del_col('ELODIE_OBJECT'              )
-aaa=orig_cols.del_col('ELODIE_SPTYPE'               )
-aaa=orig_cols.del_col('ELODIE_BV'                      )
-aaa=orig_cols.del_col('ELODIE_TEFF'                   )
-aaa=orig_cols.del_col('ELODIE_LOGG'                 )
-aaa=orig_cols.del_col('ELODIE_FEH'                    )
-aaa=orig_cols.del_col('ELODIE_Z'                        )
-aaa=orig_cols.del_col('ELODIE_Z_ERR'                )
-aaa=orig_cols.del_col('ELODIE_Z_MODELERR'     )
-aaa=orig_cols.del_col('ELODIE_RCHI2'                )
-aaa=orig_cols.del_col('ELODIE_DOF'                   )
-
-aaa=orig_cols.del_col('CALIBFLUX'                      )
-aaa=orig_cols.del_col('CALIBFLUX_IVAR'             )
-
-table_all = []
-headers = ""
-for fiber, mjd in zip(orig_table['FIBERID'], orig_table['MJD']):
-	fitFile = join( os.environ['EBOSSDR14_DIR'], dir, "stellarpop", plate, "spFly-"+plate.zfill(4)+"-"+str(mjd)+"-"+str(fiber).zfill(4)+suffix)
-	# print fitFile
-	if os.path.isfile(fitFile):
-		table_entry, headers = get_table_entry_full( hduSPM=fits.open(fitFile)[1] )
-		table_all.append(table_entry)
-	else:
-		table_all.append(n.ones(66)*dV)
-
-newDat = n.transpose(table_all)
-
-all_cols = []
-for data_array, head in zip(newDat, headers.split()):
-	all_cols.append(fits.Column(name=head, format='D', array=data_array))
-
-new_cols = fits.ColDefs(all_cols)
-hdu = fits.BinTableHDU.from_columns(orig_cols + new_cols)
-if os.path.isfile(plate_catalog):
-	os.remove(plate_catalog)
-
-hdu.writeto(plate_catalog)
 
