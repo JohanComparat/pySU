@@ -7,7 +7,7 @@ import glob
 import sys 
 
 import matplotlib
-matplotlib.use('pdf')
+matplotlib.use('Agg')
 import matplotlib.pyplot as p
 
 import astropy.io.fits as fits
