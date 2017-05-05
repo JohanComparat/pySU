@@ -9,7 +9,7 @@ import astropy.io.fits as fits
 
 
 def concatenate_spFlyPlates(root_dir, imf, dir, all_cat):
-	spFlyCats = n.array( glob.glob( join( os.environ[root_dir], dir, "catalogs","spFly-*.fits") ) )
+	spFlyCats = n.array( glob.glob( join( os.environ[root_dir], stellarpop, "*","spFlyPlate-*.fits") ) )
 	spFlyCats.sort()
 
 	NperCat = 100
@@ -44,10 +44,9 @@ def concatenate_spFlyPlates(root_dir, imf, dir, all_cat):
 		hdu.writeto(write_cat)
 		print bd, time.time()-t0
 
-imf='kr'
-dir ='stellarpop-m11-kroupa'
-all_cat = join( os.environ['EBOSSDR14_DIR'], dir, "flyAll_catalogs", "spFlyAll-"+imf)
-concatenate_spFlyPlates('EBOSSDR14_DIR', imf, dir , all_cat )
+dir ='stellarpop'
+all_cat = join( os.environ['EBOSSDR14_DIR'], dir, "flyAll_catalogs", "spFlyAll-")
+concatenate_spFlyPlates('EBOSSDR14_DIR', dir , all_cat )
 
 imf='ss'
 dir ='stellarpop-m11-salpeter'

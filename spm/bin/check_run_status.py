@@ -7,13 +7,55 @@ import sys
 import time
 import astropy.io.fits as fits
 
-# plate = sys.argv[1]
-#dir ='stellarpop-m11-salpeter'
-dir ='stellarpop-m11-kroupa'
-dV=-9999.99
+path_2_file = join(os.environ['EBOSSDR14_DIR'], "catalogs", "spAll-v5_10_0.fits")
+data = fits.open(path_2_file)[1].data
 
-plates_all = n.loadtxt( join(os.environ['SDSSDR12_DIR'], "plateNumberList"), unpack=True, dtype='str')
-plates = plates_all[:-2]
+selection = (data['ZWARNING_NOQSO']==0) & (data['CLASS_NOQSO']=="GALAXY") & (data['Z_NOQSO'] > data['Z_ERR_NOQSO']) & (data['Z_ERR_NOQSO']>0) 
+
+f_su=[]
+f_kr=[]
+f_sa=[]
+f_ch=[]
+for el in data :
+	print join(os.environ['EBOSSDR14_DIR'], 'stellarpop', str(el['PLATE']), "spFly-"+str(el['PLATE'])+"-"+str(el['MJD'])+"-"+str(el['FIBERID'])+".fits")
+	f_su.append( os.path.isfile(join(os.environ['EBOSSDR14_DIR'], 'stellarpop', str(el['PLATE']), "spFly-"+str(el['PLATE'])+"-"+str(el['MJD'])+"-"+str(el['FIBERID'])+".fits")))
+	f_kr.append( os.path.isfile(join(os.environ['EBOSSDR14_DIR'], 'stellarpop-m11-kroupa','stellarpop', str(el['PLATE']), "spFly-"+str(el['PLATE'])+"-"+str(el['MJD'])+"-"+str(el['FIBERID'])+".fits")))
+	f_sa.append( os.path.isfile(join(os.environ['EBOSSDR14_DIR'], 'stellarpop-m11-salpeter','stellarpop', str(el['PLATE']), "spFly-"+str(el['PLATE'])+"-"+str(el['MJD'])+"-"+str(el['FIBERID'])+".fits")))
+	f_ch.append( os.path.isfile(join(os.environ['EBOSSDR14_DIR'], 'stellarpop-m11-chabrier','stellarpop', str(el['PLATE']), "spFly-"+str(el['PLATE'])+"-"+str(el['MJD'])+"-"+str(el['FIBERID'])+".fits")))
+
+print f_su, f_kr, f_sa, f_ch
+
+n.savetxt('status-eBOSS.txt.gz', n.transpose([data['PLATE'], data['MJD'], data['FIBERID'], n.array(f_su)*1, n.array(f_kr)*1, n.array(f_sa)*1, n.array(f_ch)*1])[selection], fmt='%i' )
+
+
+
+from os.path import join
+import os
+import numpy as n
+import glob 
+import sys 
+import time
+import astropy.io.fits as fits
+
+path_2_file = join(os.environ['SDSSDR12_DIR'], "catalogs", "specObj-dr12.fits")
+data = fits.open(path_2_file)[1].data
+
+selection = (data['ZWARNING']==0) & (data['CLASS']=="GALAXY") & (data['Z'] > data['Z_ERR']) & (data['Z_ERR']>0) 
+
+f_su=[]
+f_kr=[]
+f_sa=[]
+f_ch=[]
+for el in data :
+	f_su.append( os.path.isfile(join(os.environ['SDSSDR12_DIR'], 'stellarpop', str(el['PLATE']), "spFly-"+str(el['PLATE'])+"-"+str(el['MJD'])+"-"+str(el['FIBERID'])+".fits")))
+	f_kr.append( os.path.isfile(join(os.environ['SDSSDR12_DIR'], 'stellarpop-m11-kroupa','stellarpop', str(el['PLATE']), "spFly-"+str(el['PLATE'])+"-"+str(el['MJD'])+"-"+str(el['FIBERID'])+".fits")))
+	f_sa.append( os.path.isfile(join(os.environ['SDSSDR12_DIR'], 'stellarpop-m11-salpeter','stellarpop', str(el['PLATE']), "spFly-"+str(el['PLATE'])+"-"+str(el['MJD'])+"-"+str(el['FIBERID'])+".fits")))
+	f_ch.append( os.path.isfile(join(os.environ['SDSSDR12_DIR'], 'stellarpop-m11-chabrier','stellarpop', str(el['PLATE']), "spFly-"+str(el['PLATE'])+"-"+str(el['MJD'])+"-"+str(el['FIBERID'])+".fits")))
+
+print f_su, f_kr, f_sa, f_ch
+
+n.savetxt('status-SDSS.txt.gz', n.transpose([data['PLATE'], data['MJD'], data['FIBERID'], n.array(f_su)*1, n.array(f_kr)*1, n.array(f_sa)*1, n.array(f_ch)*1])[selection], fmt='%i')
+
 
 
 def get_info_from_catalog(plate):
@@ -21,7 +63,7 @@ def get_info_from_catalog(plate):
 	if os.path.isfile(path_2_file):
 		hdus = fits.open(path_2_file)
 		
-		not_processed_all = (hdus[1].data['age_universe']==dV)
+		not_processed_all = (el['age_universe']==dV)
 		processed_all = (not_processed_all==False)
 		if int(plate)<=2974:
 			galaxies = (hdus[1].data['ZWARNING']==0) & (hdus[1].data['CLASS']=="GALAXY") & (hdus[1].data['Z'] > hdus[1].data['Z_ERR']) & (hdus[1].data['Z_ERR']>0)

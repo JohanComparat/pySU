@@ -24,7 +24,7 @@ def runSpec(specLiteFile):
 	plate = baseN[1] #7457# sys.argv[1] #7619
 	mjd = baseN[2] # 56746#sys.argv[2] # 56900
 	fibre = baseN[3] # 471#sys.argv[3] #300
-	outputFolder = join( os.environ['EBOSSDR14_DIR'], 'stellarpop-m11-salpeter-stelib', 'stellarpop', str(plate))
+	outputFolder = join( os.environ['EBOSSDR14_DIR'], 'stellarpop-m11-salpeter-miles', 'stellarpop', str(plate))
 	if os.path.isdir(outputFolder)==False:
 		os.makedirs(outputFolder)
 
@@ -33,7 +33,7 @@ def runSpec(specLiteFile):
 	spec.openObservedSDSSSpectrum(survey='sdss4')
 	ageMax = np.log10(cosmo.age(spec.redshift).value*1e9)
 	if spec.hdulist[2].data['CLASS_NOQSO'][0]=="GALAXY" and spec.hdulist[2].data['Z_NOQSO'][0] >  spec.hdulist[2].data['Z_ERR_NOQSO'][0] and spec.hdulist[2].data['Z_ERR_NOQSO'][0]>0 and (spec.hdulist[2].data['ZWARNING_NOQSO'][0] ==0 or spec.hdulist[2].data['ZWARNING_NOQSO'][0] ==4):
-		model = spm.StellarPopulationModel(spec, join(outputFolder , 'spFly-' + os.path.basename(specLiteFile)[5:-5] ), cosmo, models = 'm11', model_libs = ['STELIB'], imfs = ['ss'], age_limits = [6,10], downgrade_models = True, data_wave_medium = 'vacuum', Z_limits = [-3.,1.],suffix="-ss.fits", use_downgraded_models = True)
+		model = spm.StellarPopulationModel(spec, join(outputFolder , 'spFly-' + os.path.basename(specLiteFile)[5:-5] ), cosmo, models = 'm11', model_libs = ['MILES'], imfs = ['ss'], age_limits = [6,10], downgrade_models = True, data_wave_medium = 'vacuum', Z_limits = [-3.,1.],suffix="-ss.fits", use_downgraded_models = True)
 		try :
 			model.fit_models_to_data()
 		except (ValueError):
@@ -47,7 +47,7 @@ fileList.sort()
 
 for el in fileList:
 	print( el )	
-	outputFile = join( os.environ['EBOSSDR14_DIR'], 'stellarpop-m11-salpeter-stelib', 'stellarpop', str(plate), 'spFly-' + os.path.basename(el)[5:-5]+"-ss.fits")
+	outputFile = join( os.environ['EBOSSDR14_DIR'], 'stellarpop-m11-salpeter-miles', 'stellarpop', str(plate), 'spFly-' + os.path.basename(el)[5:-5]+"-ss.fits")
 	if os.path.isfile(outputFile) :
 		print( outputFile )
 	else :
