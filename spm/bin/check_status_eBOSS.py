@@ -38,5 +38,5 @@ for jj in n.arange(0,len(data)+100000,100000)[:-1]:
 
 	outData = n.vstack((data['PLATE'], data['MJD'], data['FIBERID'], done.T)).astype('int')
 
-	n.savetxt(os.environ['DATA_DIR'], 'status', 'status-eBOSS-'+str(bds[jj])'.txt.gz', outData[selection], fmt='%i', header=' plate mjd fiberid summary cm cs ce km ks ke sm ss se ' )
+	n.savetxt(os.environ['DATA_DIR'], 'status', 'status-eBOSS-'+str(bds[jj])+'.txt.gz', outData[selection], fmt='%i', header=' plate mjd fiberid summary cm cs ce km ks ke sm ss se ' )
 
