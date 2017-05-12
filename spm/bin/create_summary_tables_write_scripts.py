@@ -24,12 +24,12 @@ def writeScript(rootName, plate, env):
 env="SDSSDR12_DIR"
 plates = n.loadtxt( join(os.environ[env], "catalogs", "plateNumberList"), unpack=True, dtype='str')
 for plate in plates:
-	rootName = join(os.environ['HOME'], "batch_summary_sdss", plate)
+	rootName = join(os.environ['HOME'], "summary_tables_stellarpop", plate)
 	writeScript(rootName, plate, env)
 
 
 env="EBOSSDR14_DIR"
 plates = n.loadtxt( join(os.environ[env], "catalogs", "plateNumberList"), unpack=True, dtype='str')
 for plate in plates:
-	rootName = join(os.environ['HOME'], "batch_summary_eboss", plate)
+	rootName = join(os.environ['HOME'], "summary_tables_stellarpop", plate)
 	writeScript(rootName, plate, env)

@@ -1,10 +1,10 @@
 import os
 from os.path import join
 import numpy as n
-def writeScript(rootName, plate):
+def writeScript(rootName, plate, env):
 	f=open(rootName+".sh",'w')
 	f.write("#!/bin/bash \n")
-	f.write("#PBS -l walltime=2:00:00 \n")
+	f.write("#PBS -l walltime=4:00:00 \n")
 	f.write("#PBS -o "+plate+".o.$PBS_JOBID \n")
 	f.write("#PBS -e "+plate+".e$PBS_JOBID \n")
 	f.write("#PBS -M johan.comparat@gmail.com \n")
@@ -14,12 +14,19 @@ def writeScript(rootName, plate):
 	f.write("export PYTHONPATH=$PYTHONPATH:/users/comparat/pySU/spm/python/ \n")
 	f.write(" \n")
 	f.write("cd /users/comparat/pySU/spm/bin \n")
-	f.write("python create_summary_tables.py "+plate+" \n")
+	f.write("python create_summary_tables.py "+plate+" "+env+" \n")
 	f.write(" \n")
 	f.close()
 
 
 plates = n.loadtxt( join(os.environ['EBOSSDR14_DIR'], "catalogs", "plateNumberList"), unpack=True, dtype='str')
 for plate in plates:
-	rootName = join(os.environ['HOME'], "batch_dr14_tables_kroupa", plate)
-	writeScript(rootName, plate)
+plate = plates[1]
+rootName = join(os.environ['HOME'], "summary_tables_stellarpop", plate)
+writeScript(rootName, plate, "EBOSSDR14_DIR")
+	
+
+plates = n.loadtxt( join(os.environ['SDSSDR12_DIR'], "catalogs", "plateNumberList"), unpack=True, dtype='str')
+for plate in plates:
+	rootName = join(os.environ['HOME'], "summary_tables_stellarpop", plate)
+	writeScript(rootName, plate, "SDSSDR12_DIR")

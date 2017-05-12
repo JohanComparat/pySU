@@ -41,6 +41,15 @@ python write_run_scripts_summ_tables.py
 python submit_new_jobs.txt
 python submit_scripts.py
 
+# combine models into a single model spectrum
+cd $HOME/batch_combine or batch_combine_sdss
+where scripts run 
+python combine_model_spectra.py PLATE MJD FIBERID
+that creates the combined models
+The running scripts were created with 
+python combine_model_spectra_write_scripts.py
+
+
 # scripts to check the status
 python check_run_status.py
 python run_missing_fits.sh
@@ -53,6 +62,13 @@ python create_CAS_table.py
 python create_summary_table_DEEP2.py
 python create_summary_table_VIPERS.py
 python create_summary_table_VVDS.py
+
+# to check the status :
+cd $DATA_DIR/status
+qsub run_status_eBOSS.sh
+qsub run_status_SDSS.sh
+it executes spm/bin/python check_status_eBOSS or SDSS.py
+
 
 # copy result files
 
