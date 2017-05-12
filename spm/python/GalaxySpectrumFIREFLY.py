@@ -21,6 +21,11 @@ import glob
 import os
 from firefly_dust import get_dust_radec
 
+import astropy.cosmology as cc
+cosmo = cc.Planck13
+import astropy.units as uu
+
+
 class GalaxySpectrumFIREFLY:
 	"""
 	Loads the environnement to transform observed spectra into the input for FIREFLY. 
@@ -52,6 +57,54 @@ class GalaxySpectrumFIREFLY:
 		self.milky_way_reddening = milky_way_reddening
 		self.hpf_mode = hpf_mode
 		self.N_angstrom_masked = N_angstrom_masked
+
+	def openGAMAsimulatedSpectrum(self, error_multiplicative_factor = 1.):
+		"""
+		Opens the smulated data set
+		filename = os.path.join(os.environ['DATA_DIR'], "spm", "GAMAmock/gal_0000_GAMA_M10_z0.15.dat")
+		"""
+		data = np.loadtxt(self.path_to_spectrum, unpack=True, skiprows=1)
+		f=open(self.path_to_spectrum, 'r')
+		self.redshift = float(f.readline())
+		f.close()
+		DL = cosmo.luminosity_distance(self.redshift).to(uu.cm)
+		m_w_2_erg_p_s = uu.W.to(uu.erg/uu.s) * 10.**(17.)
+		self.ra=0.
+		self.dec=0.
+		self.wavelength = data[0] * (1+ self.redshift)
+		self.flux = data[1] * m_w_2_erg_p_s / DL.value**2
+		self.error = data[2] * m_w_2_erg_p_s / DL.value**2 * error_multiplicative_factor
+		self.bad_flags = np.ones(len(self.wavelength))
+		
+		self.vdisp = 70.
+		self.restframe_wavelength = data[0]
+
+		self.trust_flag = 1
+		self.objid = 0
+
+		# masking emission lines
+		lines_mask = ((self.restframe_wavelength > 3728 - self.N_angstrom_masked) & (self.restframe_wavelength < 3728 + self.N_angstrom_masked)) | ((self.restframe_wavelength > 5007 - self.N_angstrom_masked) & (self.restframe_wavelength < 5007 + self.N_angstrom_masked)) | ((self.restframe_wavelength > 4861 - self.N_angstrom_masked) & (self.restframe_wavelength < 4861 + self.N_angstrom_masked)) | ((self.restframe_wavelength > 6564 - self.N_angstrom_masked) & (self.restframe_wavelength < 6564 + self.N_angstrom_masked)) 
+
+		self.restframe_wavelength = self.restframe_wavelength[(lines_mask==False)] 
+		self.wavelength = self.wavelength[(lines_mask==False)] 
+		self.flux = self.flux[(lines_mask==False)] 
+		self.error = self.error[(lines_mask==False)] 
+		self.bad_flags = self.bad_flags[(lines_mask==False)] 		
+		
+		bad_data = np.isnan(self.flux) | np.isinf(self.flux) | (self.flux <= 0.0) | np.isnan(self.error) | np.isinf(self.error)
+		# removes the bad data from the spectrum 
+		self.flux[bad_data] 	= 0.0
+		self.error[bad_data] 	= np.max(self.flux) * 99999999999.9
+		self.bad_flags[bad_data] = 0
+
+		self.r_instrument = np.zeros(len(self.wavelength))
+		for wi,w in enumerate(self.wavelength):
+			if w<6000:
+				self.r_instrument[wi] = (2270.0-1560.0)/(6000.0-3700.0)*w + 420.0 
+			else:
+				self.r_instrument[wi] = (2650.0-1850.0)/(9000.0-6000.0)*w + 250.0 
+
+		self.ebv_mw = 0.0
 
 	def openObservedSDSSSpectrum(self, survey='sdssMain'):
 		"""

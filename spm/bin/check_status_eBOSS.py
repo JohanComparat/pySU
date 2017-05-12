@@ -26,15 +26,17 @@ suffixes = n.array([
 
 done=n.zeros((len(data), len(dirs)))
 
-for ii, el in enumerate(data) :
-	plate = str(int(el['PLATE'])).zfill(4)
-	mjd = str(int(el['MJD']))
-	fiber = str(int(el['FIBERID'])).zfill(4)
-	flyName = "spFly-"+plate+"-"+mjd+"-"+fiber
-	done[ii] = 1.*n.array([ os.path.isfile(join(env, dir, 'stellarpop', plate, flyName + suff)) for dir, suff in zip(dirs, suffixes) ])
-	print done[ii]
+bds = n.arange(0,len(data),100000)
+for jj in n.arange(0,len(data)+100000,100000)[:-1]:
+	for ii, el in enumerate(data[bds[jj]:bds[jj+1]]) :
+		plate = str(int(el['PLATE'])).zfill(4)
+		mjd = str(int(el['MJD']))
+		fiber = str(int(el['FIBERID'])).zfill(4)
+		flyName = "spFly-"+plate+"-"+mjd+"-"+fiber
+		done[ii] = 1.*n.array([ os.path.isfile(join(env, dir, 'stellarpop', plate, flyName + suff)) for dir, suff in zip(dirs, suffixes) ])
+		print done[ii]
 
-outData = n.vstack((data['PLATE'], data['MJD'], data['FIBERID'], done.T)).astype('int')
+	outData = n.vstack((data['PLATE'], data['MJD'], data['FIBERID'], done.T)).astype('int')
 
-n.savetxt(os.environ['DATA_DIR'], 'status', 'status-eBOSS.txt.gz', outData[selection], fmt='%i', header=' plate mjd fiberid summary cm cs ce km ks ke sm ss se ' )
+	n.savetxt(os.environ['DATA_DIR'], 'status', 'status-eBOSS-'+str(bds[jj])'.txt.gz', outData[selection], fmt='%i', header=' plate mjd fiberid summary cm cs ce km ks ke sm ss se ' )
 
