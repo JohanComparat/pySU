@@ -63,6 +63,9 @@ python create_summary_table_DEEP2.py
 python create_summary_table_VIPERS.py
 python create_summary_table_VVDS.py
 
+# to create th ecummary files 
+qsub merge_spFlyAll.sh
+
 # to check the status :
 cd $DATA_DIR/status
 qsub run_status_eBOSS.sh
@@ -89,7 +92,7 @@ pscp -r comparat@login5.sciama.icg.port.ac.uk:/mnt/lustre/sdss-dr12/SDSS-DR12/ca
 
 J0h@n_1234
 
-pscp -r comparat@login5.sciama.icg.port.ac.uk:/mnt/lustre/sdss-dr12/eBOSS-DR14/catalogs/*.fits D:\data\SDSS_SPM\catalogs_firefly\
+scp -r comparat@login5.sciama.icg.port.ac.uk:/mnt/lustre/sdss-dr12/eBOSS-DR14/catalogs/FireflyGalaxyEbossDR14.fits .
 
 J0h@n_1234
 
