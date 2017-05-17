@@ -54,7 +54,7 @@ def get_table_entry_full(hduSPM):
 	hduSPM.header
 	prefix = hduSPM.header['IMF'] + "_" #+ hduSPM.header['library'] + "_"
 	#print prefix
-	headerA =" "+prefix+"age_lightW "+prefix+"age_lightW_err_plus "+prefix+"age_lightW_err_minus "+prefix+"metallicity_lightW "+prefix+"metallicity_lightW_err_plus "+prefix+"metallicity_lightW_err_minus "+prefix+"age_massW "+prefix+"age_massW_err_plus "+prefix+"age_massW_err_minus "+prefix+"metallicity_massW "+prefix+"metallicity_massW_err_plus "+prefix+"metallicity_massW_err_minus "+prefix+"stellar_mass "+prefix+"stellar_mass_err_plus "+prefix+"stellar_mass_err_minus "+prefix+"spm_EBV "+prefix+"nComponentsSSP"
+	headerA =" "+prefix+"age_lightW "+prefix+"age_lightW_err_plus "+prefix+"age_lightW_err_minus "+prefix+"metallicity_lightW "+prefix+"metallicity_lightW_err_plus "+prefix+"metallicity_lightW_err_minus "+prefix+"age_massW "+prefix+"age_massW_err_plus "+prefix+"age_massW_err_minus "+prefix+"metallicity_massW "+prefix+"metallicity_massW_err_plus "+prefix+"metallicity_massW_err_minus "+prefix+"stellar_mass "+prefix+"stellar_mass_err_plus "+prefix+"stellar_mass_err_minus "+prefix+"spm_EBV "+prefix+"nComponentsSSP "+prefix+"chi2 "+prefix+"ndof "
 	
 	table_entry = [10**hduSPM.header['age_lightW']          
 	, 10**hduSPM.header['age_lightW_up']       

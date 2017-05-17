@@ -14,6 +14,7 @@ Plots stellar mass error and stellar mass vs. mass and redshift
 """
 
 z_bins = n.arange(0, 4.1, 0.1)
+m_bins = n.arange(0,14,0.5)
 
 
 #prefix = 'SDSS'
