@@ -6,5 +6,5 @@ import glob
 plates = n.array(glob.glob("*.sh"))
 plates.sort()
 
-for plate in plates[2469:]:
+for plate in plates:
 	os.system("qsub "+plate)

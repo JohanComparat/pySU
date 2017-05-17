@@ -35,9 +35,7 @@ python setup_run_for_stacks_DEEP2
 python setup_run_for_stacks_VVDSDEEP
 
 # rountines to write and submit the batch scripts
-python write_run_scripts_dr14_kroupa.py
-python write_run_scripts_dr14_salpeter.py
-python write_run_scripts_summ_tables.py
+python write_run_scripts_*.py
 python submit_new_jobs.txt
 python submit_scripts.py
 
@@ -49,15 +47,24 @@ that creates the combined models
 The running scripts were created with 
 python combine_model_spectra_write_scripts.py
 
+# creates per plate catalogs
+cd /users/comparat/batch_spFly_perPlate
+qsub run_ebdr14_kr.sh
+that executes :
+python create_perPlate_tables.py
 
 # scripts to check the status
 python check_run_status.py
 python run_missing_fits.sh
 
-# summary table creation 
-python create_summary_tables.py
-python create_spFlyAll.py
-python create_CAS_table.py
+cd /users/comparat/summary_tables_stellarpop
+qsub all .sh scripts
+it merges per plate tables with firefly outputs.
+
+# summary table creation per plate for SDSS
+python create_summary_tables_*.py
+
+# and summary files for global survey catalogs
 # python merge_spFlyAll.sh, deprecated
 python create_summary_table_DEEP2.py
 python create_summary_table_VIPERS.py
@@ -65,6 +72,10 @@ python create_summary_table_VVDS.py
 
 # to create th ecummary files 
 qsub merge_spFlyAll.sh
+#previous implementations :
+#python create_spFlyAll.py
+#python create_CAS_table.py
+
 
 # to check the status :
 cd $DATA_DIR/status
@@ -76,19 +87,19 @@ it executes spm/bin/python check_status_eBOSS or SDSS.py
 # copy result files
 
 
-pscp -r comparat@login5.sciama.icg.port.ac.uk:/mnt/lustre/sdss-dr12/deep2/catalogs/*.fits D:\data\SDSS_SPM\catalogs_firefly\
+scp -r comparat@login5.sciama.icg.port.ac.uk:/mnt/lustre/sdss-dr12/deep2/catalogs/*.fits D:\data\SDSS_SPM\catalogs_firefly\
 
 J0h@n_1234
 
-pscp -r comparat@login5.sciama.icg.port.ac.uk:/mnt/lustre/sdss-dr12/vipers/catalogs/*.fits D:\data\SDSS_SPM\catalogs_firefly\
+scp -r comparat@login5.sciama.icg.port.ac.uk:/mnt/lustre/sdss-dr12/vipers/catalogs/*.fits D:\data\SDSS_SPM\catalogs_firefly\
 
 J0h@n_1234
 
-pscp -r comparat@login5.sciama.icg.port.ac.uk:/mnt/lustre/sdss-dr12/vvds/catalogs/*.fits D:\data\SDSS_SPM\catalogs_firefly\
+scp -r comparat@login5.sciama.icg.port.ac.uk:/mnt/lustre/sdss-dr12/vvds/catalogs/*.fits D:\data\SDSS_SPM\catalogs_firefly\
 
 J0h@n_1234
 
-pscp -r comparat@login5.sciama.icg.port.ac.uk:/mnt/lustre/sdss-dr12/SDSS-DR12/catalogs/*.fits D:\data\SDSS_SPM\catalogs_firefly\
+scp -r comparat@login5.sciama.icg.port.ac.uk:/mnt/lustre/sdss-dr12/SDSS-DR12/catalogs/FireflyGalaxySdss26.fits .
 
 J0h@n_1234
 
@@ -96,3 +107,13 @@ scp -r comparat@login5.sciama.icg.port.ac.uk:/mnt/lustre/sdss-dr12/eBOSS-DR14/ca
 
 J0h@n_1234
 
+# science analysis 
+
+stellar_mass histogram for CMASS NGC
+
+volume = 6851.0*PI*(comovingVolume( 0.6, 70., 0.3, 0.7) - comovingVolume( 0.5, 70., 0.3, 0.7))/129600.
+weight = WEIGHT_SYSTOT*(weight_CP+weight_noz-1)/volume/0.1
+
+compare with the Ilbert SMF for example.
+
+Add the DEEP2 and Bernardi et  al. and  Moustakas et al. SMF

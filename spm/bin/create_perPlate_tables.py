@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -l walltime=4:00:00
+#PBS -l walltime=40:00:00
 #PBS -o ebossdr14_kroupa.o.$PBS_JOBID
 #PBS -e ebossdr14_kroupa.e$PBS_JOBID
 #PBS -M comparat@mpe.mpg.de
@@ -17,7 +17,7 @@ import sys
 import time
 import astropy.io.fits as fits
 
-init_cat = join( os.environ['EBOSSDR14_DIR'], "catalogs", "spAll-v5_10_0.fits")
+init_cat = join( os.environ['EBOSSDR14_DIR'], "catalogs", "specObj-BOSS-dr14.fits")
 hdus = fits.open(init_cat)
 tbdata = hdus[1].data
 plates = n.array(list(set(tbdata['PLATE'] )))
@@ -33,7 +33,7 @@ for plate in plates:
 		hdu.writeto(newTab)
 
 		
-init_cat = join( os.environ['SDSSDR12_DIR'], "catalogs", "specObj-SDSS-dr12.fits")
+init_cat = join( os.environ['SDSSDR12_DIR'], "catalogs", "specObj-SDSS-dr14.fits")
 hdus = fits.open(init_cat)
 tbdata = hdus[1].data
 plates = n.array(list(set(tbdata['PLATE'] )))

@@ -73,6 +73,8 @@ def get_table_entry_full(hduSPM):
 	, hduSPM.header['stellar_mass_low']    
 	, hduSPM.header['EBV'] 
 	, hduSPM.header['ssp_number']
+	, hduSPM.header['chi2']
+	, hduSPM.header['ndof']
 	]
 	
 	#print hduSPM.header
@@ -83,7 +85,7 @@ def get_table_entry_full(hduSPM):
 		table_entry.append( hduSPM.header['SFR_ssp_'+str(iii)] )
 		table_entry.append( hduSPM.header['weightMass_ssp_'+str(iii)] )
 		table_entry.append( hduSPM.header['weightLight_ssp_'+str(iii)] )
-		headerA += ' '+prefix+'stellar_mass_ssp_'+str(iii) + ' '+prefix+'age_ssp_'+str(iii) + ' '+prefix+'metal_ssp_'+str(iii) + ' '+prefix+'SFR_ssp_'+str(iii) + ' '+prefix+'weightMass_ssp_'+str(iii) + ' '+prefix+'weightLight_ssp_'+str(iii)
+		headerA += ' '+prefix+'stellar_mass_ssp_'+str(iii) + ' '+prefix+'ndofage_ssp_'+str(iii) + ' '+prefix+'metal_ssp_'+str(iii) + ' '+prefix+'SFR_ssp_'+str(iii) + ' '+prefix+'weightMass_ssp_'+str(iii) + ' '+prefix+'weightLight_ssp_'+str(iii)
 	
 	if hduSPM.header['ssp_number']<8 :
 		for iii in n.arange(hduSPM.header['ssp_number'], 8, 1):
