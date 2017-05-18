@@ -197,7 +197,7 @@ def make_summary(catalog_entry):
 		return 0.
 		
 
-for catalog_entry in orig_table[3100:]:
+for catalog_entry in orig_table:
 	print make_summary(catalog_entry)
 
 
