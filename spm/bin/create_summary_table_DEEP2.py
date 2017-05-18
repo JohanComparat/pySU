@@ -25,31 +25,80 @@ salpeterFolder = join( os.environ['DEEP2_DIR'], 'stellarpop-m11-salpeter', 'stel
 
 
 dV=-9999.99
+
 def get_table_entry_full(hduSPM):
-	return n.array([ 10**hduSPM.header['age_lightW_mean'], 10**hduSPM.header['age_lightW_mean_up']-10**hduSPM.header['age_lightW_mean'], 10**hduSPM.header['age_lightW_mean']-10**hduSPM.header['age_lightW_mean_low'], hduSPM.header['metallicity_lightW_mean'], hduSPM.header['metallicity_lightW_mean_up'] - hduSPM.header['metallicity_lightW_mean'], hduSPM.header['metallicity_lightW_mean'] - hduSPM.header['metallicity_lightW_mean_low'], hduSPM.header['stellar_mass_mean'], hduSPM.header['stellar_mass_mean_up'] - hduSPM.header['stellar_mass_mean'], hduSPM.header['stellar_mass_mean'] - hduSPM.header['stellar_mass_mean_low'], hduSPM.header['EBV'], hduSPM.header['ssp_number']])
+	# print "gets entry"
+	hduSPM.header
+	prefix = hduSPM.header['IMF'] + "_" + hduSPM.header['library'] + "_"
+	#print prefix
+	headerA =" "+prefix+"age_lightW "+prefix+"age_lightW_err_plus "+prefix+"age_lightW_err_minus "+prefix+"metallicity_lightW "+prefix+"metallicity_lightW_err_plus "+prefix+"metallicity_lightW_err_minus "+prefix+"age_massW "+prefix+"age_massW_err_plus "+prefix+"age_massW_err_minus "+prefix+"metallicity_massW "+prefix+"metallicity_massW_err_plus "+prefix+"metallicity_massW_err_minus "+prefix+"stellar_mass "+prefix+"stellar_mass_err_plus "+prefix+"stellar_mass_err_minus "+prefix+"spm_EBV "+prefix+"nComponentsSSP "+prefix+"chi2 "+prefix+"ndof "
+	
+	table_entry = [10**hduSPM.header['age_lightW']          
+	, 10**hduSPM.header['age_lightW_up']       
+	, 10**hduSPM.header['age_lightW_low']      
+	, hduSPM.header['metallicity_lightW']  
+	, hduSPM.header['metallicity_lightW_up']
+	, hduSPM.header['metallicity_lightW_low']
+	, 10**hduSPM.header['age_massW']           
+	, 10**hduSPM.header['age_massW_up']        
+	, 10**hduSPM.header['age_massW_low']       
+	, hduSPM.header['metallicity_massW']   
+	, hduSPM.header['metallicity_massW_up']
+	, hduSPM.header['metallicity_massW_low']
+	, hduSPM.header['stellar_mass']        
+	, hduSPM.header['stellar_mass_up']     
+	, hduSPM.header['stellar_mass_low']    
+	, hduSPM.header['EBV'] 
+	, hduSPM.header['ssp_number']
+	, hduSPM.header['chi2']
+	, hduSPM.header['ndof']
+	]
+	
+	#print hduSPM.header
+	for iii in n.arange(hduSPM.header['ssp_number']):
+		table_entry.append( hduSPM.header['stellar_mass_ssp_'+str(iii)] )
+		table_entry.append( hduSPM.header['age_ssp_'+str(iii)] )
+		table_entry.append( hduSPM.header['metal_ssp_'+str(iii)] )
+		table_entry.append( hduSPM.header['SFR_ssp_'+str(iii)] )
+		table_entry.append( hduSPM.header['weightMass_ssp_'+str(iii)] )
+		table_entry.append( hduSPM.header['weightLight_ssp_'+str(iii)] )
+		headerA += ' '+prefix+'stellar_mass_ssp_'+str(iii) + ' '+prefix+'ndofage_ssp_'+str(iii) + ' '+prefix+'metal_ssp_'+str(iii) + ' '+prefix+'SFR_ssp_'+str(iii) + ' '+prefix+'weightMass_ssp_'+str(iii) + ' '+prefix+'weightLight_ssp_'+str(iii)
+	
+	if hduSPM.header['ssp_number']<8 :
+		for iii in n.arange(hduSPM.header['ssp_number'], 8, 1):
+			table_entry.append([dV, dV, dV, dV, dV, dV])
+			headerA += ' '+prefix+'stellar_mass_ssp_'+str(iii) + ' '+prefix+'age_ssp_'+str(iii) + ' '+prefix+'metal_ssp_'+str(iii) + ' '+prefix+'SFR_ssp_'+str(iii) + ' '+prefix+'weightMass_ssp_'+str(iii) + ' '+prefix+'weightLight_ssp_'+str(iii)
+
+	table_entry = n.array( n.hstack((table_entry)) )
+	#print table_entry.shape
+	return n.hstack((table_entry)), headerA
 	
 
+
 table_all = []
-for catalog_entry in orig_table:
-	mask=str(catalog_entry['MASK'])
-	objno=str(catalog_entry['OBJNO'])
-	krF = join(kroupaFolder, 'spFly-deep2-'+mask+'-'+objno+"-kr.fits")
-	ssF = join(salpeterFolder, 'spFly-deep2-'+mask+'-'+objno + "-ss.fits")
-	if os.path.isfile(krF) and os.path.isfile(ssF):
-		#print "gets info"
-		table_entry_kr = get_table_entry_full( hduSPM=fits.open(krF)[1] )
-		#print table_entry_kr.shape
-		table_entry_ss = get_table_entry_full( hduSPM=fits.open(ssF)[1] )
-		#print table_entry_ss.shape
-		table_entry = n.hstack((table_entry_kr, table_entry_ss))
-		table_all.append(table_entry)
-	else:
-		table_all.append(n.ones(22)*dV)
+table_entry = []
+headers = ""
+headers = ""
+for mask, objno in zip(orig_table['MASK'], orig_table['OBJNO']):
+	fitFile = join( os.environ['DEEP2_DIR'], 'stellarpop', "spFly-deep2-"+str(mask)+"-"+str(objno)+".fits")
+	if os.path.isfile(fitFile):
+		print fitFile
+		hdus = fits.open(fitFile)
+		for ii in range(1,len(hdus)):
+			table_entry_i, headers_i = get_table_entry_full( hdus[ii] )
+			table_entry.append(table_entry_i)
+			headers += headers_i
 		
-headers =" age_lightW_mean_kroupa age_lightW_err_plus_kroupa age_lightW_err_minus_kroupa metallicity_lightW_mean_kroupa metallicity_lightW_mean_err_plus_kroupa metallicity_lightW_mean_err_minus_kroupa stellar_mass_kroupa stellar_mass_err_plus_kroupa stellar_mass_err_minus_kroupa spm_EBV_kroupa nComponentsSSP_kroupa age_lightW_mean_salpeter age_lightW_err_plus_salpeter age_lightW_err_minus_salpeter metallicity_lightW_mean_salpeter metallicity_lightW_mean_err_plus_salpeter metallicity_lightW_mean_err_minus_salpeter stellar_mass_salpeter stellar_mass_err_plus_salpeter stellar_mass_err_minus_salpeter spm_EBV_salpeter nComponentsSSP_salpeter"
+		#print len(n.hstack((table_entry)))
+		table_all.append(n.hstack((table_entry)))
+		#print headers
+		#print table_all[-1]
+		#print len(table_all[-1])
+		#fitFileLast = fitFile
+	else:
+		table_all.append(n.ones(603)*dV)
 
 newDat = n.transpose(table_all)
-
 all_cols = []
 for data_array, head in zip(newDat, headers.split()):
 	all_cols.append(fits.Column(name=head, format='D', array=data_array))
