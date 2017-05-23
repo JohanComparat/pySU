@@ -15,13 +15,11 @@ import GalaxySpectrumFIREFLY as gs
 import StellarPopulationModel as spm
 
 init_cat=join(os.environ['DEEP2_DIR'], "catalogs", "zcat.deep2.dr4.v4.LFcatalogTC.Planck15.fits")
+
 summary_catalog = join(os.environ['DEEP2_DIR'], "catalogs", "zcat.deep2.dr4.v4.LFcatalogTC.Planck15.spm.fits")
 hdu_orig_table = fits.open(init_cat)
 orig_table = hdu_orig_table[1].data
 orig_cols = orig_table.columns
-
-kroupaFolder = join( os.environ['DEEP2_DIR'], 'stellarpop-m11-kroupa', 'stellarpop')
-salpeterFolder = join( os.environ['DEEP2_DIR'], 'stellarpop-m11-salpeter', 'stellarpop')
 
 
 dV=-9999.99
@@ -68,38 +66,40 @@ def get_table_entry_full(hduSPM):
 		for iii in n.arange(hduSPM.header['ssp_number'], 8, 1):
 			table_entry.append([dV, dV, dV, dV, dV, dV])
 			headerA += ' '+prefix+'stellar_mass_ssp_'+str(iii) + ' '+prefix+'age_ssp_'+str(iii) + ' '+prefix+'metal_ssp_'+str(iii) + ' '+prefix+'SFR_ssp_'+str(iii) + ' '+prefix+'weightMass_ssp_'+str(iii) + ' '+prefix+'weightLight_ssp_'+str(iii)
-
+	
 	table_entry = n.array( n.hstack((table_entry)) )
 	#print table_entry
 	return n.hstack((table_entry)), headerA
 	
 
-
+N_cols = 603
 table_all = []
-headers = ""
 for mask, objno in zip(orig_table['MASK'], orig_table['OBJNO']):
+	headers = ""
 	fitFile = join( os.environ['DEEP2_DIR'], 'stellarpop', "spFly-deep2-"+str(mask)+"-"+str(objno)+".fits")
 	if os.path.isfile(fitFile):
-		print fitFile
 		hdus = fits.open(fitFile)
-		table_entry = []
-		for ii in range(1,len(hdus)):
-			table_entry_i, headers_i = get_table_entry_full( hdus[ii] )
-			table_entry.append(table_entry_i)
-			headers += headers_i
-		
-		#print len(n.hstack((table_entry)))
-		table_all.append(n.hstack((table_entry)))
-		#print headers
-		#print table_all[-1]
-		#print len(table_all[-1])
-		#fitFileLast = fitFile
+		if len(hdus)==10:
+			table_entry = []
+			for ii in range(1,len(hdus)):
+				table_entry_i, headers_i = get_table_entry_full( hdus[ii] )
+				table_entry.append(table_entry_i)
+				headers += headers_i
+			header_out = headers
+		else:
+			print fitFile
+			table_all.append(n.ones(N_cols)*dV)
 	else:
-		table_all.append(n.ones(603)*dV)
+		#print fitFile
+		table_all.append(n.ones(N_cols)*dV)
 
 newDat = n.transpose(table_all)
-all_cols = []
-for data_array, head in zip(newDat, headers.split()):
+c0 = fits.Column(name="MASK", format='I', array=orig_table['MASK'])
+c1 = fits.Column(name="OBJNO", format='I', array=orig_table['OBJNO'])
+
+all_cols = [c0, c1]
+
+for data_array, head in zip(newDat, header_out.split()):
 	all_cols.append(fits.Column(name=head, format='D', array=data_array))
 
 new_cols = fits.ColDefs(all_cols)
