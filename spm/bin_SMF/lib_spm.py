@@ -21,10 +21,10 @@ path_2_pS_kroupa_cat = os.path.join( ll_dir, "portsmouth_stellarmass_starforming
 path_2_pB_kroupa_cat = os.path.join( ll_dir, "portsmouth_stellarmass_starforming_krou-DR12-boss.fits.gz" )
 
 path_2_ppS_kroupa_cat = os.path.join( ll_dir, "portsmouth_stellarmass_passive_krou-26.fits.gz")
-path_2_ppB_kroupa_cat = os.path.join( ll_dir, "portsmouth_stellarmass_passive_krou-DR12.fits.gz")
+path_2_ppB_kroupa_cat = os.path.join( ll_dir, "portsmouth_stellarmass_passive_krou-DR12-boss.fits.gz")
 
 path_2_ppS_salpeter_cat = os.path.join( ll_dir, "portsmouth_stellarmass_passive_salp-26.fits.gz")
-path_2_ppB_salpeter_cat = os.path.join( ll_dir, "portsmouth_stellarmass_passive_salp-DR12.fits.gz")
+path_2_ppB_salpeter_cat = os.path.join( ll_dir, "portsmouth_stellarmass_passive_salp-DR12-boss.fits.gz")
 
 cosmos_dir = os.path.join(os.environ['OBS_REPO'], 'COSMOS', 'catalogs' )
 path_2_cosmos_cat = os.path.join( cosmos_dir, "photoz-2.0", "photoz_vers2.0_010312.fits")
