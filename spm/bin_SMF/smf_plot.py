@@ -1,11 +1,57 @@
 import astropy.cosmology as co
 aa=co.Planck15
 import astropy.io.fits as fits
+
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as p
+
 import numpy as n
 import os
 
 import sys
+
+
+out_dir = os.path.join(os.environ['OBS_REPO'], 'spm', 'results')
+
+#previous catalogs
+ll_dir = os.path.join(os.environ['OBS_REPO'], 'spm', 'literature')
+
+cosmos_dir = os.path.join(os.environ['OBS_REPO'], 'COSMOS', 'catalogs' )
+path_2_cosmos_cat = os.path.join( cosmos_dir, "photoz-2.0", "photoz_vers2.0_010312.fits")
+#path_2_cosmos_cat = os.path.join( cosmos_dir, "COSMOS2015_Laigle+_v1.1.fits.gz")
+
+
+# FIREFLY CATALOGS
+# SDSS data and catalogs
+sdss_dir = os.path.join(os.environ['OBS_REPO'], 'SDSS', 'dr14')
+path_2_spall_sdss_dr14_cat = os.path.join( sdss_dir, "specObj-SDSS-dr14.fits" )
+path_2_spall_boss_dr14_cat = os.path.join( sdss_dir, "specObj-BOSS-dr14.fits" )
+path_2_sdss_cat = os.path.join( sdss_dir, "FireflyGalaxySdss26.fits" )
+path_2_eboss_cat = os.path.join( sdss_dir, "FireflyGalaxyEbossDR14.fits" )
+
+# DEEP SURVEYS
+deep2_dir = os.path.join(os.environ['OBS_REPO'], 'DEEP2')
+path_2_deep2_cat = os.path.join( deep2_dir, "zcat.deep2.dr4.v4.LFcatalogTC.Planck15.spm.v2.fits" )
+
+vipers_dir = os.path.join(os.environ['OBS_REPO'], 'VIPERS')
+path_2_vipers_cat = os.path.join( vipers_dir, "VIPERS_W14_summary_v2.1.linesFitted.spm.fits" )
+
+vvds_dir = os.path.join(os.environ['OBS_REPO'], 'VVDS')
+path_2_vvdsW_cat = os.path.join( vvds_dir, "catalogs", "VVDS_WIDE_summary.v1.spm.fits" )
+path_2_vvdsD_cat = os.path.join( vvds_dir, "catalogs", "VVDS_DEEP_summary.v1.spm.fits" )
+
+# path_2_F16_cat = os.path.join( sdss_dir, "RA_DEC_z_w_fluxOII_Mstar_grcol_Mr_lumOII.dat" )
+
+# OPENS THE CATALOGS
+deep2   = fits.open(path_2_deep2_cat)[1].data
+vvdsD   = fits.open(path_2_vvdsD_cat)[1].data
+vvdsW   = fits.open(path_2_vvdsW_cat)[1].data
+vipers   = fits.open(path_2_vipers_cat)[1].data
+sdss   = fits.open(path_2_sdss_cat)[1].data
+boss   = fits.open(path_2_eboss_cat)[1].data
+cosmos = fits.open(path_2_cosmos_cat)[1].data
+
 
 # global cosmo quantities
 z_min = float(sys.argv[1])
@@ -15,28 +61,11 @@ lO2_min = float(sys.argv[3]) # 'salpeter'
 
 SNlimit = 5
 
-
-smf_ilbert13 = lambda M, M_star, phi_1s, alpha_1s, phi_2s, alpha_2s : ( phi_1s * (M/M_star) ** alpha_1s + phi_2s * (M/M_star) ** alpha_2s ) * n.e ** (-M/M_star) * (M/ M_star)
-
 lineSelection = lambda catalog, lineName : (catalog[lineName+'_flux']>0.)& (catalog[lineName+'_fluxErr'] >0.) & (catalog[lineName+'_flux'] > SNlimit * catalog[lineName+'_fluxErr']) # & (catalog[lineName+'_luminosity']>0)& (catalog[lineName+'_luminosity']<1e50)
 
-ff_dir = os.path.join(os.environ['DATA_DIR'], 'spm', 'firefly')
-ll_dir = os.path.join(os.environ['DATA_DIR'], 'spm', 'literature')
-co_dir = os.path.join(os.environ['DATA_DIR'], 'COSMOS' )
+out_dir = os.path.join(os.environ['OBS_REPO'], 'spm', 'results', 'mass_function_v1')
 
-out_dir = os.path.join(os.environ['DATA_DIR'], 'spm', 'results', 'mass_function_v1')
-
-path_2_cosmos_cat = os.path.join( co_dir, "photoz_vers2.0_010312.fits")
-path_2_vvdsW_cat = os.path.join( ff_dir, "VVDS_WIDE_summary.v1.spm.fits" )
-path_2_vipers_cat = os.path.join( ff_dir, "VIPERS_W14_summary_v2.1.linesFitted.spm.fits" )
-path_2_vvdsD_cat = os.path.join( ff_dir, "VVDS_DEEP_summary.v1.spm.fits" )
-path_2_deep2_cat = os.path.join( ff_dir, "zcat.deep2.dr4.v4.LFcatalogTC.Planck15.spm.fits" )
-
-cosmos = fits.open(path_2_cosmos_cat)[1].data
-deep2   = fits.open(path_2_deep2_cat)[1].data
-vvdsD   = fits.open(path_2_vvdsD_cat)[1].data
-vvdsW   = fits.open(path_2_vvdsW_cat)[1].data
-vipers   = fits.open(path_2_vipers_cat)[1].data
+smf_ilbert13 = lambda M, M_star, phi_1s, alpha_1s, phi_2s, alpha_2s : ( phi_1s * (M/M_star) ** alpha_1s + phi_2s * (M/M_star) ** alpha_2s ) * n.e ** (-M/M_star) * (M/ M_star)
 
 path_ilbert13_SMF = os.path.join(ll_dir, "ilbert_2013_mass_function_params.txt")
 zmin, zmax, N, M_comp, M_star, phi_1s, alpha_1s, phi_2s, alpha_2s, log_rho_s = n.loadtxt(os.path.join( ll_dir, "ilbert_2013_mass_function_params.txt"), unpack=True)
