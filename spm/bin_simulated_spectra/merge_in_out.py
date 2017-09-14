@@ -8,26 +8,29 @@ spm_dir = os.path.join(os.environ['DATA_DIR'], "spm")
 gama_dir = os.path.join(spm_dir, "GAMAmock")
 input_dir = os.path.join(gama_dir, "inputs")
 
+RecycleFraction = 0.43
+h0 = 0.693
+mass_factor = 1. #/(h0*(1.-RecycleFraction))
 
 cat = fits.open(os.path.join(gama_dir, "catalogs","GAMA.mock.spectra.spm.fits"))
 out_name = os.path.join(gama_dir, "catalogs","GAMA.mock.spectra.spm.in.out.fits")
 
-#file_list = n.array(glob.glob(os.path.join(input_dir, 'mock_input_GAMA', 'input_*_GAMA_M10_z0.15.idl')))
+file_list = n.array(glob.glob(os.path.join(input_dir, 'mock_input_GAMA', 'input_*_GAMA_M10_z0.15.idl')))
 #file_list.sort()
 
-#result_list =n.array(glob.glob(os.path.join(gama_dir, 'results', 'gal_*_GAMA_M10_z0.15.fits')))
+result_list =n.array(glob.glob(os.path.join(gama_dir, 'results', 'gal_*_GAMA_M10_z0.15.fits')))
 #result_list.sort()
 
 def get_in_values(identifier, dV=-9999.99):
 	file_i = os.path.join(input_dir, 'mock_input_GAMA', 'input_'+identifier+'_GAMA_M10_z0.15.idl')
 	#identifier = os.path.basename(file_i).split('_')[1]
 	file_r = os.path.join(gama_dir, 'results', 'gal_'+identifier+'_GAMA_M10_z0.15.fits')
-	print os.path.basename(file_i), os.path.basename(file_r)
+	print( os.path.basename(file_i), os.path.basename(file_r) )
 	if os.path.isfile(file_i) and os.path.isfile(file_r):
 		spec = idlsave.read(file_i)
 		model = fits.open(file_r)
 		# gets integrated quantities from the input
-		stellar_mass = spec['sfh_bulge'].sum() + spec['sfh_disk'].sum() 
+		stellar_mass = spec['sfh_bulge'].sum()/mass_factor + spec['sfh_disk'].sum()/mass_factor 
 		age_massW = n.log10(n.sum(10**spec['ages_lg']* (spec['sfh_bulge'] + spec['sfh_disk']))/stellar_mass)
 		
 		z_massW_bulge = n.sum(spec['z_bulge'][(spec['sfh_bulge']>0)]* spec['sfh_bulge'][(spec['sfh_bulge']>0)])/n.sum(spec['sfh_bulge'][(spec['sfh_bulge']>0)]) 
@@ -38,7 +41,7 @@ def get_in_values(identifier, dV=-9999.99):
 			z_massW = z_massW_disk
 		elif z_massW_bulge>0 and n.isnan(z_massW_disk):
 			z_massW = z_massW_bulge
-			
+			stellar_mass
 		return stellar_mass, age_massW, z_massW
 	else :
 		return dV, dV, dV

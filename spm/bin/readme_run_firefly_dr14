@@ -87,7 +87,8 @@ it executes spm/bin/python check_status_eBOSS or SDSS.py
 # copy result files
 
 
-scp -r comparat@login5.sciama.icg.port.ac.uk:/mnt/lustre/sdss-dr12/deep2/catalogs/*.fits D:\data\SDSS_SPM\catalogs_firefly\
+scp -r comparat@login5.sciama.icg.port.ac.uk:/mnt/lustre/sdss-dr12/deep2/catalogs/*spm.fits .
+
 
 J0h@n_1234
 
