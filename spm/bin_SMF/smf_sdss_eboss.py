@@ -8,8 +8,8 @@ import os
 import sys
 
 # global cosmo quantities
-z_min = 0. # float(sys.argv[1])
-z_max = 6. # float(sys.argv[2])
+z_min = float(sys.argv[1])
+z_max = float(sys.argv[2])
 #imf = 'kroupa'
 #lO2_min = float(sys.argv[3]) # 'salpeter'
 
@@ -21,6 +21,7 @@ ff_dir = os.path.join(os.environ['DATA_DIR'], 'spm', 'firefly')
 ll_dir = os.path.join(os.environ['DATA_DIR'], 'spm', 'literature')
 co_dir = os.path.join(os.environ['DATA_DIR'], 'COSMOS' )
 sdss_dir = os.path.join(os.environ['DATA_DIR'], 'SDSS')
+spiders_dir = os.path.join(os.environ['DATA_DIR'], 'spiders')
 
 out_dir = os.path.join(os.environ['DATA_DIR'], 'spm', 'results')
 
@@ -34,15 +35,26 @@ path_2_spall_sdss_dr14_cat = os.path.join( sdss_dir, "specObj-SDSS-dr14.fits" )
 path_2_spall_boss_dr12_cat = os.path.join( sdss_dir, "specObj-BOSS-dr12.fits" )
 path_2_spall_boss_dr14_cat = os.path.join( sdss_dir, "specObj-BOSS-dr14.fits" )
 
-#print "SDSS spAll DR12", len(fits.open(path_2_spall_sdss_dr12_cat)[1].data)
-print "SDSS spAll DR14", len(fits.open(path_2_spall_sdss_dr14_cat)[1].data)
-print "BOSS spAll DR12",len(fits.open(path_2_spall_boss_dr12_cat)[1].data)
-print "BOSS spAll DR14",len(fits.open(path_2_spall_boss_dr14_cat)[1].data)
+path_2_spall_spiders_dr14_cat = os.path.join( spiders_dir, "cluster_statistics_2016-11-08-DR14_spm.fits" )
 
-path_2_sdss_kroupa_cat = os.path.join( ff_dir, "spAll-SDSS-FireflyKroupa.fits" )
-path_2_sdss_salpeter_cat = os.path.join( ff_dir, "spAll-SDSS-FireflySalpeter.fits" )
-path_2_eboss_kroupa_cat = os.path.join( ff_dir, "spAll-eBOSS-FireflyKroupa.fits" )
-path_2_eboss_salpeter_cat = os.path.join( ff_dir, "spAll-eBOSS-FireflySalpeter.fits" )
+#print "SDSS spAll DR14", len(fits.open(path_2_spall_sdss_dr14_cat)[1].data)
+#print "BOSS spAll DR14",len(fits.open(path_2_spall_boss_dr14_cat)[1].data)
+path_2_cosmos_cat = os.path.join( co_dir, "photoz_vers2.0_010312.fits")
+path_2_vvdsW_cat = os.path.join( ff_dir, "VVDS_WIDE_summary.v1.spm.fits" )
+path_2_vipers_cat = os.path.join( ff_dir, "VIPERS_W14_summary_v2.1.linesFitted.spm.fits" )
+path_2_vvdsD_cat = os.path.join( ff_dir, "VVDS_DEEP_summary.v1.spm.fits" )
+path_2_deep2_cat = os.path.join( ff_dir, "zcat.deep2.dr4.v4.LFcatalogTC.Planck15.spm.v2.fits" )
+
+cosmos = fits.open(path_2_cosmos_cat)[1].data
+deep2   = fits.open(path_2_deep2_cat)[1].data
+vvdsD   = fits.open(path_2_vvdsD_cat)[1].data
+vvdsW   = fits.open(path_2_vvdsW_cat)[1].data
+vipers   = fits.open(path_2_vipers_cat)[1].data
+spiders   = fits.open(path_2_spall_spiders_dr14_cat)[1].data
+
+
+path_2_sdss_cat = os.path.join( ff_dir, "FireflyGalaxySdss26.fits" )
+path_2_eboss_cat = os.path.join( ff_dir, "FireflyGalaxyEbossDR14.fits" )
 
 path_2_pS_salpeter_cat = os.path.join( ll_dir, "portsmouth_stellarmass_starforming_salp-26.fits.gz" )
 path_2_pB_salpeter_cat = os.path.join( ll_dir, "portsmouth_stellarmass_starforming_salp-DR12-boss.fits.gz" )
@@ -58,10 +70,8 @@ path_2_F16_cat = os.path.join( sdss_dir, "RA_DEC_z_w_fluxOII_Mstar_grcol_Mr_lumO
 RA, DEC, z, weigth, O2flux, M_star, gr_color, Mr_5logh, O2luminosity = n.loadtxt(path_2_F16_cat, unpack=True)
 
 cosmos = fits.open(path_2_cosmos_cat)[1].data
-sdss_k   = fits.open(path_2_sdss_kroupa_cat)[1].data
-boss_k   = fits.open(path_2_eboss_kroupa_cat)[1].data
-boss_s   = fits.open(path_2_eboss_salpeter_cat)[1].data
-sdss_s   = fits.open(path_2_sdss_salpeter_cat)[1].data
+sdss   = fits.open(path_2_sdss_cat)[1].data
+boss   = fits.open(path_2_eboss_cat)[1].data
 
 sdss_12_portSF_kr   = fits.open(path_2_pS_kroupa_cat)[1].data
 boss_12_portSF_kr   = fits.open(path_2_pB_kroupa_cat)[1].data
@@ -89,11 +99,8 @@ volume_per_deg2_val = volume_per_deg2.value
 # stat functions
 ld = lambda selection : len(selection.nonzero()[0])
 
-area_sdss14 = 7900.    
-area_sdss12 = 7900.
-
-area_boss14 = 10000.
-area_boss12 = 10000.
+area_sdss = 7900.    
+area_boss = 10000.
 
 area_cosmos = 1.52
 
@@ -110,29 +117,20 @@ def get_basic_stat_anyCat(catalog_name, z_name, z_err_name, name, zflg_val):
 
 def get_basic_stat_DR12(catalog, z_name, z_err_name, name, zflg_val):
     catalog_zOk =(catalog[z_err_name] > 0.) & (catalog[z_name] > catalog[z_err_name]) 
-    catalog_stat = (catalog_zOk) #& (catalog[z_name] > z_min) & (catalog[z_name] < z_max) 
+    catalog_stat = (catalog_zOk) & (catalog[z_name] > z_min) & (catalog[z_name] < z_max) 
     catalog_sel = (catalog_stat) & (catalog['LOGMASS'] < 14. ) & (catalog['LOGMASS'] > 0 ) & (catalog['MAXLOGMASS'] - catalog['MINLOGMASS'] <0.4) & (catalog['LOGMASS'] < catalog['MAXLOGMASS'] ) & (catalog['LOGMASS'] > catalog['MINLOGMASS'] )
     m_catalog = catalog['LOGMASS']
     w_catalog =  n.ones_like(catalog['LOGMASS'])
     print name, "& - & $", ld(catalog_zOk),"$ & $", ld(catalog_sel),"$ \\\\"
     return catalog_sel, m_catalog, w_catalog
 
-def get_basic_stat_DR14(catalog, z_name, z_err_name, class_name, zwarning, name, zflg_val):
+def get_basic_stat_DR14(catalog, z_name, z_err_name, class_name, zwarning, name, zflg_val, prefix):
     catalog_zOk =(catalog[z_err_name] > 0.) & (catalog[z_name] > catalog[z_err_name])  & (catalog[class_name]=='GALAXY')  & (catalog[zwarning]==zflg_val)
-    catalog_stat = (catalog_zOk) #& (catalog[z_name] > z_min) & (catalog[z_name] < z_max) 
-    catalog_sel = (catalog_stat) & (catalog['stellar_mass'] < 14. ) & (catalog['stellar_mass'] > 0 )  & (catalog['stellar_mass'] > catalog['stellar_mass_err_plus'] ) & (catalog['stellar_mass'] > catalog['stellar_mass_err_minus'] ) & (catalog['stellar_mass_err_minus']  + catalog['stellar_mass_err_plus'] <0.4)
-    m_catalog = catalog['stellar_mass']
-    w_catalog =  n.ones_like(catalog['stellar_mass'])
-    print name, '& $',len(catalog), "$ & $", ld(catalog_zOk),"$ & $", ld(catalog_sel),"$ \\\\"
-    return catalog_sel, m_catalog, w_catalog
-
-def get_basic_stat_FF(catalog, z_name, z_err_name, z_flg, name, zflg_val, imf='kroupa'):
-    catalog_zOk =(catalog[z_err_name] > 0.) & (catalog[z_name] > catalog[z_err_name]) & (catalog[z_flg]==zflg_val) 
     catalog_stat = (catalog_zOk) & (catalog[z_name] > z_min) & (catalog[z_name] < z_max) 
-    catalog_sel = (catalog_stat) & (catalog['stellar_mass_'+imf] < 14. ) & (catalog['stellar_mass_'+imf] > 0 )  & (catalog['stellar_mass_'+imf] > catalog['stellar_mass_err_plus_'+imf] ) & (catalog['stellar_mass_'+imf] > catalog['stellar_mass_err_minus_'+imf] ) & (catalog['stellar_mass_err_minus_'+imf]  + catalog['stellar_mass_err_plus_'+imf] <0.4)
-    m_catalog = catalog['stellar_mass_'+imf]
-    w_catalog =  n.ones_like(catalog['stellar_mass_'+imf])
-    print name, '& $',len(catalog), "$ & $", ld(catalog_zOk),"$ & $", ld(catalog_stat), "\\;(", ld(catalog_sel),")$ \\\\"
+    catalog_sel = (catalog_stat) & (catalog[prefix+'stellar_mass'] < 10**14. ) & (catalog[prefix+'stellar_mass'] > 0 )  & (catalog[prefix+'stellar_mass'] > catalog[prefix+'stellar_mass_low'] ) & (catalog[prefix+'stellar_mass'] < catalog[prefix+'stellar_mass_up'] ) & ( - n.log10(catalog[prefix+'stellar_mass_low'])  + n.log10(catalog[prefix+'stellar_mass_up']) < 0.4 )
+    m_catalog = n.log10(catalog[prefix+'stellar_mass'])
+    w_catalog =  n.ones_like(catalog[prefix+'stellar_mass'])
+    print name, '& $',len(catalog), "$ & $", ld(catalog_zOk),"$ & $", ld(catalog_sel),"$ \\\\"
     return catalog_sel, m_catalog, w_catalog
     
 def get_hist(masses, weights, mbins):
@@ -142,17 +140,111 @@ def get_hist(masses, weights, mbins):
     return xx, NW, NN**(-0.5)*NW
 
 
-boss12_sel, boss12_m, boss12_w = get_basic_stat_DR14(boss_k, 'Z_NOQSO', 'Z_ERR_NOQSO', 'CLASS_NOQSO', 'ZWARNING_NOQSO', 'FIREFLY Kroupa & BOSS & 14 ', 0.)
-boss12_sel, boss12_m, boss12_w = get_basic_stat_DR14(boss_s, 'Z_NOQSO', 'Z_ERR_NOQSO', 'CLASS_NOQSO', 'ZWARNING_NOQSO', 'FIREFLY Salpeter & BOSS & 14', 0.)
+dlog10m = 0.25
+mbins = n.arange(8,12.5,dlog10m)
+
+def plot_smf_b(IMF="Chabrier_ELODIE_"):
+	boss_sel, boss_m, boss_w = get_basic_stat_DR14(boss, 'Z_NOQSO', 'Z_ERR_NOQSO', 'CLASS_NOQSO', 'ZWARNING_NOQSO', IMF+' & BOSS & 14 ', 0., IMF)
+	x, y, ye = get_hist(boss_m[boss_sel], weights = boss_w[boss_sel]/(dlog10m*n.log(10)*area_boss*volume_per_deg2_val), mbins = mbins)
+	p.errorbar(x, y, yerr = ye, label=IMF+'BOSS', lw=1)
+
+def plot_smf_s(IMF="Chabrier_ELODIE_"):
+	boss_sel, boss_m, boss_w = get_basic_stat_DR14(sdss, 'Z', 'Z_ERR', 'CLASS', 'ZWARNING', IMF+' & BOSS & 14 ', 0., IMF)
+	x, y, ye = get_hist(boss_m[boss_sel], weights = boss_w[boss_sel]/(dlog10m*n.log(10)*area_boss*volume_per_deg2_val), mbins = mbins)
+	p.errorbar(x, y, yerr = ye, label=IMF+'SDSS', lw=1)
+
+def plot_smf_spiders(IMF="Chabrier_ELODIE_"):
+	boss_sel, boss_m, boss_w = get_basic_stat_DR14(spiders, 'Z', 'Z_ERR', 'CLASS', 'ZWARNING', IMF+' & BOSS & 14 ', 0., IMF)
+	x, y, ye = get_hist(boss_m[boss_sel], weights = boss_w[boss_sel]/(dlog10m*n.log(10)*area_boss*volume_per_deg2_val), mbins = mbins)
+	p.errorbar(x, y, yerr = ye, label=IMF+'SPIDERS', lw=1)
+
+
+p.figure(1, (8,8))
+p.plot(mbins, smf01(10**mbins), label='Ilbert 13, 0.2<z<0.5', ls='dashed')
+
+plot_smf_b("Chabrier_ELODIE_")
+plot_smf_b("Chabrier_MILES_")
+plot_smf_b("Chabrier_STELIB_")
+plot_smf_b("Kroupa_ELODIE_")
+plot_smf_b("Kroupa_MILES_")
+plot_smf_b("Kroupa_STELIB_")
+plot_smf_b("Salpeter_ELODIE_")
+plot_smf_b("Salpeter_MILES_")
+plot_smf_b("Salpeter_STELIB_")
+plot_smf_spiders("Chabrier_ELODIE_")
+
+p.title(str(z_min)+'<z<'+str(z_max)+' BOSS+eBOSS')
+p.xlabel(r"$\log_{10}$ (M / $M_\odot$ )")
+p.ylabel(r'$\Phi(M)$ [Mpc$^{-3}$ dex$^{-1}$]')
+p.yscale('log')
+p.legend(loc=0, frameon = False)
+p.ylim((1e-8, 1e-2))
+p.xlim((9.5, 12.5))
+p.grid()
+p.savefig(os.path.join(out_dir, "firefly_SMFs_BOSS_"+str(z_min)+'_z_'+str(z_max)+".jpg" ))
+p.clf()
+
+
+p.figure(1, (8,8))
+p.plot(mbins, smf01(10**mbins), label='Ilbert 13, 0.2<z<0.5', ls='dashed')
+
+plot_smf_s("Chabrier_ELODIE_")
+plot_smf_s("Chabrier_MILES_")
+plot_smf_s("Chabrier_STELIB_")
+plot_smf_s("Kroupa_ELODIE_")
+plot_smf_s("Kroupa_MILES_")
+plot_smf_s("Kroupa_STELIB_")
+plot_smf_s("Salpeter_ELODIE_")
+plot_smf_s("Salpeter_MILES_")
+plot_smf_s("Salpeter_STELIB_")
+plot_smf_spiders("Chabrier_ELODIE_")
+
+p.title(str(z_min)+'<z<'+str(z_max)+' SDSS')
+p.xlabel(r'$\log_{10}$(M / $M_\odot$ )')
+p.ylabel(r'$\Phi(M)$ [Mpc$^{-3}$ dex$^{-1}$]')
+p.yscale('log')
+p.legend(loc=0, frameon = False)
+p.ylim((1e-8, 1e-2))
+p.xlim((9.5, 12.5))
+p.grid()
+p.savefig(os.path.join(out_dir, "firefly_SMFs_SDSS_"+str(z_min)+'_z_'+str(z_max)+".jpg" ))
+p.clf()
+
+sys.exit()
+
 sdss12_sel, sdss12_m, sdss12_w = get_basic_stat_DR12(boss_12_portSF_kr, 'Z', 'Z_ERR', 'Portsmouth SF Kroupa   & BOSS & 12 ', 0.)
 sdss12_sel, sdss12_m, sdss12_w = get_basic_stat_DR12(boss_12_portPA_kr, 'Z', 'Z_ERR', 'Portsmouth Passive Kroupa   & BOSS & 12 ', 0.)
 sdss12_sel, sdss12_m, sdss12_w = get_basic_stat_DR12(boss_12_portSF_sa, 'Z', 'Z_ERR', 'Portsmouth SF Salpeter & BOSS & 12 ', 0.)
 
-sdss12_sel, sdss12_m, sdss12_w = get_basic_stat_DR14(sdss_k, 'Z', 'Z_ERR', 'CLASS', 'ZWARNING', 'FIREFLY Kroupa & SDSS & 14 ', 0.)
-sdss12_sel, sdss12_m, sdss12_w = get_basic_stat_DR14(sdss_s, 'Z', 'Z_ERR', 'CLASS', 'ZWARNING', 'FIREFLY Salpeter & SDSS & 14', 0.)
+
+sdss12_sel, sdss12_m, sdss12_w = get_basic_stat_DR14(sdss, 'Z', 'Z_ERR', 'CLASS', 'ZWARNING', 'Chabrier ELODIE & SDSS & 14 ', 0., "Chabrier_ELODIE_")
+sdss12_sel, sdss12_m, sdss12_w = get_basic_stat_DR14(sdss, 'Z', 'Z_ERR', 'CLASS', 'ZWARNING', 'Chabrier MILES  & SDSS & 14 ', 0., "Chabrier_MILES_")
+sdss12_sel, sdss12_m, sdss12_w = get_basic_stat_DR14(sdss, 'Z', 'Z_ERR', 'CLASS', 'ZWARNING', 'Chabrier STELIB & SDSS & 14 ', 0., "Chabrier_STELIB_")
+sdss12_sel, sdss12_m, sdss12_w = get_basic_stat_DR14(sdss, 'Z', 'Z_ERR', 'CLASS', 'ZWARNING', 'Kroupa ELODIE   & SDSS & 14 ', 0., "Kroupa_ELODIE_")
+sdss12_sel, sdss12_m, sdss12_w = get_basic_stat_DR14(sdss, 'Z', 'Z_ERR', 'CLASS', 'ZWARNING', 'Kroupa MILES    & SDSS & 14 ', 0., "Kroupa_MILES_")
+sdss12_sel, sdss12_m, sdss12_w = get_basic_stat_DR14(sdss, 'Z', 'Z_ERR', 'CLASS', 'ZWARNING', 'Kroupa STELIB   & SDSS & 14 ', 0., "Kroupa_STELIB_")
+sdss12_sel, sdss12_m, sdss12_w = get_basic_stat_DR14(sdss, 'Z', 'Z_ERR', 'CLASS', 'ZWARNING', 'Salpeter ELODIE & SDSS & 14 ', 0., "Salpeter_ELODIE_")
+sdss12_sel, sdss12_m, sdss12_w = get_basic_stat_DR14(sdss, 'Z', 'Z_ERR', 'CLASS', 'ZWARNING', 'Salpeter MILES  & SDSS & 14 ', 0., "Salpeter_MILES_")
+sdss12_sel, sdss12_m, sdss12_w = get_basic_stat_DR14(sdss, 'Z', 'Z_ERR', 'CLASS', 'ZWARNING', 'Salpeter STELIB & SDSS & 14 ', 0., "Salpeter_STELIB_")
+
 sdss12_sel, sdss12_m, sdss12_w = get_basic_stat_DR12(sdss_12_portSF_kr, 'Z', 'Z_ERR', 'Portsmouth SF Kroupa   & SDSS & 12 ', 0.)
 sdss12_sel, sdss12_m, sdss12_w = get_basic_stat_DR12(sdss_12_portPA_kr, 'Z', 'Z_ERR', 'Portsmouth Passive Kroupa   & SDSS & 12 ', 0.)
 sdss12_sel, sdss12_m, sdss12_w = get_basic_stat_DR12(sdss_12_portSF_sa, 'Z', 'Z_ERR', 'Portsmouth SF Salpeter & SDSS & 12 ', 0.)
+
+
+
+x, y, ye = get_hist(boss14_m[boss14_sel], weights = boss14_w[boss14_sel]/(dlog10m*n.log(10)*area_boss14*volume_per_deg2_val), mbins = mbins)
+p.errorbar(x, y, yerr = ye, label='BOSS14', lw=0.5)
+p.title(str(z_min)+'<z<'+str(z_max))
+p.xlabel(r'$\log_{10}$ (stellar mass '+imf+r" / $M_\odot$ )")
+p.ylabel(r'$\Phi(M)$ [Mpc$^{-3}$ dex$^{-1}$]')
+p.yscale('log')
+p.legend(loc=0, frameon = False)
+p.ylim((1e-8, 1e-2))
+p.xlim((9.5, 12.5))
+p.grid()
+p.savefig(os.path.join(out_dir, "SDSS_SMF_"+imf+"_"+str(z_min)+'_z_'+str(z_max)+".jpg" ))
+p.clf()
 
 sys.exit()
 

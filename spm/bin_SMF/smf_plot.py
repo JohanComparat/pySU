@@ -24,7 +24,7 @@ ff_dir = os.path.join(os.environ['DATA_DIR'], 'spm', 'firefly')
 ll_dir = os.path.join(os.environ['DATA_DIR'], 'spm', 'literature')
 co_dir = os.path.join(os.environ['DATA_DIR'], 'COSMOS' )
 
-out_dir = os.path.join(os.environ['DATA_DIR'], 'spm', 'results')
+out_dir = os.path.join(os.environ['DATA_DIR'], 'spm', 'results', 'mass_function_v1')
 
 path_2_cosmos_cat = os.path.join( co_dir, "photoz_vers2.0_010312.fits")
 path_2_vvdsW_cat = os.path.join( ff_dir, "VVDS_WIDE_summary.v1.spm.fits" )
@@ -71,14 +71,14 @@ area_vvdsW =  5.785
 area_vipers = 24.
 area_cosmos = 1.52
 
-def get_basic_stat(catalog, z_name, z_flg, name, zflg_min, imf='kroupa'):
+def get_basic_stat(catalog, z_name, z_flg, name, zflg_min, prefix):
     catalog_zOk = (catalog[z_name] > z_min) & (catalog[z_flg]>=zflg_min) 
     catalog_stat = (catalog_zOk) & (catalog[z_name] > z_min) & (catalog[z_name] < z_max) & (catalog['SSR']>0) & (catalog['TSR']>0) & (catalog['SSR']<=1.0001) & (catalog['TSR']<=1.0001)
-    catalog_sel = (catalog_stat) & (catalog['stellar_mass_'+imf] < 14. ) & (catalog['stellar_mass_'+imf] > 0 )  & (catalog['stellar_mass_'+imf] > catalog['stellar_mass_err_plus_'+imf] ) & (catalog['stellar_mass_'+imf] > catalog['stellar_mass_err_minus_'+imf] ) & (catalog['stellar_mass_err_minus_'+imf]  + catalog['stellar_mass_err_plus_'+imf] <0.4)
+    catalog_sel = (catalog_stat) & (catalog[prefix+'stellar_mass'] < 10**14. ) & (catalog[prefix+'stellar_mass'] > 10**5. )  & (catalog[prefix+'stellar_mass'] < catalog[prefix+'stellar_mass_up'] ) & (catalog[prefix+'stellar_mass'] > catalog[prefix+'stellar_mass_low'] ) & (-n.log10(catalog[prefix+'stellar_mass_low'])  + n.log10(catalog[prefix+'stellar_mass_up']) < 1.)
     l_o2 = lineSelection(catalog, "O2_3728") & catalog_stat
     l_o3 = lineSelection(catalog, "O3_5007") & catalog_stat
     l_hb = lineSelection(catalog, "H1_4862") & catalog_stat
-    m_catalog = catalog['stellar_mass_'+imf]
+    m_catalog = n.log10(catalog[prefix+'stellar_mass'])
     w_catalog = 1. / (catalog['TSR'] * catalog['SSR'])
     print name, '& $',len(catalog), "$ & $", ld(catalog_zOk),"$ & $", ld(catalog_stat), "\\;(", ld(catalog_sel),")$ & $", ld(l_o2), "\\;(", ld(catalog_sel & l_o2),")$ & $", ld(l_o3), "\\;(", ld(catalog_sel & l_o3),")$ & $", ld(l_hb), "\\;(", ld(catalog_sel & l_hb),")$ \\\\"
     return catalog_sel, m_catalog, w_catalog, l_o2, l_o3, l_hb
@@ -89,11 +89,11 @@ def get_hist(masses, weights, mbins):
     xx = (mbins[1:] + mbins[:-1])/2.
     return xx, NW, NN**(-0.5)*NW
 
-def plotMF_raw(imf='kroupa'):
-    deep2_sel, deep2_m, deep2_w, deep2_o2, deep2_o3, deep2_hb = get_basic_stat(deep2, 'ZBEST', 'ZQUALITY', 'DEEP2', 3., imf=imf)
-    vvdsD_sel, vvdsD_m, vvdsD_w, vvdsD_o2, vvdsD_o3, vvdsD_hb = get_basic_stat(vvdsD, 'Z', 'ZFLAGS', 'VVDS Deep', 2., imf=imf)
-    vvdsW_sel, vvdsW_m, vvdsW_w, vvdsW_o2, vvdsW_o3, vvdsW_hb = get_basic_stat(vvdsW, 'Z', 'ZFLAGS', 'VVDS Wide', 2., imf=imf)
-    vipers_sel, vipers_m, vipers_w, vipers_o2, vipers_o3, vipers_hb = get_basic_stat(vipers, 'zspec', 'zflg', 'VIPERS', 1., imf=imf)
+def plotMF_raw(prefix="Chabrier_ELODIE_"):
+    deep2_sel, deep2_m, deep2_w, deep2_o2, deep2_o3, deep2_hb = get_basic_stat(deep2, 'ZBEST', 'ZQUALITY', 'DEEP2', 3., prefix)
+    #vvdsD_sel, vvdsD_m, vvdsD_w, vvdsD_o2, vvdsD_o3, vvdsD_hb = get_basic_stat(vvdsD, 'Z', 'ZFLAGS', 'VVDS Deep', 2., prefix)
+    #vvdsW_sel, vvdsW_m, vvdsW_w, vvdsW_o2, vvdsW_o3, vvdsW_hb = get_basic_stat(vvdsW, 'Z', 'ZFLAGS', 'VVDS Wide', 2., prefix)
+    #vipers_sel, vipers_m, vipers_w, vipers_o2, vipers_o3, vipers_hb = get_basic_stat(vipers, 'zspec', 'zflg', 'VIPERS', 1., prefix)
 
     lbins = n.arange(40.5,44,0.25)
     x_lum = (lbins[1:] + lbins[:-1])/2.
@@ -116,7 +116,7 @@ def plotMF_raw(imf='kroupa'):
     p.ylim((-0.01, 1.01))
     p.xlim((40.5, 43.5))
     p.grid()
-    p.savefig(os.path.join(out_dir, "line_detection_raw_"+imf+"_"+str(z_min)+'_z_'+str(z_max)+".jpg" ))
+    p.savefig(os.path.join(out_dir, "SMF_"+prefix+"line_detection_raw_"+"_"+str(z_min)+'_z_'+str(z_max)+".jpg" ))
     p.clf()
     
     dlog10m = 0.25
@@ -148,14 +148,14 @@ def plotMF_raw(imf='kroupa'):
     #for smfEq in smfs_ilbert13:
     
     p.title(str(z_min)+'<z<'+str(z_max))
-    p.xlabel(r'$\log_{10}$ (stellar mass '+imf+r" / $M_\odot$ )")
+    p.xlabel(r'$\log_{10}$ (stellar mass '+r" / $M_\odot$ )")
     p.ylabel(r'$\Phi(M)$ [Mpc$^{-3}$ dex$^{-1}$]')
     p.yscale('log')
     p.legend(loc=0, frameon = False)
     p.ylim((1e-8, 1e-2))
     p.xlim((9.5, 12.5))
     p.grid()
-    p.savefig(os.path.join(out_dir, "SMF_raw_"+imf+"_"+str(z_min)+'_z_'+str(z_max)+".jpg" ))
+    p.savefig(os.path.join(out_dir, "SMF_"+prefix+"SMF_"+prefix+"SMF_raw_"+"_"+str(z_min)+'_z_'+str(z_max)+".jpg" ))
     p.clf()
 
     p.figure(2, (8,8))
@@ -167,15 +167,64 @@ def plotMF_raw(imf='kroupa'):
     p.errorbar(x, y/smf08(10**x), yerr = ye/smf08(10**x), label='DEEP2 L([OII])>'+str(lO2_min), lw=1)
     
     p.title(str(z_min)+'<z<'+str(z_max))
-    p.xlabel(r'$\log_{10}$ (stellar mass '+imf+r" / $M_\odot$ )")
+    p.xlabel(r'$\log_{10}$ (stellar mass '+r" / $M_\odot$ )")
     p.ylabel(r'$\Phi_{[OII]} / \Phi_{all}(M)$')
     p.yscale('log')
     p.legend(loc=0, frameon = False)
     p.ylim((1e-4, 2.))
     p.xlim((9.5, 12.5))
     p.grid()
-    p.savefig(os.path.join(out_dir, "ratio_SMF_"+imf+"_"+str(z_min)+'_z_'+str(z_max)+".jpg" ))
+    p.savefig(os.path.join(out_dir, "SMF_"+prefix+"ratio_SMF_"+"_"+str(z_min)+'_z_'+str(z_max)+".jpg" ))
     p.clf()
     
-plotMF_raw(imf='salpeter')
-plotMF_raw(imf='kroupa')
+
+def plotMF_raw_many(prefixs=["Chabrier_ELODIE_"]):
+	dlog10m = 0.25
+	mbins = n.arange(8,12.5,dlog10m)
+
+	p.figure(1, (8,8))
+	p.plot(mbins, smf01(10**mbins), label='Ilbert 13, 0.2<z<0.5', ls='dashed')
+	p.plot(mbins, smf08(10**mbins), label='Ilbert 13, 0.8<z<1.1', ls='dashed')
+	ys_u, yso2_u = [], []
+	ys_l, yso2_l = [], []
+	for prefix in prefixs :
+		deep2_sel, deep2_m, deep2_w, deep2_o2, deep2_o3, deep2_hb = get_basic_stat(deep2, 'ZBEST', 'ZQUALITY', 'DEEP2', 3., prefix)
+    
+		x, y, ye = get_hist(deep2_m[deep2_sel], weights = deep2_w[deep2_sel]/(dlog10m*n.log(10)*area_deep2*volume_per_deg2_val), mbins = mbins)
+		#p.errorbar(x, y, yerr = ye)#, label=prefix[:-1], lw=1)
+		ys_u.append(y+ye)
+		ys_l.append(y-ye)
+		
+		x, y, ye = get_hist(deep2_m[deep2_sel & deep2_o2 & (deep2['O2_3728_luminosity']>10**lO2_min)], weights = deep2_w[deep2_sel & deep2_o2 & (deep2['O2_3728_luminosity']>10**lO2_min)]/(dlog10m*n.log(10)*area_deep2*volume_per_deg2_val), mbins = mbins)
+		#p.errorbar(x, y, yerr = ye)#, label=prefix[:-1]+'[OII]', lw=1)
+		yso2_u.append(y+ye)
+		yso2_l.append(y-ye)
+	
+	print n.array(ys_l).shape, n.min(n.array(ys_l), axis=0).shape
+	p.fill_between(x, y1=n.min(n.array(ys_l), axis=0),   y2=n.max(n.array(ys_u), axis=0), alpha=0.5, label='DEEP2')
+	p.fill_between(x, y1=n.min(n.array(yso2_l), axis=0), y2=n.max(n.array(yso2_u), axis=0), alpha=0.5, label='DEEP2 L([OII])>'+str(lO2_min) )
+	
+	p.title(str(z_min)+'<z<'+str(z_max))
+	p.xlabel(r'$\log_{10}$ (stellar mass '+r" / $M_\odot$ )")
+	p.ylabel(r'$\Phi(M)$ [Mpc$^{-3}$ dex$^{-1}$]')
+	p.yscale('log')
+	p.legend(loc=0, frameon = False)
+	p.ylim((1e-8, 1e-2))
+	p.xlim((9.5, 12.5))
+	p.grid()
+	p.savefig(os.path.join(out_dir, "all_contour_SMF_raw_"+"_"+str(z_min)+'_z_'+str(z_max)+".jpg" ))
+	p.clf()
+
+plotMF_raw_many(["Chabrier_ELODIE_" ,"Chabrier_MILES_","Chabrier_STELIB_" ,"Kroupa_ELODIE_","Kroupa_MILES_", "Kroupa_STELIB_","Salpeter_ELODIE_" ,"Salpeter_MILES_","Salpeter_STELIB_"])
+
+sys.exit()
+
+plotMF_raw("Chabrier_ELODIE_")
+plotMF_raw("Chabrier_MILES_")
+plotMF_raw("Chabrier_STELIB_")
+plotMF_raw("Kroupa_ELODIE_")
+plotMF_raw("Kroupa_MILES_")
+plotMF_raw("Kroupa_STELIB_")
+plotMF_raw("Salpeter_ELODIE_")
+plotMF_raw("Salpeter_MILES_")
+plotMF_raw("Salpeter_STELIB_")
