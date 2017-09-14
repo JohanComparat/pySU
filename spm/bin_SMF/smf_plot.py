@@ -10,6 +10,13 @@ import numpy as n
 import os
 
 import sys
+# global cosmo quantities
+z_min = float(sys.argv[1])
+z_max = float(sys.argv[2])
+#imf = 'kroupa'
+lO2_min = float(sys.argv[3]) # 'salpeter'
+
+SNlimit = 5
 
 
 out_dir = os.path.join(os.environ['OBS_REPO'], 'spm', 'results')
@@ -53,13 +60,6 @@ boss   = fits.open(path_2_eboss_cat)[1].data
 cosmos = fits.open(path_2_cosmos_cat)[1].data
 
 
-# global cosmo quantities
-z_min = float(sys.argv[1])
-z_max = float(sys.argv[2])
-#imf = 'kroupa'
-lO2_min = float(sys.argv[3]) # 'salpeter'
-
-SNlimit = 5
 
 lineSelection = lambda catalog, lineName : (catalog[lineName+'_flux']>0.)& (catalog[lineName+'_fluxErr'] >0.) & (catalog[lineName+'_flux'] > SNlimit * catalog[lineName+'_fluxErr']) # & (catalog[lineName+'_luminosity']>0)& (catalog[lineName+'_luminosity']<1e50)
 
@@ -230,8 +230,10 @@ def plotMF_raw_many(prefixs=["Chabrier_ELODIE_"]):
 		yso2_l.append(y-ye)
 	
 	print n.array(ys_l).shape, n.min(n.array(ys_l), axis=0).shape
-	p.fill_between(x, y1=n.min(n.array(ys_l), axis=0),   y2=n.max(n.array(ys_u), axis=0), alpha=0.5, label='DEEP2')
-	p.fill_between(x, y1=n.min(n.array(yso2_l), axis=0), y2=n.max(n.array(yso2_u), axis=0), alpha=0.5, label='DEEP2 L([OII])>'+str(lO2_min) )
+	p.fill_between(x, y1=n.min(n.array(ys_l), axis=0),   y2=n.max(n.array(ys_u), axis=0), alpha=0.5, color='r')
+	p.plot(x, (n.min(n.array(ys_l), axis=0) + n.max(n.array(ys_u), axis=0))/2., alpha=0.5, color='r', label='DEEP2')
+	p.fill_between(x, y1=n.min(n.array(yso2_l), axis=0), y2=n.max(n.array(yso2_u), axis=0), alpha=0.5, color='b')
+	p.plot(x, (n.min(n.array(yso2_l), axis=0)+n.max(n.array(yso2_u), axis=0))/2., color='b', label='DEEP2 L([OII])>'+str(lO2_min) )
 	
 	p.title(str(z_min)+'<z<'+str(z_max))
 	p.xlabel(r'$\log_{10}$ (stellar mass '+r" / $M_\odot$ )")
