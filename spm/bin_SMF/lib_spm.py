@@ -61,14 +61,14 @@ sdss   = fits.open(path_2_sdss_cat)[1].data
 boss   = fits.open(path_2_eboss_cat)[1].data
 cosmos = fits.open(path_2_cosmos_cat)[1].data
 
-sdss_12_portSF_kr   = fits.open(path_2_pS_kroupa_cat)[1].data
-boss_12_portSF_kr   = fits.open(path_2_pB_kroupa_cat)[1].data
-sdss_12_portPA_kr   = fits.open(path_2_ppS_kroupa_cat)[1].data
-boss_12_portPA_kr   = fits.open(path_2_ppB_kroupa_cat)[1].data
-sdss_12_portSF_sa   = fits.open(path_2_pS_salpeter_cat)[1].data
-boss_12_portSF_sa   = fits.open(path_2_pB_salpeter_cat)[1].data
-sdss_12_portPA_sa   = fits.open(path_2_ppS_salpeter_cat)[1].data
-boss_12_portPA_sa   = fits.open(path_2_ppB_salpeter_cat)[1].data
+#sdss_12_portSF_kr   = fits.open(path_2_pS_kroupa_cat)[1].data
+#boss_12_portSF_kr   = fits.open(path_2_pB_kroupa_cat)[1].data
+#sdss_12_portPA_kr   = fits.open(path_2_ppS_kroupa_cat)[1].data
+#boss_12_portPA_kr   = fits.open(path_2_ppB_kroupa_cat)[1].data
+#sdss_12_portSF_sa   = fits.open(path_2_pS_salpeter_cat)[1].data
+#boss_12_portSF_sa   = fits.open(path_2_pB_salpeter_cat)[1].data
+#sdss_12_portPA_sa   = fits.open(path_2_ppS_salpeter_cat)[1].data
+#boss_12_portPA_sa   = fits.open(path_2_ppB_salpeter_cat)[1].data
 
 #RA, DEC, z, weigth, O2flux, M_star, gr_color, Mr_5logh, O2luminosity = n.loadtxt(path_2_F16_cat, unpack=True)
 

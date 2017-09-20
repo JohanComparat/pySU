@@ -1,3 +1,7 @@
+"""
+Plots stellar mass error and stellar mass vs. mass and redshift
+
+"""
 import sys
 import os
 import numpy as n
@@ -8,47 +12,34 @@ matplotlib.rcParams.update({'font.size': 13})
 #matplotlib.use('Agg')
 import matplotlib.pyplot as p
 from cycler import cycler
+from lib_spm import *
 
+out_dir = os.path.join(os.environ['OBS_REPO'], 'spm', 'results')
 
-# ADD FILTER ON CHI2/NDOF
-
-"""
-Plots stellar mass error and stellar mass vs. mass and redshift
-"""
+imfs = ["Chabrier_ELODIE_", "Chabrier_MILES_", "Chabrier_STELIB_", "Kroupa_ELODIE_", "Kroupa_MILES_", "Kroupa_STELIB_",  "Salpeter_ELODIE_", "Salpeter_MILES_", "Salpeter_STELIB_" ]
 
 z_bins = n.arange(0, 4.1, 0.1)
 m_bins = n.arange(0,14,0.5)
 sn_bins = n.array([0, 0.5, 1, 2, 10, 100]) # n.logspace(-1.,2,6)
-
 err_bins = n.hstack(( n.arange(0., 1., 0.15), n.arange(1., 5., 0.3), n.array([5., 10., 10000.]) )) 
 x_err_bins = (err_bins[1:] + err_bins[:-1])/2.
 
-#n.hstack(( n.array([-10000., -10., -5.]), n.arange(-2.5, 2.5, 0.1), n.array([5., 10., 10000.]) )) 
-
-#prefix = 'SDSS'
-#hdus = fits.open(os.path.join(os.environ['DATA_DIR'], 'spm', 'firefly', 'FireflyGalaxySdss26.fits'))
-#redshift_reliable = (hdus[1].data['Z'] >= 0) & ( hdus[1].data['Z_ERR'] >= 0) & (hdus[1].data['ZWARNING'] == 0) & (hdus[1].data['Z'] > hdus[1].data['Z_ERR'] )
-
 prefix = 'BOSS'
-imf = 'Chabrier'
-out_dir = os.path.join(os.environ['DATA_DIR'], 'spm', 'results', 'catalogs', imf)
+imf = imfs[0] #'Chabrier'
+stellar_mass = imf+'stellar_mass'
 
-hdus = fits.open(os.path.join(os.environ['DATA_DIR'], 'spm', 'firefly', 'FireflyGalaxyEbossDR14.fits'))
+redshift_reliable =  (boss['CLASS_NOQSO'] == "GALAXY") & (boss['Z_NOQSO'] >= 0) & ( boss['Z_ERR_NOQSO'] >= 0) & (boss['ZWARNING_NOQSO'] == 0) & (boss['Z_NOQSO'] > boss['Z_ERR_NOQSO'] ) # (boss['SN_MEDIAN_ALL'] > 0.1 ) & 
 
-redshift_reliable =  (hdus[1].data['CLASS_NOQSO'] == "GALAXY") & (hdus[1].data['Z_NOQSO'] >= 0) & ( hdus[1].data['Z_ERR_NOQSO'] >= 0) & (hdus[1].data['ZWARNING_NOQSO'] == 0) & (hdus[1].data['Z_NOQSO'] > hdus[1].data['Z_ERR_NOQSO'] ) # (hdus[1].data['SN_MEDIAN_ALL'] > 0.1 ) & 
+error_reliable = (boss[stellar_mass+'_up'] > boss[stellar_mass+'_low'] ) & (boss[stellar_mass+'_up'] > 0. ) & ( boss[stellar_mass+'_low'] > 0. ) & (boss[stellar_mass+'_up'] < 10. ) & ( boss[stellar_mass+'_low'] < 10. ) 
 
-stellar_mass = imf+'_stellar_mass'
-
-error_reliable = (hdus[1].data['Chabrier_stellar_mass_err_plus'] > hdus[1].data['Chabrier_stellar_mass_err_minus'] ) & (hdus[1].data['Chabrier_stellar_mass_err_plus'] > 0. ) & ( hdus[1].data['Chabrier_stellar_mass_err_minus'] > 0. ) & (hdus[1].data['Chabrier_stellar_mass_err_plus'] < 10. ) & ( hdus[1].data['Chabrier_stellar_mass_err_minus'] < 10. ) 
-
-mass_reliable = (hdus[1].data[stellar_mass] > 0 ) & ( hdus[1].data[stellar_mass] < 14. ) # & ( abs(hdus[1].data[stellar_mass + '_err_plus'] - hdus[1].data[stellar_mass]) < 0.4 ) & ( abs(hdus[1].data[stellar_mass + '_err_minus'] - hdus[1].data[stellar_mass]) < 0.4 )
+mass_reliable = (boss[stellar_mass] > 0 ) & ( boss[stellar_mass] < 14. ) # & ( abs(boss[stellar_mass + '_up'] - boss[stellar_mass]) < 0.4 ) & ( abs(boss[stellar_mass + '_low'] - boss[stellar_mass]) < 0.4 )
 
 ok = (error_reliable) & (mass_reliable) & (redshift_reliable)
 
-snr = hdus[1].data['SN_MEDIAN_ALL'][ok]
-zz = hdus[1].data['Z_NOQSO'][ok]
-Ms = hdus[1].data[stellar_mass][ok]
-err_moyenne = abs((hdus[1].data[stellar_mass + '_err_plus'][ok] - hdus[1].data[stellar_mass + '_err_minus'][ok])/2.)
+snr = boss['SN_MEDIAN_ALL'][ok]
+zz = boss['Z_NOQSO'][ok]
+Ms = boss[stellar_mass][ok]
+err_moyenne = abs((boss[stellar_mass + '_up'][ok] - boss[stellar_mass + '_low'][ok])/2.)
 
 def plot_errPDF(degree):
 	p.figure(1, (4.5, 4.5))
@@ -84,7 +75,7 @@ def plot_errPDF(degree):
 #plot_errPDF(2)
 #plot_errPDF(3)
 plot_errPDF(4)
-#plot_errPDF(5)
+plot_errPDF(5)
 sys.exit()
 
 
@@ -93,21 +84,21 @@ def plot_all_prognames(hdus=hdus, imf=imf, prefix=prefix, out_dir = out_dir, red
 	stellar_mass = imf+'_stellar_mass'
 	out_dir = os.path.join(os.environ['DATA_DIR'], 'spm', 'results', 'catalogs', imf)
 
-	mass_reliable = (hdus[1].data[stellar_mass] > 0 ) & ( hdus[1].data[stellar_mass] < 13. ) & ( abs(hdus[1].data[stellar_mass + '_err_plus'] - hdus[1].data[stellar_mass]) < 0.4 ) & ( abs(hdus[1].data[stellar_mass + '_err_minus'] - hdus[1].data[stellar_mass]) < 0.4 )
+	mass_reliable = (boss[stellar_mass] > 0 ) & ( boss[stellar_mass] < 13. ) & ( abs(boss[stellar_mass + '_up'] - boss[stellar_mass]) < 0.4 ) & ( abs(boss[stellar_mass + '_low'] - boss[stellar_mass]) < 0.4 )
 
-	#good_plates = (hdus[1].data['PLATEQUALITY']=='good') &(hdus[1].data['TARGETTYPE']=='science')
+	#good_plates = (boss['PLATEQUALITY']=='good') &(boss['TARGETTYPE']=='science')
 
-	all_names = set(hdus[1].data['PROGRAMNAME'])
+	all_names = set(boss['PROGRAMNAME'])
 	all_names_arr = n.array(list(all_names))
 
 	for ii in range(len(all_names_arr)):
-		selection = (mass_reliable) & (redshift_reliable) & (hdus[1].data['PROGRAMNAME']==all_names_arr[ii])
+		selection = (mass_reliable) & (redshift_reliable) & (boss['PROGRAMNAME']==all_names_arr[ii])
 		N_occ = len(selection.nonzero()[0])
 		print all_names_arr[ii], N_occ
 		if N_occ>1:
 			p.figure(1, (4.5, 4.5))
 			p.axes([0.2,0.2,0.7,0.7])
-			p.plot(n.log10(1.+hdus[1].data['Z'][selection]), hdus[1].data[stellar_mass][selection], 'k+', rasterized=True, alpha=0.5) #, label=all_names_arr[ii]
+			p.plot(n.log10(1.+boss['Z'][selection]), boss[stellar_mass][selection], 'k+', rasterized=True, alpha=0.5) #, label=all_names_arr[ii]
 			p.ylabel(r'$\log_{10}$ (stellar mass '+imf+r" / $M_\odot$ )")
 			p.axvline(n.log10(3.), ls='dashed', label='z=0.1, 0.5, 1, 2')
 			p.axvline(n.log10(2.), ls='dashed')#, label='z=1')
@@ -126,8 +117,8 @@ def plot_all_prognames(hdus=hdus, imf=imf, prefix=prefix, out_dir = out_dir, red
 			p.figure(2, (4.5, 4.5))
 			p.axes([0.2,0.2,0.7,0.7])
 			#p.subplot(111, projection="mollweide")
-			#p.plot((hdus[1].data['PLUG_RA'][selection]-180.)*n.pi/180., hdus[1].data['PLUG_DEC'][selection]*n.pi/180., 'k+', rasterized=True) # , label=all_names_arr[ii]
-			p.plot(hdus[1].data['PLUG_RA'][selection], hdus[1].data['PLUG_DEC'][selection], 'k+', rasterized=True) # , label=all_names_arr[ii]
+			#p.plot((boss['PLUG_RA'][selection]-180.)*n.pi/180., boss['PLUG_DEC'][selection]*n.pi/180., 'k+', rasterized=True) # , label=all_names_arr[ii]
+			p.plot(boss['PLUG_RA'][selection], boss['PLUG_DEC'][selection], 'k+', rasterized=True) # , label=all_names_arr[ii]
 			p.title(all_names_arr[ii])#+', Ngal='+str(N_occ))
 			p.xlim((0.0, 360.))
 			p.ylim((-20., 85.))
@@ -149,8 +140,7 @@ imf = 'Kroupa'
 plot_all_prognames(hdus=hdus, imf=imf, prefix=prefix, redshift_reliable=redshift_reliable )
 """
 prefix = 'SDSS'
-hdus = fits.open(os.path.join(os.environ['DATA_DIR'], 'spm', 'firefly', 'FireflyGalaxySdss26.fits'))
-redshift_reliable = (hdus[1].data['SN_MEDIAN_ALL'] > 0.1 ) & (hdus[1].data['CLASS'] == "GALAXY") & (hdus[1].data['Z'] >= 0) & ( hdus[1].data['Z_ERR'] >= 0) & (hdus[1].data['ZWARNING'] == 0) & (hdus[1].data['Z'] > hdus[1].data['Z_ERR'] )
+redshift_reliable = (sdss['SN_MEDIAN_ALL'] > 0.1 ) & (sdss['CLASS'] == "GALAXY") & (sdss['Z'] >= 0) & ( sdss['Z_ERR'] >= 0) & (sdss['ZWARNING'] == 0) & (sdss['Z'] > sdss['Z_ERR'] )
 
 imf = 'Chabrier'
 plot_all_prognames(hdus=hdus, imf=imf, prefix=prefix, redshift_reliable=redshift_reliable )
