@@ -48,6 +48,18 @@ def get_err_distribution(boss, sdss, prefix = 'ALL', imf = imfs[0]):
 	zz = n.hstack(( boss['Z_NOQSO'][ok_boss], sdss['Z_NOQSO'][ok_sdss]))
 	Ms = n.hstack(( n.log10(boss[stellar_mass][ok_boss]), n.log10(sdss[stellar_mass][ok_sdss]) ))
 	err_moyenne = n.hstack(( abs((n.log10(boss[stellar_mass + '_up'][ok_boss]) - n.log10(boss[stellar_mass + '_low'][ok_boss]))/2.), abs((n.log10(sdss[stellar_mass + '_up'][ok_sdss]) - n.log10(sdss[stellar_mass + '_low'][ok_sdss]))/2.) ))
+	for ii, sn in enumerate(sn_bins[:-1]):
+		out, xxx = n.histogram(err_moyenne[(snr>sn_bins[ii])&(snr<sn_bins[ii+1])], bins = err_bins, normed=True)
+		outN = n.histogram(err_moyenne[(snr>sn_bins[ii])&(snr<sn_bins[ii+1])], bins = err_bins)[0]
+		N100 = (outN>1)
+
+	return snr, zz, Ms, err_moyenne, x_err_bins, out, (xxx[1:]-xxx[:-1])/2., out*outN**(-0.5)
+
+
+for imf in imfs:
+	snr, zz, Ms, err_moyenne, X, Y, XERR, YERR = get_err_distribution(boss, sdss, prefix = 'ALL_'+imf, imf = imf)
+
+sys.exit()
 
 	def plot_errPDF(degree):
 		p.figure(1, (4.5, 4.5))
@@ -59,8 +71,8 @@ def get_err_distribution(boss, sdss, prefix = 'ALL', imf = imfs[0]):
 			outN = n.histogram(err_moyenne[(snr>sn_bins[ii])&(snr<sn_bins[ii+1])], bins = err_bins)[0]
 			N100 = (outN>1)
 			print x_err_bins[N100], out[N100], (xxx[1:][N100]-xxx[:-1][N100])/2., out[N100]*outN[N100]**(-0.5)
-			eb = p.errorbar(x_err_bins[N100], out[N100], xerr=(xxx[1:][N100]-xxx[:-1][N100])/2., yerr = out[N100]*outN[N100]**(-0.5), label=str(sn)+"-"+str(sn_bins[ii+1]), fmt='+', color=c['color'])
-			
+			#eb = p.errorbar(x_err_bins[N100], out[N100], xerr=(xxx[1:][N100]-xxx[:-1][N100])/2., yerr = out[N100]*outN[N100]**(-0.5), label=str(sn)+"-"+str(sn_bins[ii+1]), fmt='+', color=c['color'])
+			p.fill_between(x_err_bins[N100], y1 = out[N100]-out[N100]*outN[N100]**(-0.5), y2 = out[N100]+out[N100]*outN[N100]**(-0.5), color=c['color'] ) 
 			#if len(out[N100])>3:
 				#print sn, "-", sn_bins[ii+1], " & " ,
 				#outP = n.polyfit(x_err_bins[N100], n.log10(out[N100]), deg=degree, w = 1/( outN[N100]**(-0.5)) )
@@ -79,20 +91,6 @@ def get_err_distribution(boss, sdss, prefix = 'ALL', imf = imfs[0]):
 		p.xlabel(r'$\sigma M$ ('+imf+')')
 		p.savefig(os.path.join(out_dir, prefix+"_pdf_DELTA_logM_SNR_"+imf+"_"+str(degree)+"_"+".jpg" ))
 		p.clf()
-
-
-	plot_errPDF(1)
-	#plot_errPDF(2)
-	#plot_errPDF(3)
-	#plot_errPDF(4)
-	#plot_errPDF(5)
-	return snr, zz, Ms, err_moyenne
-
-
-for imf in imfs:
-	snr, zz, Ms, err_moyenne = get_err_distribution(boss, sdss, prefix = 'ALL_'+imf, imf = imf)
-
-sys.exit()
 
 
 
