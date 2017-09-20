@@ -24,58 +24,74 @@ sn_bins = n.array([0, 0.5, 1, 2, 10, 100]) # n.logspace(-1.,2,6)
 err_bins = n.hstack(( n.arange(0., 1., 0.15), n.arange(1., 5., 0.3), n.array([5., 10., 10000.]) )) 
 x_err_bins = (err_bins[1:] + err_bins[:-1])/2.
 
-prefix = 'BOSS'
-imf = imfs[0] #'Chabrier'
-stellar_mass = imf+'stellar_mass'
+def get_err_distribution(boss, sdss, prefix = 'ALL', imf = imfs[0]):
+	"""
+	:param boss: data table
+	:param prefix: boss of sdss to be written at the beginning of the file
+	:param imf: specifies the prefix to get the stellar mass in the table, to be taken from the imfs array above
+	"""
+	stellar_mass = imf+'stellar_mass'
+	
+	redshift_reliable_boss =  (boss['CLASS_NOQSO'] == "GALAXY") & ( boss['Z_ERR_NOQSO'] > 0) & (boss['ZWARNING_NOQSO'] == 0) & (boss['Z_NOQSO'] > boss['Z_ERR_NOQSO'] ) # (boss['SN_MEDIAN_ALL'] > 0.1 ) & 
+	redshift_reliable_sdss =  (sdss['CLASS'] == "GALAXY")       & ( sdss['Z_ERR'] > 0)       & (sdss['ZWARNING'] == 0)       & (sdss['Z'] > sdss['Z_ERR'] ) # (sdss['SN_MEDIAN_ALL'] > 0.1 ) &
 
-redshift_reliable =  (boss['CLASS_NOQSO'] == "GALAXY") & (boss['Z_NOQSO'] >= 0) & ( boss['Z_ERR_NOQSO'] >= 0) & (boss['ZWARNING_NOQSO'] == 0) & (boss['Z_NOQSO'] > boss['Z_ERR_NOQSO'] ) # (boss['SN_MEDIAN_ALL'] > 0.1 ) & 
+	error_reliable_boss = (boss[stellar_mass+'_up'] > boss[stellar_mass+'_low'] ) & (boss[stellar_mass+'_up'] > 0. ) & ( boss[stellar_mass+'_low'] > 0. ) & (boss[stellar_mass+'_up'] < 1e14 ) & ( boss[stellar_mass+'_low'] < 1e14 ) 
+	error_reliable_sdss = (sdss[stellar_mass+'_up'] > sdss[stellar_mass+'_low'] ) & (sdss[stellar_mass+'_up'] > 0. ) & ( sdss[stellar_mass+'_low'] > 0. ) & (sdss[stellar_mass+'_up'] < 1e14 ) & ( sdss[stellar_mass+'_low'] < 1e14 ) 
 
-error_reliable = (boss[stellar_mass+'_up'] > boss[stellar_mass+'_low'] ) & (boss[stellar_mass+'_up'] > 0. ) & ( boss[stellar_mass+'_low'] > 0. ) & (boss[stellar_mass+'_up'] < 10. ) & ( boss[stellar_mass+'_low'] < 10. ) 
+	mass_reliable_boss = (boss[stellar_mass] > 1e6 ) & ( boss[stellar_mass] < 1e14 ) 
+	mass_reliable_sdss = (sdss[stellar_mass] > 1e6 ) & ( sdss[stellar_mass] < 1e14 )
+	
+	ok_boss = (error_reliable_boss) & (mass_reliable_boss) & (redshift_reliable_boss)
+	ok_sdss = (error_reliable_sdss) & (mass_reliable_sdss) & (redshift_reliable_sdss)
 
-mass_reliable = (boss[stellar_mass] > 0 ) & ( boss[stellar_mass] < 14. ) # & ( abs(boss[stellar_mass + '_up'] - boss[stellar_mass]) < 0.4 ) & ( abs(boss[stellar_mass + '_low'] - boss[stellar_mass]) < 0.4 )
+	snr = n.hstack(( boss['SN_MEDIAN_ALL'][ok_boss], sdss['SN_MEDIAN_ALL'][ok_sdss] ))
+	zz = n.hstack(( boss['Z_NOQSO'][ok_boss], sdss['Z_NOQSO'][ok_sdss]))
+	Ms = n.hstack(( n.log10(boss[stellar_mass][ok_boss]), n.log10(sdss[stellar_mass][ok_sdss]) ))
+	err_moyenne = n.hstack(( abs((n.log10(boss[stellar_mass + '_up'][ok_boss]) - n.log10(boss[stellar_mass + '_low'][ok_boss]))/2.), abs((n.log10(sdss[stellar_mass + '_up'][ok_sdss]) - n.log10(sdss[stellar_mass + '_low'][ok_sdss]))/2.) ))
 
-ok = (error_reliable) & (mass_reliable) & (redshift_reliable)
-
-snr = boss['SN_MEDIAN_ALL'][ok]
-zz = boss['Z_NOQSO'][ok]
-Ms = boss[stellar_mass][ok]
-err_moyenne = abs((boss[stellar_mass + '_up'][ok] - boss[stellar_mass + '_low'][ok])/2.)
-
-def plot_errPDF(degree):
-	p.figure(1, (4.5, 4.5))
-	p.axes([0.2,0.2,0.7,0.7])
-	cc=cycler('color', ['r', 'g', 'b', 'm', 'k'])
-	print "DEGREE", degree
-	for ii, (sn, c) in enumerate(zip(sn_bins[:-1],cc)):
-		out, xxx = n.histogram(err_moyenne[(snr>sn_bins[ii])&(snr<sn_bins[ii+1])], bins = err_bins, normed=True)
-		outN = n.histogram(err_moyenne[(snr>sn_bins[ii])&(snr<sn_bins[ii+1])], bins = err_bins)[0]
-		N100 = (outN>10)
-		if len(out[N100])>2:
-			print sn, "-", sn_bins[ii+1], " & " ,
+	def plot_errPDF(degree):
+		p.figure(1, (4.5, 4.5))
+		p.axes([0.2,0.2,0.7,0.7])
+		cc=cycler('color', ['r', 'g', 'b', 'm', 'k'])
+		print "DEGREE", degree
+		for ii, (sn, c) in enumerate(zip(sn_bins[:-1],cc)):
+			out, xxx = n.histogram(err_moyenne[(snr>sn_bins[ii])&(snr<sn_bins[ii+1])], bins = err_bins, normed=True)
+			outN = n.histogram(err_moyenne[(snr>sn_bins[ii])&(snr<sn_bins[ii+1])], bins = err_bins)[0]
+			N100 = (outN>1)
+			print x_err_bins[N100], out[N100], (xxx[1:][N100]-xxx[:-1][N100])/2., out[N100]*outN[N100]**(-0.5)
 			eb = p.errorbar(x_err_bins[N100], out[N100], xerr=(xxx[1:][N100]-xxx[:-1][N100])/2., yerr = out[N100]*outN[N100]**(-0.5), label=str(sn)+"-"+str(sn_bins[ii+1]), fmt='+', color=c['color'])
 			
-			outP = n.polyfit(x_err_bins[N100], n.log10(out[N100]), deg=degree, w = 1/( outN[N100]**(-0.5)) )
-			x_poly =n.arange(0,3,0.05)
-			p.plot(x_poly, 10**n.polyval(outP, x_poly), c=c['color'], ls='dashed', lw=0.5)
-			print n.round(outP,3) , " \\\\"
+			#if len(out[N100])>3:
+				#print sn, "-", sn_bins[ii+1], " & " ,
+				#outP = n.polyfit(x_err_bins[N100], n.log10(out[N100]), deg=degree, w = 1/( outN[N100]**(-0.5)) )
+				#x_poly =n.arange(0,3,0.05)
+				#p.plot(x_poly, 10**n.polyval(outP, x_poly), c=c['color'], ls='dashed', lw=0.5)
+				#print n.round(outP,3) , " \\\\"
+				##print x_err_bins[N100], out[N100]
 
-	p.legend(loc=0, frameon=False)
-	p.yscale('log')
-	p.ylabel('pdf')
-	p.xlim((-0.01, 1.5))
-	p.ylim((1e-3, 10.))
-	p.title("degree="+str(degree))
-	p.grid()
-	p.xlabel(r'$\Delta \log M$ ('+imf+')')
-	p.savefig(os.path.join(out_dir, "pdf_DELTA_logM_SNR_"+imf+"_"+str(degree)+"_"+".jpg" ))
-	p.clf()
+		p.legend(loc=0, frameon=False)
+		#p.yscale('log')
+		p.ylabel('Normed distribution')
+		p.xlim((-0.01, 1.5))
+		#p.ylim((1e-3, 10.))
+		p.title("degree="+str(degree))
+		p.grid()
+		p.xlabel(r'$\sigma M$ ('+imf+')')
+		p.savefig(os.path.join(out_dir, prefix+"_pdf_DELTA_logM_SNR_"+imf+"_"+str(degree)+"_"+".jpg" ))
+		p.clf()
 
 
-#plot_errPDF(1)
-#plot_errPDF(2)
-#plot_errPDF(3)
-plot_errPDF(4)
-plot_errPDF(5)
+	plot_errPDF(1)
+	#plot_errPDF(2)
+	#plot_errPDF(3)
+	#plot_errPDF(4)
+	#plot_errPDF(5)
+	return snr, zz, Ms, err_moyenne
+
+
+for imf in imfs:
+	snr, zz, Ms, err_moyenne = get_err_distribution(boss, sdss, prefix = 'ALL_'+imf, imf = imf)
+
 sys.exit()
 
 

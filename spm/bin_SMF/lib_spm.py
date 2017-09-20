@@ -36,8 +36,8 @@ path_2_cosmos_cat = os.path.join( cosmos_dir, "COSMOS2015_Laigle+_v1.1.fits.gz")
 sdss_dir = os.path.join(os.environ['OBS_REPO'], 'SDSS', 'dr14')
 path_2_spall_sdss_dr14_cat = os.path.join( sdss_dir, "specObj-SDSS-dr14.fits" )
 path_2_spall_boss_dr14_cat = os.path.join( sdss_dir, "specObj-BOSS-dr14.fits" )
-path_2_sdss_cat = os.path.join( sdss_dir, "FireflyGalaxySdss26.fits" )
-path_2_eboss_cat = os.path.join( sdss_dir, "FireflyGalaxyEbossDR14.fits" )
+path_2_sdss_cat = os.path.join( sdss_dir, 'firefly', "FireflyGalaxySdss26.fits" )
+path_2_eboss_cat = os.path.join( sdss_dir, 'firefly', "FireflyGalaxyEbossDR14.fits" )
 
 # DEEP SURVEYS
 deep2_dir = os.path.join(os.environ['OBS_REPO'], 'DEEP2')
