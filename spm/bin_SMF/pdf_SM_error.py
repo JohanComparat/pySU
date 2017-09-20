@@ -15,7 +15,7 @@ from cycler import cycler
 from lib_spm import *
 import cPickle
 
-out_dir = os.path.join(os.environ['OBS_REPO'], 'spm', 'results')
+out_dir = os.path.join(os.environ['OBS_REPO'], 'spm', 'results', 'convergence')
 
 imfs = ["Chabrier_ELODIE_", "Chabrier_MILES_", "Chabrier_STELIB_", "Kroupa_ELODIE_", "Kroupa_MILES_", "Kroupa_STELIB_",  "Salpeter_ELODIE_", "Salpeter_MILES_", "Salpeter_STELIB_" ]
 
@@ -26,10 +26,9 @@ err_bins = n.hstack(( n.arange(0., 1., 0.15), n.arange(1., 5., 0.3), n.array([5.
 x_err_bins = (err_bins[1:] + err_bins[:-1])/2.
 x_err_width = (err_bins[1:] - err_bins[:-1])/2.
 
-def get_err_distribution(boss, sdss, prefix = 'ALL', imf = imfs[0]):
+def get_err_distribution(boss, sdss, imf = imfs[0]):
 	"""
 	:param boss: data table
-	:param prefix: boss of sdss to be written at the beginning of the file
 	:param imf: specifies the prefix to get the stellar mass in the table, to be taken from the imfs array above
 	"""
 	stellar_mass = imf+'stellar_mass'
@@ -62,49 +61,72 @@ def get_err_distribution(boss, sdss, prefix = 'ALL', imf = imfs[0]):
 
 
 for imf in imfs:
-	DATA = get_err_distribution(boss, sdss, prefix = 'ALL_'+imf, imf = imf)
-	f=open(os.path.join(out_dir, prefix+"_pdf_DELTA_logM_SNR.pkl" ), 'w')
-	cPickle.dump(f, DATA)
+	DATA = get_err_distribution(boss, sdss, imf = imf)
+	f=open(os.path.join(out_dir, imf+"_pdf_DELTA_logM_SNR.pkl" ), 'w')
+	cPickle.dump(DATA, f)
 	f.close()
 	# snr, zz, Ms, err_moyenne, sn_bins, x_err_bins, x_err_width, out_s, outN_s = DATA
 	
+
+for imf in imfs:
+  f=open(os.path.join(out_dir, imf+"_pdf_DELTA_logM_SNR.pkl" ), 'r')
+  snr, zz, Ms, err_moyenne, sn_bins, x_err_bins, x_err_width, out_s, outN_s = cPickle.load(f)
+  f.close()
+  p.figure(1, (4.5, 4.5))
+  p.axes([0.2,0.2,0.7,0.7])
+  cc=cycler('color', ['r', 'g', 'b', 'm', 'k'])
+  for ii, (sn, c, out, outN) in enumerate(zip(sn_bins[:-1],cc, out_s, outN_s)):
+    y=1.*n.array([n.sum(outN[:jj+1]) for jj in range(len(outN)-1)])/n.sum(outN)
+    p.plot(x_err_bins[:-1], y, color=c['color'], ls='dashed')
+    p.errorbar(x_err_bins[:-1], y, xerr=x_err_width[:-1], yerr=y*(y*outN[:1])**(-0.5), label=str(sn)+"-"+str(sn_bins[ii+1]), fmt='+', color=c['color'])
+    
+  p.legend(loc=0, frameon=False)
+  p.ylabel('Cumulative normed distribution')
+  p.xlim((-0.01, 1.5))
+  p.ylim((-0.01, 1.01))
+  p.grid()
+  p.xlabel(r'$\sigma_{logM}$')
+  p.savefig(os.path.join(out_dir, imf+"_pdf_DELTA_logM_SNR_cumulative.jpg" ))
+  p.clf()
+
+
+for degree in n.arange(1,5,1):
+  for imf in imfs:
+    f=open(os.path.join(out_dir, imf+"_pdf_DELTA_logM_SNR.pkl" ), 'r')
+    snr, zz, Ms, err_moyenne, sn_bins, x_err_bins, x_err_width, out_s, outN_s = cPickle.load(f)
+    f.close()
+
+    p.figure(1, (4.5, 4.5))
+    p.axes([0.2,0.2,0.7,0.7])
+    cc=cycler('color', ['r', 'g', 'b', 'm', 'k'])
+    print "DEGREE", degree
+    for ii, (sn, c, out, outN) in enumerate(zip(sn_bins[:-1],cc, out_s, outN_s)):
+      N100 = (outN>10)
+      #print x_err_bins[N100], out[N100], x_err_width, out[N100]*outN[N100]**(-0.5)
+      #p.plot(x_err_bins[N100], out[N100], marker='+', color=c['color'], label=str(sn_bins[ii])+"<SN<"+str(sn_bins[ii+1]))
+      eb = p.errorbar(x_err_bins[N100], out[N100], xerr=x_err_width[N100], yerr = out[N100]*outN[N100]**(-0.5), label=str(sn)+"-"+str(sn_bins[ii+1]), fmt='+', color=c['color'])
+      #p.fill_between(x_err_bins[N100], y1 = out[N100]-out[N100]*outN[N100]**(-0.5), y2 = out[N100]+out[N100]*outN[N100]**(-0.5), color=c['color'] ) 
+      if len(out[N100])>3:
+	print sn, "-", sn_bins[ii+1], " & " ,
+	outP = n.polyfit(x_err_bins[N100], n.log10(out[N100]), deg=degree, w = 1/( outN[N100]**(-0.5)) )
+	x_poly =n.arange(0.01,1.5,0.05)
+	p.plot(x_poly, 10**n.polyval(outP, x_poly), c=c['color'], ls='dashed', lw=0.5)
+	print n.round(outP,3) , " \\\\"
+	#print x_err_bins[N100], out[N100]
+
+    p.legend(loc=0, frameon=False, fontsize=12)
+    p.yscale('log')
+    p.ylabel('Normed distribution')
+    p.xlim((-0.01, 1.5))
+    p.ylim((1e-3, 10.))
+    #p.title(imf+"degree="+str(degree))
+    p.grid()
+    p.xlabel(r'$\sigma_{logM}$')
+    p.savefig(os.path.join(out_dir, imf+str(degree)+"_pdf_DELTA_logM_SNR.jpg" ))
+    p.clf()
+
+
 sys.exit()
-
-prefix = 'ALL_'+imfs[0]
-f=open(os.path.join(out_dir, prefix+"_pdf_DELTA_logM_SNR.pkl" ), 'r')
-snr, zz, Ms, err_moyenne, sn_bins, x_err_bins, x_err_width, out_s, outN_s = cPickle.load(f)
-f.close()
-	
-p.figure(1, (4.5, 4.5))
-p.axes([0.2,0.2,0.7,0.7])
-cc=cycler('color', ['r', 'g', 'b', 'm', 'k'])
-print "DEGREE", degree
-for ii, (sn, c, out, outN) in enumerate(zip(sn_bins[:-1],cc, out_s, outN_s)):
-	N100 = (outN>10)
-	print x_err_bins[N100], out[N100], x_err_width, out[N100]*outN[N100]**(-0.5)
-	p.plot(x_err_bins[N100], out[N100], color=c['color'])
-	#eb = p.errorbar(x_err_bins[N100], out[N100], xerr=x_err_width[N100], yerr = out[N100]*outN[N100]**(-0.5), label=str(sn)+"-"+str(sn_bins[ii+1]), fmt='+', color=c['color'])
-	#p.fill_between(x_err_bins[N100], y1 = out[N100]-out[N100]*outN[N100]**(-0.5), y2 = out[N100]+out[N100]*outN[N100]**(-0.5), color=c['color'] ) 
-	#if len(out[N100])>3:
-		#print sn, "-", sn_bins[ii+1], " & " ,
-		#outP = n.polyfit(x_err_bins[N100], n.log10(out[N100]), deg=degree, w = 1/( outN[N100]**(-0.5)) )
-		#x_poly =n.arange(0,3,0.05)
-		#p.plot(x_poly, 10**n.polyval(outP, x_poly), c=c['color'], ls='dashed', lw=0.5)
-		#print n.round(outP,3) , " \\\\"
-		##print x_err_bins[N100], out[N100]
-
-p.legend(loc=0, frameon=False)
-#p.yscale('log')
-p.ylabel('Normed distribution')
-#p.xlim((-0.01, 1.5))
-#p.ylim((1e-3, 10.))
-p.title("degree="+str(degree))
-p.grid()
-p.xlabel(r'$\sigma M$ ('+imf+')')
-p.savefig(os.path.join(out_dir, prefix+"_pdf_DELTA_logM_SNR.jpg" ))
-p.clf()
-
-
 
 def plot_all_prognames(hdus=hdus, imf=imf, prefix=prefix, out_dir = out_dir, redshift_reliable=redshift_reliable ) :
 	stellar_mass = imf+'_stellar_mass'
