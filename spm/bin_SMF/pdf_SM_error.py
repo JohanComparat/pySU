@@ -13,6 +13,7 @@ matplotlib.rcParams.update({'font.size': 13})
 import matplotlib.pyplot as p
 from cycler import cycler
 from lib_spm import *
+import cPickle
 
 out_dir = os.path.join(os.environ['OBS_REPO'], 'spm', 'results')
 
@@ -23,6 +24,7 @@ m_bins = n.arange(0,14,0.5)
 sn_bins = n.array([0, 0.5, 1, 2, 10, 100]) # n.logspace(-1.,2,6)
 err_bins = n.hstack(( n.arange(0., 1., 0.15), n.arange(1., 5., 0.3), n.array([5., 10., 10000.]) )) 
 x_err_bins = (err_bins[1:] + err_bins[:-1])/2.
+x_err_width = (err_bins[1:] - err_bins[:-1])/2.
 
 def get_err_distribution(boss, sdss, prefix = 'ALL', imf = imfs[0]):
 	"""
@@ -48,49 +50,59 @@ def get_err_distribution(boss, sdss, prefix = 'ALL', imf = imfs[0]):
 	zz = n.hstack(( boss['Z_NOQSO'][ok_boss], sdss['Z_NOQSO'][ok_sdss]))
 	Ms = n.hstack(( n.log10(boss[stellar_mass][ok_boss]), n.log10(sdss[stellar_mass][ok_sdss]) ))
 	err_moyenne = n.hstack(( abs((n.log10(boss[stellar_mass + '_up'][ok_boss]) - n.log10(boss[stellar_mass + '_low'][ok_boss]))/2.), abs((n.log10(sdss[stellar_mass + '_up'][ok_sdss]) - n.log10(sdss[stellar_mass + '_low'][ok_sdss]))/2.) ))
+	out_s, outN_s = [], []
 	for ii, sn in enumerate(sn_bins[:-1]):
-		out, xxx = n.histogram(err_moyenne[(snr>sn_bins[ii])&(snr<sn_bins[ii+1])], bins = err_bins, normed=True)
+		out = n.histogram(err_moyenne[(snr>sn_bins[ii])&(snr<sn_bins[ii+1])], bins = err_bins, normed=True)[0]
 		outN = n.histogram(err_moyenne[(snr>sn_bins[ii])&(snr<sn_bins[ii+1])], bins = err_bins)[0]
-		N100 = (outN>1)
+		#N100 = (outN>1)
+		out_s.append(out)
+		outN_s.append(outN)
 
-	return snr, zz, Ms, err_moyenne, x_err_bins, out, (xxx[1:]-xxx[:-1])/2., out*outN**(-0.5)
+	return snr, zz, Ms, err_moyenne, sn_bins, x_err_bins, x_err_width, n.array(out_s), n.array(outN_s)
 
 
 for imf in imfs:
-	snr, zz, Ms, err_moyenne, X, Y, XERR, YERR = get_err_distribution(boss, sdss, prefix = 'ALL_'+imf, imf = imf)
-
+	DATA = get_err_distribution(boss, sdss, prefix = 'ALL_'+imf, imf = imf)
+	f=open(os.path.join(out_dir, prefix+"_pdf_DELTA_logM_SNR.pkl" ), 'w')
+	cPickle.dump(f, DATA)
+	f.close()
+	# snr, zz, Ms, err_moyenne, sn_bins, x_err_bins, x_err_width, out_s, outN_s = DATA
+	
 sys.exit()
 
-	def plot_errPDF(degree):
-		p.figure(1, (4.5, 4.5))
-		p.axes([0.2,0.2,0.7,0.7])
-		cc=cycler('color', ['r', 'g', 'b', 'm', 'k'])
-		print "DEGREE", degree
-		for ii, (sn, c) in enumerate(zip(sn_bins[:-1],cc)):
-			out, xxx = n.histogram(err_moyenne[(snr>sn_bins[ii])&(snr<sn_bins[ii+1])], bins = err_bins, normed=True)
-			outN = n.histogram(err_moyenne[(snr>sn_bins[ii])&(snr<sn_bins[ii+1])], bins = err_bins)[0]
-			N100 = (outN>1)
-			print x_err_bins[N100], out[N100], (xxx[1:][N100]-xxx[:-1][N100])/2., out[N100]*outN[N100]**(-0.5)
-			#eb = p.errorbar(x_err_bins[N100], out[N100], xerr=(xxx[1:][N100]-xxx[:-1][N100])/2., yerr = out[N100]*outN[N100]**(-0.5), label=str(sn)+"-"+str(sn_bins[ii+1]), fmt='+', color=c['color'])
-			p.fill_between(x_err_bins[N100], y1 = out[N100]-out[N100]*outN[N100]**(-0.5), y2 = out[N100]+out[N100]*outN[N100]**(-0.5), color=c['color'] ) 
-			#if len(out[N100])>3:
-				#print sn, "-", sn_bins[ii+1], " & " ,
-				#outP = n.polyfit(x_err_bins[N100], n.log10(out[N100]), deg=degree, w = 1/( outN[N100]**(-0.5)) )
-				#x_poly =n.arange(0,3,0.05)
-				#p.plot(x_poly, 10**n.polyval(outP, x_poly), c=c['color'], ls='dashed', lw=0.5)
-				#print n.round(outP,3) , " \\\\"
-				##print x_err_bins[N100], out[N100]
+prefix = 'ALL_'+imfs[0]
+f=open(os.path.join(out_dir, prefix+"_pdf_DELTA_logM_SNR.pkl" ), 'r')
+snr, zz, Ms, err_moyenne, sn_bins, x_err_bins, x_err_width, out_s, outN_s = cPickle.load(f)
+f.close()
+	
+p.figure(1, (4.5, 4.5))
+p.axes([0.2,0.2,0.7,0.7])
+cc=cycler('color', ['r', 'g', 'b', 'm', 'k'])
+print "DEGREE", degree
+for ii, (sn, c, out, outN) in enumerate(zip(sn_bins[:-1],cc, out_s, outN_s)):
+	N100 = (outN>10)
+	print x_err_bins[N100], out[N100], x_err_width, out[N100]*outN[N100]**(-0.5)
+	p.plot(x_err_bins[N100], out[N100], color=c['color'])
+	#eb = p.errorbar(x_err_bins[N100], out[N100], xerr=x_err_width[N100], yerr = out[N100]*outN[N100]**(-0.5), label=str(sn)+"-"+str(sn_bins[ii+1]), fmt='+', color=c['color'])
+	#p.fill_between(x_err_bins[N100], y1 = out[N100]-out[N100]*outN[N100]**(-0.5), y2 = out[N100]+out[N100]*outN[N100]**(-0.5), color=c['color'] ) 
+	#if len(out[N100])>3:
+		#print sn, "-", sn_bins[ii+1], " & " ,
+		#outP = n.polyfit(x_err_bins[N100], n.log10(out[N100]), deg=degree, w = 1/( outN[N100]**(-0.5)) )
+		#x_poly =n.arange(0,3,0.05)
+		#p.plot(x_poly, 10**n.polyval(outP, x_poly), c=c['color'], ls='dashed', lw=0.5)
+		#print n.round(outP,3) , " \\\\"
+		##print x_err_bins[N100], out[N100]
 
-		p.legend(loc=0, frameon=False)
-		#p.yscale('log')
-		p.ylabel('Normed distribution')
-		p.xlim((-0.01, 1.5))
-		#p.ylim((1e-3, 10.))
-		p.title("degree="+str(degree))
-		p.grid()
-		p.xlabel(r'$\sigma M$ ('+imf+')')
-		p.savefig(os.path.join(out_dir, prefix+"_pdf_DELTA_logM_SNR_"+imf+"_"+str(degree)+"_"+".jpg" ))
-		p.clf()
+p.legend(loc=0, frameon=False)
+#p.yscale('log')
+p.ylabel('Normed distribution')
+#p.xlim((-0.01, 1.5))
+#p.ylim((1e-3, 10.))
+p.title("degree="+str(degree))
+p.grid()
+p.xlabel(r'$\sigma M$ ('+imf+')')
+p.savefig(os.path.join(out_dir, prefix+"_pdf_DELTA_logM_SNR.jpg" ))
+p.clf()
 
 
 
