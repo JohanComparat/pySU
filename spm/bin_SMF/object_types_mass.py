@@ -68,11 +68,15 @@ print( "sdss 02",len(ok_sdss_02.nonzero()[0]))
 print( "boss 04",len(ok_boss_04.nonzero()[0]))
 print( "sdss 04",len(ok_sdss_04.nonzero()[0]))
 
-zz_02 = n.hstack(( boss['Z_NOQSO'][ok_boss_02], sdss['Z_NOQSO'][ok_sdss_02]))
+zz_02 = n.hstack(( boss['Z_NOQSO'][ok_boss_02], sdss['Z'][ok_sdss_02]))
 Ms_02 = n.hstack(( n.log10(boss[stellar_mass][ok_boss_02]), n.log10(sdss[stellar_mass][ok_sdss_02]) ))
+zz_02_boss = boss['Z_NOQSO'][ok_boss_02]
+zz_02_sdss = sdss['Z'][ok_sdss_02]
 
-zz_04 = n.hstack(( boss['Z_NOQSO'][ok_boss_04], sdss['Z_NOQSO'][ok_sdss_04]))
+zz_04 = n.hstack(( boss['Z_NOQSO'][ok_boss_04], sdss['Z'][ok_sdss_04]))
 Ms_04 = n.hstack(( n.log10(boss[stellar_mass][ok_boss_04]), n.log10(sdss[stellar_mass][ok_sdss_04]) ))
+zz_04_boss = boss['Z_NOQSO'][ok_boss_04]
+zz_04_sdss = sdss['Z'][ok_sdss_04]
 
 p.figure(1, (4.5, 4.5))
 p.axes([0.2,0.2,0.7,0.7])
@@ -130,6 +134,27 @@ p.title('DEEP2')
 p.savefig(os.path.join(out_dir, "mass_redshift_mass_"+imf+"deep2.jpg" ))
 p.clf()
 
+z_bins = n.arange(0.,1.4,0.05)
+p.figure(1, (4.5, 4.5))
+p.axes([0.2,0.2,0.7,0.7])
+p.hist(zz_02_boss, bins = z_bins, histtype='step', label=r'BOSS', ls='solid', color='r')
+p.hist(zz_04_boss, bins = z_bins, histtype='step', ls='dashed', color='r')
+p.hist(zz_02_sdss, bins = z_bins, histtype='step', label='SDSS', ls='solid', color='k')
+p.hist(zz_04_sdss, bins = z_bins, histtype='step', ls='dashed', color='k')
+p.hist(zz_02     , bins = z_bins, histtype='step', label='DEEP2', ls='solid', color='b')
+p.hist(zz_04     , bins = z_bins, histtype='step', ls='dashed', color='b')
+p.ylabel(r"N(dz=0.05)")
+p.xlabel('redshift')
+p.yscale('log')
+p.legend(loc=0, frameon = False)
+p.xlim((0.0, 1.4))
+#p.ylim((1, 12.5))
+p.grid()
+p.savefig(os.path.join(out_dir, "redshift_distribution.jpg" ))
+p.clf()
+
+import sys
+sys.exit()
 
 def plot_all_prognames(hdus=hdus, imf=imf, prefix=prefix, out_dir = out_dir, redshift_reliable=redshift_reliable ) :
 	stellar_mass = imf+'_stellar_mass'

@@ -21,10 +21,12 @@ python object_types_mass.py
 # Creates figure 3 about sigma_m and SNR per pixel
 python pdf_SM_error.py
 
-# estimate the mass density probed by SDSS and BOSS and DEEP2
+# Figure 4, stellar mass functions probed by SDSS and BOSS and DEEP2 in different redshift bins
+python mass_density.py 0.2 0.5
+python mass_density.py 0.5 0.8
+python mass_density.py 0.8 1.1
 
-sh run_smf_plots.sh
+# Figure 5 stellar mass functions probed by [OII] emitters in DEEP2.
 python smf_plot.py 0.78 0.83 41.8
-python smf_sdss_eboss.py 0.0 1.7
 
 

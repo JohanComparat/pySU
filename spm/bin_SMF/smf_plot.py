@@ -3,6 +3,9 @@ aa=co.Planck15
 import astropy.io.fits as fits
 
 import matplotlib
+import matplotlib
+matplotlib.rcParams['agg.path.chunksize'] = 2000000
+matplotlib.rcParams.update({'font.size': 12})
 matplotlib.use('Agg')
 import matplotlib.pyplot as p
 
@@ -52,11 +55,11 @@ path_2_vvdsD_cat = os.path.join( vvds_dir, "catalogs", "VVDS_DEEP_summary.v1.spm
 
 # OPENS THE CATALOGS
 deep2   = fits.open(path_2_deep2_cat)[1].data
-vvdsD   = fits.open(path_2_vvdsD_cat)[1].data
-vvdsW   = fits.open(path_2_vvdsW_cat)[1].data
-vipers   = fits.open(path_2_vipers_cat)[1].data
-sdss   = fits.open(path_2_sdss_cat)[1].data
-boss   = fits.open(path_2_eboss_cat)[1].data
+#vvdsD   = fits.open(path_2_vvdsD_cat)[1].data
+#vvdsW   = fits.open(path_2_vvdsW_cat)[1].data
+#vipers   = fits.open(path_2_vipers_cat)[1].data
+#sdss   = fits.open(path_2_sdss_cat)[1].data
+#boss   = fits.open(path_2_eboss_cat)[1].data
 cosmos = fits.open(path_2_cosmos_cat)[1].data
 
 
@@ -95,15 +98,15 @@ if z_min>=0.7:
 else :
     area_deep2 = 0.6
     
-area_vvdsD = 0.6
-area_vvdsW =  5.785
-area_vipers = 24.
-area_cosmos = 1.52
+#area_vvdsD = 0.6
+#area_vvdsW =  5.785
+#area_vipers = 24.
+#area_cosmos = 1.52
 
 def get_basic_stat(catalog, z_name, z_flg, name, zflg_min, prefix):
     catalog_zOk = (catalog[z_name] > z_min) & (catalog[z_flg]>=zflg_min) 
     catalog_stat = (catalog_zOk) & (catalog[z_name] > z_min) & (catalog[z_name] < z_max) & (catalog['SSR']>0) & (catalog['TSR']>0) & (catalog['SSR']<=1.0001) & (catalog['TSR']<=1.0001)
-    catalog_sel = (catalog_stat) & (catalog[prefix+'stellar_mass'] < 10**14. ) & (catalog[prefix+'stellar_mass'] > 10**5. )  & (catalog[prefix+'stellar_mass'] < catalog[prefix+'stellar_mass_up'] ) & (catalog[prefix+'stellar_mass'] > catalog[prefix+'stellar_mass_low'] ) & (-n.log10(catalog[prefix+'stellar_mass_low'])  + n.log10(catalog[prefix+'stellar_mass_up']) < 1.)
+    catalog_sel = (catalog_stat) & (catalog[prefix+'stellar_mass'] < 10**14. ) & (catalog[prefix+'stellar_mass'] >= 10**5. )  & (catalog[prefix+'stellar_mass'] <= catalog[prefix+'stellar_mass_up'] ) & (catalog[prefix+'stellar_mass'] >= catalog[prefix+'stellar_mass_low'] ) & (-n.log10(catalog[prefix+'stellar_mass_low'])  + n.log10(catalog[prefix+'stellar_mass_up']) < 0.6 	)
     l_o2 = lineSelection(catalog, "O2_3728") & catalog_stat
     l_o3 = lineSelection(catalog, "O3_5007") & catalog_stat
     l_hb = lineSelection(catalog, "H1_4862") & catalog_stat
@@ -127,8 +130,8 @@ def plotMF_raw(prefix="Chabrier_ELODIE_"):
     lbins = n.arange(40.5,44,0.25)
     x_lum = (lbins[1:] + lbins[:-1])/2.
     
-    p.figure(0, (8,8))
-    
+    p.figure(1, (4.5,4.5))
+    p.axes([0.19,0.17,0.74,0.72])
     N_O2_all = n.histogram(deep2['O2_3728_luminosity'][deep2_o2], bins = 10**lbins)[0]
     N_O2_mass = n.histogram(deep2['O2_3728_luminosity'][deep2_sel & deep2_o2], bins = 10**lbins)[0]
     N_O2_all_normed = n.histogram(n.log10(deep2['O2_3728_luminosity'][deep2_o2]), bins = lbins, normed = True)[0]
@@ -151,7 +154,8 @@ def plotMF_raw(prefix="Chabrier_ELODIE_"):
     dlog10m = 0.25
     mbins = n.arange(8,12.5,dlog10m)
     
-    p.figure(1, (8,8))
+    p.figure(1, (4.5,4.5))
+    p.axes([0.19,0.17,0.74,0.72])
     p.plot(mbins, smf01(10**mbins), label='Ilbert 13, 0.2<z<0.5', ls='dashed')
     p.plot(mbins, smf08(10**mbins), label='Ilbert 13, 0.8<z<1.1', ls='dashed')
     
@@ -187,7 +191,8 @@ def plotMF_raw(prefix="Chabrier_ELODIE_"):
     p.savefig(os.path.join(out_dir, "SMF_"+prefix+"SMF_"+prefix+"SMF_raw_"+"_"+str(z_min)+'_z_'+str(z_max)+".jpg" ))
     p.clf()
 
-    p.figure(2, (8,8))
+    p.figure(1, (4.5,4.5))
+    p.axes([0.19,0.17,0.74,0.72])
     
     x, y, ye = get_hist(deep2_m[deep2_sel], weights = deep2_w[deep2_sel]/(dlog10m*n.log(10)*area_deep2*volume_per_deg2_val), mbins = mbins)
     p.errorbar(x, y/smf08(10**x), yerr = ye/smf08(10**x), label='DEEP2', lw=1)
@@ -208,45 +213,73 @@ def plotMF_raw(prefix="Chabrier_ELODIE_"):
     
 
 def plotMF_raw_many(prefixs=["Chabrier_ELODIE_"]):
-	dlog10m = 0.25
+	dlog10m = 0.2
 	mbins = n.arange(8,12.5,dlog10m)
 
-	p.figure(1, (8,8))
-	p.plot(mbins, smf01(10**mbins), label='Ilbert 13, 0.2<z<0.5', ls='dashed')
-	p.plot(mbins, smf08(10**mbins), label='Ilbert 13, 0.8<z<1.1', ls='dashed')
+	p.figure(1, (4.5,4.5))
+	p.axes([0.19,0.17,0.74,0.72])
 	ys_u, yso2_u = [], []
 	ys_l, yso2_l = [], []
+	yso2P_u, yso2P_l = [], []
+	yso2D_u, yso2D_l = [], []
 	for prefix in prefixs :
-		deep2_sel, deep2_m, deep2_w, deep2_o2, deep2_o3, deep2_hb = get_basic_stat(deep2, 'ZBEST', 'ZQUALITY', 'DEEP2', 3., prefix)
+		deep2_sel, deep2_m, deep2_w, deep2_o2, deep2_o3, deep2_hb = get_basic_stat(deep2, 'ZBEST', 'ZQUALITY', 'DEEP2', 2., prefix)
     
 		x, y, ye = get_hist(deep2_m[deep2_sel], weights = deep2_w[deep2_sel]/(dlog10m*n.log(10)*area_deep2*volume_per_deg2_val), mbins = mbins)
-		#p.errorbar(x, y, yerr = ye)#, label=prefix[:-1], lw=1)
 		ys_u.append(y+ye)
 		ys_l.append(y-ye)
 		
 		x, y, ye = get_hist(deep2_m[deep2_sel & deep2_o2 & (deep2['O2_3728_luminosity']>10**lO2_min)], weights = deep2_w[deep2_sel & deep2_o2 & (deep2['O2_3728_luminosity']>10**lO2_min)]/(dlog10m*n.log(10)*area_deep2*volume_per_deg2_val), mbins = mbins)
-		#p.errorbar(x, y, yerr = ye)#, label=prefix[:-1]+'[OII]', lw=1)
 		yso2_u.append(y+ye)
 		yso2_l.append(y-ye)
+		
+		x, y, ye = get_hist(deep2_m[deep2_sel & deep2_o2 & (deep2['O2_3728_luminosity']>10**(lO2_min+0.2))], weights = deep2_w[deep2_sel & deep2_o2 & (deep2['O2_3728_luminosity']>10**(lO2_min+0.2))]/(dlog10m*n.log(10)*area_deep2*volume_per_deg2_val), mbins = mbins)
+		yso2P_u.append(y+ye)
+		yso2P_l.append(y-ye)
+
+		x, y, ye = get_hist(deep2_m[deep2_sel & deep2_o2 & (deep2['O2_3728_luminosity']>10**(lO2_min+0.4))], weights = deep2_w[deep2_sel & deep2_o2 & (deep2['O2_3728_luminosity']>10**(lO2_min+0.4))]/(dlog10m*n.log(10)*area_deep2*volume_per_deg2_val), mbins = mbins)
+		yso2D_u.append(y+ye)
+		yso2D_l.append(y-ye)
+	
 	
 	print n.array(ys_l).shape, n.min(n.array(ys_l), axis=0).shape
-	p.fill_between(x, y1=n.min(n.array(ys_l), axis=0),   y2=n.max(n.array(ys_u), axis=0), alpha=0.5, color='r')
-	p.plot(x, (n.min(n.array(ys_l), axis=0) + n.max(n.array(ys_u), axis=0))/2., alpha=0.5, color='r', label='DEEP2')
-	p.fill_between(x, y1=n.min(n.array(yso2_l), axis=0), y2=n.max(n.array(yso2_u), axis=0), alpha=0.5, color='b')
-	p.plot(x, (n.min(n.array(yso2_l), axis=0)+n.max(n.array(yso2_u), axis=0))/2., color='b', label='DEEP2 L([OII])>'+str(lO2_min) )
+	#p.fill_between(x, y1=n.min(n.array(ys_l), axis=0),   y2=n.max(n.array(ys_u), axis=0), alpha=0.5, color='r')
+	p.plot(x, (n.median(n.array(ys_l), axis=0) + n.median(n.array(ys_u), axis=0))/2., color='r', label='DEEP2')
+	#p.plot(x, n.median(n.array(ys_l), axis=0), ls='dashed', alpha=0.5, color='r')
+	#p.plot(x, n.median(n.array(ys_l), axis=0), ls='dashed', alpha=0.5, color='r')
+	
+	#p.fill_between(x, y1=n.min(n.array(yso2_l), axis=0), y2=n.max(n.array(yso2_u), axis=0), alpha=0.5, color='b')
+	p.plot(x, (n.median(n.array(yso2_l), axis=0)+n.median(n.array(yso2_u), axis=0))/2., color='b', label='L[OII]>'+str(lO2_min) )
+	#p.plot(x, n.median(n.array(yso2_l), axis=0), ls='dashed', color='b' ) 
+	#p.plot(x, n.median(n.array(yso2_u), axis=0), ls='dashed', color='b' )
+	
+	#p.fill_between(x, y1=n.min(n.array(yso2_l), axis=0), y2=n.max(n.array(yso2_u), axis=0), alpha=0.5, color='b')
+	p.plot(x, (n.median(n.array(yso2P_l), axis=0)+n.median(n.array(yso2P_u), axis=0))/2., color='g', label='L[OII]>'+str(lO2_min+0.2) )
+	#p.plot(x, n.median(n.array(yso2P_l), axis=0), ls='dashed', color='b' ) 
+	#p.plot(x, n.median(n.array(yso2P_u), axis=0), ls='dashed', color='b' )
+	
+	#p.fill_between(x, y1=n.min(n.array(yso2_l), axis=0), y2=n.max(n.array(yso2_u), axis=0), alpha=0.5, color='b')
+	p.plot(x, (n.median(n.array(yso2D_l), axis=0)+n.median(n.array(yso2D_u), axis=0))/2., color='m', label='L[OII]>'+str(lO2_min+0.4) )
+	#p.plot(x, n.median(n.array(yso2P_l), axis=0), ls='dashed', color='b' ) 
+	#p.plot(x, n.median(n.array(yso2P_u), axis=0), ls='dashed', color='b' )
+
+	#p.plot(mbins, smf01(10**mbins), label='Ilbert 13, 0.2<z<0.5', ls='dashed')
+	p.plot(mbins, smf08(10**mbins), label='Ilbert 13, 0.8<z<1.1', color='k')
 	
 	p.title(str(z_min)+'<z<'+str(z_max))
 	p.xlabel(r'$\log_{10}$ (stellar mass '+r" / $M_\odot$ )")
 	p.ylabel(r'$\Phi(M)$ [Mpc$^{-3}$ dex$^{-1}$]')
 	p.yscale('log')
-	p.legend(loc=0, frameon = False)
+	p.legend(loc=0, frameon = False, fontsize=12)
 	p.ylim((1e-8, 1e-2))
-	p.xlim((9.5, 12.5))
+	p.xlim((8.5, 12.))
 	p.grid()
-	p.savefig(os.path.join(out_dir, "all_contour_SMF_raw_"+"_"+str(z_min)+'_z_'+str(z_max)+".jpg" ))
+	p.savefig(os.path.join(out_dir, "all_contour_SMF_raw_"+str(lO2_min) +"_"+str(z_min)+'_z_'+str(z_max)+".jpg" ))
 	p.clf()
 
-plotMF_raw_many(["Chabrier_ELODIE_" ,"Chabrier_MILES_","Chabrier_STELIB_" ,"Kroupa_ELODIE_","Kroupa_MILES_", "Kroupa_STELIB_","Salpeter_ELODIE_" ,"Salpeter_MILES_","Salpeter_STELIB_"])
+plotMF_raw_many(["Chabrier_ELODIE_" ,"Chabrier_MILES_","Chabrier_STELIB_" ])#,"Kroupa_ELODIE_","Kroupa_MILES_", "Kroupa_STELIB_","Salpeter_ELODIE_" ,"Salpeter_MILES_","Salpeter_STELIB_"])
+
+#plotMF_raw_many(["Chabrier_ELODIE_" ,"Chabrier_MILES_","Chabrier_STELIB_" ,"Kroupa_ELODIE_","Kroupa_MILES_", "Kroupa_STELIB_","Salpeter_ELODIE_" ,"Salpeter_MILES_","Salpeter_STELIB_"])
 
 sys.exit()
 
