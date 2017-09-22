@@ -1,0 +1,201 @@
+# in topcat
+# load 
+$OBS_REPO/SDSS/dr14/v5_10_0/spAllLine-v5_10_0.fits
+select 
+LINEZ > 0 && LINEZ_ERR >0 && LINEZ > LINEZ_ERR  && abs(LINEAREA/LINEAREA_ERR) > 5. && LINEZ>0.001 && LINEZ < 1.7 && LINESIGMA>0.
+
+saved in
+
+$OBS_REPO/SDSS/dr14/v5_10_0/specLine-BOSS-dr14.fits
+
+Then select on lines of interest for the metallicity.
+
+LINEWAVE==4960.294931825264                   [O_III 4959" 
+LINEWAVE==5008.239669615672                   [O_II 3725"  
+LINEWAVE==3727.0917225096655                   [O_II 3727"  
+LINEWAVE==3729.87544376128                   H_beta"       
+LINEWAVE==4862.683021040764                   [O_III 5007" 
+LINEWAVE==6564.613973710928                   H_alpha"      
+LINEWAVE==6585.26852522626                   [N_II 6583"  
+
+java -jar ~/software/linux/stilts/stilts.jar tpipe ifmt=fits in=/data36s/comparat/SDSS/dr14/specLine-BOSS-dr14.fits cmd='select "LINEWAVE==4960.294931825264 "' omode=out out=/data36s/comparat/SDSS/dr14/line_catalogs/specLine-BOSS-dr14-O3a.fits ofmt=fits
+java -jar ~/software/linux/stilts/stilts.jar tpipe ifmt=fits in=/data36s/comparat/SDSS/dr14/specLine-BOSS-dr14.fits cmd='select "LINEWAVE==5008.239669615672 "' omode=out out=/data36s/comparat/SDSS/dr14/line_catalogs/specLine-BOSS-dr14-O3b.fits ofmt=fits
+java -jar ~/software/linux/stilts/stilts.jar tpipe ifmt=fits in=/data36s/comparat/SDSS/dr14/specLine-BOSS-dr14.fits cmd='select "LINEWAVE==3727.0917225096655"' omode=out out=/data36s/comparat/SDSS/dr14/line_catalogs/specLine-BOSS-dr14-O2a.fits ofmt=fits
+java -jar ~/software/linux/stilts/stilts.jar tpipe ifmt=fits in=/data36s/comparat/SDSS/dr14/specLine-BOSS-dr14.fits cmd='select "LINEWAVE==3729.87544376128  "' omode=out out=/data36s/comparat/SDSS/dr14/line_catalogs/specLine-BOSS-dr14-O2b.fits ofmt=fits
+java -jar ~/software/linux/stilts/stilts.jar tpipe ifmt=fits in=/data36s/comparat/SDSS/dr14/specLine-BOSS-dr14.fits cmd='select "LINEWAVE==4862.683021040764 "' omode=out out=/data36s/comparat/SDSS/dr14/line_catalogs/specLine-BOSS-dr14-Hb.fits ofmt=fits
+java -jar ~/software/linux/stilts/stilts.jar tpipe ifmt=fits in=/data36s/comparat/SDSS/dr14/specLine-BOSS-dr14.fits cmd='select "LINEWAVE==6564.613973710928 "' omode=out out=/data36s/comparat/SDSS/dr14/line_catalogs/specLine-BOSS-dr14-Ha.fits ofmt=fits
+java -jar ~/software/linux/stilts/stilts.jar tpipe ifmt=fits in=/data36s/comparat/SDSS/dr14/specLine-BOSS-dr14.fits cmd='select "LINEWAVE==6585.26852522626  "' omode=out out=/data36s/comparat/SDSS/dr14/line_catalogs/specLine-BOSS-dr14-N2.fits ofmt=fits
+
+# select counterparts in the firefly line_catalogs with mass well mesured
+
+# "Chabrier_MILES_", 
+java -jar ~/software/linux/stilts/stilts.jar tpipe ifmt=fits in=/data36s/comparat/SDSS/dr14/firefly/FireflyGalaxyEbossDR14.fits cmd='select "equals(CLASS_NOQSO, \"GALAXY\") &&  Z_ERR_NOQSO > 0.0 && ZWARNING_NOQSO == 0 && Z_NOQSO > 0.001 && Z_NOQSO > Z_ERR_NOQSO && Chabrier_MILES_stellar_mass_up > Chabrier_MILES_stellar_mass_low  && Chabrier_MILES_stellar_mass_up > 0.  &&  Chabrier_MILES_stellar_mass_low > 0.  && Chabrier_MILES_stellar_mass_up < 1e14  &&  Chabrier_MILES_stellar_mass_low < 1e14 && Chabrier_MILES_stellar_mass > 1e6  &&  Chabrier_MILES_stellar_mass < 1e14  && (log10(Chabrier_MILES_stellar_mass_up) - log10(Chabrier_MILES_stellar_mass_low))/2. < 0.2 "' omode=out out=/data36s/comparat/SDSS/dr14/firefly/FireflyGalaxyEbossDR14_massDef_Chabrier_MILES.fits
+
+
+java -jar ~/software/linux/stilts/stilts.jar tpipe ifmt=fits in=/data36s/comparat/SDSS/dr14/firefly/FireflyGalaxyEbossDR14.fits cmd='select "equals(CLASS_NOQSO, \"GALAXY\") &&  Z_ERR_NOQSO > 0.0 && ZWARNING_NOQSO == 0 && Z_NOQSO > 0.001 && Z_NOQSO > Z_ERR_NOQSO && Chabrier_ELODIE_stellar_mass_up > Chabrier_ELODIE_stellar_mass_low  && Chabrier_ELODIE_stellar_mass_up > 0.  &&  Chabrier_ELODIE_stellar_mass_low > 0.  && Chabrier_ELODIE_stellar_mass_up < 1e14  &&  Chabrier_ELODIE_stellar_mass_low < 1e14 && Chabrier_ELODIE_stellar_mass > 1e6  &&  Chabrier_ELODIE_stellar_mass < 1e14  && (log10(Chabrier_ELODIE_stellar_mass_up) - log10(Chabrier_ELODIE_stellar_mass_low))/2. < 0.2 "' omode=out out=/data36s/comparat/SDSS/dr14/firefly/FireflyGalaxyEbossDR14_massDef_Chabrier_ELODIE.fits
+
+
+java -jar ~/software/linux/stilts/stilts.jar tpipe ifmt=fits in=/data36s/comparat/SDSS/dr14/firefly/FireflyGalaxyEbossDR14.fits cmd='select "equals(CLASS_NOQSO, \"GALAXY\") &&  Z_ERR_NOQSO > 0.0 && ZWARNING_NOQSO == 0 && Z_NOQSO > 0.001 && Z_NOQSO > Z_ERR_NOQSO && Chabrier_STELIB_stellar_mass_up > Chabrier_STELIB_stellar_mass_low  && Chabrier_STELIB_stellar_mass_up > 0.  &&  Chabrier_STELIB_stellar_mass_low > 0.  && Chabrier_STELIB_stellar_mass_up < 1e14  &&  Chabrier_STELIB_stellar_mass_low < 1e14 && Chabrier_STELIB_stellar_mass > 1e6  &&  Chabrier_STELIB_stellar_mass < 1e14  && (log10(Chabrier_STELIB_stellar_mass_up) - log10(Chabrier_STELIB_stellar_mass_low))/2. < 0.2 "' omode=out out=/data36s/comparat/SDSS/dr14/firefly/FireflyGalaxyEbossDR14_massDef_Chabrier_STELIB.fits
+
+
+java -jar ~/software/linux/stilts/stilts.jar tpipe ifmt=fits in=/data36s/comparat/SDSS/dr14/firefly/FireflyGalaxyEbossDR14.fits cmd='select "equals(CLASS_NOQSO, \"GALAXY\") &&  Z_ERR_NOQSO > 0.0 && ZWARNING_NOQSO == 0 && Z_NOQSO > 0.001 && Z_NOQSO > Z_ERR_NOQSO && Kroupa_ELODIE_stellar_mass_up > Kroupa_ELODIE_stellar_mass_low  && Kroupa_ELODIE_stellar_mass_up > 0.  &&  Kroupa_ELODIE_stellar_mass_low > 0.  && Kroupa_ELODIE_stellar_mass_up < 1e14  &&  Kroupa_ELODIE_stellar_mass_low < 1e14 && Kroupa_ELODIE_stellar_mass > 1e6  &&  Kroupa_ELODIE_stellar_mass < 1e14  && (log10(Kroupa_ELODIE_stellar_mass_up) - log10(Kroupa_ELODIE_stellar_mass_low))/2. < 0.2 "' omode=out out=/data36s/comparat/SDSS/dr14/firefly/FireflyGalaxyEbossDR14_massDef_Kroupa_ELODIE.fits
+
+
+java -jar ~/software/linux/stilts/stilts.jar tpipe ifmt=fits in=/data36s/comparat/SDSS/dr14/firefly/FireflyGalaxyEbossDR14.fits cmd='select "equals(CLASS_NOQSO, \"GALAXY\") &&  Z_ERR_NOQSO > 0.0 && ZWARNING_NOQSO == 0 && Z_NOQSO > 0.001 && Z_NOQSO > Z_ERR_NOQSO && Kroupa_MILES_stellar_mass_up > Kroupa_MILES_stellar_mass_low  && Kroupa_MILES_stellar_mass_up > 0.  &&  Kroupa_MILES_stellar_mass_low > 0.  && Kroupa_MILES_stellar_mass_up < 1e14  &&  Kroupa_MILES_stellar_mass_low < 1e14 && Kroupa_MILES_stellar_mass > 1e6  &&  Kroupa_MILES_stellar_mass < 1e14  && (log10(Kroupa_MILES_stellar_mass_up) - log10(Kroupa_MILES_stellar_mass_low))/2. < 0.2 "' omode=out out=/data36s/comparat/SDSS/dr14/firefly/FireflyGalaxyEbossDR14_massDef_Kroupa_MILES.fits
+
+
+java -jar ~/software/linux/stilts/stilts.jar tpipe ifmt=fits in=/data36s/comparat/SDSS/dr14/firefly/FireflyGalaxyEbossDR14.fits cmd='select "equals(CLASS_NOQSO, \"GALAXY\") &&  Z_ERR_NOQSO > 0.0 && ZWARNING_NOQSO == 0 && Z_NOQSO > 0.001 && Z_NOQSO > Z_ERR_NOQSO && Kroupa_STELIB_stellar_mass_up > Kroupa_STELIB_stellar_mass_low  && Kroupa_STELIB_stellar_mass_up > 0.  &&  Kroupa_STELIB_stellar_mass_low > 0.  && Kroupa_STELIB_stellar_mass_up < 1e14  &&  Kroupa_STELIB_stellar_mass_low < 1e14 && Kroupa_STELIB_stellar_mass > 1e6  &&  Kroupa_STELIB_stellar_mass < 1e14  && (log10(Kroupa_STELIB_stellar_mass_up) - log10(Kroupa_STELIB_stellar_mass_low))/2. < 0.2 "' omode=out out=/data36s/comparat/SDSS/dr14/firefly/FireflyGalaxyEbossDR14_massDef_Kroupa_STELIB.fits
+
+
+java -jar ~/software/linux/stilts/stilts.jar tpipe ifmt=fits in=/data36s/comparat/SDSS/dr14/firefly/FireflyGalaxyEbossDR14.fits cmd='select "equals(CLASS_NOQSO, \"GALAXY\") &&  Z_ERR_NOQSO > 0.0 && ZWARNING_NOQSO == 0 && Z_NOQSO > 0.001 && Z_NOQSO > Z_ERR_NOQSO && Salpeter_ELODIE_stellar_mass_up > Salpeter_ELODIE_stellar_mass_low  && Salpeter_ELODIE_stellar_mass_up > 0.  &&  Salpeter_ELODIE_stellar_mass_low > 0.  && Salpeter_ELODIE_stellar_mass_up < 1e14  &&  Salpeter_ELODIE_stellar_mass_low < 1e14 && Salpeter_ELODIE_stellar_mass > 1e6  &&  Salpeter_ELODIE_stellar_mass < 1e14  && (log10(Salpeter_ELODIE_stellar_mass_up) - log10(Salpeter_ELODIE_stellar_mass_low))/2. < 0.2 "' omode=out out=/data36s/comparat/SDSS/dr14/firefly/FireflyGalaxyEbossDR14_massDef_Salpeter_ELODIE.fits
+
+
+java -jar ~/software/linux/stilts/stilts.jar tpipe ifmt=fits in=/data36s/comparat/SDSS/dr14/firefly/FireflyGalaxyEbossDR14.fits cmd='select "equals(CLASS_NOQSO, \"GALAXY\") &&  Z_ERR_NOQSO > 0.0 && ZWARNING_NOQSO == 0 && Z_NOQSO > 0.001 && Z_NOQSO > Z_ERR_NOQSO && Salpeter_MILES_stellar_mass_up > Salpeter_MILES_stellar_mass_low  && Salpeter_MILES_stellar_mass_up > 0.  &&  Salpeter_MILES_stellar_mass_low > 0.  && Salpeter_MILES_stellar_mass_up < 1e14  &&  Salpeter_MILES_stellar_mass_low < 1e14 && Salpeter_MILES_stellar_mass > 1e6  &&  Salpeter_MILES_stellar_mass < 1e14  && (log10(Salpeter_MILES_stellar_mass_up) - log10(Salpeter_MILES_stellar_mass_low))/2. < 0.2 "' omode=out out=/data36s/comparat/SDSS/dr14/firefly/FireflyGalaxyEbossDR14_massDef_Salpeter_MILES.fits
+
+
+java -jar ~/software/linux/stilts/stilts.jar tpipe ifmt=fits in=/data36s/comparat/SDSS/dr14/firefly/FireflyGalaxyEbossDR14.fits cmd='select "equals(CLASS_NOQSO, \"GALAXY\") &&  Z_ERR_NOQSO > 0.0 && ZWARNING_NOQSO == 0 && Z_NOQSO > 0.001 && Z_NOQSO > Z_ERR_NOQSO && Salpeter_STELIB_stellar_mass_up > Salpeter_STELIB_stellar_mass_low  && Salpeter_STELIB_stellar_mass_up > 0.  &&  Salpeter_STELIB_stellar_mass_low > 0.  && Salpeter_STELIB_stellar_mass_up < 1e14  &&  Salpeter_STELIB_stellar_mass_low < 1e14 && Salpeter_STELIB_stellar_mass > 1e6  &&  Salpeter_STELIB_stellar_mass < 1e14  && (log10(Salpeter_STELIB_stellar_mass_up) - log10(Salpeter_STELIB_stellar_mass_low))/2. < 0.2 "' omode=out out=/data36s/comparat/SDSS/dr14/firefly/FireflyGalaxyEbossDR14_massDef_Salpeter_STELIB.fits
+
+java -jar ~/software/linux/stilts/stilts.jar tmatch2 \
+ifmt1=fits ifmt2=fits \
+in1=/data36s/comparat/SDSS/dr14/firefly/FireflyGalaxyEbossDR14_massDef_Chabrier_MILES.fits \
+in2=/data36s/comparat/SDSS/dr14/line_catalogs/specLine-BOSS-dr14-N2.fits \
+omode=out ofmt=fits \
+out=/data36s/comparat/SDSS/dr14/tmp/EbossDR14_massDef_Chabrier_MILES-N2.fits \
+matcher=3d \
+values1='PLATE MJD FIBERID' \
+values2='PLATE MJD FIBERID' \
+params=0.001 \
+join=all1 \
+find=best \
+fixcols=all \
+suffix1= suffix2=_N2 
+
+java -jar ~/software/linux/stilts/stilts.jar tmatch2 \
+ifmt1=fits ifmt2=fits \
+in1=/data36s/comparat/SDSS/dr14/tmp/EbossDR14_massDef_Chabrier_MILES-N2.fits \
+in2=/data36s/comparat/SDSS/dr14/line_catalogs/specLine-BOSS-dr14-Ha.fits \
+omode=out ofmt=fits \
+out=/data36s/comparat/SDSS/dr14/tmp/EbossDR14_massDef_Chabrier_MILES-Ha.fits \
+matcher=3d \
+values1='PLATE MJD FIBERID' \
+values2='PLATE MJD FIBERID' \
+params=0.001 \
+join=all1 \
+find=best \
+fixcols=all \
+suffix1= suffix2=_Ha 
+
+java -jar ~/software/linux/stilts/stilts.jar tmatch2 \
+ifmt1=fits ifmt2=fits \
+in1=/data36s/comparat/SDSS/dr14/tmp/EbossDR14_massDef_Chabrier_MILES-Ha.fits \
+in2=/data36s/comparat/SDSS/dr14/line_catalogs/specLine-BOSS-dr14-O3b.fits \
+omode=out ofmt=fits \
+out=/data36s/comparat/SDSS/dr14/tmp/EbossDR14_massDef_Chabrier_MILES-O3b.fits \
+matcher=3d \
+values1='PLATE MJD FIBERID' \
+values2='PLATE MJD FIBERID' \
+params=0.001 \
+join=all1 \
+find=best \
+fixcols=all \
+suffix1= suffix2=_O3b 
+
+java -jar ~/software/linux/stilts/stilts.jar tmatch2 \
+ifmt1=fits ifmt2=fits \
+in1=/data36s/comparat/SDSS/dr14/tmp/EbossDR14_massDef_Chabrier_MILES-O3b.fits \
+in2=/data36s/comparat/SDSS/dr14/line_catalogs/specLine-BOSS-dr14-O3a.fits \
+omode=out ofmt=fits \
+out=/data36s/comparat/SDSS/dr14/tmp/EbossDR14_massDef_Chabrier_MILES-O3a.fits \
+matcher=3d \
+values1='PLATE MJD FIBERID' \
+values2='PLATE MJD FIBERID' \
+params=0.001 \
+join=all1 \
+find=best \
+fixcols=all \
+suffix1= suffix2=_O3a 
+
+java -jar ~/software/linux/stilts/stilts.jar tmatch2 \
+ifmt1=fits ifmt2=fits \
+in1=/data36s/comparat/SDSS/dr14/tmp/EbossDR14_massDef_Chabrier_MILES-O3a.fits \
+in2=/data36s/comparat/SDSS/dr14/line_catalogs/specLine-BOSS-dr14-Hb.fits \
+omode=out ofmt=fits \
+out=/data36s/comparat/SDSS/dr14/tmp/EbossDR14_massDef_Chabrier_MILES-Hb.fits \
+matcher=3d \
+values1='PLATE MJD FIBERID' \
+values2='PLATE MJD FIBERID' \
+params=0.001 \
+join=all1 \
+find=best \
+fixcols=all \
+suffix1= suffix2=_Hb 
+
+java -jar ~/software/linux/stilts/stilts.jar tmatch2 \
+ifmt1=fits ifmt2=fits \
+in1=/data36s/comparat/SDSS/dr14/tmp/EbossDR14_massDef_Chabrier_MILES-Hb.fits \
+in2=/data36s/comparat/SDSS/dr14/line_catalogs/specLine-BOSS-dr14-O2b.fits \
+omode=out ofmt=fits \
+out=/data36s/comparat/SDSS/dr14/tmp/EbossDR14_massDef_Chabrier_MILES-O2b.fits \
+matcher=3d \
+values1='PLATE MJD FIBERID' \
+values2='PLATE MJD FIBERID' \
+params=0.001 \
+join=all1 \
+find=best \
+fixcols=all \
+suffix1= suffix2=_O2b 
+
+java -jar ~/software/linux/stilts/stilts.jar tmatch2 \
+ifmt1=fits ifmt2=fits \
+in1=/data36s/comparat/SDSS/dr14/tmp/EbossDR14_massDef_Chabrier_MILES-O2b.fits \
+in2=/data36s/comparat/SDSS/dr14/line_catalogs/specLine-BOSS-dr14-O2a.fits \
+omode=out ofmt=fits \
+out=/data36s/comparat/SDSS/dr14/tmp/EbossDR14_massDef_Chabrier_MILES-O2a.fits \
+matcher=3d \
+values1='PLATE MJD FIBERID' \
+values2='PLATE MJD FIBERID' \
+params=0.001 \
+join=all1 \
+find=best \
+fixcols=all \
+suffix1= suffix2=_O2a 
+
+
+# now with 
+import astropy.io.fits as fits
+import numpy as n
+
+# similar to Tremonti relation on SDSS
+# m: log(Ms)-10
+mmr = lambda m : 8.96 + 0.31*m -0.23*m*m - 0.017*m*m*m +0.046*m*m*m*m
+ms = n.arange(9,11.5, 0.1)
+
+# Manucci relation on SDSS
+# s : log(SFR), m: log(Ms)-10
+mmsR = lambda m, s: 8.90 + 0.37*m -0.14*s - 0.19*m*m + 0.12*m*s-0.054*s*s
+
+tab = fits.open("/data36s/comparat/SDSS/dr14/Firefly-with-lines.fits")[1].data
+all = (tab['LINEAREA_O3a']>0)&(tab['LINEAREA_O3b']>0)&(tab['LINEAREA_O2a']>0)&(tab['LINEAREA_O2b']>0)&(tab['LINEAREA_Hb']>0)
+R23 = (tab['LINEAREA_O3a']+tab['LINEAREA_O3b']+ tab['LINEAREA_O2a']+ tab['LINEAREA_O2b'])/tab['LINEAREA_Hb']
+logOH_tremonti04 = 9.185-0.313*n.log10(R23) - 0.264 *n.log10(R23)**2 - 0.321 *n.log10(R23)**3
+
+metallicity = logOH_tremonti04[all]
+mass = tab['Chabrier_MILES_stellar_mass'][all]
+redshift = tab['Z_NOQSO'][all]
+sfr = mass / tab['Chabrier_MILES_age_lightW'][all]
+
+import matplotlib.pyplot as p
+
+p.figure(0,(4.5,4.5))
+p.axes([0.18,0.18,0.72,0.72])
+p.plot(n.log10(mass)-0.32*n.log10(sfr), metallicity, 'k,')
+#p.plot(ms, mmr(ms-10), 'r--')
+p.xlabel('log10(M*)-0.32log10(SFR)')
+p.ylabel('12+log(O/H)')
+p.xlim((9,12))
+p.ylim((8,9.5))
+p.show()
+
+
+
+
