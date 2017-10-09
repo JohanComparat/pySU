@@ -20,6 +20,27 @@ ld = lambda selection : len(selection.nonzero()[0])
 z_min = float(sys.argv[1])
 z_max = float(sys.argv[2])
 
+if z_min < 0.4:
+	path_2_comp = os.path.join(os.environ['GIT_PYSU'], 'data','zmin0.20_completness.txt'))  
+elif z_min < 0.65: 
+	path_2_comp = os.path.join(os.environ['GIT_PYSU'], 'data','zmin0.50_completness.txt'))
+else :
+	path_2_comp = os.path.join(os.environ['GIT_PYSU'], 'data','zmin0.80_completness.txt'))
+
+# log10(M/Msun), Ratios for r<[17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 23.0, 24.0, 25.0] 
+DATA_GALFORM = n.loadtxt(path_2_comp, unpack=True)
+
+gf = {}
+gf['r17']= interp1d(DATA_GALFORM[0], DATA_GALFORM[1])
+gf['r18']= interp1d(DATA_GALFORM[0], DATA_GALFORM[2])
+gf['r19']= interp1d(DATA_GALFORM[0], DATA_GALFORM[3])
+gf['r20']= interp1d(DATA_GALFORM[0], DATA_GALFORM[4])
+gf['r21']= interp1d(DATA_GALFORM[0], DATA_GALFORM[5])
+gf['r22']= interp1d(DATA_GALFORM[0], DATA_GALFORM[6])
+gf['r23']= interp1d(DATA_GALFORM[0], DATA_GALFORM[7])
+gf['r24']= interp1d(DATA_GALFORM[0], DATA_GALFORM[8])
+gf['r25']= interp1d(DATA_GALFORM[0], DATA_GALFORM[9])
+
 volume_per_deg2 = ( cosmo.comoving_volume(z_max) -  cosmo.comoving_volume(z_min) ) * n.pi / 129600.
 volume_per_deg2_val = volume_per_deg2.value
 
@@ -106,7 +127,7 @@ def get_hist(masses, weights, mbins):
 
 
 dlog10m = 0.25
-mbins = n.arange(8,12.5,dlog10m)
+mbins = n.arange(8.7,12.5,dlog10m)
 
 def plot_smf_b(IMF="Chabrier_ELODIE_", err_max=0.4):
 	boss_sel, boss_m, boss_w = get_basic_stat_DR14(boss, 'Z_NOQSO', 'Z_ERR_NOQSO', 'CLASS_NOQSO', 'ZWARNING_NOQSO', 0., IMF, err_max)
@@ -142,6 +163,11 @@ p.figure(1, (4.5,4.5))
 p.axes([0.19,0.17,0.74,0.72])
 p.fill_between( mbins, y1=smf01(10**mbins)*0.77, y2=smf01(10**mbins)*1.23, color='g', alpha=0.5)
 p.plot(mbins, smf01(10**mbins), label='Ilbert 13', color='g')
+
+p.plot(mbins, smf01(10**mbins)*gf['r18'](mbins), label='G17 r<18', ls='dashed')
+p.plot(mbins, smf01(10**mbins)*gf['r20'](mbins), label='G17 r<20', ls='dashed')
+p.plot(mbins, smf01(10**mbins)*gf['r22'](mbins), label='G17 r<22', ls='dashed')
+
 
 p.fill_between( xa, y1=n.min([ya-yea, yb-yeb, yc-yec], axis=0), y2=n.max([ya+yea, yb+yeb, yc+yec], axis=0), color='r', alpha=0.5)
 p.plot(xa, n.mean([ya, yb, yc], axis=0), label=r'BOSS, eBOSS', color='r')
