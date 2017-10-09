@@ -2,6 +2,7 @@ import astropy.cosmology as co
 cosmo=co.Planck15
 import astropy.io.fits as fits
 import matplotlib
+matplotlib.use('Agg')
 matplotlib.rcParams['agg.path.chunksize'] = 2000000
 matplotlib.rcParams.update({'font.size': 12})
 import matplotlib.pyplot as p
@@ -9,6 +10,7 @@ import numpy as n
 import os
 import sys
 from scipy.integrate import quad
+from scipy.interpolate import interp1d
 # stat functions
 ld = lambda selection : len(selection.nonzero()[0])
 
@@ -21,11 +23,11 @@ z_min = float(sys.argv[1])
 z_max = float(sys.argv[2])
 
 if z_min < 0.4:
-	path_2_comp = os.path.join(os.environ['GIT_PYSU'], 'data','zmin0.20_completness.txt'))  
+	path_2_comp = os.path.join(os.environ['GIT_PYSU'], 'data','zmin0.20_completness.txt')  
 elif z_min < 0.65: 
-	path_2_comp = os.path.join(os.environ['GIT_PYSU'], 'data','zmin0.50_completness.txt'))
+	path_2_comp = os.path.join(os.environ['GIT_PYSU'], 'data','zmin0.50_completness.txt')
 else :
-	path_2_comp = os.path.join(os.environ['GIT_PYSU'], 'data','zmin0.80_completness.txt'))
+	path_2_comp = os.path.join(os.environ['GIT_PYSU'], 'data','zmin0.80_completness.txt')
 
 # log10(M/Msun), Ratios for r<[17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 23.0, 24.0, 25.0] 
 DATA_GALFORM = n.loadtxt(path_2_comp, unpack=True)
@@ -76,7 +78,7 @@ area_cosmos = 1.52
 volume_sdss = 7900.   * volume_per_deg2_val 
 volume_boss = 10000.  * volume_per_deg2_val
 volume_cosmos = 1.52  * volume_per_deg2_val
-volume_deep2 = 2.0  * volume_per_deg2_val
+volume_deep2 = 2.78  * volume_per_deg2_val
 
 
 out_dir = os.path.join(os.environ['OBS_REPO'], 'spm', 'results', 'mass-density')
@@ -164,9 +166,9 @@ p.axes([0.19,0.17,0.74,0.72])
 p.fill_between( mbins, y1=smf01(10**mbins)*0.77, y2=smf01(10**mbins)*1.23, color='g', alpha=0.5)
 p.plot(mbins, smf01(10**mbins), label='Ilbert 13', color='g')
 
-p.plot(mbins, smf01(10**mbins)*gf['r18'](mbins), label='G17 r<18', ls='dashed')
-p.plot(mbins, smf01(10**mbins)*gf['r20'](mbins), label='G17 r<20', ls='dashed')
-p.plot(mbins, smf01(10**mbins)*gf['r22'](mbins), label='G17 r<22', ls='dashed')
+p.plot(mbins, smf01(10**mbins)*gf['r18'](mbins), label='G17 r<18', ls='dashed', lw=2)
+p.plot(mbins, smf01(10**mbins)*gf['r19'](mbins), label='G17 r<19', ls='dashed', lw=2)
+p.plot(mbins, smf01(10**mbins)*gf['r20'](mbins), label='G17 r<20', ls='dashed', lw=2)
 
 
 p.fill_between( xa, y1=n.min([ya-yea, yb-yeb, yc-yec], axis=0), y2=n.max([ya+yea, yb+yeb, yc+yec], axis=0), color='r', alpha=0.5)
