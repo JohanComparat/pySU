@@ -1,0 +1,7 @@
+SPIDERS CLUSTERS MAKE SAMPLE
+----------------------------
+
+healpix map with the codex sensitivity map
+
+spiders spectra : cut regions with less than fiber_efficiency completeness
+
