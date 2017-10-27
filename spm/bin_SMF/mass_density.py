@@ -22,6 +22,9 @@ ld = lambda selection : len(selection.nonzero()[0])
 z_min = float(sys.argv[1])
 z_max = float(sys.argv[2])
 
+logm_m13_05, smf_m13_05 = n.loadtxt(os.path.join(os.environ['OBS_REPO'], 'spm/literature', "M13_cmass_045_055.txt"), unpack=True)
+logm_m13_065, smf_m13_65 = n.loadtxt(os.path.join(os.environ['OBS_REPO'], 'spm/literature', "M13_cmass_06_07.txt")  , unpack=True)
+
 if z_min < 0.4:
 	path_2_comp = os.path.join(os.environ['GIT_PYSU'], 'data','zmin0.20_completness.txt')  
 elif z_min < 0.65: 
@@ -166,10 +169,12 @@ p.axes([0.19,0.17,0.74,0.72])
 p.fill_between( mbins, y1=smf01(10**mbins)*0.77, y2=smf01(10**mbins)*1.23, color='g', alpha=0.5)
 p.plot(mbins, smf01(10**mbins), label='Ilbert 13', color='g')
 
-p.plot(mbins, smf01(10**mbins)*gf['r18'](mbins), label='G17 r<18', ls='dashed', lw=2)
-p.plot(mbins, smf01(10**mbins)*gf['r19'](mbins), label='G17 r<19', ls='dashed', lw=2)
-p.plot(mbins, smf01(10**mbins)*gf['r20'](mbins), label='G17 r<20', ls='dashed', lw=2)
+#p.plot(mbins, smf01(10**mbins)*gf['r18'](mbins), label='G17 r<18', ls='dashed', lw=2)
+#p.plot(mbins, smf01(10**mbins)*gf['r19'](mbins), label='G17 r<19', ls='dashed', lw=2)
+#p.plot(mbins, smf01(10**mbins)*gf['r20'](mbins), label='G17 r<20', ls='dashed', lw=2)
 
+p.plot(logm_m13_05[:-3],  10**smf_m13_05[:-3], color='m', label='M13 z=0.5') 
+#p.plot(logm_m13_065, 10**smf_m13_65, label='M13 z=0.65')
 
 p.fill_between( xa, y1=n.min([ya-yea, yb-yeb, yc-yec], axis=0), y2=n.max([ya+yea, yb+yeb, yc+yec], axis=0), color='r', alpha=0.5)
 p.plot(xa, n.mean([ya, yb, yc], axis=0), label=r'BOSS, eBOSS', color='r')
