@@ -85,6 +85,8 @@ for imf in imfs:
   p.xlim((-0.01, 1.5))
   p.ylim((-0.01, 1.01))
   p.grid()
+  print("imf",imf)
+  p.title(imf.split('_')[0]+" "+imf.split('_')[0])
   p.xlabel(r'$\sigma_{logM}$')
   p.savefig(os.path.join(out_dir, imf+"_pdf_DELTA_logM_SNR_cumulative.jpg" ))
   p.clf()

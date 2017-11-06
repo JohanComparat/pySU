@@ -137,19 +137,22 @@ mbins = n.arange(8.7,12.5,dlog10m)
 def plot_smf_b(IMF="Chabrier_ELODIE_", err_max=0.4):
 	boss_sel, boss_m, boss_w = get_basic_stat_DR14(boss, 'Z_NOQSO', 'Z_ERR_NOQSO', 'CLASS_NOQSO', 'ZWARNING_NOQSO', 0., IMF, err_max)
 	x, y, ye = get_hist(boss_m[boss_sel], weights = boss_w[boss_sel]/(dlog10m*n.log(10)*area_boss*volume_per_deg2_val), mbins = mbins)
-	return x, y, ye
+	sel = (y>0)&(ye>0)&(y>2*ye)
+	return x[sel], y[sel], ye[sel]
 	#p.errorbar(x, y, yerr = ye, label=IMF[:-1], lw=1)
 
 def plot_smf_s(IMF="Chabrier_ELODIE_", err_max=0.4):
 	boss_sel, boss_m, boss_w = get_basic_stat_DR14(sdss, 'Z', 'Z_ERR', 'CLASS', 'ZWARNING', 0., IMF, err_max)
 	x, y, ye = get_hist(boss_m[boss_sel], weights = boss_w[boss_sel]/(dlog10m*n.log(10)*area_sdss*volume_per_deg2_val), mbins = mbins)
-	return x, y, ye
+	sel = (y>0)&(ye>0)&(y>2*ye)
+	return x[sel], y[sel], ye[sel]
 	#p.errorbar(x, y, yerr = ye, label=IMF[:-1], lw=1)
 
 def plot_smf_d(IMF="Chabrier_ELODIE_", err_max=0.4, area_deep2=0.5):
 	boss_sel, boss_m, boss_w = get_basic_stat_DEEP2(deep2, IMF, err_max)
 	x, y, ye = get_hist(boss_m, weights = boss_w/(dlog10m*n.log(10)*area_deep2*volume_per_deg2_val), mbins = mbins)
-	return x, y, ye
+	sel = (y>0)&(ye>0)&(y>2*ye)
+	return x[sel], y[sel], ye[sel]
 
 
 xa, ya, yea = plot_smf_b("Chabrier_ELODIE_", 0.2*2)
@@ -189,8 +192,8 @@ p.xlabel(r"$\log_{10}$ (M / $M_\odot$ )")
 p.ylabel(r'$\Phi(M)$ [Mpc$^{-3}$ dex$^{-1}$]')
 p.yscale('log')
 p.legend(loc=6, frameon = False)
-p.ylim((1e-9, 1e-2))
-p.xlim((8.5, 12.5))
+p.ylim((1e-8, 1e-2))
+p.xlim((9.5, 12.2))
 p.grid()
 p.savefig(os.path.join(out_dir, "firefly_SMF_BOSS_"+str(z_min)+'_z_'+str(z_max)+".jpg" ))
 p.clf()
