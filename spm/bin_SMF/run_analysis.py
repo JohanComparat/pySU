@@ -12,9 +12,10 @@
 # with SPM 
 python create_table1.py
 # writes here os.environ['OBS_REPO'], 'spm', 'results', "table_1.tex" and "table_2.tex"
-
+python measure_SNMEDIAN_DEEP2.py
 # Figure 1 
 python object_types_mass.py
+python object_types_SNMEDIANALL.py
 
 # figure 2 is an example spectrum created by firefly code
 
