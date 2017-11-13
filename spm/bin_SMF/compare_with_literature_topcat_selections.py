@@ -24,4 +24,18 @@ exp(-x*x/2.)*330000
 
 (Kroupa_STELIB_stellar_mass_up - Kroupa_MILES_stellar_mass_low)/Kroupa_MILES_stellar_mass
 
+Mass loss COMPARISON
+
+SAMPLE IN AGREEMENT :
+ZWARNING_1==0 && ZWARNING_2==0 && Z_ERR_1>0 && Z_ERR_2>0 && abs(Z_1-Z_2)<0.001 && Z_1>0 && Z_2>0 && log10(Chabrier_MILES_stellar_mass_up)-log10(Chabrier_MILES_stellar_mass_low)<0.6 && Chabrier_MILES_stellar_mass_1>0 && Chabrier_MILES_stellar_mass_2>0 && Chabrier_MILES_stellar_mass_1<1e13 && Chabrier_MILES_stellar_mass_2<1e13
+
+_2 && Chabrier_MILES_age_lightW_1>6e9
+_2 && Chabrier_MILES_age_lightW_1>3e9 && Chabrier_MILES_age_lightW_1<6e9
+_2 && Chabrier_MILES_age_lightW_1>1e9 && Chabrier_MILES_age_lightW_1<3e9
+_2 && Chabrier_MILES_age_lightW_1>0 && Chabrier_MILES_age_lightW_1<1e9
+
+_5 && Chabrier_MILES_metallicity_lightW_1>1
+_5 && Chabrier_MILES_metallicity_lightW_1>0.1 && _2 && Chabrier_MILES_metallicity_lightW_1<1
+_5 && Chabrier_MILES_metallicity_lightW_1>0.001 && _2 && Chabrier_MILES_metallicity_lightW_1<0.1
+
 

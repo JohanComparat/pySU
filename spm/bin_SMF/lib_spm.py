@@ -54,14 +54,14 @@ path_2_vvdsD_cat = os.path.join( vvds_dir, "catalogs", "VVDS_DEEP_summary.v1.spm
 
 # OPENS THE CATALOGS
 print("Loads deep surveys")
-#deep2   = fits.open(path_2_deep2_cat)[1].data
+deep2   = fits.open(path_2_deep2_cat)[1].data
 #vvdsD   = fits.open(path_2_vvdsD_cat)[1].data
 #vvdsW   = fits.open(path_2_vvdsW_cat)[1].data
 #vipers   = fits.open(path_2_vipers_cat)[1].data
 print("Loads sdss")
-#sdss   = fits.open(path_2_sdss_cat)[1].data
+sdss   = fits.open(path_2_sdss_cat)[1].data
 print("Loads boss")
-#boss   = fits.open(path_2_eboss_cat)[1].data
+boss   = fits.open(path_2_eboss_cat)[1].data
 #print("Loads cosmos")
 #cosmos = fits.open(path_2_cosmos_cat)[1].data
 
