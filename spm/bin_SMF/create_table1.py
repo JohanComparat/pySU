@@ -1,7 +1,7 @@
 from lib_spm import *
 
 imfs = ["Chabrier_ELODIE_", "Chabrier_MILES_", "Chabrier_STELIB_", "Kroupa_ELODIE_", "Kroupa_MILES_", "Kroupa_STELIB_",  "Salpeter_ELODIE_", "Salpeter_MILES_", "Salpeter_STELIB_" ]
-"""
+#"""
 out_file = os.path.join(os.environ['OBS_REPO'], 'spm', 'results', "table_1_r.tex")
 f=open(out_file, 'w')
 
@@ -43,7 +43,7 @@ for IMF in imfs :
 
 f.write('\\hline \n')
 f.close()
-"""
+#"""
 out_file = os.path.join(os.environ['OBS_REPO'], 'spm', 'results', "table_2_r.tex")
 f=open(out_file, 'w')
 
