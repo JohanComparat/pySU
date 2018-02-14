@@ -23,6 +23,6 @@ print(set(NH))
 
 n.savetxt(top_dir+'/flyAllList', flyall, fmt='%s')
 n.savetxt(top_dir+'/flyAllList_N0', flyall[NN>0], fmt='%s')
-n.savetxt(top_dir+'/flyAllList_H0', flyall[(NN>0)&(NH==640)], fmt='%s')
-n.savetxt(top_dir+'/flyAllList_NH', flyall[(NN<=0)&(NH!=640)], fmt='%s')
+n.savetxt(top_dir+'/flyAllList_906', flyall[(NN>0)&(NH==906)], fmt='%s')
+n.savetxt(top_dir+'/flyAllList_159', flyall[(NN>0)&(NH==159)], fmt='%s')
 
