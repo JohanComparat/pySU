@@ -11,6 +11,10 @@
 # Galaxy spectra & 
 # with SPM 
 python create_table1.py
+python create_table_completeness.py sdss
+python create_table_completeness.py boss
+python create_table_completeness.py deep2
+
 # writes here os.environ['OBS_REPO'], 'spm', 'results', "table_1.tex" and "table_2.tex"
 python measure_SNMEDIAN_DEEP2.py
 # Figure 1 
