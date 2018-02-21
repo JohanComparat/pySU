@@ -14,6 +14,8 @@ imfs = ["Chabrier_ELODIE_", "Chabrier_MILES_", "Chabrier_STELIB_", "Kroupa_ELODI
 
 out_dir = os.path.join(os.environ['OBS_REPO'], 'spm', 'results')
 
+#path_2_MAG_cat = os.path.join(  os.environ['HOME'], 'SDSS', "dr14_specphot_gri.fits" )
+#hd = fits.open(path_2_MAG_cat)
 
 path_2_sdss_cat = os.path.join(  os.environ['HOME'], 'SDSS', '26', 'catalogs', "FireFly.fits" )
 path_2_eboss_cat = os.path.join(  os.environ['HOME'], 'SDSS', 'v5_10_0', 'catalogs', "FireFly.fits" )
@@ -23,19 +25,21 @@ print("Loads catalog")
 if survey =='deep2':
 	deep2_dir = os.path.join(os.environ['OBS_REPO'], 'DEEP2')
 	path_2_deep2_cat = os.path.join( deep2_dir, "zcat.deep2.dr4.v4.LFcatalogTC.Planck13.spm.fits" )
-	deep2   = fits.open(path_2_deep2_cat)[1].data
+	catalog   = fits.open(path_2_deep2_cat)[1].data
 
 if survey =='sdss':
-	sdss   = fits.open(path_2_sdss_cat)[1].data
+	catalog   = fits.open(path_2_sdss_cat)[1].data
+	z_name, z_err_name, class_name, zwarning = 'Z', 'Z_ERR', 'CLASS', 'ZWARNING'
 
-if survey =='sdss':
-	boss   = fits.open(path_2_eboss_cat)[1].data
+if survey =='boss':
+	catalog   = fits.open(path_2_eboss_cat)[1].data
+	z_name, z_err_name, class_name, zwarning = 'Z_NOQSO', 'Z_ERR_NOQSO', 'CLASS_NOQSO', 'ZWARNING_NOQSO'
+
 
 IMF = imfs[0]
 prf = IMF.split('_')[0]+' & '+IMF.split('_')[1]
 print(IMF, prf)
-
-catalog, z_name, z_err_name, class_name, zwarning, name, zflg_val, prefix = boss, 'Z_NOQSO', 'Z_ERR_NOQSO', 'CLASS_NOQSO', 'ZWARNING_NOQSO', prf, 0., IMF
+name, zflg_val, prefix = prf, 0., IMF
 
 catalog_0 = (catalog[z_err_name] > 0.) & (catalog[z_name] > catalog[z_err_name])  & (catalog[class_name]=='GALAXY')  & (catalog[zwarning]==zflg_val) & (catalog[z_name] > z_min) & (catalog[z_name] < z_max)
 
@@ -68,7 +72,55 @@ sel0_pg = lambda pgr : (catalog_0) & (catalog['PROGRAMNAME']==pgr)
 
 sel0_st = lambda pgr : (catalog_0) & (catalog['SOURCETYPE']==pgr)
 
+all_galaxies = []
 
+tpps = []
+
+for pg in sourcetypes:
+	n_targets = length( (catalog['SOURCETYPE']==pg))
+	n_galaxies = length( sel0_st(pg)     )
+	all_galaxies.append(n_galaxies)
+	n_all = length( sel_st(pg))  *1.
+	n_1 = length( (sel_st(pg))&(converged) )
+	n_2 = length( (sel_st(pg))&(dex04)     )
+	n_3 = length( (sel_st(pg))&(dex02)     )
+	if n_all>0 :
+		out = n.array([
+		n_targets,
+		n_galaxies, n.round(n_galaxies*100./n_targets,1),
+		n_all     , n.round(n_targets*100./n_targets ,1),
+		n_1, n.round(n_1*100./n_all,1),
+		n_2, n.round(n_2*100./n_all,1),
+		n_3, n.round(n_3*100./n_all,1)
+		])
+	if n_all == 0 :
+		out = n.array([
+		n_targets,
+		n_galaxies, n.round(n_galaxies*100./n_targets,1),
+		n_all     , n.round(n_targets*100./n_targets ,1),
+		n_1, 0.,
+		n_2, 0.,
+		n_3, 0.
+		])
+	tpp = pg + "".join(n.array([ ' & '+str(el) for el in out]) ) + ' \\\\ \n'
+	print( tpp)
+	tpps.append(tpp)
+	
+all_galaxies = n.array(all_galaxies)
+tpps = n.array(tpps)
+
+ids = n.argsort(all_galaxies)[::-1]
+	
+out_file = os.path.join(os.environ['OBS_REPO'], 'spm', 'results', "table_comp_"+survey+"_snr_all_sourcetype_N_Nsnr_Nconv_Ndex04_Ndex02.tex")
+f=open(out_file, 'w')
+f.write('source type & N & \multicolumn{c}{2}{N galaxies} && \multicolumn{c}{2}{SNR ALL$>0$} & \\multicolumn{c}{2}{frefly converged} & \multicolumn{c}{2}{$\sigma_{\log_M}<0.4$} & \multicolumn{c}{2}{$\sigma_{\log_M}<0.2$} \\\\ \n')
+f.write('            &   & N & %      &             & N & % & N & % & N & %  \\\\ \n')
+for ii in ids :
+	f.write( tpps[ii] )
+
+f.close()
+
+sys.exit()
 out_file = os.path.join(os.environ['OBS_REPO'], 'spm', 'results', "table_comp_"+survey+"_snr_all_sourcetype_N_Nsnr_Nconv_Ndex04_Ndex02.tex")
 f=open(out_file, 'w')
 f.write('source type & N & N galaxies & SNR ALL$>0$ & firefly converged & err$<0.4$ & err$<0.2$ \\\\')
