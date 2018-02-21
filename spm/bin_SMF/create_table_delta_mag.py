@@ -13,24 +13,13 @@ survey = sys.argv[1]
 z_min, z_max = 0., 1.6
 imfs = ["Chabrier_ELODIE_", "Chabrier_MILES_", "Chabrier_STELIB_", "Kroupa_ELODIE_", "Kroupa_MILES_", "Kroupa_STELIB_",  "Salpeter_ELODIE_", "Salpeter_MILES_", "Salpeter_STELIB_" ]
 
-z_bins = n.array([0, 0.025, 0.375, 0.7, 0.85, 1.6])
-
-key_SNR = 'SNR_ALL'
-
-SNR_keys = n.array([  'SNR_32_35', 'SNR_35_39', 'SNR_39_41', 'SNR_41_55', 'SNR_55_68', 'SNR_68_74', 'SNR_74_93' ])
-SNR_w_min = n.array([ 32, 35, 39, 41, 55, 68, 74 ])
-SNR_w_max = n.array([ 35, 39, 41, 55, 68, 74, 93 ])
-wl_40 =  ((z_bins[1:]+z_bins[:-1]) * 0.5 + 1)*40.
-snr_ids = n.searchsorted(SNR_w_max, wl_40)
-print(SNR_keys[snr_ids])
+z_bins = n.array([0, 0.17, 0.55,  1.6])
+SNR_keys = n.array([  'g', 'r', 'i' ])
 
 out_dir = os.path.join(os.environ['OBS_REPO'], 'spm', 'results')
 
-path_2_MAG_cat = "/home/comparat/data/SDSS/specphotalldr14_comparat.fit" 
-hd = fits.open(path_2_MAG_cat)
-
-path_2_sdss_cat = os.path.join(  os.environ['HOME'], 'SDSS', '26', 'catalogs', "FireFly.fits" )
-path_2_eboss_cat = os.path.join(  os.environ['HOME'], 'SDSS', 'v5_10_0', 'catalogs', "FireFly.fits" )
+path_2_sdss_cat = os.path.join(  os.environ['HOME'], 'SDSS', '26', 'catalogs', "FireFly_mag.fits" )
+path_2_eboss_cat = os.path.join(  os.environ['HOME'], 'SDSS', 'v5_10_0', 'catalogs', "FireFly_mag.fits" )
 
 # OPENS THE CATALOGS
 print("Loads catalog")
@@ -63,7 +52,11 @@ dex04 = (converged) & (catalog[prefix+'stellar_mass'] < 10**14. ) & (catalog[pre
 
 dex02 = (dex04) & ( - n.log10(catalog[prefix+'stellar_mass_low_1sig'])  + n.log10(catalog[prefix+'stellar_mass_up_1sig']) < 0.4 )
 
+delta_g = catalog['fiberMag_g'] - catalog['modelMag_g'] 
+delta_r = catalog['fiberMag_r'] - catalog['modelMag_r'] 
+delta_i = catalog['fiberMag_i'] - catalog['modelMag_i'] 
 
+delta_m = n.array([delta_g, delta_r, delta_i])
 #target_bits
 
 program_names = n.array(list(set( catalog['PROGRAMNAME'] )))
@@ -96,17 +89,18 @@ for pg in sourcetypes:
 		#print(pg, n_all)
 		all_galaxies.append(n_all)
 		all_out = []
-		for z_Min, z_Max, snr_key in zip(z_bins[:-1], z_bins[1:], SNR_keys[snr_ids]):
+		for ii, (z_Min, z_Max) in enumerate(zip(z_bins[:-1], z_bins[1:])):
 			s_z = sel_all &(catalog[z_name] >= z_Min) & (catalog[z_name] < z_Max)
 			n_z = length(s_z)
-			#print(z_Min, z_Max, n_z)
+			print(z_Min, z_Max, n_z)
 			if n_z > 0 :
-				#print(n.min(catalog[snr_key][s_z]), n.max(catalog[snr_key][s_z]))
-				itp = interp1d(sc(catalog[snr_key][s_z], pcs_ref), pcs_ref, kind='linear', fill_value= 0., bounds_error=False)
-				#print(itp.x, itp.y)
-				all_out.append( [n_z, itp(5), itp(20)] )
+				ok = length( (n_z) & ( delta_m[ii]>0 ) )
+				pc90 = length( (n_z) & ( delta_m[ii]<0.018 ) )
+				pc50 = length( (n_z) & ( delta_m[ii]<0.12  ) )
+				pc10 = length( (n_z) & ( delta_m[ii]<0.4   ) )
+				all_out.append( [n_z, ok, pc10, pc50, pc90] )
 			else :
-				all_out.append([0., 0., 0.])
+				all_out.append([0., 0., 0., 0., 0.])
 		all_out = n.hstack((all_out))
 		tpp = pg + " & " + str(n_all) +" & ".join(n.array([ ' & '+str(n.round(el,1)) for el in all_out]) ) + ' \\\\ \n'
 		print( tpp)
