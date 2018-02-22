@@ -103,7 +103,7 @@ for pg in sourcetypes:
 			else :
 				all_out.append([0., 0., 0., 0.])
 		all_out = n.hstack((all_out))
-		tpp = pg + " & " + str(n_all) + " & " + " & ".join(n.array([ str(int(el)) for el in all_out]) ) + ' \\\\ \n'
+		tpp = pg + " & " + str(int(n_all)) + " & " + " & ".join(n.array([ str(int(el)) for el in all_out]) ) + ' \\\\ \n'
 		print( tpp)
 		tpps.append(tpp)
 	

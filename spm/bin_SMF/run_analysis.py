@@ -17,6 +17,7 @@ python create_table_snr.py sdss
 python create_table_snr.py boss
 python create_table_delta_mag.py sdss
 python create_table_delta_mag.py boss
+cp /data36s/comparat/spm/results/*.tex ~/wwwDir/firefly_data/dr14/v1_1_0/tables/
 
 python create_table_completeness.py deep2
 
