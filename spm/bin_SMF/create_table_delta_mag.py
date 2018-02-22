@@ -103,7 +103,7 @@ for pg in sourcetypes:
 				pc10 = length( (over_all) & ( dm<0.4 ))
 				pc01 = length( (over_all) & ( dm<0.8 ))
 				print(pc10, pc01)
-				all_out.append( [s_z, ok, pc10, pc01] )
+				all_out.append( [n_z, ok, pc10, pc01] )
 			else :
 				all_out.append([0., 0., 0., 0.])
 		all_out = n.hstack((all_out))
