@@ -83,6 +83,7 @@ all_galaxies = []
 tpps = []
 
 for pg in sourcetypes:
+	#sel_all = sel_st("GALAXY")
 	sel_all = sel_st(pg)
 	n_all = length( sel_all ) 
 	if n_all > 100 :
@@ -94,12 +95,12 @@ for pg in sourcetypes:
 			n_z = length(s_z)
 			print(z_Min, z_Max, n_z)
 			if n_z > 0 :
-				ok = length( (n_z) & ( dm>0 ) )
-				print('delta_m', ok, n.min(dm[n_z]), n.max(dm[n_z]))
-				#pc90 = length( (n_z) & ( dm<0.018 ) & ( dm>0 ))
-				pc10 = length( (n_z) & ( dm<0.4  ) & ( dm>0 ))
-				pc01 = length( (n_z) & ( dm<0.8   ) & ( dm>0 ))
-				all_out.append( [n_z, ok, pc10, pc01] )
+				ok = length( (s_z) & ( dm>0 ) & (n.isnan(dm)==False))
+				print('delta_m', ok, n.min(dm[s_z]), n.max(dm[s_z]))
+				#pc90 = length( (s_z) & ( dm<0.018 ) & ( dm>0 ))
+				pc10 = length( (s_z) & ( dm<0.4  ) & ( dm>0 )& (n.isnan(dm)==False))
+				pc01 = length( (s_z) & ( dm<0.8   ) & ( dm>0 )& (n.isnan(dm)==False))
+				all_out.append( [s_z, ok, pc10, pc01] )
 			else :
 				all_out.append([0., 0., 0., 0.])
 		all_out = n.hstack((all_out))
