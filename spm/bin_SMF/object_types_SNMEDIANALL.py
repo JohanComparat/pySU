@@ -133,7 +133,7 @@ for iid,z_min in zip(snr_ids, z_bins):
 
   oo = (z_all>z_min)&(z_all<z_min+0.1)
   if len(Ms_log_err[oo])>10:
-	plot_SN_MERR_Z(Ms_log_err[oo], sn_all[oo], str(int(z_min*10)).zfill(2), key_SNR)
+    plot_SN_MERR_Z(Ms_log_err[oo], sn_all[oo], str(int(z_min*10)).zfill(2), key_SNR)
 
 sys.exit()
 
