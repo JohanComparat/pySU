@@ -91,7 +91,7 @@ tpps = []
 
 for pg in sourcetypes:
 	sel_all = sel_st(pg)
-	n_all = length( sel_all )  *1.
+	n_all = length( sel_all )
 	if n_all > 100 :
 		#print(pg, n_all)
 		all_galaxies.append(n_all)

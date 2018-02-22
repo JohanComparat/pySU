@@ -102,7 +102,7 @@ for pg in sourcetypes:
 		n_2, 0.,
 		n_3, 0.
 		])
-	tpp = pg + " & " + "".join(n.array([ ' & '+str(int(el)) for el in out]) ) + ' \\\\ \n'
+	tpp = pg + " & " + " & ".join(n.array([ str(int(el)) for el in out]) ) + ' \\\\ \n'
 	print( tpp)
 	tpps.append(tpp)
 	
