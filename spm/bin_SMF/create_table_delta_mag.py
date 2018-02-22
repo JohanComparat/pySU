@@ -97,13 +97,13 @@ for pg in sourcetypes:
 				ok = length( (n_z) & ( delta_m[ii]>0 ) )
 				print('delta_m', ok, n.min(delta_m[ii][n_z]), n.max(delta_m[ii][n_z]))
 				#pc90 = length( (n_z) & ( delta_m[ii]<0.018 ) & ( delta_m[ii]>0 ))
-				pc50 = length( (n_z) & ( delta_m[ii]<0.12  ) & ( delta_m[ii]>0 ))
-				pc10 = length( (n_z) & ( delta_m[ii]<0.4   ) & ( delta_m[ii]>0 ))
-				all_out.append( [n_z, ok, pc10, pc50] )
+				pc10 = length( (n_z) & ( delta_m[ii]<0.4  ) & ( delta_m[ii]>0 ))
+				pc01 = length( (n_z) & ( delta_m[ii]<0.8   ) & ( delta_m[ii]>0 ))
+				all_out.append( [n_z, ok, pc10, pc01] )
 			else :
 				all_out.append([0., 0., 0., 0.])
 		all_out = n.hstack((all_out))
-		tpp = pg + " & " + str(n_all) + " & ".join(n.array([ str(n.round(el,1)) for el in all_out]) ) + ' \\\\ \n'
+		tpp = pg + " & " + str(n_all) + " & " + " & ".join(n.array([ str(int(el)) for el in all_out]) ) + ' \\\\ \n'
 		print( tpp)
 		tpps.append(tpp)
 	
