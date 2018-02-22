@@ -92,7 +92,7 @@ tpps = []
 for pg in sourcetypes:
 	sel_all = sel_st(pg)
 	n_all = length( sel_all )  *1.
-	if n_all > 0 :
+	if n_all > 100 :
 		#print(pg, n_all)
 		all_galaxies.append(n_all)
 		all_out = []
@@ -102,13 +102,13 @@ for pg in sourcetypes:
 			#print(z_Min, z_Max, n_z)
 			if n_z > 0 :
 				#print(n.min(catalog[snr_key][s_z]), n.max(catalog[snr_key][s_z]))
-				itp = interp1d(sc(catalog[snr_key][s_z], pcs_ref), pcs_ref, kind='linear', fill_value= 0., bounds_error=False)
+				itp = interp1d(sc(catalog[snr_key][s_z], pcs_ref), pcs_ref, kind='linear', fill_value= 100., bounds_error=False)
 				#print(itp.x, itp.y)
 				all_out.append( [n_z, itp(5), itp(20)] )
 			else :
-				all_out.append([0., 0., 0.])
+				all_out.append([0., -1, -1])
 		all_out = n.hstack((all_out))
-		tpp = pg + " & " + str(n_all) +" & ".join(n.array([ str(n.round(el,1)) for el in all_out]) ) + ' \\\\ \n'
+		tpp = pg + " & " + str(n_all) +" & ".join(n.array([ str(int(el)) for el in all_out]) ) + ' \\\\ \n'
 		print( tpp)
 		tpps.append(tpp)
 	
