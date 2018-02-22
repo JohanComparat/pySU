@@ -74,7 +74,7 @@ sourcetypes.sort()
 
 length = lambda selection : len(selection.nonzero()[0]) 
 
-pcs_ref = n.arange(0., 101, 5)
+pcs_ref = list(n.arange(0., 101, 5))
 g = lambda key, s1, pcs = pcs_ref : n.hstack(( length(s1), sc(catalog[key][s1], pcs) ))
 
 sel_pg = lambda pgr : (catalog_zOk) & (catalog['PROGRAMNAME']==pgr)
