@@ -84,21 +84,21 @@ tpps = []
 
 for pg in sourcetypes:
 	sel_all = sel_st(pg)
-	n_all = length( sel_all )  *1.
+	n_all = length( sel_all ) 
 	if n_all > 100 :
 		#print(pg, n_all)
 		all_galaxies.append(n_all)
 		all_out = []
-		for ii, (z_Min, z_Max) in enumerate(zip(z_bins[:-1], z_bins[1:])):
+		for dm, z_Min, z_Max in zip(delta_m, z_bins[:-1], z_bins[1:]):
 			s_z = sel_all &(catalog[z_name] >= z_Min) & (catalog[z_name] < z_Max)
 			n_z = length(s_z)
 			print(z_Min, z_Max, n_z)
 			if n_z > 0 :
-				ok = length( (n_z) & ( delta_m[ii]>0 ) )
-				print('delta_m', ok, n.min(delta_m[ii][n_z]), n.max(delta_m[ii][n_z]))
-				#pc90 = length( (n_z) & ( delta_m[ii]<0.018 ) & ( delta_m[ii]>0 ))
-				pc10 = length( (n_z) & ( delta_m[ii]<0.4  ) & ( delta_m[ii]>0 ))
-				pc01 = length( (n_z) & ( delta_m[ii]<0.8   ) & ( delta_m[ii]>0 ))
+				ok = length( (n_z) & ( dm>0 ) )
+				print('delta_m', ok, n.min(dm[n_z]), n.max(dm[n_z]))
+				#pc90 = length( (n_z) & ( dm<0.018 ) & ( dm>0 ))
+				pc10 = length( (n_z) & ( dm<0.4  ) & ( dm>0 ))
+				pc01 = length( (n_z) & ( dm<0.8   ) & ( dm>0 ))
 				all_out.append( [n_z, ok, pc10, pc01] )
 			else :
 				all_out.append([0., 0., 0., 0.])
