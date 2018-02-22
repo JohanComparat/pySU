@@ -88,7 +88,7 @@ for pg in sourcetypes:
 	sel_all = sel_st(pg)
 	n_all = length( sel_all ) 
 	if n_all > 100 :
-		#print(pg, n_all)
+		print(pg, n_all)
 		all_galaxies.append(n_all)
 		all_out = []
 		for dm, z_Min, z_Max in zip(delta_m, z_bins[:-1], z_bins[1:]):
@@ -98,7 +98,7 @@ for pg in sourcetypes:
 			if n_z > 0 :
 				over_all = (s_z) & ( dm>0 ) & (n.isnan(dm)==False)
 				ok = length( over_all )
-				print('delta_m', ok, n.min(dm[over_all]), n.max(dm[over_all]))
+				#print('delta_m', ok) #, n.min(dm[over_all]), n.max(dm[over_all]))
 				#pc90 = length( (s_z) & ( dm<0.018 ) & ( dm>0 ))
 				pc10 = length( (over_all) & ( dm<0.4 ))
 				pc01 = length( (over_all) & ( dm<0.8 ))
