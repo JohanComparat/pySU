@@ -80,10 +80,14 @@ Ms_04 = n.hstack(( n.log10(boss[stellar_mass][ok_boss_04]), n.log10(sdss[stellar
 zz_04_boss = boss['Z_NOQSO'][ok_boss_04]
 zz_04_sdss = sdss['Z'][ok_sdss_04]
 
+z_bins = n.arange(0,1.5,0.05)
+m_bins = n.arange(6.5, 13, 0.2)
+XX, YY = n.meshgrid(z_bins, m_bins)
+
 p.figure(1, (4.5, 4.5))
 p.axes([0.2,0.2,0.7,0.7])
-#p.plot(zz_04, Ms_04, 'r,', rasterized=True, alpha=0.5, label=r' $\sigma_M < 0.4$')
-p.plot(zz_02, Ms_02, 'k,', rasterized=True, alpha=0.5, label=r' $\sigma_M < 0.2$')
+HH = n.histogram2d(zz_02, Ms_02, bins=[z_bins, m_bins])[0].T
+p.scatter(XX[HH>10], YY[HH>10], c=n.log10(HH[HH>10]), s=40, edgecolors='none', marker='s' )
 p.ylabel(r"$\log_{10}$ (stellar mass / $M_\odot$ )")
 #p.axvline(n.log10(3.), ls='dashed', label='z=0.1, 0.5, 1, 2')
 #p.axvline(n.log10(2.), ls='dashed')#, label='z=1')
@@ -92,18 +96,41 @@ p.ylabel(r"$\log_{10}$ (stellar mass / $M_\odot$ )")
 p.xlabel('redshift')
 #p.xlabel(r'$\log_{10}(1+z)$')
 #p.xscale('log')
+p.colorbar(shrink=0.7, label=r'$\log_{10}(N)$')
 p.legend(loc=0, frameon = False)
-p.xlim((0.0, 1.4))
+p.xlim((-0.05, 1.4))
 p.ylim((6.5, 12.5))
 p.grid()
-p.title('SDSS and eBOSS')
+p.title('SDSS and eBOSS '+r'$\sigma_M < 0.2$')
 p.savefig(os.path.join(out_dir, "mass_redshift_mass_"+imf+"sdss_boss_02.png" ))
 p.clf()
+
+#p.figure(1, (4.5, 4.5))
+#p.axes([0.2,0.2,0.7,0.7])
+##p.plot(zz_04, Ms_04, 'r,', rasterized=True, alpha=0.5, label=r' $\sigma_M < 0.4$')
+#p.plot(zz_02, Ms_02, 'k,', rasterized=True, alpha=0.5, label=r' $\sigma_M < 0.2$')
+#p.ylabel(r"$\log_{10}$ (stellar mass / $M_\odot$ )")
+##p.axvline(n.log10(3.), ls='dashed', label='z=0.1, 0.5, 1, 2')
+##p.axvline(n.log10(2.), ls='dashed')#, label='z=1')
+##p.axvline(n.log10(1.1),ls='dashed')#, label='z=0.1')
+##p.axvline(n.log10(1.5),ls='dashed')#, label='z=0.5')
+#p.xlabel('redshift')
+##p.xlabel(r'$\log_{10}(1+z)$')
+##p.xscale('log')
+#p.legend(loc=0, frameon = False)
+#p.xlim((0.0, 1.4))
+#p.ylim((6.5, 12.5))
+#p.grid()
+#p.title('SDSS and eBOSS')
+#p.savefig(os.path.join(out_dir, "mass_redshift_mass_"+imf+"sdss_boss_02.png" ))
+#p.clf()
 
 
 p.figure(1, (4.5, 4.5))
 p.axes([0.2,0.2,0.7,0.7])
-p.plot(zz_04, Ms_04, 'k,', rasterized=True, alpha=0.5, label=r' $\sigma_M < 0.4$')
+HH = n.histogram2d(zz_04, Ms_04, bins=[z_bins, m_bins])[0].T
+p.scatter(XX[HH>10], YY[HH>10], c=n.log10(HH[HH>10]), s=40, edgecolors='none', marker='s' )
+#p.plot(zz_04, Ms_04, 'k,', rasterized=True, alpha=0.5, label=r' $\sigma_M < 0.4$')
 #p.plot(zz_02, Ms_02, 'k,', rasterized=True, alpha=0.5, label=r' $\sigma_M < 0.2$')
 p.ylabel(r"$\log_{10}$ (stellar mass / $M_\odot$ )")
 #p.axvline(n.log10(3.), ls='dashed', label='z=0.1, 0.5, 1, 2')
@@ -117,7 +144,7 @@ p.legend(loc=0, frameon = False)
 p.xlim((0.0, 1.4))
 p.ylim((6.5, 12.5))
 p.grid()
-p.title('SDSS and eBOSS')
+p.title('SDSS and eBOSS '+r'$\sigma_M < 0.4$')
 p.savefig(os.path.join(out_dir, "mass_redshift_mass_"+imf+"sdss_boss_04.png" ))
 p.clf()
 
@@ -139,8 +166,11 @@ print( "deep2 04",len(deep2_sel_04.nonzero()[0]))
 
 p.figure(1, (4.5, 4.5))
 p.axes([0.2,0.2,0.7,0.7])
+
+HH = n.histogram2d(zz_02, Ms_02, bins=[z_bins, m_bins])[0].T
+p.scatter(XX[HH>10], YY[HH>10], c=n.log10(HH[HH>10]), s=40, edgecolors='none', marker='s' )
 #p.plot(zz_04, Ms_04, 'r+', rasterized=True, label=r' $\sigma_M < 0.4$', alpha=0.5)
-p.plot(zz_02, Ms_02, 'k+', rasterized=True, label=r' $\sigma_M < 0.2$', alpha=0.5)
+#p.plot(zz_02, Ms_02, 'k+', rasterized=True, label=r' $\sigma_M < 0.2$', alpha=0.5)
 p.ylabel(r"$\log_{10}$ (stellar mass / $M_\odot$ )")
 #p.axvline(n.log10(3.), ls='dashed', label='z=0.1, 0.5, 1, 2')
 #p.axvline(n.log10(2.), ls='dashed')#, label='z=1')
@@ -153,14 +183,16 @@ p.legend(loc=0, frameon = False)
 p.xlim((0.0, 1.4))
 p.ylim((6.5, 12.5))
 p.grid()
-p.title('DEEP2')
+p.title('DEEP2 '+r'$\sigma_M < 0.2$')
 p.savefig(os.path.join(out_dir, "mass_redshift_mass_"+imf+"deep2_02.png" ))
 p.clf()
 
 
 p.figure(1, (4.5, 4.5))
 p.axes([0.2,0.2,0.7,0.7])
-p.plot(zz_04, Ms_04, 'k+', rasterized=True, label=r' $\sigma_M < 0.4$', alpha=0.5)
+HH = n.histogram2d(zz_04, Ms_04, bins=[z_bins, m_bins])[0].T
+p.scatter(XX[HH>10], YY[HH>10], c=n.log10(HH[HH>10]), s=40, edgecolors='none', marker='s' )
+#p.plot(zz_04, Ms_04, 'k+', rasterized=True, label=r' $\sigma_M < 0.4$', alpha=0.5)
 #p.plot(zz_02, Ms_02, 'kx', rasterized=True, label=r' $\sigma_M < 0.2$', alpha=0.5)
 p.ylabel(r"$\log_{10}$ (stellar mass / $M_\odot$ )")
 #p.axvline(n.log10(3.), ls='dashed', label='z=0.1, 0.5, 1, 2')
@@ -174,7 +206,7 @@ p.legend(loc=0, frameon = False)
 p.xlim((0.0, 1.4))
 p.ylim((6.5, 12.5))
 p.grid()
-p.title('DEEP2')
+p.title('DEEP2 '+r'$\sigma_M < 0.4$')
 p.savefig(os.path.join(out_dir, "mass_redshift_mass_"+imf+"deep2_04.png" ))
 p.clf()
 
@@ -196,6 +228,25 @@ p.xlim((0.0, 1.4))
 p.grid()
 p.savefig(os.path.join(out_dir, "redshift_distribution.png" ))
 p.clf()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 sys.exit()
 
