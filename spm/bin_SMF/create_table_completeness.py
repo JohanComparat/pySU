@@ -102,7 +102,7 @@ for pg in sourcetypes:
 		n_2, 0.,
 		n_3, 0.
 		])
-	tpp = pg + "".join(n.array([ ' & '+str(el) for el in out]) ) + ' \\\\ \n'
+	tpp = pg + " & " + "".join(n.array([ ' & '+str(int(el)) for el in out]) ) + ' \\\\ \n'
 	print( tpp)
 	tpps.append(tpp)
 	
@@ -113,14 +113,15 @@ ids = n.argsort(all_galaxies)[::-1]
 	
 out_file = os.path.join(os.environ['OBS_REPO'], 'spm', 'results', "table_comp_"+survey+"_snr_all_sourcetype_N_Nsnr_Nconv_Ndex04_Ndex02.tex")
 f=open(out_file, 'w')
-f.write('source type & N & \multicolumn{c}{2}{N galaxies} && \multicolumn{c}{2}{SNR ALL$>0$} & \\multicolumn{c}{2}{frefly converged} & \multicolumn{c}{2}{$\sigma_{\log_M}<0.4$} & \multicolumn{c}{2}{$\sigma_{\log_M}<0.2$} \\\\ \n')
-f.write('            &   & N & %      &             & N & % & N & % & N & %  \\\\ \n')
-for ii in ids :
-	f.write( tpps[ii] )
+#f.write('source type & N & \multicolumn{c}{2}{N galaxies} && \multicolumn{c}{2}{SNR ALL$>0$} & \\multicolumn{c}{2}{frefly converged} & \multicolumn{c}{2}{$\sigma_{\log_M}<0.4$} & \multicolumn{c}{2}{$\sigma_{\log_M}<0.2$} \\\\ \n')
+#f.write('            &   & N & %      &             & N & % & N & % & N & %  \\\\ \n')
+for jj in ids :
+	f.write( tpps[jj] )
 
 f.close()
 
 sys.exit()
+
 out_file = os.path.join(os.environ['OBS_REPO'], 'spm', 'results', "table_comp_"+survey+"_snr_all_sourcetype_N_Nsnr_Nconv_Ndex04_Ndex02.tex")
 f=open(out_file, 'w')
 f.write('source type & N & N galaxies & SNR ALL$>0$ & firefly converged & err$<0.4$ & err$<0.2$ \\\\')
