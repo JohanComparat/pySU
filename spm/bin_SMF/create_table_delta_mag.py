@@ -95,6 +95,7 @@ for pg in sourcetypes:
 			print(z_Min, z_Max, n_z)
 			if n_z > 0 :
 				ok = length( (n_z) & ( delta_m[ii]>0 ) )
+				print('delta_m', ok, n.min(delta_m[ii][n_z]), n.max(delta_m[ii][n_z]))
 				#pc90 = length( (n_z) & ( delta_m[ii]<0.018 ) & ( delta_m[ii]>0 ))
 				pc50 = length( (n_z) & ( delta_m[ii]<0.12  ) & ( delta_m[ii]>0 ))
 				pc10 = length( (n_z) & ( delta_m[ii]<0.4   ) & ( delta_m[ii]>0 ))
