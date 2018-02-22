@@ -98,6 +98,8 @@ def plot_SN_MERR_Z(Ms_log_err, sn_all, suffix, key_SNR):
   p.axes([0.2,0.2,0.7,0.7])
   p.plot(Ms_log_err, sn_all, 'k,', rasterized=True, alpha=0.5)
   err_bins = n.arange(0,1.5,0.05)
+  p.axhline(5, color='b', ls='dashed')
+  p.axhline(20, color='b', ls='dashed')
   for err_min in err_bins:
     oo = (Ms_log_err>err_min)&(Ms_log_err<err_min+0.025)
     mean = n.median(sn_all[oo])
@@ -130,7 +132,8 @@ for iid,z_min in zip(snr_ids, z_bins):
   z_all = n.hstack(( boss['Z_NOQSO'][redshift_reliable_boss & error_reliable_boss], sdss['Z'][redshift_reliable_sdss & error_reliable_sdss]))
 
   oo = (z_all>z_min)&(z_all<z_min+0.1)
-  plot_SN_MERR_Z(Ms_log_err[oo], sn_all[oo], str(int(z_min*10)).zfill(2), key_SNR)
+  if len(Ms_log_err[oo])>10:
+	plot_SN_MERR_Z(Ms_log_err[oo], sn_all[oo], str(int(z_min*10)).zfill(2), key_SNR)
 
 sys.exit()
 

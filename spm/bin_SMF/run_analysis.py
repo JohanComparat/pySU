@@ -17,15 +17,25 @@ python create_table_snr.py sdss
 python create_table_snr.py boss
 python create_table_delta_mag.py sdss
 python create_table_delta_mag.py boss
+
+rm ~/wwwDir/firefly_data/dr14/v1_1_0/tables/*.tex
 cp /data36s/comparat/spm/results/*.tex ~/wwwDir/firefly_data/dr14/v1_1_0/tables/
 
 python create_table_completeness.py deep2
 
-# writes here os.environ['OBS_REPO'], 'spm', 'results', "table_1.tex" and "table_2.tex"
-python measure_SNMEDIAN_DEEP2.py
+# writes here os.environ['OBS_REPO'], 'spm', 'results', "table_1.tex" and "table_2.tex" and *.tex for the appendix tables.
+
+# to be executed only once 
+# python measure_SNMEDIAN_DEEP2.py
+
 # Figure 1 
-python object_types_mass.py
-python object_types_SNMEDIANALL.py
+# first row
+python3.4 object_types_mass.py
+# second row
+python3.4 object_types_SNMEDIANALL.py
+
+rm /home/comparat/wwwDir/firefly_data/dr14/v1_1_0/plots/*.png
+cp /data36s/comparat/spm/results/mass-redshift-presentation/*.png /home/comparat/wwwDir/firefly_data/dr14/v1_1_0/plots/
 
 # figure 2 is an example spectrum created by firefly code
 
