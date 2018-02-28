@@ -65,6 +65,9 @@ boss   = fits.open(path_2_eboss_cat)[1].data
 print("Loads cosmos")
 cosmos = fits.open(path_2_cosmos_cat)[1].data
 
+#dr14_sdss = fits.open(path_2_spall_sdss_dr14_cat)
+#dr14_boss = fits.open(path_2_spall_boss_dr14_cat)
+
 #sdss_12_portSF_kr   = fits.open(path_2_pS_kroupa_cat)[1].data
 #boss_12_portSF_kr   = fits.open(path_2_pB_kroupa_cat)[1].data
 #sdss_12_portPA_kr   = fits.open(path_2_ppS_kroupa_cat)[1].data
