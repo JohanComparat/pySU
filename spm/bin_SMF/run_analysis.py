@@ -36,6 +36,7 @@ python3.4 object_types_SNMEDIANALL.py
 
 rm /home/comparat/wwwDir/firefly_data/dr14/v1_1_0/plots/*.png
 cp /data36s/comparat/spm/results/mass-redshift-presentation/*.png /home/comparat/wwwDir/firefly_data/dr14/v1_1_0/plots/
+cp /data36s/comparat/spm/results/mass-snr/*.png /home/comparat/wwwDir/firefly_data/dr14/v1_1_0/plots/
 
 # figure 2 is an example spectrum created by firefly code
 
