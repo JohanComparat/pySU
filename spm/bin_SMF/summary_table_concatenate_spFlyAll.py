@@ -22,3 +22,11 @@ out = "/home/comparat/SDSS/"+vv+ "/catalogs/spFlyAll_159.fits"
 c1 = command(lis, out)
 print(c1)
 os.system(c1)
+
+lis = top_dir+'/flyAllList_672'
+out = "/home/comparat/SDSS/"+vv+ "/catalogs/spFlyAll_672.fits"
+c1 = command(lis, out)
+print(c1)
+os.system(c1)
+
+

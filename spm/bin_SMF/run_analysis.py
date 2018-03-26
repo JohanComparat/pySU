@@ -1,6 +1,18 @@
 #!/bin/bash
 
-# on ds52, cd ~/software/linux/pySU/spm/bin_SMF
+# on ds52, 
+
+cd ~/software/linux/pySU/spm/bin_SMF
+
+python make_fly_plate_list.py v5_10_0
+python summary_table_concatenate_spFlyAll.py v5_10_0
+python summary_table_merge_specObjAll_SNRall.py v5_10_0
+python summary_table_merge_firefly_MAG.py v5_10_0
+
+python make_fly_plate_list.py 26
+python summary_table_concatenate_spFlyAll.py 26
+python summary_table_merge_specObjAll_SNRall.py 26
+python summary_table_merge_firefly_MAG.py 26
 
 # give overall numbers, table 1 and 2
 # how many spectra were observed

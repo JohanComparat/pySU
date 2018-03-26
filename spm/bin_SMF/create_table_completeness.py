@@ -26,6 +26,7 @@ if survey =='deep2':
 	deep2_dir = os.path.join(os.environ['OBS_REPO'], 'DEEP2')
 	path_2_deep2_cat = os.path.join( deep2_dir, "zcat.deep2.dr4.v4.LFcatalogTC.Planck13.spm.fits" )
 	catalog   = fits.open(path_2_deep2_cat)[1].data
+	z_name, z_err_name, class_name, zwarning = 'ZBEST', 'ZERR', 'CLASS', 'ZQUALITY'
 
 if survey =='sdss':
 	catalog   = fits.open(path_2_sdss_cat)[1].data
