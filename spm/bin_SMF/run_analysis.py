@@ -2,7 +2,7 @@
 
 # on ds52, 
 
-cd ~/software/linux/pySU/spm/bin_SMF
+cd /home/comparat/software/linux/pySU/spm/bin_SMF
 
 python make_fly_plate_list.py v5_10_0
 python summary_table_concatenate_spFlyAll.py v5_10_0
@@ -13,6 +13,10 @@ python make_fly_plate_list.py 26
 python summary_table_concatenate_spFlyAll.py 26
 python summary_table_merge_specObjAll_SNRall.py 26
 python summary_table_merge_firefly_MAG.py 26
+
+#CATALOG are written here 
+#/data37s/SDSS/26/catalogs
+#/data37s/SDSS/v5_10_0/catalogs
 
 # give overall numbers, table 1 and 2
 # how many spectra were observed
@@ -30,8 +34,7 @@ python create_table_snr.py boss
 python create_table_delta_mag.py sdss
 python create_table_delta_mag.py boss
 
-rm ~/wwwDir/firefly_data/dr14/v1_1_0/tables/*.tex
-cp /data36s/comparat/spm/results/*.tex ~/wwwDir/firefly_data/dr14/v1_1_0/tables/
+cp /data36s/comparat/spm/results/*.tex /data42s/comparat/firefly/v1_1_0/tables/
 
 python create_table_completeness.py deep2
 

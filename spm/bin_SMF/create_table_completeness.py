@@ -95,14 +95,25 @@ for pg in sourcetypes:
 		n_3, n.round(n_3*100./n_all,1)
 		])
 	if n_all == 0 :
-		out = n.array([
-		n_targets,
-		n_galaxies, n.round(n_galaxies*100./n_targets,1),
-		n_all     , n.round(n_targets*100./n_targets ,1),
-		n_1, 0.,
-		n_2, 0.,
-		n_3, 0.
-		])
+		try :
+			out = n.array([
+			n_targets,
+			n_galaxies, n.round(n_galaxies*100./n_targets,1),
+			n_all     , n.round(n_targets*100./n_targets ,1),
+			n_1, 0.,
+			n_2, 0.,
+			n_3, 0.
+			])
+		except(ZeroDivisionError):
+			out = n.array([
+			n_targets,
+			n_galaxies, 0.,
+			n_all     , 0.,
+			n_1, 0.,
+			n_2, 0.,
+			n_3, 0.
+			])
+		
 	tpp = pg + " & " + " & ".join(n.array([ str(int(el)) for el in out]) ) + ' \\\\ \n'
 	print( tpp)
 	tpps.append(tpp)
