@@ -35,6 +35,8 @@ python create_table_delta_mag.py sdss
 python create_table_delta_mag.py boss
 
 cp /data36s/comparat/spm/results/*.tex /data42s/comparat/firefly/v1_1_0/tables/
+cd /data42s/comparat/firefly/v1_1_0/tables/
+chmod o+r*
 
 python create_table_completeness.py deep2
 
