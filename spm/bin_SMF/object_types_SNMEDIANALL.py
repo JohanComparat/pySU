@@ -106,7 +106,7 @@ def plot_SN_MERR_Z(Ms_log_err, sn_all, suffix, key_SNR):
     std = n.std(sn_all[oo])
     #print([err_min+0.05, err_min+0.05], [mean+std, mean-std])
     p.plot([err_min+0.05, err_min+0.05], [mean+std, mean-std], 'r', lw=1)
-  p.ylabel("SN MEDIAN ALL")
+  p.ylabel("SNR MEDIAN")
   p.xlabel(r"$\log \sigma_M$ [dex]")
   p.yscale('log')
   p.legend(loc=0, frameon = False)

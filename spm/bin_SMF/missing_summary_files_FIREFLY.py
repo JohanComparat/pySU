@@ -76,7 +76,7 @@ python create_summary_table_sdss.py 2680 SDSSDR12_DIR
 python create_summary_table_sdss.py 2821 SDSSDR12_DIR 
 python create_summary_table_sdss.py 2887 SDSSDR12_DIR 
 python create_summary_table_sdss.py 2912 SDSSDR12_DIR 
-ypsthdon create_summary_table_sdss.py 3000 SDSSDR12_DIR 
+python create_summary_table_sdss.py 3000 SDSSDR12_DIR 
 python create_summary_table_sdss.py 3002 SDSSDR12_DIR 
 python create_summary_table_sdss.py 3003 SDSSDR12_DIR 
 python create_summary_table_sdss.py 3005 SDSSDR12_DIR 
