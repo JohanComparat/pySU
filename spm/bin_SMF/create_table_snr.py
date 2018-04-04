@@ -29,8 +29,10 @@ out_dir = os.path.join(os.environ['OBS_REPO'], 'spm', 'results')
 #path_2_MAG_cat = os.path.join(  os.environ['HOME'], 'SDSS', "dr14_specphot_gri.fits" )
 #hd = fits.open(path_2_MAG_cat)
 
-path_2_sdss_cat = os.path.join(  os.environ['HOME'], 'SDSS', '26', 'catalogs', "FireFly.fits" )
-path_2_eboss_cat = os.path.join(  os.environ['HOME'], 'SDSS', 'v5_10_0', 'catalogs', "FireFly.fits" )
+#path_2_sdss_cat = os.path.join(  os.environ['HOME'], 'SDSS', '26', 'catalogs', "FireFly.fits" )
+#path_2_eboss_cat = os.path.join(  os.environ['HOME'], 'SDSS', 'v5_10_0', 'catalogs', "FireFly.fits" )
+path_2_sdss_cat = os.path.join(  os.environ['OBS_REPO'], 'SDSS', '26', 'catalogs', "FireFly.fits" )
+path_2_eboss_cat = os.path.join(  os.environ['OBS_REPO'], 'SDSS', 'v5_10_0', 'catalogs', "FireFly.fits" )
 
 # OPENS THE CATALOGS
 print("Loads catalog")

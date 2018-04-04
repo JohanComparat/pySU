@@ -18,8 +18,10 @@ SNR_keys = n.array([  'g', 'r', 'i' ])
 
 out_dir = os.path.join(os.environ['OBS_REPO'], 'spm', 'results')
 
-path_2_sdss_cat = os.path.join(  os.environ['HOME'], 'SDSS', '26', 'catalogs', "FireFly_mag.fits" )
-path_2_eboss_cat = os.path.join(  os.environ['HOME'], 'SDSS', 'v5_10_0', 'catalogs', "FireFly_mag.fits" )
+#path_2_sdss_cat = os.path.join(  os.environ['HOME'], 'SDSS', '26', 'catalogs', "FireFly_mag.fits" )
+#path_2_eboss_cat = os.path.join(  os.environ['HOME'], 'SDSS', 'v5_10_0', 'catalogs', "FireFly_mag.fits" )
+path_2_sdss_cat = os.path.join(  os.environ['OBS_REPO'], 'SDSS', '26', 'catalogs', "FireFly_mag.fits" )
+path_2_eboss_cat = os.path.join(  os.environ['OBS_REPO'], 'SDSS', 'v5_10_0', 'catalogs', "FireFly_mag.fits" )
 
 # OPENS THE CATALOGS
 print("Loads catalog")

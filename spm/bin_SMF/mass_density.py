@@ -84,7 +84,7 @@ volume_cosmos = 1.52  * volume_per_deg2_val
 volume_deep2 = 2.78  * volume_per_deg2_val
 
 
-out_dir = os.path.join(os.environ['OBS_REPO'], 'spm', 'results', 'mass-density')
+out_dir = os.path.join('/data42s/comparat/firefly/v1_1_0/figures/mass-functions')
 
 imfs = ["Chabrier_ELODIE_", "Chabrier_MILES_", "Chabrier_STELIB_", "Kroupa_ELODIE_", "Kroupa_MILES_", "Kroupa_STELIB_",  "Salpeter_ELODIE_", "Salpeter_MILES_", "Salpeter_STELIB_" ]
 
@@ -92,13 +92,13 @@ cosmos_dir = os.path.join(os.environ['OBS_REPO'], 'COSMOS', 'catalogs' )
 path_2_cosmos_cat = os.path.join( cosmos_dir, "photoz-2.0", "photoz_vers2.0_010312.fits")
 #path_2_cosmos_cat = os.path.join( cosmos_dir, "COSMOS2015_Laigle+_v1.1.fits.gz")
 
-sdss_dir = os.path.join(os.environ['OBS_REPO'], 'SDSS', 'dr14')
-path_2_sdss_cat = os.path.join( sdss_dir, 'firefly', "FireflyGalaxySdss26.fits" )
-path_2_eboss_cat = os.path.join( sdss_dir, 'firefly', "FireflyGalaxyEbossDR14.fits" )
+sdss_dir = os.path.join(os.environ['OBS_REPO'], 'SDSS')
+path_2_sdss_cat = os.path.join( sdss_dir, '26', 'catalogs',  "FireFly.fits" )
+path_2_eboss_cat = os.path.join( sdss_dir, 'v5_10_0', 'catalogs', "FireFly.fits" )
 
 # DEEP SURVEYS
 deep2_dir = os.path.join(os.environ['OBS_REPO'], 'DEEP2')
-path_2_deep2_cat = os.path.join( deep2_dir, "zcat.deep2.dr4.v4.LFcatalogTC.Planck15.spm.v2.fits" )
+path_2_deep2_cat = os.path.join( deep2_dir, "zcat.deep2.dr4.v4.LFcatalogTC.Planck13.spm.v2.fits" )
 
 # OPENS THE CATALOGS
 deep2   = fits.open(path_2_deep2_cat)[1].data
@@ -110,7 +110,7 @@ cosmos = fits.open(path_2_cosmos_cat)[1].data
 def get_basic_stat_DR14(catalog, z_name, z_err_name, class_name, zwarning,  zflg_val, prefix, err_max):
     catalog_zOk =(catalog[z_err_name] > 0.) & (catalog[z_name] > catalog[z_err_name])  & (catalog[class_name]=='GALAXY')  & (catalog[zwarning]==zflg_val)
     catalog_stat = (catalog_zOk) & (catalog[z_name] > z_min) & (catalog[z_name] < z_max) 
-    catalog_sel = (catalog_stat) & (catalog[prefix+'stellar_mass'] < 10**14. ) & (catalog[prefix+'stellar_mass'] > 0 )  & (catalog[prefix+'stellar_mass'] > catalog[prefix+'stellar_mass_low'] ) & (catalog[prefix+'stellar_mass'] < catalog[prefix+'stellar_mass_up'] ) & ( - n.log10(catalog[prefix+'stellar_mass_low'])  + n.log10(catalog[prefix+'stellar_mass_up']) < err_max )
+    catalog_sel = (catalog_stat) & (catalog[prefix+'stellar_mass'] < 10**14. ) & (catalog[prefix+'stellar_mass'] > 0 )  & (catalog[prefix+'stellar_mass'] > catalog[prefix+'stellar_mass_low_1sig'] ) & (catalog[prefix+'stellar_mass'] < catalog[prefix+'stellar_mass_up_1sig'] ) & ( - n.log10(catalog[prefix+'stellar_mass_low_1sig'])  + n.log10(catalog[prefix+'stellar_mass_up_1sig']) < err_max )
     m_catalog = n.log10(catalog[prefix+'stellar_mass'])
     w_catalog =  n.ones_like(catalog[prefix+'stellar_mass'])
     return catalog_sel, m_catalog, w_catalog
@@ -137,36 +137,39 @@ mbins = n.arange(8.7,12.5,dlog10m)
 def plot_smf_b(IMF="Chabrier_ELODIE_", err_max=0.4):
 	boss_sel, boss_m, boss_w = get_basic_stat_DR14(boss, 'Z_NOQSO', 'Z_ERR_NOQSO', 'CLASS_NOQSO', 'ZWARNING_NOQSO', 0., IMF, err_max)
 	x, y, ye = get_hist(boss_m[boss_sel], weights = boss_w[boss_sel]/(dlog10m*n.log(10)*area_boss*volume_per_deg2_val), mbins = mbins)
-	sel = (y>0)&(ye>0)&(y>2*ye)
-	return x[sel], y[sel], ye[sel]
+	#sel = (y>0)&(ye>0)&(y>2*ye)
+	return x, y, ye #x[sel], y[sel], ye[sel]
 	#p.errorbar(x, y, yerr = ye, label=IMF[:-1], lw=1)
 
 def plot_smf_s(IMF="Chabrier_ELODIE_", err_max=0.4):
 	boss_sel, boss_m, boss_w = get_basic_stat_DR14(sdss, 'Z', 'Z_ERR', 'CLASS', 'ZWARNING', 0., IMF, err_max)
 	x, y, ye = get_hist(boss_m[boss_sel], weights = boss_w[boss_sel]/(dlog10m*n.log(10)*area_sdss*volume_per_deg2_val), mbins = mbins)
 	sel = (y>0)&(ye>0)&(y>2*ye)
-	return x[sel], y[sel], ye[sel]
+	return x, y, ye#x[sel], y[sel], ye[sel]
 	#p.errorbar(x, y, yerr = ye, label=IMF[:-1], lw=1)
 
 def plot_smf_d(IMF="Chabrier_ELODIE_", err_max=0.4, area_deep2=0.5):
 	boss_sel, boss_m, boss_w = get_basic_stat_DEEP2(deep2, IMF, err_max)
 	x, y, ye = get_hist(boss_m, weights = boss_w/(dlog10m*n.log(10)*area_deep2*volume_per_deg2_val), mbins = mbins)
 	sel = (y>0)&(ye>0)&(y>2*ye)
-	return x[sel], y[sel], ye[sel]
+	return x, y, ye#x[sel], y[sel], ye[sel]
 
 
 xa, ya, yea = plot_smf_b("Chabrier_ELODIE_", 0.2*2)
 xb, yb, yeb = plot_smf_b("Chabrier_MILES_", 0.2*2)
 xc, yc, yec = plot_smf_b("Chabrier_STELIB_", 0.2*2)
+#xc, yc, yec = xc[1:-1], yc[1:-1], yec[1:-1] 
 
 xd, yd, yed = plot_smf_s("Chabrier_ELODIE_", 0.2*2)
 xe, ye, yee = plot_smf_s("Chabrier_MILES_", 0.2*2)
 xf, yf, yef = plot_smf_s("Chabrier_STELIB_", 0.2*2)
+#xf, yf, yef = xf[2:], yf[2:], yef[2:]
 
 xg, yg, yeg = plot_smf_d("Chabrier_ELODIE_", 0.2*2, area_deep2=area_deep2)
 xh, yh, yeh = plot_smf_d("Chabrier_MILES_", 0.2*2, area_deep2=area_deep2)
+#xh, yh, yeh = xh[:-1], yh[:-1], yeh[:-1]
 xi, yi, yei = plot_smf_d("Chabrier_STELIB_", 0.2*2, area_deep2=area_deep2)
-
+#xi, yi, yei = xi[:-1], yi[:-1], yei[:-1] 
 p.figure(1, (4.5,4.5))
 p.axes([0.19,0.17,0.74,0.72])
 p.fill_between( mbins, y1=smf01(10**mbins)*0.77, y2=smf01(10**mbins)*1.23, color='g', alpha=0.5)
@@ -179,14 +182,16 @@ p.plot(mbins, smf01(10**mbins), label='Ilbert 13', color='g')
 p.plot(logm_m13_05[:-3],  10**smf_m13_05[:-3], color='m', label='M13 z=0.5') 
 #p.plot(logm_m13_065, 10**smf_m13_65, label='M13 z=0.65')
 
+print(ya, yb, yc)
+print(yea, yeb, yec)
 p.fill_between( xa, y1=n.min([ya-yea, yb-yeb, yc-yec], axis=0), y2=n.max([ya+yea, yb+yeb, yc+yec], axis=0), color='r', alpha=0.5)
 p.plot(xa, n.mean([ya, yb, yc], axis=0), label=r'BOSS, eBOSS', color='r')
 
-p.fill_between( xa, y1=n.min([yd-yed, ye-yee, yf-yef], axis=0), y2=n.max([yd+yed, ye+yee, yf+yef], axis=0), color='b', alpha=0.5)
-p.plot(xa, n.mean([yd, ye, yf], axis=0), label=r'SDSS', color='b')
+p.fill_between( xd, y1=n.min([yd-yed, ye-yee, yf-yef], axis=0), y2=n.max([yd+yed, ye+yee, yf+yef], axis=0), color='b', alpha=0.5)
+p.plot(xd, n.mean([yd, ye, yf], axis=0), label=r'SDSS', color='b')
 
-p.fill_between( xa, y1=n.min([yg-yeg, yh-yeh, yi-yei], axis=0), y2=n.max([yg+yeg, yh+yeh, yi+yei], axis=0), color='k', alpha=0.5)
-p.plot(xa, n.mean([yg, yh, yi], axis=0), label=r'DEEP2', color='k')
+p.fill_between( xg, y1=n.min([yg-yeg, yh-yeh, yi-yei], axis=0), y2=n.max([yg+yeg, yh+yeh, yi+yei], axis=0), color='k', alpha=0.5)
+p.plot(xg, n.mean([yg, yh, yi], axis=0), label=r'DEEP2', color='k')
 p.title('Chabrier IMF '+str(z_min)+'<z<'+str(z_max))
 p.xlabel(r"$\log_{10}$ (M / $M_\odot$ )")
 p.ylabel(r'$\Phi(M)$ [Mpc$^{-3}$ dex$^{-1}$]')
@@ -195,7 +200,7 @@ p.legend(loc=6, frameon = False)
 p.ylim((1e-8, 1e-2))
 p.xlim((9.5, 12.2))
 p.grid()
-p.savefig(os.path.join(out_dir, "firefly_SMF_BOSS_"+str(z_min)+'_z_'+str(z_max)+".jpg" ))
+p.savefig(os.path.join(out_dir, "firefly_SMF_BOSS_"+str(z_min)+'_z_'+str(z_max)+".png" ))
 p.clf()
 
 sys.exit()

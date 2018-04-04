@@ -34,21 +34,21 @@ path_2_cosmos_cat = os.path.join( cosmos_dir, "COSMOS2015_Laigle+_v1.1.fits.gz")
 
 # FIREFLY CATALOGS
 # SDSS data and catalogs
-path_2_spall_sdss_dr14_cat = os.path.join( os.environ['HOME'], 'SDSS', '26', 'catalogs', "specObj-SDSS-dr14.fits" )
-path_2_spall_boss_dr14_cat = os.path.join( os.environ['HOME'], 'SDSS', 'v5_10_0', 'catalogs', "specObj-BOSS-dr14.fits" )
-path_2_sdss_cat = os.path.join(  os.environ['HOME'], 'SDSS', '26', 'catalogs', "FireFly.fits" )
-path_2_eboss_cat = os.path.join(  os.environ['HOME'], 'SDSS', 'v5_10_0', 'catalogs', "FireFly.fits" )
+#path_2_spall_sdss_dr14_cat = os.path.join( os.environ['OBS_REPO'], 'SDSS', '26', 'catalogs', "specObj-SDSS-dr14.fits" )
+#path_2_spall_boss_dr14_cat = os.path.join( os.environ['OBS_REPO'], 'SDSS', 'v5_10_0', 'catalogs', "specObj-BOSS-dr14.fits" )
+path_2_sdss_cat = os.path.join(  os.environ['OBS_REPO'], 'SDSS', '26', 'catalogs', "FireFly.fits" )
+path_2_eboss_cat = os.path.join(  os.environ['OBS_REPO'], 'SDSS', 'v5_10_0', 'catalogs', "FireFly.fits" )
 
 # DEEP SURVEYS
 deep2_dir = os.path.join(os.environ['OBS_REPO'], 'DEEP2')
-path_2_deep2_cat = os.path.join( deep2_dir, "zcat.deep2.dr4.v4.LFcatalogTC.Planck13.spm.fits" )
+path_2_deep2_cat = os.path.join( deep2_dir, "zcat.deep2.dr4.v4.LFcatalogTC.Planck13.spm.v3.fits.gz" )
 
-vipers_dir = os.path.join(os.environ['OBS_REPO'], 'VIPERS')
-path_2_vipers_cat = os.path.join( vipers_dir, "VIPERS_W14_summary_v2.1.linesFitted.spm.fits" )
+#vipers_dir = os.path.join(os.environ['OBS_REPO'], 'VIPERS')
+#path_2_vipers_cat = os.path.join( vipers_dir, "VIPERS_W14_summary_v2.1.linesFitted.spm.fits" )
 
-vvds_dir = os.path.join(os.environ['OBS_REPO'], 'VVDS')
-path_2_vvdsW_cat = os.path.join( vvds_dir, "catalogs", "VVDS_WIDE_summary.v1.spm.fits" )
-path_2_vvdsD_cat = os.path.join( vvds_dir, "catalogs", "VVDS_DEEP_summary.v1.spm.fits" )
+#vvds_dir = os.path.join(os.environ['OBS_REPO'], 'VVDS')
+#path_2_vvdsW_cat = os.path.join( vvds_dir, "catalogs", "VVDS_WIDE_summary.v1.spm.fits" )
+#path_2_vvdsD_cat = os.path.join( vvds_dir, "catalogs", "VVDS_DEEP_summary.v1.spm.fits" )
 
 # path_2_F16_cat = os.path.join( sdss_dir, "RA_DEC_z_w_fluxOII_Mstar_grcol_Mr_lumOII.dat" )
 
@@ -62,8 +62,8 @@ print("Loads sdss")
 sdss   = fits.open(path_2_sdss_cat)[1].data
 print("Loads boss")
 boss   = fits.open(path_2_eboss_cat)[1].data
-print("Loads cosmos")
-cosmos = fits.open(path_2_cosmos_cat)[1].data
+#print("Loads cosmos")
+#cosmos = fits.open(path_2_cosmos_cat)[1].data
 
 #dr14_sdss = fits.open(path_2_spall_sdss_dr14_cat)
 #dr14_boss = fits.open(path_2_spall_boss_dr14_cat)

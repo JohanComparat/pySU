@@ -42,7 +42,7 @@ path_2_eboss_cat = os.path.join( sdss_dir, "FireflyGalaxyEbossDR14.fits" )
 
 # DEEP SURVEYS
 deep2_dir = os.path.join(os.environ['OBS_REPO'], 'DEEP2')
-path_2_deep2_cat = os.path.join( deep2_dir, "zcat.deep2.dr4.v4.LFcatalogTC.Planck15.spm.v2.fits" )
+path_2_deep2_cat = os.path.join( deep2_dir, "zcat.deep2.dr4.v4.LFcatalogTC.Planck13.spm.v2.fits" )
 
 vipers_dir = os.path.join(os.environ['OBS_REPO'], 'VIPERS')
 path_2_vipers_cat = os.path.join( vipers_dir, "VIPERS_W14_summary_v2.1.linesFitted.spm.fits" )
@@ -62,11 +62,9 @@ deep2   = fits.open(path_2_deep2_cat)[1].data
 #boss   = fits.open(path_2_eboss_cat)[1].data
 cosmos = fits.open(path_2_cosmos_cat)[1].data
 
-
-
 lineSelection = lambda catalog, lineName : (catalog[lineName+'_flux']>0.)& (catalog[lineName+'_fluxErr'] >0.) & (catalog[lineName+'_flux'] > SNlimit * catalog[lineName+'_fluxErr']) # & (catalog[lineName+'_luminosity']>0)& (catalog[lineName+'_luminosity']<1e50)
 
-out_dir = os.path.join(os.environ['OBS_REPO'], 'spm', 'results', 'mass_function_v1')
+out_dir = os.path.join('/data42s/comparat/firefly/v1_1_0/figures')
 
 smf_ilbert13 = lambda M, M_star, phi_1s, alpha_1s, phi_2s, alpha_2s : ( phi_1s * (M/M_star) ** alpha_1s + phi_2s * (M/M_star) ** alpha_2s ) * n.e ** (-M/M_star) * (M/ M_star)
 
@@ -76,9 +74,9 @@ zmin, zmax, N, M_comp, M_star, phi_1s, alpha_1s, phi_2s, alpha_2s, log_rho_s = n
 #smfs_ilbert13 = n.array([lambda mass : smf_ilbert13( mass , 10**M_star[ii], phi_1s[ii]*10**(-3), alpha_1s[ii], phi_2s[ii]*10**(-3), alpha_2s[ii] ) for ii in range(len(M_star)) ])
 
 smf01 = lambda mass : smf_ilbert13( mass , 10**M_star[0], phi_1s[0]*10**(-3), alpha_1s[0], phi_2s[0]*10**(-3), alpha_2s[0] )
-print 10**M_star[0], phi_1s[0]*10**(-3), alpha_1s[0], phi_2s[0]*10**(-3), alpha_2s[0]
+#print 10**M_star[0], phi_1s[0]*10**(-3), alpha_1s[0], phi_2s[0]*10**(-3), alpha_2s[0]
 smf08 = lambda mass : smf_ilbert13( mass , 10**M_star[2], phi_1s[2]*10**(-3), alpha_1s[2], phi_2s[2]*10**(-3), alpha_2s[2] )
-print 10**M_star[2], phi_1s[2]*10**(-3), alpha_1s[2], phi_2s[2]*10**(-3), alpha_2s[2] 
+#print 10**M_star[2], phi_1s[2]*10**(-3), alpha_1s[2], phi_2s[2]*10**(-3), alpha_2s[2] 
 
 volume_per_deg2 = ( aa.comoving_volume(z_max) -  aa.comoving_volume(z_min) ) * n.pi / 129600.
 volume_per_deg2_val = volume_per_deg2.value
@@ -112,7 +110,7 @@ def get_basic_stat(catalog, z_name, z_flg, name, zflg_min, prefix):
     l_hb = lineSelection(catalog, "H1_4862") & catalog_stat
     m_catalog = n.log10(catalog[prefix+'stellar_mass'])
     w_catalog = 1. / (catalog['TSR'] * catalog['SSR'])
-    print name, '& $',len(catalog), "$ & $", ld(catalog_zOk),"$ & $", ld(catalog_stat), "\\;(", ld(catalog_sel),")$ & $", ld(l_o2), "\\;(", ld(catalog_sel & l_o2),")$ & $", ld(l_o3), "\\;(", ld(catalog_sel & l_o3),")$ & $", ld(l_hb), "\\;(", ld(catalog_sel & l_hb),")$ \\\\"
+    #print name, '& $',len(catalog), "$ & $", ld(catalog_zOk),"$ & $", ld(catalog_stat), "\\;(", ld(catalog_sel),")$ & $", ld(l_o2), "\\;(", ld(catalog_sel & l_o2),")$ & $", ld(l_o3), "\\;(", ld(catalog_sel & l_o3),")$ & $", ld(l_hb), "\\;(", ld(catalog_sel & l_hb),")$ \\\\"
     return catalog_sel, m_catalog, w_catalog, l_o2, l_o3, l_hb
     
 def get_hist(masses, weights, mbins):
@@ -242,24 +240,24 @@ def plotMF_raw_many(prefixs=["Chabrier_ELODIE_"]):
 		yso2D_l.append(y-ye)
 	
 	
-	print n.array(ys_l).shape, n.min(n.array(ys_l), axis=0).shape
+	#print n.array(ys_l).shape, n.min(n.array(ys_l), axis=0).shape
 	#p.fill_between(x, y1=n.min(n.array(ys_l), axis=0),   y2=n.max(n.array(ys_u), axis=0), alpha=0.5, color='r')
 	p.plot(x, (n.median(n.array(ys_l), axis=0) + n.median(n.array(ys_u), axis=0))/2., color='r', label='DEEP2')
 	#p.plot(x, n.median(n.array(ys_l), axis=0), ls='dashed', alpha=0.5, color='r')
 	#p.plot(x, n.median(n.array(ys_l), axis=0), ls='dashed', alpha=0.5, color='r')
 	
 	#p.fill_between(x, y1=n.min(n.array(yso2_l), axis=0), y2=n.max(n.array(yso2_u), axis=0), alpha=0.5, color='b')
-	p.plot(x, (n.median(n.array(yso2_l), axis=0)+n.median(n.array(yso2_u), axis=0))/2., color='b', label='L[OII]>'+str(lO2_min) )
+	p.plot(x, (n.median(n.array(yso2_l), axis=0)+n.median(n.array(yso2_u), axis=0))/2., color='b', label='L[OII]>'+str(n.round(lO2_min,1)) )
 	#p.plot(x, n.median(n.array(yso2_l), axis=0), ls='dashed', color='b' ) 
 	#p.plot(x, n.median(n.array(yso2_u), axis=0), ls='dashed', color='b' )
 	
 	#p.fill_between(x, y1=n.min(n.array(yso2_l), axis=0), y2=n.max(n.array(yso2_u), axis=0), alpha=0.5, color='b')
-	p.plot(x, (n.median(n.array(yso2P_l), axis=0)+n.median(n.array(yso2P_u), axis=0))/2., color='g', label='L[OII]>'+str(lO2_min+0.2) )
+	p.plot(x, (n.median(n.array(yso2P_l), axis=0)+n.median(n.array(yso2P_u), axis=0))/2., color='g', label='L[OII]>'+str(n.round(lO2_min+0.2,1)) )
 	#p.plot(x, n.median(n.array(yso2P_l), axis=0), ls='dashed', color='b' ) 
 	#p.plot(x, n.median(n.array(yso2P_u), axis=0), ls='dashed', color='b' )
 	
 	#p.fill_between(x, y1=n.min(n.array(yso2_l), axis=0), y2=n.max(n.array(yso2_u), axis=0), alpha=0.5, color='b')
-	p.plot(x, (n.median(n.array(yso2D_l), axis=0)+n.median(n.array(yso2D_u), axis=0))/2., color='m', label='L[OII]>'+str(lO2_min+0.4) )
+	p.plot(x, (n.median(n.array(yso2D_l), axis=0)+n.median(n.array(yso2D_u), axis=0))/2., color='m', label='L[OII]>'+str(n.round(lO2_min+0.4,1)) )
 	#p.plot(x, n.median(n.array(yso2P_l), axis=0), ls='dashed', color='b' ) 
 	#p.plot(x, n.median(n.array(yso2P_u), axis=0), ls='dashed', color='b' )
 
@@ -274,10 +272,11 @@ def plotMF_raw_many(prefixs=["Chabrier_ELODIE_"]):
 	p.ylim((1e-8, 1e-2))
 	p.xlim((8.5, 12.))
 	p.grid()
-	p.savefig(os.path.join(out_dir, "all_contour_SMF_raw_"+str(lO2_min) +"_"+str(z_min)+'_z_'+str(z_max)+".jpg" ))
+	p.savefig(os.path.join(out_dir, "all_contour_SMF_raw_"+str(lO2_min) +"_"+str(z_min)+'_z_'+str(z_max)+".png" ))
 	p.clf()
 
-plotMF_raw_many(["Chabrier_ELODIE_" ,"Chabrier_MILES_","Chabrier_STELIB_" ])#,"Kroupa_ELODIE_","Kroupa_MILES_", "Kroupa_STELIB_","Salpeter_ELODIE_" ,"Salpeter_MILES_","Salpeter_STELIB_"])
+#plotMF_raw_many(["Chabrier_ELODIE_"])
+plotMF_raw_many(["Chabrier_ELODIE_" ,"Chabrier_MILES_", "Chabrier_STELIB_" ])#,"Kroupa_ELODIE_","Kroupa_MILES_", "Kroupa_STELIB_","Salpeter_ELODIE_" ,"Salpeter_MILES_","Salpeter_STELIB_"])
 
 #plotMF_raw_many(["Chabrier_ELODIE_" ,"Chabrier_MILES_","Chabrier_STELIB_" ,"Kroupa_ELODIE_","Kroupa_MILES_", "Kroupa_STELIB_","Salpeter_ELODIE_" ,"Salpeter_MILES_","Salpeter_STELIB_"])
 

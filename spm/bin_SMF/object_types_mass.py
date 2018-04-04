@@ -45,7 +45,8 @@ cosmos = fits.open(path_2_cosmos_cat)[1].data
 """
 from lib_spm import *
 
-out_dir = os.path.join(os.environ['OBS_REPO'], 'spm', 'results', 'mass-redshift-presentation')
+#out_dir = os.path.join('/data42s/comparat/firefly/v1_1_0/figures', 'mass-redshift-presentation')
+out_dir = os.path.join(os.environ['HOME'], 'Documents', 'firefly')
 
 imf = imfs[0]
 stellar_mass = imf+'stellar_mass'
@@ -82,9 +83,9 @@ zz_04_sdss = sdss['Z'][ok_sdss_04]
 
 z_bins = n.arange(0,1.5,0.05)
 m_bins = n.arange(6.5, 13, 0.2)
-XX, YY = n.meshgrid(z_bins, m_bins)
+XX, YY = n.meshgrid(z_bins[:-1]+0.05/2., m_bins[:-1]+0.2/2.)
 
-p.figure(1, (4.5, 4.5))
+p.figure(0, (5.5, 4.5))
 p.axes([0.2,0.2,0.7,0.7])
 HH = n.histogram2d(zz_02, Ms_02, bins=[z_bins, m_bins])[0].T
 p.scatter(XX[HH>10], YY[HH>10], c=n.log10(HH[HH>10]), s=40, edgecolors='none', marker='s' )

@@ -36,9 +36,9 @@ python create_table_delta_mag.py boss
 
 cp /data36s/comparat/spm/results/*.tex /data42s/comparat/firefly/v1_1_0/tables/
 cd /data42s/comparat/firefly/v1_1_0/tables/
-chmod o+r*
+chmod o+r * 
 
-python create_table_completeness.py deep2
+#python create_table_completeness.py deep2
 
 # writes here os.environ['OBS_REPO'], 'spm', 'results', "table_1.tex" and "table_2.tex" and *.tex for the appendix tables.
 
@@ -51,9 +51,9 @@ python3.4 object_types_mass.py
 # second row
 python3.4 object_types_SNMEDIANALL.py
 
-rm /home/comparat/wwwDir/firefly_data/dr14/v1_1_0/plots/*.png
-cp /data36s/comparat/spm/results/mass-redshift-presentation/*.png /home/comparat/wwwDir/firefly_data/dr14/v1_1_0/plots/
-cp /data36s/comparat/spm/results/mass-snr/*.png /home/comparat/wwwDir/firefly_data/dr14/v1_1_0/plots/
+#rm /home/comparat/wwwDir/firefly_data/dr14/v1_1_0/plots/*.png
+#cp /data36s/comparat/spm/results/mass-redshift-presentation/*.png /home/comparat/wwwDir/firefly_data/dr14/v1_1_0/plots/
+#cp /data36s/comparat/spm/results/mass-snr/*.png /home/comparat/wwwDir/firefly_data/dr14/v1_1_0/plots/
 
 # figure 2 is an example spectrum created by firefly code
 
@@ -67,5 +67,6 @@ python mass_density.py 0.8 1.1
 
 # Figure 5 stellar mass functions probed by [OII] emitters in DEEP2.
 python smf_plot.py 0.78 0.83 41.8
-
+python smf_plot.py 0.83 1.03 41.8
+chmod o+r /data42s/comparat/firefly/v1_1_0/figures/*
 

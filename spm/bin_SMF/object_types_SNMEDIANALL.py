@@ -10,7 +10,8 @@ from lib_spm import *
 ##matplotlib.use('Agg')
 #import matplotlib.pyplot as p
 
-out_dir = os.path.join('/data42s/comparat', 'data2/firefly/v1_1_0/figures', 'mass-snr')
+#out_dir = os.path.join('/data42s/comparat/firefly/v1_1_0/figures', 'mass-snr')
+out_dir = os.path.join(os.environ['HOME'], 'Documents', 'firefly', 'mass-snr')
 
 imfs = ["Chabrier_ELODIE_", "Chabrier_MILES_", "Chabrier_STELIB_", "Kroupa_ELODIE_", "Kroupa_MILES_", "Kroupa_STELIB_",  "Salpeter_ELODIE_", "Salpeter_MILES_", "Salpeter_STELIB_" ]
 
