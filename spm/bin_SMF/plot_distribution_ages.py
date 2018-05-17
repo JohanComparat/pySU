@@ -27,11 +27,11 @@ for imf in imfs:
 
 p.ylabel('normed cumulative distribution')
 
-p.xlabel('log age')
+p.xlabel(r'\log_{10}(Age/yr)$')
 #p.yscale('log')
 p.title('eBOSS')
 p.legend(loc=2, frameon = False, fontsize=11)
-p.xlim((6, 11))
+p.xlim((7.2 10.3))
 p.grid()
 p.savefig(os.path.join(out_dir, "age_lightW_distribution_eboss.png" ))
 p.clf()
@@ -58,11 +58,11 @@ for imf in imfs:
 
 p.ylabel('normed cumulative distribution')
 
-p.xlabel('log age')
+p.xlabel(r'\log_{10}(Age/yr)$')
 #p.yscale('log')
 p.title('SDSS')
 p.legend(loc=2, frameon = False, fontsize=11)
-p.xlim((6, 11))
+p.xlim((7.2 10.3))
 p.grid()
 p.savefig(os.path.join(out_dir, "age_lightW_distribution_sdss.png" ))
 p.clf()
@@ -88,11 +88,11 @@ for imf in imfs:
 
 p.ylabel('normed cumulative distribution')
 
-p.xlabel('log age')
+p.xlabel(r'\log_{10}(Age/yr)$')
 #p.yscale('log')
 p.title('DEEP2')
 p.legend(loc=2, frameon = False, fontsize=11)
-p.xlim((6, 11))
+p.xlim((7.2 10.3))
 p.grid()
 p.savefig(os.path.join(out_dir, "age_lightW_distribution_deep2.png" ))
 p.clf()
@@ -129,11 +129,11 @@ for imf in imfs:
 
 p.ylabel('normed cumulative distribution')
 
-p.xlabel('log age')
+p.xlabel(r'\log_{10}(Age/yr)$')
 #p.yscale('log')
 p.title('eBOSS')
 p.legend(loc=2, frameon = False, fontsize=11)
-p.xlim((6, 11))
+p.xlim((7.2 10.3))
 p.grid()
 p.savefig(os.path.join(out_dir, "age_massW_distribution_eboss.png" ))
 p.clf()
@@ -160,11 +160,11 @@ for imf in imfs:
 
 p.ylabel('normed cumulative distribution')
 
-p.xlabel('log age')
+p.xlabel(r'\log_{10}(Age/yr)$')
 #p.yscale('log')
 p.title('SDSS')
 p.legend(loc=2, frameon = False, fontsize=11)
-p.xlim((6, 11))
+p.xlim((7.2 10.3))
 p.grid()
 p.savefig(os.path.join(out_dir, "age_massW_distribution_sdss.png" ))
 p.clf()
@@ -190,11 +190,11 @@ for imf in imfs:
 
 p.ylabel('normed cumulative distribution')
 
-p.xlabel('log age')
+p.xlabel(r'\log_{10}(Age/yr)$')
 #p.yscale('log')
 p.title('DEEP2')
 p.legend(loc=2, frameon = False, fontsize=11)
-p.xlim((6, 11))
+p.xlim((7.2 10.3))
 p.grid()
 p.savefig(os.path.join(out_dir, "age_massW_distribution_deep2.png" ))
 p.clf()

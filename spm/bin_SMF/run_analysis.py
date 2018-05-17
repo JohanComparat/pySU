@@ -48,11 +48,16 @@ chmod o+r *
 # Figure 1 
 # first row
 python3.4 object_types_mass.py
+# second row
+python3.4 object_types_SNMEDIANALL.py
+
+# Figure 2
 python3.4 plot_distribution_masses.py
 python3.4 plot_distribution_ages.py
 python3.4 plot_distribution_metal.py
-# second row
-python3.4 object_types_SNMEDIANALL.py
+python3.4 plot_differences_age.py
+# Figure 3
+
 
 #rm /home/comparat/wwwDir/firefly_data/dr14/v1_1_0/plots/*.png
 #cp /data36s/comparat/spm/results/mass-redshift-presentation/*.png /home/comparat/wwwDir/firefly_data/dr14/v1_1_0/plots/
