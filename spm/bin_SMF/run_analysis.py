@@ -48,6 +48,9 @@ chmod o+r *
 # Figure 1 
 # first row
 python3.4 object_types_mass.py
+python3.4 plot_distribution_masses.py
+python3.4 plot_distribution_ages.py
+python3.4 plot_distribution_metal.py
 # second row
 python3.4 object_types_SNMEDIANALL.py
 
