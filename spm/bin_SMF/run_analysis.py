@@ -56,6 +56,8 @@ python3.4 plot_distribution_masses.py
 python3.4 plot_distribution_ages.py
 python3.4 plot_distribution_metal.py
 python3.4 plot_differences_age.py
+python3.4 plot_distribution_masses_imf_diff.py
+python3.4 plot_age_metal_plane.py
 # Figure 3
 
 

@@ -27,7 +27,7 @@ for imf in imfs:
 
 p.ylabel('normed cumulative distribution')
 
-p.xlabel(r'\log_{10}(Age/yr)$')
+p.xlabel(r'$\log_{10}(Age/yr)$')
 #p.yscale('log')
 p.title('eBOSS')
 p.legend(loc=2, frameon = False, fontsize=11)
@@ -58,7 +58,7 @@ for imf in imfs:
 
 p.ylabel('normed cumulative distribution')
 
-p.xlabel(r'\log_{10}(Age/yr)$')
+p.xlabel(r'$\log_{10}(Age/yr)$')
 #p.yscale('log')
 p.title('SDSS')
 p.legend(loc=2, frameon = False, fontsize=11)
@@ -88,7 +88,7 @@ for imf in imfs:
 
 p.ylabel('normed cumulative distribution')
 
-p.xlabel(r'\log_{10}(Age/yr)$')
+p.xlabel(r'$\log_{10}(Age/yr)$')
 #p.yscale('log')
 p.title('DEEP2')
 p.legend(loc=2, frameon = False, fontsize=11)
@@ -129,7 +129,7 @@ for imf in imfs:
 
 p.ylabel('normed cumulative distribution')
 
-p.xlabel(r'\log_{10}(Age/yr)$')
+p.xlabel(r'$\log_{10}(Age/yr)$')
 #p.yscale('log')
 p.title('eBOSS')
 p.legend(loc=2, frameon = False, fontsize=11)
@@ -160,7 +160,7 @@ for imf in imfs:
 
 p.ylabel('normed cumulative distribution')
 
-p.xlabel(r'\log_{10}(Age/yr)$')
+p.xlabel(r'$\log_{10}(Age/yr)$')
 #p.yscale('log')
 p.title('SDSS')
 p.legend(loc=2, frameon = False, fontsize=11)
@@ -190,7 +190,7 @@ for imf in imfs:
 
 p.ylabel('normed cumulative distribution')
 
-p.xlabel(r'\log_{10}(Age/yr)$')
+p.xlabel(r'$\log_{10}(Age/yr)$')
 #p.yscale('log')
 p.title('DEEP2')
 p.legend(loc=2, frameon = False, fontsize=11)

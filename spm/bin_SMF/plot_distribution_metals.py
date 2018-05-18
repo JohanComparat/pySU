@@ -25,8 +25,8 @@ for imf in imfs:
 
   p.hist(Ms_04_boss, bins = m_bins, histtype='step', label=imf[:-1], cumulative=True, normed=True )
 
-p.ylabel(r"N(dlogA=0.02)")
-p.xlabel(r'\log_{10}(Z/Z_\odot)$')
+p.ylabel(r"N(dlogZ=0.02)")
+p.xlabel(r'$\log_{10}(Z/Z_\odot)$')
 #p.yscale('log')
 p.title('eBOSS')
 p.legend(loc=2, frameon = False, fontsize=11)
@@ -55,8 +55,8 @@ for imf in imfs:
 
   p.hist(Ms_04_sdss, bins = m_bins, histtype='step', label=imf[:-1] , cumulative=True, normed=True )
 
-p.ylabel(r"N(dlogA=0.02)")
-p.xlabel(r'\log_{10}(Z/Z_\odot)$')
+p.ylabel(r"N(dlogZ=0.02)")
+p.xlabel(r'$\log_{10}(Z/Z_\odot)$')
 #p.yscale('log')
 p.title('SDSS')
 p.legend(loc=2, frameon = False, fontsize=11)
@@ -85,7 +85,7 @@ for imf in imfs:
 
 
 p.ylabel('normed cumulative distribution')
-p.xlabel(r'\log_{10}(Z/Z_\odot)$')
+p.xlabel(r'$\log_{10}(Z/Z_\odot)$')
 #p.yscale('log')
 p.title('DEEP2')
 p.legend(loc=2, frameon = False, fontsize=11)
@@ -126,7 +126,7 @@ for imf in imfs:
 
 p.ylabel('normed cumulative distribution')
 
-p.xlabel(r'\log_{10}(Z/Z_\odot)$')
+p.xlabel(r'$\log_{10}(Z/Z_\odot)$')
 #p.yscale('log')
 p.title('eBOSS')
 p.legend(loc=2, frameon = False, fontsize=11)
@@ -157,7 +157,7 @@ for imf in imfs:
 
 p.ylabel('normed cumulative distribution')
 
-p.xlabel(r'\log_{10}(Z/Z_\odot)$')
+p.xlabel(r'$\log_{10}(Z/Z_\odot)$')
 #p.yscale('log')
 p.title('SDSS')
 p.legend(loc=2, frameon = False, fontsize=11)
@@ -187,7 +187,7 @@ for imf in imfs:
 
 p.ylabel('normed cumulative distribution')
 
-p.xlabel(r'\log_{10}(Z/Z_\odot)$')
+p.xlabel(r'$\log_{10}(Z/Z_\odot)$')
 #p.yscale('log')
 p.title('DEEP2')
 p.legend(loc=2, frameon = False, fontsize=11)
