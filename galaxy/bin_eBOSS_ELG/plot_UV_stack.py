@@ -41,7 +41,7 @@ for specList in dataList_UV:
 
 p.legend(frameon=False)
 p.tight_layout()
-p.savefig(specList+".png")
+p.savefig(join(os.environ['HOME'], "SDSS/lss/catalogs/3", "eboss-elg_"+qty+".UVstack")+".png")
 p.clf()
 
 
@@ -61,5 +61,5 @@ for specList in dataList_UV:
 
 p.legend(frameon=False)
 p.tight_layout()
-p.savefig(specList+".png")
+p.savefig(join(os.environ['HOME'], "SDSS/lss/catalogs/3", "eboss-elg_"+qty+".stack")+".png")
 p.clf()
