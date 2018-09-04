@@ -31,10 +31,10 @@ def plot_me(qty):
 	for specList in dataList_UV:
 		bn = os.path.basename(specList)[10:-8].split('_')
 		print(bn)
-		try:
-			bnl = str(n.round(bn[0],3))+'<z<'+str(n.round(bn[2],3))+', '+str(n.round(bn[3],3))+'<'+qty+'<'+str(n.round(bn[5],3))
-		except(TypeError):
-			bnl = str(n.round(bn[0],3))+'<z<'+str(n.round(bn[2],3))+', '+str(n.round(bn[3],3))+'<'+qty+'<'+str(n.round(bn[6],3))
+		if qty == 'fast_lmass':
+			bnl = str(n.round(float(bn[0]),3))+'<z<'+str(n.round(float(bn[2]),3))+', '+str(n.round(float(bn[3]),3))+'<'+qty+'<'+str(n.round(float(bn[6]),3))
+		else:
+			bnl = str(n.round(float(bn[0]),3))+'<z<'+str(n.round(float(bn[2]),3))+', '+str(n.round(float(bn[3]),3))+'<'+qty+'<'+str(n.round(float(bn[5]),3))
 		dd=fits.open(specList)[1].data
 		wl=dd['wavelength'         ]
 		s1 = (wl>2200)&(wl<2900)&(dd['NspectraPerPixel'   ]>0.5*n.max(dd['NspectraPerPixel'   ]))
