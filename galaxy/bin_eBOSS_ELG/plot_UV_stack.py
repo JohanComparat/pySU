@@ -16,9 +16,9 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as p
 
 qty = 'fast_lmass'
-qty = 'g'
-qty = 'gr'
-qty = 'rz'
+#qty = 'g'
+#qty = 'gr'
+#qty = 'rz'
 
 
 # create all stacks
