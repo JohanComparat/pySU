@@ -10,17 +10,48 @@ import glob
 import numpy as n
 import astropy.io.fits as fits
 import SpectraStackingEBOSS as sse
+from scipy.interpolate import interp1d
 
 # create all input files :
 path_2_cat = join(os.environ['HOME'],"SDSS/lss/catalogs/3", "eBOSS_ELG_clustering_ALL_v3.dat.fits")
 
-cat = fits.open(path_2_cat)
+cat = fits.open(path_2_cat)[1].data
 
-selection = 
-DATA = n.transpose([])
-# self.plates, self.mjds, self.fiberids, self.redshifts
-path_2_input = join(os.environ['HOME'],"SDSS/lss/catalogs/3", "XXX.asc")
-n.savetxt(path_2_input, DATA)
+Ngal = len(cat)
+N_in_stack = 10000
+N_factor = 3
+
+bin_2nd = n.arange(N_in_stack, N_in_stack*N_factor, N_in_stack)[1:]
+
+
+NNN,BBB=n.histogram(cat['Z'], bins=n.arange(0,4,0.001))
+N_CM = n.cumsum(NNN)
+
+N_bins = n.arange(N_in_stack*N_factor, N_CM.max() + N_in_stack*N_factor, N_in_stack*N_factor)
+
+itp = interp1d(N_CM, BBB[:-1]) 
+
+z_mins = n.hstack((0, itp(N_bins) ))[:-1]
+z_maxs = itp(N_bins)
+
+qty = 'fast_lmass'
+qty = 'g'
+qty = 'gr'
+qty = 'rz'
+
+for z0,z1 in zip(z_mins, z_maxs):
+	z_sel = (cat['Z']>z0) & (cat['Z']<z1)
+	qty_bins = n.arange(n.min(cat[qty][z_sel]), n.max(cat[qty][z_sel]), (-n.min(cat[qty][z_sel]) + n.max(cat[qty][z_sel]))/1000. )
+	itp2 = interp1d( n.histogram(cat[qty][z_sel], bins=qty_bins)[0], qty_bins[:-1] )
+	qty_mins = n.hstack((0, itp(bins_2nd) ))[:-1]
+	qty_maxs = itp(bins_2nd)
+	for q0,q1 in zip(qty_mins, qty_maxs):
+		selection = ( z_sel ) & (cat[qty]>q0)&(cat[qty]<q1)
+		DATA = n.transpose([ cat['plate'], cat['MJD'], cat['FIBERID'], cat['Z'] ]) [selection]
+		path_2_input = join(os.environ['HOME'],"SDSS/lss/catalogs/3", "eboss-elg"+str(z0)+"_z_"+str(z1)+"_"+str(q0)+"_"+qty+"_"+str(q1)+".asc")
+		print(path_2_input)
+		print(len(DATA))
+		n.savetxt(path_2_input, DATA)
 
 ## create all stacks
 #dataList = n.array(glob.glob(join(os.environ['HOME'],"SDSS/lss/catalogs/3", "*.asc")))
