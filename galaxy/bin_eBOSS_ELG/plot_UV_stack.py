@@ -27,7 +27,7 @@ def plot_me(qty):
 	
 	fig=p.figure(0,(7.2, 13.7), frameon=False)
 	
-	fig.add_subplot(311, xlim=((2240, 2410)))
+	fig.add_subplot(311, xlim=((2240, 2410)), ylim=((0,2)))
 	for specList in dataList_UV:
 		bn = os.path.basename(specList)[10:-8].split('_')
 		print(bn)
@@ -51,7 +51,7 @@ def plot_me(qty):
 	p.legend(frameon=False)
 	p.grid()
 
-	fig.add_subplot(312, ylabel=r'F/Fcont', xlim=((2570, 2640)))
+	fig.add_subplot(312, ylabel=r'F/Fcont', xlim=((2570, 2640)), ylim=((0,2)))
 	for specList in dataList_UV:
 		dd=fits.open(specList)[1].data
 		wl=dd['wavelength'         ]
@@ -68,7 +68,7 @@ def plot_me(qty):
 	p.grid()
 
 
-	fig.add_subplot(313, xlabel='wavelength [Angstrom, rest frame]', xlim=((2780, 2870)))
+	fig.add_subplot(313, xlabel='wavelength [Angstrom, rest frame]', xlim=((2780, 2870)), ylim=((0,2)))
 	for specList in dataList_UV:
 		dd=fits.open(specList)[1].data
 		wl=dd['wavelength'         ]
