@@ -41,17 +41,17 @@ def plot_me(qty):
 		p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], label= bnl, lw=0.7 )
 
 	for xx, nn in zip(line_list_abs, line_list_abs_names ):
-		p.plot(n.array([xx,xx]),n.array([0,1]), ls='dashed', color='k')
-		p.text(xx,0.7,nn,rotation=90)
+		p.plot(n.array([xx,xx]),n.array([0,1]), ls='dashed', color='k', lw=0.5)
+		p.text(xx,0.2,nn,rotation=90)
 
 	for xx, nn in zip(line_list_em, line_list_em_names ):
-		p.plot(n.array([xx,xx]),n.array([1,2]), ls='dashed', color='g')
-		p.text(xx,1.1,nn,rotation=90, color='g')
+		p.plot(n.array([xx,xx]),n.array([1,2]), ls='dashed', color='g', lw=0.5)
+		p.text(xx,1.4,nn,rotation=90, color='g')
 
 	p.legend(frameon=False)
 	p.grid()
 
-	fig.add_subplot(312, ylabel=r'Flux/Fcont]', xlim=((2570, 2640)))
+	fig.add_subplot(312, ylabel=r'F/Fcont', xlim=((2570, 2640)))
 	for specList in dataList_UV:
 		dd=fits.open(specList)[1].data
 		wl=dd['wavelength'         ]
@@ -59,12 +59,12 @@ def plot_me(qty):
 		p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], lw=0.7 )
 
 	for xx, nn in zip(line_list_abs, line_list_abs_names ):
-		p.plot(n.array([xx,xx]),n.array([0,1]), ls='dashed', color='k')
-		p.text(xx,0.7,nn,rotation=90)
+		p.plot(n.array([xx,xx]),n.array([0,1]), ls='dashed', color='k', lw=0.5)
+		p.text(xx,0.2,nn,rotation=90)
 
 	for xx, nn in zip(line_list_em, line_list_em_names ):
-		p.plot(n.array([xx,xx]),n.array([1,2]), ls='dashed', color='g')
-		p.text(xx,1.1,nn,rotation=90, color='g')
+		p.plot(n.array([xx,xx]),n.array([1,2]), ls='dashed', color='g', lw=0.5)
+		p.text(xx,1.4,nn,rotation=90, color='g')
 	p.grid()
 
 
@@ -76,12 +76,12 @@ def plot_me(qty):
 		p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], lw=0.7 )
 
 	for xx, nn in zip(line_list_abs, line_list_abs_names ):
-		p.plot(n.array([xx,xx]),n.array([0,1]), ls='dashed', color='k')
-		p.text(xx,0.7,nn,rotation=90)
+		p.plot(n.array([xx,xx]),n.array([0,1]), ls='dashed', color='k', lw=0.5)
+		p.text(xx,0.2,nn,rotation=90)
 
 	for xx, nn in zip(line_list_em, line_list_em_names ):
-		p.plot(n.array([xx,xx]),n.array([1,2]), ls='dashed', color='g')
-		p.text(xx,1.1,nn,rotation=90, color='g')
+		p.plot(n.array([xx,xx]),n.array([1,2]), ls='dashed', color='g', lw=0.5)
+		p.text(xx,1.4,nn,rotation=90, color='g')
 	
 	p.grid()
 
