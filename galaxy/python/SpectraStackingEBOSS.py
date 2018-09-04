@@ -15,8 +15,12 @@ from scipy.interpolate import interp1d
 
 maskLambda = n.loadtxt(os.path.join(os.environ['GIT_ARCHETYPES'],'data',"dr12-sky-mask.txt"), unpack=True)
 
+get_path_to_spectrum_v5_10_10 = lambda plate, mjd, fiberid : os.path.join(os.environ['HOME'], 'SDSS', 'v5_10_10', 'spectra', str(int(plate)).zfill(4), "spec-"+str(int(plate)).zfill(4)+"-"+str(int(mjd)).zfill(5)+"-"+str(int(fiberid)).zfill(4)+".fits" )
+
 get_path_to_spectrum_v5_10_0 = lambda plate, mjd, fiberid : os.path.join(os.environ['HOME'], 'SDSS', 'v5_10_0', 'spectra', str(int(plate)).zfill(4), "spec-"+str(int(plate)).zfill(4)+"-"+str(int(mjd)).zfill(5)+"-"+str(int(fiberid)).zfill(4)+".fits" )
+
 get_path_to_spectrum_v5_10_7 = lambda plate, mjd, fiberid : os.path.join(os.environ['HOME'], 'SDSS', 'v5_10_7', 'spectra', str(int(plate)).zfill(4), "spec-"+str(int(plate)).zfill(4)+"-"+str(int(mjd)).zfill(5)+"-"+str(int(fiberid)).zfill(4)+".fits" )
+
 get_path_to_spectrum_26 = lambda plate, mjd, fiberid : os.path.join(os.environ['HOME'], 'SDSS', '26', 'spectra', str(int(plate)).zfill(4), "spec-"+str(int(plate)).zfill(4)+"-"+str(int(mjd)).zfill(5)+"-"+str(int(fiberid)).zfill(4)+".fits" )
 
 class SpectraStackingEBOSS:
@@ -26,17 +30,19 @@ class SpectraStackingEBOSS:
 	:param Resolution: Resolution
 	:param out_file: where to output stacks
 	"""
-	def __init__(self, in_file, out_file, dLambda = 0.0001, dV=-9999.99):
+	def __init__(self, in_file, out_file, dLambda = 0.0001, dV=-9999.99, l_start=3.25, l_end=3.6):
 		print( "input list:", in_file )
 		self.in_file = in_file
 		self.plates, self.mjds, self.fiberids, self.redshifts = n.loadtxt(self.in_file, unpack=True)
 		self.out_file = out_file
 		self.dLambda = dLambda
-		self.wave= 10**n.arange(2.6, 4.0211892990699383, dLambda) # 1500,10500
+		#self.wave= 10**n.arange(2.6, 4.0211892990699383, dLambda) # 1500,10500
+		self.wave= 10**n.arange(l_start, l_end, dLambda) # 1500,10500
 		self.R = int(1/n.mean((self.wave[1:] -self.wave[:-1])/ self.wave[1:]))
 		print( "R=", n.median(self.R) )
 		self.dV = dV
 		self.survey="eBOSS"
+		self.N_angstrom_masked = 20.
 		#self.run2d = run2d
 		#self.run1d = self.run2d
 		#self.topdirBOSS = os.path.join(os.environ['BOSS_SPECTRO_REDUX'], run2d)
@@ -116,6 +122,41 @@ class SpectraStackingEBOSS:
 		self.fluxlErr=ivar[out_sel]**(-0.5)
 		self.wavelength = wave[out_sel] #/(1+z)
 
+	def fit_UV_continuum(self,x,y,yerr):
+		"""
+		We then mask out
+		absorption and emission features and fit a cubic polyno-
+		mial function through the rest of the spectrum. 
+		Using
+		the best-fit polynomial function as an estimate of the un-
+		derlying continuum, F lambda
+		we normalize the observed spectrum to obtain the continuum-normalized spectrum
+		"""					
+		self.bad_flags = np.ones(len(x))
+
+		# masking sky contaminated pixels
+		maskLambda = np.loadtxt(os.path.join(os.environ['GIT_SPM'],'data',"dr12-sky-mask.txt"), unpack=True)
+		ratio = np.min(abs(10000.*np.log10(np.outer(x, 1./maskLambda))), axis=1)
+		margin = 1.5
+		veto_sky = ( ratio <= margin )
+		
+		# UV mask
+		UV_mask = (x>2000)&(x<3600)
+		#lines_mask = 
+		#((x > 3728 - self.N_angstrom_masked) & (x < 3728 + self.N_angstrom_masked)) 
+		#| ((x > 5007 - self.N_angstrom_masked) & (x < 5007 + self.N_angstrom_masked)) 
+		#| ((x > 4861 - self.N_angstrom_masked) & (x < 4861 + self.N_angstrom_masked)) 
+		#| ((x > 6564 - self.N_angstrom_masked) & (x < 6564 + self.N_angstrom_masked)) 
+		# MASKING BAD DATA
+		bad_data = np.isnan(y) | np.isinf(y) | (y <= 0.0) | np.isnan(yerr) | np.isinf(yerr)
+		# creating new arrays
+		x = x[(UV_mask)&(veto_sky==False)&(bad_data==False)] 
+		y = y[(UV_mask)&(veto_sky==False)&(bad_data==False)] 
+		yerr = yerr[(UV_mask)&(veto_sky==False)&(bad_data==False)] 
+		
+		out=n.polyfit(x, y, 3, w=1/yerr)
+		return out
+
 	def stackSpectra(self):
 		"""
 		Function that constructs the stacks for a luminosity function. 
@@ -171,3 +212,62 @@ class SpectraStackingEBOSS:
 			os.remove(self.out_file)
 		print( "stack written to", self.out_file )
 		thdulist.writeto(self.out_file)
+
+	def stackSpectra_UVnormed(self):
+		"""
+		Function that constructs the stacks for a luminosity function. 
+		It loops over the list of spectra given in the catalog of the LF. 
+		First it sorts the catalog by the line luminosity. 
+		And then stacks the first Nspec, then the next Nspec together.
+		"""
+		# loop over the file with N sorted with luminosity
+		specMatrix, specMatrixErr, specMatrixWeight=[],[],[]
+		
+		for plate, mjd, fiber, redshift in zip(self.plates, self.mjds, self.fiberids, self.redshifts):
+			try:
+				#print(plate, mjd, fiber, redshift)
+				if plate > 3006 :
+					path_to_spectrum = get_path_to_spectrum_v5_10_10(plate, mjd, fiber)
+				else:
+					path_to_spectrum = get_path_to_spectrum_26(plate, mjd, fiber)
+					
+				if os.path.isfile(path_to_spectrum):
+					self.getSpectra(path_to_spectrum)
+					pts,ptsErr = self.convertSpectrum(redshift)
+					specMatrix.append(pts)
+					specMatrixErr.append(ptsErr)
+					weight=1.
+					specMatrixWeight.append(n.ones_like(pts)*weight)
+				else: # for ELG spectra in v5_10_7
+					path_to_spectrum = get_path_to_spectrum_v5_10_7(plate, mjd, fiber)
+					if os.path.isfile(path_to_spectrum):
+						self.getSpectra(path_to_spectrum)
+						pts,ptsErr = self.convertSpectrum(redshift)
+						pfit = fit_UV_continuum(self.wave, pts ,ptsErr)
+						Fcont = n.polyval(pfit, self.wave)
+						specMatrix.append(pts/Fcont)
+						specMatrixErr.append(ptsErr/Fcont)
+						weight=1.
+						specMatrixWeight.append(n.ones_like(pts)*weight)
+			except(ValueError):
+				print('value error !')
+
+		specMatrixWeight=n.array(specMatrixWeight)
+		specMatrix=n.array(specMatrix)
+		specMatrixErr=n.array(specMatrixErr)
+		print( "now stacks" )
+		wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel = self.stack_function( specMatrix ,specMatrixWeight)
+		cols = fits.ColDefs([wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel])
+		tbhdu = fits.BinTableHDU.from_columns(cols)
+		prihdr = fits.Header()
+		prihdr['author'] = "JC"
+		prihdr['survey'] = self.survey
+		prihdr['in_file'] = os.path.basename(self.in_file)[:-4]
+		prihdr['Nspec'] = len(self.plates)
+		prihdu = fits.PrimaryHDU(header=prihdr)
+		thdulist = fits.HDUList([prihdu, tbhdu])
+		if os.path.isfile(self.out_file):
+			os.remove(self.out_file)
+		print( "stack written to", self.out_file )
+		thdulist.writeto(self.out_file)
+
