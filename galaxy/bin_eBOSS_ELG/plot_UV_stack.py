@@ -22,8 +22,8 @@ qty = 'fast_lmass'
 
 
 # create all stacks
-dataList_UV = n.array(glob.glob(join(os.environ['HOME'], "SDSS/lss/catalogs/3", "eboss-elg_*_"+qty+"_*.UVstack")))
-dataList = n.array(glob.glob(join(os.environ['HOME'], "SDSS/lss/catalogs/3", "eboss-elg_*_"+qty+"_*.stack")))
+dataList_UV = n.array(glob.glob(join(os.environ['HOME'], "SDSS/stacks", "eboss-elg_*_"+qty+"_*.UVstack")))
+dataList = n.array(glob.glob(join(os.environ['HOME'], "SDSS/stacks", "eboss-elg_*_"+qty+"_*.stack")))
  
 p.figure(0,(9,5))
 p.title(qty)
