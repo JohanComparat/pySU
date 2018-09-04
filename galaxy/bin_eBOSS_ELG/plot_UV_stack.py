@@ -29,12 +29,12 @@ def plot_me(qty):
 	
 	fig.add_subplot(311, xlim=((2240, 2410)))
 	for specList in dataList_UV:
-		bns = os.path.basename(specList)[10:-8].split('_')
-		bn = str(n.round(bn[0],3]))+'<z<'+str(n.round(bn[2],3]))+', '+str(n.round(bn[3],3]))+'<'+qty+'<'+str(n.round(bn[5],3]))
+		bn = os.path.basename(specList)[10:-8].split('_')
+		bnl = str(n.round(bn[0],3))+'<z<'+str(n.round(bn[2],3))+', '+str(n.round(bn[3],3))+'<'+qty+'<'+str(n.round(bn[5],3))
 		dd=fits.open(specList)[1].data
 		wl=dd['wavelength'         ]
 		s1 = (wl>2200)&(wl<2900)&(dd['NspectraPerPixel'   ]>0.5*n.max(dd['NspectraPerPixel'   ]))
-		p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], label= bn, lw=0.7 )
+		p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], label= bnl, lw=0.7 )
 
 	for xx, nn in zip(line_list_abs, line_list_abs_names ):
 		p.plot([xx,xx],[0,1], ls='dashed', color='k')
