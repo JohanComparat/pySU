@@ -25,9 +25,9 @@ def plot_me(qty):
 	dataList_UV = n.array(glob.glob(join(os.environ['HOME'], "SDSS/stacks", "eboss-elg_*_"+qty+"_*.UVstack")))
 	dataList = n.array(glob.glob(join(os.environ['HOME'], "SDSS/stacks", "eboss-elg_*_"+qty+"_*.stack")))
 	
-	fig=p.figure(0,(8.2, 11.7), frameon=False)
+	fig=p.figure(0,(7.2, 13.7), frameon=False)
 	
-	fig.add_subplot(311, xlabel='wavelength [Angstrom, rest frame]', ylabel=r'Flux/Fcont]', xlim=((2240, 2410)))
+	fig.add_subplot(311, xlim=((2240, 2410)))
 	for specList in dataList_UV:
 		bn = os.path.basename(specList)[10:-8]
 		dd=fits.open(specList)[1].data
@@ -46,7 +46,7 @@ def plot_me(qty):
 	p.legend(frameon=False)
 	p.grid()
 
-	fig.add_subplot(312, xlabel='wavelength [Angstrom, rest frame]', ylabel=r'Flux/Fcont]', xlim=((2570, 2640)))
+	fig.add_subplot(312, ylabel=r'Flux/Fcont]', xlim=((2570, 2640)))
 	for specList in dataList_UV:
 		bn = os.path.basename(specList)[10:-8]
 		dd=fits.open(specList)[1].data
@@ -64,7 +64,7 @@ def plot_me(qty):
 	p.grid()
 
 
-	fig.add_subplot(313, xlabel='wavelength [Angstrom, rest frame]', ylabel=r'Flux/Fcont]', xlim=((2780, 2870)))
+	fig.add_subplot(313, xlabel='wavelength [Angstrom, rest frame]', xlim=((2780, 2870)))
 	for specList in dataList_UV:
 		bn = os.path.basename(specList)[10:-8]
 		dd=fits.open(specList)[1].data
