@@ -22,5 +22,5 @@ for specList in dataList:
 	outfile = join(os.environ['HOME'],"SDSS", "stacks", os.path.basename(specList)[:-4]+".UVstack")
 	stack=sse.SpectraStackingEBOSS(specList, outfile)
 	print(outfile)
-	stackSpectra_UVnormed()
+	stack.stackSpectra_UVnormed()
 		
