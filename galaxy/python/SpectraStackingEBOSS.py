@@ -243,7 +243,7 @@ class SpectraStackingEBOSS:
 					if os.path.isfile(path_to_spectrum):
 						self.getSpectra(path_to_spectrum)
 						pts,ptsErr = self.convertSpectrum(redshift)
-						pfit = fit_UV_continuum(self.wave, pts ,ptsErr)
+						pfit = self.fit_UV_continuum(self.wave, pts ,ptsErr)
 						Fcont = n.polyval(pfit, self.wave)
 						specMatrix.append(pts/Fcont)
 						specMatrixErr.append(ptsErr/Fcont)
