@@ -58,18 +58,3 @@ create_lists(qty = 'fast_lmass')
 create_lists(qty = 'g')
 create_lists(qty = 'gr')
 create_lists(qty = 'rz')
-
-## create all stacks
-#dataList = n.array(glob.glob(join(os.environ['HOME'],"SDSS/lss/catalogs/3", "*.asc")))
-
-#for specList in dataList:
-	#print( specList )
-	#outfile = join(os.environ['HOME'],"SDSS", "stacks", os.path.basename(specList)[:-4]+".stack")
-	#stack=sse.SpectraStackingEBOSS(specList, outfile)
-	#print(outfile)
-	#stack.stackSpectra()
-	#outfile = join(os.environ['HOME'],"SDSS", "stacks", os.path.basename(specList)[:-4]+".UVstack")
-	#stack=sse.SpectraStackingEBOSS(specList, outfile)
-	#print(outfile)
-	#stackSpectra_UVnormed()
-		
