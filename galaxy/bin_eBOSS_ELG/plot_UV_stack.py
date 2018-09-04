@@ -25,31 +25,63 @@ def plot_me(qty):
 	dataList_UV = n.array(glob.glob(join(os.environ['HOME'], "SDSS/stacks", "eboss-elg_*_"+qty+"_*.UVstack")))
 	dataList = n.array(glob.glob(join(os.environ['HOME'], "SDSS/stacks", "eboss-elg_*_"+qty+"_*.stack")))
 	
-	p.figure(0,(9,5))
-	p.title(qty)
+	fig=p.figure(0,(9,5), frameon=False)
+	
+	fig.add_subplot(311, xlabel='wavelength [Angstrom, rest frame]', ylabel=r'Flux/Fcont]', xlim=((2240, 2410)))
 	for specList in dataList_UV:
 		bn = os.path.basename(specList)[10:-8]
 		dd=fits.open(specList)[1].data
 		wl=dd['wavelength'         ]
 		s1 = (wl>2200)&(wl<2900)&(dd['NspectraPerPixel'   ]>0.5*n.max(dd['NspectraPerPixel'   ]))
-		p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], label= bn )
-		#dd['meanStack'          ][s1]
-		#dd['meanWeightedStack'  ][s1]
-		#dd['jackknifeSpectra'   ][s1]
-		#dd['jackknifStackErrors'][s1]
-		#dd['NspectraPerPixel'   ][s1]
-
+		p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], label= bn, lw=0.7 )
 
 	for xx, nn in zip(line_list_abs, line_list_abs_names ):
 		p.axvline(xx, ls='dashed', color='k')
-		p.text(xx,0.3,nn,rotation=90)
+		p.text(xx,0.7,nn,rotation=90)
 
 	for xx, nn in zip(line_list_em, line_list_em_names ):
 		p.axvline(xx, ls='dashed', color='g')
 		p.text(xx,1.1,nn,rotation=90, color='g')
 
-
 	p.legend(frameon=False)
+	p.grid()
+
+	fig.add_subplot(312, xlabel='wavelength [Angstrom, rest frame]', ylabel=r'Flux/Fcont]', xlim=((2570, 2640)))
+	for specList in dataList_UV:
+		bn = os.path.basename(specList)[10:-8]
+		dd=fits.open(specList)[1].data
+		wl=dd['wavelength'         ]
+		s1 = (wl>2200)&(wl<2900)&(dd['NspectraPerPixel'   ]>0.5*n.max(dd['NspectraPerPixel'   ]))
+		p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], lw=0.7 )
+
+	for xx, nn in zip(line_list_abs, line_list_abs_names ):
+		p.axvline(xx, ls='dashed', color='k')
+		p.text(xx,0.7,nn,rotation=90)
+
+	for xx, nn in zip(line_list_em, line_list_em_names ):
+		p.axvline(xx, ls='dashed', color='g')
+		p.text(xx,1.1,nn,rotation=90, color='g')
+	p.grid()
+
+
+	fig.add_subplot(313, xlabel='wavelength [Angstrom, rest frame]', ylabel=r'Flux/Fcont]', xlim=((2780, 2870)))
+	for specList in dataList_UV:
+		bn = os.path.basename(specList)[10:-8]
+		dd=fits.open(specList)[1].data
+		wl=dd['wavelength'         ]
+		s1 = (wl>2200)&(wl<2900)&(dd['NspectraPerPixel'   ]>0.5*n.max(dd['NspectraPerPixel'   ]))
+		p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], lw=0.7 )
+
+	for xx, nn in zip(line_list_abs, line_list_abs_names ):
+		p.axvline(xx, ls='dashed', color='k')
+		p.text(xx,0.7,nn,rotation=90)
+
+	for xx, nn in zip(line_list_em, line_list_em_names ):
+		p.axvline(xx, ls='dashed', color='g')
+		p.text(xx,1.1,nn,rotation=90, color='g')
+	
+	p.grid()
+
 	p.tight_layout()
 	p.savefig(join(os.environ['HOME'], "SDSS/stacks", "eboss-elg_"+qty+".UVstack")+".png")
 	p.clf()
