@@ -63,3 +63,5 @@ p.legend(frameon=False)
 p.tight_layout()
 p.savefig(join(os.environ['HOME'], "SDSS/stacks", "eboss-elg_"+qty+".stack")+".png")
 p.clf()
+
+os.system("cp -r ~/SDSS/stacks/*.png ~/wwwDir/sdss/elg/stacks/")
