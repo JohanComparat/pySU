@@ -45,7 +45,7 @@ def plot_me(qty):
 		p.text(xx,0.3,nn,rotation=90)
 
 	for xx, nn in zip(line_list_em, line_list_em_names ):
-		p.axvline(xx, ls='dashed', color='=g')
+		p.axvline(xx, ls='dashed', color='g')
 		p.text(xx,1.1,nn,rotation=90, color='g')
 
 
