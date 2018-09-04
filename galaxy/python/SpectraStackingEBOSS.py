@@ -132,11 +132,11 @@ class SpectraStackingEBOSS:
 		derlying continuum, F lambda
 		we normalize the observed spectrum to obtain the continuum-normalized spectrum
 		"""					
-		self.bad_flags = np.ones(len(x))
+		self.bad_flags = n.ones(len(x))
 
 		# masking sky contaminated pixels
-		maskLambda = np.loadtxt(os.path.join(os.environ['GIT_SPM'],'data',"dr12-sky-mask.txt"), unpack=True)
-		ratio = np.min(abs(10000.*np.log10(np.outer(x, 1./maskLambda))), axis=1)
+		maskLambda = n.loadtxt(os.path.join(os.environ['GIT_SPM'],'data',"dr12-sky-mask.txt"), unpack=True)
+		ratio = n.min(abs(10000.*n.log10(n.outer(x, 1./maskLambda))), axis=1)
 		margin = 1.5
 		veto_sky = ( ratio <= margin )
 		
@@ -148,7 +148,7 @@ class SpectraStackingEBOSS:
 		#| ((x > 4861 - self.N_angstrom_masked) & (x < 4861 + self.N_angstrom_masked)) 
 		#| ((x > 6564 - self.N_angstrom_masked) & (x < 6564 + self.N_angstrom_masked)) 
 		# MASKING BAD DATA
-		bad_data = np.isnan(y) | np.isinf(y) | (y <= 0.0) | np.isnan(yerr) | np.isinf(yerr)
+		bad_data = n.isnan(y) | n.isinf(y) | (y <= 0.0) | n.isnan(yerr) | n.isinf(yerr)
 		# creating new arrays
 		x = x[(UV_mask)&(veto_sky==False)&(bad_data==False)] 
 		y = y[(UV_mask)&(veto_sky==False)&(bad_data==False)] 
