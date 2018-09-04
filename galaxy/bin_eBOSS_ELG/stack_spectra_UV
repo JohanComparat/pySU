@@ -39,7 +39,7 @@ def create_lists(qty):
 	for z0,z1 in zip(z_mins, z_maxs):
 		z_sel = (cat['Z']>z0) & (cat['Z']<z1)
 		qty_bins = n.arange(n.min(cat[qty][z_sel]), n.max(cat[qty][z_sel]), (-n.min(cat[qty][z_sel]) + n.max(cat[qty][z_sel]))/1000. )
-		itp2 = interp1d( n.histogram(cat[qty][z_sel], bins=qty_bins)[0], qty_bins[:-1] )
+		itp2 = interp1d( n.cumsum(n.histogram(cat[qty][z_sel], bins=qty_bins)[0]), qty_bins[:-1] )
 		qty_mins = n.hstack((n.min(cat[qty][z_sel]), itp(bins_2nd) ))
 		qty_maxs =  n.hstack(( itp(bins_2nd), n.max(cat[qty][z_sel]) ))
 		for q0,q1 in zip(qty_mins, qty_maxs):
