@@ -18,7 +18,7 @@ path_2_cat = join(os.environ['HOME'],"SDSS/lss/catalogs/3", "eBOSS_ELG_clusterin
 cat = fits.open(path_2_cat)[1].data
 
 Ngal = len(cat)
-N_in_stack = 1000
+N_in_stack = 8000
 N_factor = 3
 
 bins_2nd = n.arange(N_in_stack, N_in_stack*N_factor, N_in_stack)
