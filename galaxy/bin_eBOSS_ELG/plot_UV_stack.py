@@ -47,7 +47,7 @@ p.clf()
 
 p.figure(0,(9,5))
 p.title(qty)
-for specList in dataList_UV:
+for specList in dataList:
 	bn = os.path.basename(specList)[10:-8]
 	dd=fits.open(specList)[1].data
 	wl=dd['wavelength'         ]

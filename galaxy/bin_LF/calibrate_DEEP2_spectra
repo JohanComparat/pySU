@@ -8,27 +8,31 @@ from GalaxySpectrumDEEP2 import *
 from GalaxySurveyDEEP2 import *
 
 # defines the galaxy survey class : loads catalogs and calibration files
-gs=GalaxySurveyDEEP2(redshift_catalog="zcat.deep2.dr4.v2.fits", calibration=True, plots=False)
+gs=GalaxySurveyDEEP2(redshift_catalog="zcat.deep2.dr4.v4.fits", calibration=True, plots=False)
 
 # loops over elements of the catalog looking for the spectra and flux calibrates them
-
+f=open('calibrate_DEEP2_spectra.out', 'w')
 for ii in range(len(gs.catalog)):
 	catalog_entry = gs.catalog[ii]
 	spec1d = GalaxySpectrumDEEP2(catalog_entry,gs,calibration=True,lineFits=False)
-	if len(spec1d.path_to_spectrum)==1 and spec1d.catalog_entry['ZBEST']>=0 and spec1d.catalog_entry ['ZQUALITY']>=1 :
-		print spec1d.path_to_spectrum
-		spec1d.openObservedSpectrum()
-		if n.max(spec1d.lambd)>6500 :
-			checkList=glob.glob(spec1d.path_to_spectrum[0][:-5]+"_fc_tc.dat")
-			if len( checkList) >=1 :
-				print "already FC TC:",spec1d.path_to_spectrum[0]
-				continue
-
-			print spec1d.slit, spec1d.mask, spec1d.objno,time.time()
-			spec1d.correctQE()
-			spec1d.correct_telluric_abs()
-			fc=spec1d.fluxCal()
-			if fc=="bad":
-				print "not calibrable:",spec1d.path_to_spectrum[0]
-			else:
-				spec1d.writeFCspec()
+	if spec1d.catalog_entry['ZBEST']>=0 and spec1d.catalog_entry ['ZQUALITY']>=0 :
+		print( spec1d.path_to_spectrum)
+		try:
+			spec1d.openObservedSpectrum()
+			if n.max(spec1d.lambd)>6500 :
+				#checkList=glob.glob(spec1d.path_to_spectrum[0][:-5]+"_fc_tc.dat")
+				#if len( checkList) >=1 :
+				#	print( "already FC TC:",spec1d.path_to_spectrum[0])
+				#	continue
+				print( spec1d.slit, spec1d.mask, spec1d.objno,time.time())
+				spec1d.correctQE()
+				spec1d.correct_telluric_abs()
+				fc=spec1d.fluxCal()
+				if fc=="bad":
+					print( "not calibrable:",spec1d.path_to_spectrum)
+				else:
+					spec1d.writeFCspec()
+		except(FileNotFoundError):
+			print('bah: FileNotFoundError')
+			f.write(spec1d.path_to_spectrum+' \n')
+f.close()

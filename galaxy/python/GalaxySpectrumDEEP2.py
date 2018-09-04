@@ -6,6 +6,22 @@
 The class GalaxySpectrumDEEP2 is dedicated to handling DEEP2 spectra
 
 """
+
+dat_2_month = {
+  '01': 'jan',
+  '02': 'feb',
+  '03': 'mar',
+  '04': 'apr',
+  '05': 'may',
+  '06': 'jun',
+  '07': 'jul',
+  '08': 'aug',
+  '09': 'sep',
+  '10': 'oct',
+  '11': 'nov',
+  '12': 'dec'
+  }
+
 from os.path import join
 import os
 import numpy as n
@@ -34,27 +50,35 @@ class GalaxySpectrumDEEP2:
 	def __init__(self,catalog_entry, survey=GalaxySurveyDEEP2(redshift_catalog="zcat.deep2.dr4.v4.fits",calibration = False) ,calibration=False,lineFits=True ):
 		self.catalog_entry=catalog_entry
 		self.mask=str(self.catalog_entry['MASK'])
-		self.slit=self.catalog_entry['SLIT']
+		self.slit=str(self.catalog_entry['SLIT']).zfill(3)
 		self.objno=str(self.catalog_entry['OBJNO'])
 
-		self.database_dir = os.environ['DATA_DIR']
+		self.database_dir = '/data42s/comparat/firefly/v1_1_0' #os.environ['DATA_DIR']
 		self.deep2_dir = join(self.database_dir,"DEEP2")
 		self.deep2_catalog_dir = join(self.deep2_dir,"catalogs")
-		self.deep2_spectra_dir = join(self.deep2_dir,"spectra")
+		self.deep2_spectra_dir = join(self.deep2_dir,"raw_data/spectra")
+		self.deep2_fc_tc_spectra_dir = join(self.deep2_dir,"raw_data/flux_calibrated_spectra")
 		self.survey = survey
 
 		if calibration :
-			self.path_to_spectrum = glob.glob(join(self.deep2_spectra_dir , self.mask ,'*', '*' + self.objno + '*.fits'))
+			#self.path_to_spectrum = glob.glob(join(self.deep2_spectra_dir , self.mask ,'*', '*' + self.objno + '*.fits'))
+			date_split = self.catalog_entry['DATE'].split('-')
+			path_date = "".join(n.array([date_split[0], dat_2_month[date_split[1]] ,date_split[2]]))
+			path_folder = join( self.deep2_spectra_dir, self.mask, path_date)
+			self.path_to_spectrum = join(path_folder, 'spec1d.'+str(self.catalog_entry['MASK'])+"."+str(self.catalog_entry['SLIT']).zfill(3)+"."+str(self.catalog_entry['OBJNO'])+".fits" )
+			self.path_out_folder = join( self.deep2_fc_tc_spectra_dir, self.mask, path_date)
+			self.path_to_out_spectrum = join(self.path_out_folder, 'spec1d.'+str(self.catalog_entry['MASK'])+"."+str(self.catalog_entry['SLIT']).zfill(3)+"."+str(self.catalog_entry['OBJNO'])+".fits" )
+
 
 		if lineFits :
 			self.path_to_spectrum = glob.glob(join(self.deep2_spectra_dir , self.mask, '*', '*' + self.objno + '*_fc_tc.dat'))
 
-		#print "path to spectrum", self.path_to_spectrum, self.mask, self.objno
+		#print( "path to spectrum", self.path_to_spectrum, self.mask, self.objno)
 
 		
 	def openObservedSpectrum(self):
 		"""Loads the observed spectrum in counts."""
-		hdS=fits.open(self.path_to_spectrum[0])
+		hdS=fits.open(self.path_to_spectrum)
 		self.airmass = hdS[1].header['AIRMASS']
 		# blue spectrum
 		self.dB=hdS[1].data
@@ -74,12 +98,12 @@ class GalaxySpectrumDEEP2:
 	def openObservedSpectrumFC(self):
 		"""Loads the observed spectrum in counts.
 		"""
-		self.wavelength,self.fluxl,self.fluxlErr = n.loadtxt(self.path_to_spectrum[0] , unpack=True )
+		self.wavelength,self.fluxl,self.fluxlErr = n.loadtxt(self.path_to_spectrum , unpack=True )
 
 	def correctQE(self):
 		"""Corrects from the quantum efficiency of the chips where the spectrum landed."""
 		if self.lambd.max()-self.lambd.min() > 3000 or n.mean(self.lambd)<7300 or n.mean(self.lambd)>8300 :
-			print "cannot QE correct"
+			print( "cannot QE correct" )
 
 		xravg = 8900
 		yravg = 150
@@ -101,8 +125,8 @@ class GalaxySpectrumDEEP2:
 		#corr_r = params[num+4,0] + params[num+4,1]*self.lambd[self.right] + params[num+4,2]*self.lambd[self.right]**2
 		corr_b = 1./( self.survey.params.T[self.chipNO][0] + self.survey.params.T[self.chipNO][1] * self.lambd[self.left] + self.survey.params.T[self.chipNO][2]*self.lambd[self.left]**2 )
 		corr_r = 1./( self.survey.params.T[self.chipNO+4][0] + self.survey.params.T[self.chipNO+4][1]* self.lambd[self.right] + self.survey.params.T[self.chipNO+4][2] *self.lambd[self.right]**2 )
-		# print corr_b, corr_r, self.cor2avg
-		# print "spectrum",self.spec
+		# print( corr_b, corr_r, self.cor2avg)
+		# print) "spectrum",self.spec)
 
 		self.specTMP=n.zeros_like(self.spec)
 		self.specErrTMP=n.zeros_like(self.specErr)
@@ -141,7 +165,7 @@ class GalaxySpectrumDEEP2:
 		effi = 8135.4026
 		x = [effr, effi]
 		y = [fpcr, fpci]
-		# print x, y
+		# print( x, y )
 		if y[0]>0 and y[1]>0:
 			pfits = curve_fit(self.survey.fun,n.log(x),n.log(y),p0=(-0.01,-68))
 			fluxn_corr = n.e**( pfits[0][1] + n.log(self.lambd)*pfits[0][0] )
@@ -158,14 +182,47 @@ class GalaxySpectrumDEEP2:
 
 		self.fluxl=self.fluxn*299792458.0 / (self.lambd**2 * 10**(-10))
 		self.fluxlErr=self.fluxnErr *299792458.0 / (self.lambd**2 * 10**(-10))
+		self.slit_correction = fluxn_corr
+		print(n.median(self.slit_correction))
 		return fluxn_corr
 
 
 	def writeFCspec(self):
 		"""Writes the flux-calibrated spectrum"""
-		ff=open(self.path_to_spectrum[0][:-5]+"_fc_tc.dat",'w')
-		n.savetxt(ff,n.transpose([self.lambd,self.fluxl,self.fluxlErr]))
-		ff.close()
+		#print(self.path_out_folder)
+		if os.path.isdir(self.path_out_folder)==False:
+			#print("test")
+			os.system('mkdir -p '+self.path_out_folder)
+		
+		#ff=open(self.path_to_spectrum[:-5]+"_fc_tc.dat",'w')
+		#n.savetxt(ff,n.transpose([self.lambd,self.fluxl,self.fluxlErr]))
+		#ff.close()
+
+		prihdr = fits.Header()
+		prihdr['FILE']          = os.path.basename(self.path_to_out_spectrum)
+		prihdr['MASK']          = self.catalog_entry['MASK'] 
+		prihdr['OBJNO']         = self.catalog_entry['OBJNO']  
+		prihdr['SLIT']          = self.catalog_entry['SLIT']
+		prihdr['RA']            = self.catalog_entry['RA']
+		prihdr['DEC']           = self.catalog_entry['DEC']
+		prihdr['redshift']      = self.catalog_entry['ZBEST']
+		prihdr['flux_cal']      = n.log10(n.median(self.slit_correction))
+		prihdu = fits.PrimaryHDU(header=prihdr)
+
+		waveCol = fits.Column(name="wavelength",format="D", unit="Angstrom", array= self.lambd)
+		dataCol = fits.Column(name="flux",format="D", unit="1e-17erg/s/cm2/Angstrom", array= self.fluxl)
+		errorCol = fits.Column(name="flux_error",format="D", unit="1e-17erg/s/cm2/Angstrom", array= self.fluxlErr)
+		
+		cols = fits.ColDefs([ waveCol, dataCol, errorCol]) 
+		tbhdu = fits.BinTableHDU.from_columns(cols)
+
+
+		complete_hdus = fits.HDUList([prihdu, tbhdu])
+		if os.path.isfile(self.path_to_out_spectrum):
+			os.remove(self.path_to_out_spectrum)
+		complete_hdus.writeto(self.path_to_out_spectrum)
+		print("done: ",self.path_to_out_spectrum)
+
 
 	def openCalibratedSpectrum(self):
 		"""Loads the flux calibrated spectrum in f lambda convention.

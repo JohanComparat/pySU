@@ -13,7 +13,7 @@ import numpy as n
 from scipy.interpolate import interp1d
 from scipy.integrate import quad
 
-filterDir = join(os.environ['PYSU_GAL_DIR'],"data","photometricFilterDir")
+filterDir = join(os.environ['GIT_PYSU'],"galaxy/data","photometricFilterDir")
 
 dt=n.loadtxt(join(filterDir, "decamFilter","decam_u.par"),unpack=True)
 filterUdecam=interp1d(n.hstack((2000.,dt[0],12000.)),n.hstack((0.,dt[1],0.)))

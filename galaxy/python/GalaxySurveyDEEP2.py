@@ -29,7 +29,7 @@ class GalaxySurveyDEEP2:
     :param calibration: if the class is loaded with intention of flux calibrating the DEEP2 data (boolean)"""
     def __init__(self,redshift_catalog="zcat.deep2.dr4.v4.fits", calibration=True, plots=True):
         self.redshift_catalog = redshift_catalog
-        self.database_dir = os.environ['DATA_DIR']
+        self.database_dir = '/data42s/comparat/firefly/v1_1_0'
         self.deep2_dir = join(self.database_dir,"DEEP2")
         self.deep2_catalog_dir = join(self.deep2_dir,"catalogs")
         self.deep2_spectra_dir = join(self.deep2_dir,"spectra")
@@ -39,7 +39,7 @@ class GalaxySurveyDEEP2:
         self.plots = plots
 
         if calibration==True :
-            self.deep2_calib_dir = join(os.environ['PYSU_DIR'],"pyGalaxy","trunk","data","Deep2_calib_files")
+            self.deep2_calib_dir = join(os.environ['GIT_PYSU'],"galaxy","data","Deep2_calib_files")
             self.paramsEndr = fits.open(join(self.deep2_calib_dir,"paramsendr.fits"))[0].data
             self.params = fits.open(join(self.deep2_calib_dir,"params.fits"))[0].data
             v0,v1 = n.loadtxt(join(self.deep2_calib_dir, "thr_go1200_80_og550.asc"), unpack = True) 

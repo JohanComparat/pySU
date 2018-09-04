@@ -1,4 +1,20 @@
 #! /usr/bin/env python
+
+dat_2_month = {
+  '01': 'jan',
+  '02': 'feb',
+  '03': 'mar',
+  '04': 'apr',
+  '05': 'may',
+  '06': 'jui',
+  '07': 'jul',
+  '08': 'aug',
+  '09': 'sep',
+  '10': 'oct',
+  '11': 'nov',
+  '12': 'dec'
+  }
+
 import sys
 from os.path import join
 import os
@@ -14,12 +30,19 @@ import StellarPopulationModel as spm
 
 import astropy.io.fits as fits
 
-catalog=fits.open(join(os.environ['DEEP2_DIR'], "catalogs", "zcat.deep2.dr4.v4.LFcatalogTC.Planck15.fits"))[1].data
+deep2_dir = '/home/comparat/data2/firefly/v1_1_0/DEEP2'
+outputFolder = join( deep2_dir, 'raw_data', 'fits_spec')
 
-outputFolder = join( os.environ['DEEP2_DIR'], 'spec')
+catalog=fits.open(join( deep2_dir, "catalogs", "inputs/zcat.deep2.dr4.v4.fits.gz"))[1].data
+
+catalog_entry = catalog[0]
+date_split = catalog_entry['DATE'].split('-')
+path_date = "".join(np.array([date_split[0], dat_2_month[date_split[1]] ,date_split[2]]))
+path_folder = join( deep2_dir, 'raw_data/spectra', str(catalog_entry['MASK']), path_date)
+path_to_spectrum = join(path_folder, 'spec1d.'+str(catalog_entry['MASK'])+"."+str(catalog_entry['SLIT']).zfill(3)+"."+str(catalog_entry['OBJNO']) )
 
 def convert_spec_2_fits(catalog_entry, output_file, mask, objno):
-        path_to_spectrum = glob.glob(join(os.environ['DEEP2_DIR'], 'spectra', mask, '*', '*' + objno + '*_fc_tc.dat'))
+        path_to_spectrum = glob.glob(join(deep2_dir, 'spectra', mask, '*', '*' + objno + '*_fc_tc.dat'))
         print path_to_spectrum
         
         if len(path_to_spectrum)>=1:
