@@ -15,53 +15,54 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as p
 
-qty = 'fast_lmass'
-#qty = 'g'
-#qty = 'gr'
-#qty = 'rz'
+
+def plot_me(qty):
+	# create all stacks
+	dataList_UV = n.array(glob.glob(join(os.environ['HOME'], "SDSS/stacks", "eboss-elg_*_"+qty+"_*.UVstack")))
+	dataList = n.array(glob.glob(join(os.environ['HOME'], "SDSS/stacks", "eboss-elg_*_"+qty+"_*.stack")))
+	
+	p.figure(0,(9,5))
+	p.title(qty)
+	for specList in dataList_UV:
+		bn = os.path.basename(specList)[10:-8]
+		dd=fits.open(specList)[1].data
+		wl=dd['wavelength'         ]
+		s1 = (wl>2000)&(wl<3700)&(dd['NspectraPerPixel'   ]>0.5*n.max(dd['NspectraPerPixel'   ]))
+		p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], label= bn )
+		#dd['meanStack'          ][s1]
+		#dd['meanWeightedStack'  ][s1]
+		#dd['jackknifeSpectra'   ][s1]
+		#dd['jackknifStackErrors'][s1]
+		#dd['NspectraPerPixel'   ][s1]
+
+	p.legend(frameon=False)
+	p.tight_layout()
+	p.savefig(join(os.environ['HOME'], "SDSS/stacks", "eboss-elg_"+qty+".UVstack")+".png")
+	p.clf()
 
 
-# create all stacks
-dataList_UV = n.array(glob.glob(join(os.environ['HOME'], "SDSS/stacks", "eboss-elg_*_"+qty+"_*.UVstack")))
-dataList = n.array(glob.glob(join(os.environ['HOME'], "SDSS/stacks", "eboss-elg_*_"+qty+"_*.stack")))
- 
-p.figure(0,(9,5))
-p.title(qty)
-for specList in dataList_UV:
-	bn = os.path.basename(specList)[10:-8]
-	dd=fits.open(specList)[1].data
-	wl=dd['wavelength'         ]
-	s1 = (wl>2000)&(wl<3700)&(dd['NspectraPerPixel'   ]>0.5*n.max(dd['NspectraPerPixel'   ]))
-	p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], label= bn )
-	#dd['meanStack'          ][s1]
-	#dd['meanWeightedStack'  ][s1]
-	#dd['jackknifeSpectra'   ][s1]
-	#dd['jackknifStackErrors'][s1]
-	#dd['NspectraPerPixel'   ][s1]
+	p.figure(0,(9,5))
+	p.title(qty)
+	for specList in dataList:
+		bn = os.path.basename(specList)[10:-8]
+		dd=fits.open(specList)[1].data
+		wl=dd['wavelength'         ]
+		s1 = (dd['NspectraPerPixel'   ]>0.5*n.max(dd['NspectraPerPixel'   ]))
+		p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], label= bn )
+		#dd['meanStack'          ][s1]
+		#dd['meanWeightedStack'  ][s1]
+		#dd['jackknifeSpectra'   ][s1]
+		#dd['jackknifStackErrors'][s1]
+		#dd['NspectraPerPixel'   ][s1]
 
-p.legend(frameon=False)
-p.tight_layout()
-p.savefig(join(os.environ['HOME'], "SDSS/stacks", "eboss-elg_"+qty+".UVstack")+".png")
-p.clf()
+	p.legend(frameon=False)
+	p.tight_layout()
+	p.savefig(join(os.environ['HOME'], "SDSS/stacks", "eboss-elg_"+qty+".stack")+".png")
+	p.clf()
 
-
-p.figure(0,(9,5))
-p.title(qty)
-for specList in dataList:
-	bn = os.path.basename(specList)[10:-8]
-	dd=fits.open(specList)[1].data
-	wl=dd['wavelength'         ]
-	s1 = (dd['NspectraPerPixel'   ]>0.5*n.max(dd['NspectraPerPixel'   ]))
-	p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], label= bn )
-	#dd['meanStack'          ][s1]
-	#dd['meanWeightedStack'  ][s1]
-	#dd['jackknifeSpectra'   ][s1]
-	#dd['jackknifStackErrors'][s1]
-	#dd['NspectraPerPixel'   ][s1]
-
-p.legend(frameon=False)
-p.tight_layout()
-p.savefig(join(os.environ['HOME'], "SDSS/stacks", "eboss-elg_"+qty+".stack")+".png")
-p.clf()
+plot_me(qty = 'fast_lmass' )
+plot_me(qty = 'g'          )
+plot_me(qty = 'gr'         )
+plot_me(qty = 'rz'         )
 
 os.system("cp -r ~/SDSS/stacks/*.png ~/wwwDir/sdss/elg/stacks/")
