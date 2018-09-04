@@ -31,7 +31,7 @@ for specList in dataList_UV:
 	bn = os.path.basename(specList)[10:-8]
 	dd=fits.open(specList)[1].data
 	wl=dd['wavelength'         ]
-	s1 = (wl>2000)(wl<3700)&(	dd['NspectraPerPixel'   ]>0.5*n.max(dd['NspectraPerPixel'   ]))
+	s1 = (wl>2000)&(wl<3700)&(dd['NspectraPerPixel'   ]>0.5*n.max(dd['NspectraPerPixel'   ]))
 	p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], label= bn )
 	#dd['meanStack'          ][s1]
 	#dd['meanWeightedStack'  ][s1]
@@ -41,7 +41,7 @@ for specList in dataList_UV:
 
 p.legend(frameon=False)
 p.tight_layout()
-p.savefig(join(os.environ['HOME'], "SDSS/lss/catalogs/3", "eboss-elg_"+qty+".UVstack")+".png")
+p.savefig(join(os.environ['HOME'], "SDSS/stacks", "eboss-elg_"+qty+".UVstack")+".png")
 p.clf()
 
 
@@ -61,5 +61,5 @@ for specList in dataList_UV:
 
 p.legend(frameon=False)
 p.tight_layout()
-p.savefig(join(os.environ['HOME'], "SDSS/lss/catalogs/3", "eboss-elg_"+qty+".stack")+".png")
+p.savefig(join(os.environ['HOME'], "SDSS/stacks", "eboss-elg_"+qty+".stack")+".png")
 p.clf()
