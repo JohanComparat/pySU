@@ -29,18 +29,19 @@ def plot_me(qty):
 	
 	fig.add_subplot(311, xlim=((2240, 2410)))
 	for specList in dataList_UV:
-		bn = os.path.basename(specList)[10:-8]
+		bns = os.path.basename(specList)[10:-8].split('_')
+		bn = str(n.round(bn[0],3]))+'<z<'+str(n.round(bn[2],3]))+', '+str(n.round(bn[3],3]))+'<'+qty+'<'+str(n.round(bn[5],3]))
 		dd=fits.open(specList)[1].data
 		wl=dd['wavelength'         ]
 		s1 = (wl>2200)&(wl<2900)&(dd['NspectraPerPixel'   ]>0.5*n.max(dd['NspectraPerPixel'   ]))
 		p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], label= bn, lw=0.7 )
 
 	for xx, nn in zip(line_list_abs, line_list_abs_names ):
-		p.axvline(xx, ls='dashed', color='k')
+		p.plot([xx,xx],[0,1], ls='dashed', color='k')
 		p.text(xx,0.7,nn,rotation=90)
 
 	for xx, nn in zip(line_list_em, line_list_em_names ):
-		p.axvline(xx, ls='dashed', color='g')
+		p.axvline([xx,xx],[1,2], ls='dashed', color='g')
 		p.text(xx,1.1,nn,rotation=90, color='g')
 
 	p.legend(frameon=False)
@@ -48,36 +49,34 @@ def plot_me(qty):
 
 	fig.add_subplot(312, ylabel=r'Flux/Fcont]', xlim=((2570, 2640)))
 	for specList in dataList_UV:
-		bn = os.path.basename(specList)[10:-8]
 		dd=fits.open(specList)[1].data
 		wl=dd['wavelength'         ]
 		s1 = (wl>2200)&(wl<2900)&(dd['NspectraPerPixel'   ]>0.5*n.max(dd['NspectraPerPixel'   ]))
 		p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], lw=0.7 )
 
 	for xx, nn in zip(line_list_abs, line_list_abs_names ):
-		p.axvline(xx, ls='dashed', color='k')
+		p.axvline([xx,xx],[0,1], ls='dashed', color='k')
 		p.text(xx,0.7,nn,rotation=90)
 
 	for xx, nn in zip(line_list_em, line_list_em_names ):
-		p.axvline(xx, ls='dashed', color='g')
+		p.axvline([xx,xx],[1,2], ls='dashed', color='g')
 		p.text(xx,1.1,nn,rotation=90, color='g')
 	p.grid()
 
 
 	fig.add_subplot(313, xlabel='wavelength [Angstrom, rest frame]', xlim=((2780, 2870)))
 	for specList in dataList_UV:
-		bn = os.path.basename(specList)[10:-8]
 		dd=fits.open(specList)[1].data
 		wl=dd['wavelength'         ]
 		s1 = (wl>2200)&(wl<2900)&(dd['NspectraPerPixel'   ]>0.5*n.max(dd['NspectraPerPixel'   ]))
 		p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], lw=0.7 )
 
 	for xx, nn in zip(line_list_abs, line_list_abs_names ):
-		p.axvline(xx, ls='dashed', color='k')
+		p.axvline([xx,xx],[0,1], ls='dashed', color='k')
 		p.text(xx,0.7,nn,rotation=90)
 
 	for xx, nn in zip(line_list_em, line_list_em_names ):
-		p.axvline(xx, ls='dashed', color='g')
+		p.axvline([xx,xx],[1,2], ls='dashed', color='g')
 		p.text(xx,1.1,nn,rotation=90, color='g')
 	
 	p.grid()
