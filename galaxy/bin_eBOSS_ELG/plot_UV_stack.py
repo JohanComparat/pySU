@@ -41,11 +41,11 @@ def plot_me(qty):
 		p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], label= bnl, lw=0.7 )
 
 	for xx, nn in zip(line_list_abs, line_list_abs_names ):
-		p.plot([xx,xx],[0,1], ls='dashed', color='k')
+		p.plot(n.array([xx,xx]),n.array([0,1]), ls='dashed', color='k')
 		p.text(xx,0.7,nn,rotation=90)
 
 	for xx, nn in zip(line_list_em, line_list_em_names ):
-		p.axvline([xx,xx],[1,2], ls='dashed', color='g')
+		p.axvline(n.array([xx,xx]),n.array([1,2]), ls='dashed', color='g')
 		p.text(xx,1.1,nn,rotation=90, color='g')
 
 	p.legend(frameon=False)
@@ -59,11 +59,11 @@ def plot_me(qty):
 		p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], lw=0.7 )
 
 	for xx, nn in zip(line_list_abs, line_list_abs_names ):
-		p.axvline([xx,xx],[0,1], ls='dashed', color='k')
+		p.axvline(n.array([xx,xx]),n.array([0,1]), ls='dashed', color='k')
 		p.text(xx,0.7,nn,rotation=90)
 
 	for xx, nn in zip(line_list_em, line_list_em_names ):
-		p.axvline([xx,xx],[1,2], ls='dashed', color='g')
+		p.axvline(n.array([xx,xx]),n.array([1,2]), ls='dashed', color='g')
 		p.text(xx,1.1,nn,rotation=90, color='g')
 	p.grid()
 
@@ -76,11 +76,11 @@ def plot_me(qty):
 		p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], lw=0.7 )
 
 	for xx, nn in zip(line_list_abs, line_list_abs_names ):
-		p.axvline([xx,xx],[0,1], ls='dashed', color='k')
+		p.axvline(n.array([xx,xx]),n.array([0,1]), ls='dashed', color='k')
 		p.text(xx,0.7,nn,rotation=90)
 
 	for xx, nn in zip(line_list_em, line_list_em_names ):
-		p.axvline([xx,xx],[1,2], ls='dashed', color='g')
+		p.axvline(n.array([xx,xx]),n.array([1,2]), ls='dashed', color='g')
 		p.text(xx,1.1,nn,rotation=90, color='g')
 	
 	p.grid()
