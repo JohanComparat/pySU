@@ -25,7 +25,7 @@ def plot_me(qty):
 	dataList_UV = n.array(glob.glob(join(os.environ['HOME'], "SDSS/stacks", "eboss-elg_*_"+qty+"_*.UVstack")))
 	dataList = n.array(glob.glob(join(os.environ['HOME'], "SDSS/stacks", "eboss-elg_*_"+qty+"_*.stack")))
 	
-	fig=p.figure(0,(9,5), frameon=False)
+	fig=p.figure(0,(8.2, 11.7), frameon=False)
 	
 	fig.add_subplot(311, xlabel='wavelength [Angstrom, rest frame]', ylabel=r'Flux/Fcont]', xlim=((2240, 2410)))
 	for specList in dataList_UV:
