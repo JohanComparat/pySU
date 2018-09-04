@@ -41,7 +41,7 @@ for specList in dataList_UV:
 
 p.legend(frameon=False)
 p.tight_layout()
-p.savefig(specList".png")
+p.savefig(specList+".png")
 p.clf()
 
 
@@ -61,5 +61,5 @@ for specList in dataList_UV:
 
 p.legend(frameon=False)
 p.tight_layout()
-p.savefig(specList".png")
+p.savefig(specList+".png")
 p.clf()
