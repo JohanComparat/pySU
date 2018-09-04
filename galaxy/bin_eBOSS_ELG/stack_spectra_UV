@@ -40,12 +40,12 @@ def create_lists(qty):
 		z_sel = (cat['Z']>z0) & (cat['Z']<z1)
 		qty_bins = n.arange(n.min(cat[qty][z_sel]), n.max(cat[qty][z_sel]), (-n.min(cat[qty][z_sel]) + n.max(cat[qty][z_sel]))/1000. )
 		itp2 = interp1d( n.histogram(cat[qty][z_sel], bins=qty_bins)[0], qty_bins[:-1] )
-		qty_mins = n.hstack((0, itp(bins_2nd) ))
-		qty_maxs =  n.hstack(( itp(bins_2nd), N_in_stack*N_factor ))
+		qty_mins = n.hstack((n.min(cat[qty][z_sel], itp(bins_2nd) ))
+		qty_maxs =  n.hstack(( itp(bins_2nd), n.max(cat[qty][z_sel] ))
 		for q0,q1 in zip(qty_mins, qty_maxs):
 			selection = ( z_sel ) & (cat[qty]>q0)&(cat[qty]<q1)
 			DATA = n.transpose([ cat['plate'], cat['MJD'], cat['FIBERID'], cat['Z'] ]) [selection]
-			path_2_input = join(os.environ['HOME'],"SDSS/lss/catalogs/3", "eboss-elg"+str(z0)+"_z_"+str(z1)+"_"+str(q0)+"_"+qty+"_"+str(q1)+".asc")
+			path_2_input = join(os.environ['HOME'],"SDSS/lss/catalogs/3", "eboss-elg_"+str(z0)+"_z_"+str(z1)+"_"+str(q0)+"_"+qty+"_"+str(q1)+".asc")
 			print(path_2_input)
 			print(len(DATA))
 			n.savetxt(path_2_input, DATA)
