@@ -64,8 +64,7 @@ def create_lists(qty, qtyN):
 			print(len(DATA))
 			n.savetxt(path_2_input, DATA)
 
-create_lists(qty = 'rr_Z_O2_3728_flux' , qtyN = 'O2flux'  )
-
+#create_lists(qty = 'rr_Z_O2_3728_flux' , qtyN = 'O2flux'  )
 create_lists(qty = 'rw1'               , qtyN = 'rw1'     )
 create_lists(qty = 'rr_fast_lmass'     , qtyN = 'mass'    )
 create_lists(qty = 'g'                 , qtyN = 'g'       )
