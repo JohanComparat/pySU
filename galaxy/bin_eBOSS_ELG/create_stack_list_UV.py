@@ -21,9 +21,9 @@ Ngal = len(cat)
 N_in_stack = 10000
 N_factor = 3
 
-bins_2nd = n.arange(N_in_stack, N_in_stack*N_factor, N_in_stack)
+#bins_2nd = n.arange(N_in_stack, N_in_stack*N_factor, N_in_stack)
 print(Ngal)
-print(bins_2nd)
+#print(bins_2nd)
 
 NNN,BBB=n.histogram(cat['Z'], bins=n.arange(0,4,0.001))
 N_CM = n.cumsum(NNN)
@@ -49,6 +49,7 @@ def create_lists(qty, qtyN):
 			z_sel = (cat['rr_Z']>z0) & (cat['rr_Z']<z1) & (cat[qty]>-10)
 			bins_2nd = n.array([ int(len(cat['rr_Z'][z_sel])/3.), int(len(cat['rr_Z'][z_sel])*2./3.) ])
 		print(len(cat[qty][z_sel]))
+		print(bins_2nd)
 		qty_bins = n.arange(n.min(cat[qty][z_sel]), n.max(cat[qty][z_sel]), (-n.min(cat[qty][z_sel]) + n.max(cat[qty][z_sel]))/1000000. )
 		itp2 = interp1d( n.cumsum(n.histogram(cat[qty][z_sel], bins=qty_bins)[0]), qty_bins[:-1] )
 		print(itp2.x,itp2.y)
