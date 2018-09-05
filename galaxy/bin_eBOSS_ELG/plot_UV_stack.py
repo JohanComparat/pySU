@@ -38,7 +38,8 @@ def plot_me(qty):
 		dd=fits.open(specList)[1].data
 		wl=dd['wavelength'         ]
 		s1 = (wl>2200)&(wl<2900)&(dd['NspectraPerPixel'   ]>0.5*n.max(dd['NspectraPerPixel'   ]))
-		p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], label= bnl, lw=0.7 )
+		if float(bn[0])>0.5:
+			p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], label= bnl, lw=0.7 )
 
 	for xx, nn in zip(line_list_abs, line_list_abs_names ):
 		p.plot(n.array([xx,xx]),n.array([0,1]), ls='dashed', color='k', lw=0.5)
@@ -56,7 +57,9 @@ def plot_me(qty):
 		dd=fits.open(specList)[1].data
 		wl=dd['wavelength'         ]
 		s1 = (wl>2200)&(wl<2900)&(dd['NspectraPerPixel'   ]>0.5*n.max(dd['NspectraPerPixel'   ]))
-		p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], lw=0.7 )
+		bn = os.path.basename(specList)[10:-8].split('_')
+		if float(bn[0])>0.5:
+			p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], lw=0.7 )
 
 	for xx, nn in zip(line_list_abs, line_list_abs_names ):
 		p.plot(n.array([xx,xx]),n.array([0,1]), ls='dashed', color='k', lw=0.5)
@@ -73,7 +76,9 @@ def plot_me(qty):
 		dd=fits.open(specList)[1].data
 		wl=dd['wavelength'         ]
 		s1 = (wl>2200)&(wl<2900)&(dd['NspectraPerPixel'   ]>0.5*n.max(dd['NspectraPerPixel'   ]))
-		p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], lw=0.7 )
+		bn = os.path.basename(specList)[10:-8].split('_')
+		if float(bn[0])>0.5:
+			p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], lw=0.7 )
 
 	for xx, nn in zip(line_list_abs, line_list_abs_names ):
 		p.plot(n.array([xx,xx]),n.array([0,1]), ls='dashed', color='k', lw=0.5)
