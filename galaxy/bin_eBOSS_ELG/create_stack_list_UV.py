@@ -18,10 +18,11 @@ path_2_cat = join(os.environ['HOME'],"SDSS/lss/catalogs/3", "inputs/ELG.v5_10_10
 cat = fits.open(path_2_cat)[1].data
 
 Ngal = len(cat)
-N_in_stack = 9000
+N_in_stack = 10000
 N_factor = 3
 
 bins_2nd = n.arange(N_in_stack, N_in_stack*N_factor, N_in_stack)
+print(Ngal)
 print(bins_2nd)
 
 NNN,BBB=n.histogram(cat['Z'], bins=n.arange(0,4,0.001))
