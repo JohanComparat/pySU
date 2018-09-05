@@ -22,7 +22,7 @@ N_in_stack = 10000
 N_factor = 3
 
 bins_2nd = n.arange(N_in_stack, N_in_stack*N_factor, N_in_stack)
-
+print(bins_2nd)
 
 NNN,BBB=n.histogram(cat['Z'], bins=n.arange(0,4,0.001))
 N_CM = n.cumsum(NNN)
