@@ -32,8 +32,8 @@ N_bins = n.arange(N_in_stack*N_factor, N_CM.max(), N_in_stack*N_factor)
 
 itp = interp1d(N_CM, BBB[:-1]) 
 
-z_mins = n.hstack((0, itp(N_bins) ))[:-1]
-z_maxs = itp(N_bins)
+z_mins = itp(N_bins)[:-1]
+z_maxs = itp(N_bins)[1:]
 
 
 def create_lists(qty, qtyN):
@@ -41,6 +41,10 @@ def create_lists(qty, qtyN):
 		print('-------------------------------------')
 		print(z0,z1)
 		z_sel = (cat['rr_Z']>z0) & (cat['rr_Z']<z1)
+		if qtyN == 'O2flux' :
+			z_sel = (cat['rr_Z']>z0) & (cat['rr_Z']<z1) & (cat[qty]>0)
+		if qtyN == 'rw1' :
+			z_sel = (cat['rr_Z']>z0) & (cat['rr_Z']<z1) & (cat[qty]>-10)
 		print(len(cat[qty][z_sel]))
 		qty_bins = n.arange(n.min(cat[qty][z_sel]), n.max(cat[qty][z_sel]), (-n.min(cat[qty][z_sel]) + n.max(cat[qty][z_sel]))/1000000. )
 		itp2 = interp1d( n.cumsum(n.histogram(cat[qty][z_sel], bins=qty_bins)[0]), qty_bins[:-1] )
@@ -56,9 +60,10 @@ def create_lists(qty, qtyN):
 			print(len(DATA))
 			n.savetxt(path_2_input, DATA)
 
+create_lists(qty = 'rw1'               , qtyN = 'rw1'     )
+create_lists(qty = 'rr_Z_O2_3728_flux' , qtyN = 'O2flux'  )
+
 create_lists(qty = 'rr_fast_lmass'     , qtyN = 'mass'    )
 create_lists(qty = 'g'                 , qtyN = 'g'       )
 create_lists(qty = 'gr'                , qtyN = 'gr'      )
 create_lists(qty = 'rz'                , qtyN = 'rz'      )
-create_lists(qty = 'rw1'               , qtyN = 'rw1'     )
-create_lists(qty = 'rr_Z_O2_3728_flux' , qtyN = 'O2flux'  )
