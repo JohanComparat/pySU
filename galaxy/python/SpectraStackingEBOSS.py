@@ -23,6 +23,13 @@ get_path_to_spectrum_v5_10_7 = lambda plate, mjd, fiberid : os.path.join(os.envi
 
 get_path_to_spectrum_26 = lambda plate, mjd, fiberid : os.path.join(os.environ['HOME'], 'SDSS', '26', 'spectra', str(int(plate)).zfill(4), "spec-"+str(int(plate)).zfill(4)+"-"+str(int(mjd)).zfill(5)+"-"+str(int(fiberid)).zfill(4)+".fits" )
 
+
+line_list_abs = n.array([2249.88, 2260.78, 2344.21, 2374.46, 2382.76, 2576.88, 2586.65, 2594.50, 2600.17, 2606.46, 2796.35, 2803.53, 2852.96])
+line_list_abs_names = n.array(['FeII', 'FeII', 'FeII', 'FeII', 'FeII', 'MnII', 'FeII', 'MnII','FeII', 'MnII', 'MgII','MgII','MgI'])
+line_list_em = n.array([2327, 2365.55, 2396.36, 2612.65,2626.45])
+line_list_em_names = n.array(['CII]', 'FeII*', 'FeII*', 'FeII*', 'FeII*'])
+
+
 class SpectraStackingEBOSS:
 	"""
 	The model luminosity function class
@@ -142,17 +149,22 @@ class SpectraStackingEBOSS:
 		
 		# UV mask
 		UV_mask = (x>2000)&(x<3600)
-		#lines_mask = 
-		#((x > 3728 - self.N_angstrom_masked) & (x < 3728 + self.N_angstrom_masked)) 
-		#| ((x > 5007 - self.N_angstrom_masked) & (x < 5007 + self.N_angstrom_masked)) 
-		#| ((x > 4861 - self.N_angstrom_masked) & (x < 4861 + self.N_angstrom_masked)) 
-		#| ((x > 6564 - self.N_angstrom_masked) & (x < 6564 + self.N_angstrom_masked)) 
+		
+		# UV line mask
+		ratio = n.min(abs(10000.*n.log10(n.outer(x, 1./line_list_abs))), axis=1)
+		margin = 8
+		veto_line_abs = ( ratio <= margin )
+
+		ratio = n.min(abs(10000.*n.log10(n.outer(x, 1./line_list_em))), axis=1)
+		margin = 8
+		veto_line_em = ( ratio <= margin )
+		
 		# MASKING BAD DATA
 		bad_data = n.isnan(y) | n.isinf(y) | (y <= 0.0) | n.isnan(yerr) | n.isinf(yerr)
 		# creating new arrays
-		x = x[(UV_mask)&(veto_sky==False)&(bad_data==False)] 
-		y = y[(UV_mask)&(veto_sky==False)&(bad_data==False)] 
-		yerr = yerr[(UV_mask)&(veto_sky==False)&(bad_data==False)] 
+		x = x[(UV_mask)&(veto_sky==False)&(bad_data==False)&(veto_line_abs==False)&(veto_line_em==False)] 
+		y = y[(UV_mask)&(veto_sky==False)&(bad_data==False)&(veto_line_abs==False)&(veto_line_em==False)] 
+		yerr = yerr[(UV_mask)&(veto_sky==False)&(bad_data==False)&(veto_line_abs==False)&(veto_line_em==False)] 
 		
 		out=n.polyfit(x, y, 3, w=1/yerr)
 		return out
