@@ -18,7 +18,7 @@ path_2_cat = join(os.environ['HOME'],"SDSS/lss/catalogs/3", "inputs/ELG.v5_10_10
 cat = fits.open(path_2_cat)[1].data
 
 Ngal = len(cat)
-N_in_stack = 10000
+N_in_stack = 9000
 N_factor = 3
 
 bins_2nd = n.arange(N_in_stack, N_in_stack*N_factor, N_in_stack)
@@ -40,7 +40,8 @@ def create_lists(qty, qtyN):
 		print('-------------------------------------')
 		print(z0,z1)
 		z_sel = (cat['rr_Z']>z0) & (cat['rr_Z']<z1)
-		qty_bins = n.arange(n.min(cat[qty][z_sel]), n.max(cat[qty][z_sel]), (-n.min(cat[qty][z_sel]) + n.max(cat[qty][z_sel]))/1000. )
+		print(len(cat[qty][z_sel]))
+		qty_bins = n.arange(n.min(cat[qty][z_sel]), n.max(cat[qty][z_sel]), (-n.min(cat[qty][z_sel]) + n.max(cat[qty][z_sel]))/1000000. )
 		itp2 = interp1d( n.cumsum(n.histogram(cat[qty][z_sel], bins=qty_bins)[0]), qty_bins[:-1] )
 		print(itp2.x,itp2.y)
 		qty_mins = n.hstack((n.min(cat[qty][z_sel]), itp2(bins_2nd) ))
