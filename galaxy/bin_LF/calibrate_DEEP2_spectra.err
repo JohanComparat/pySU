@@ -1,0 +1,56 @@
+/home/comparat/software/linux/miniconda3/lib/python3.6/site-packages/scipy/integrate/quadpack.py:364: IntegrationWarning: The occurrence of roundoff error is detected, which prevents 
+  the requested tolerance from being achieved.  The error may be 
+  underestimated.
+  warnings.warn(msg, IntegrationWarning)
+/home/comparat/.local/lib/python3.6/site-packages/h5py/__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+/home/comparat/software/linux/miniconda3/lib/python3.6/site-packages/pyneb/utils/manage_atomic_data.py:528: VisibleDeprecationWarning: Reading unicode strings without specifying the encoding argument is deprecated. Set the encoding, use None for the system default.
+  gsconf = np.genfromtxt(execution_path('../atomic_data/levels/gsconfs.dat'), names=['atom', 'gsconf'], dtype=None)
+/home/comparat/software/linux/pySU/galaxy/python/GalaxySpectrumDEEP2.py:96: RuntimeWarning: divide by zero encountered in power
+  self.specErr=self.ivar**(-0.5)
+/home/comparat/software/linux/miniconda3/lib/python3.6/site-packages/scipy/optimize/minpack.py:785: OptimizeWarning: Covariance of the parameters could not be estimated
+  category=OptimizeWarning)
+/home/comparat/software/linux/pySU/galaxy/python/GalaxySpectrumDEEP2.py:181: RuntimeWarning: divide by zero encountered in true_divide
+  self.ivar_fluxn=self.ivarTMP/fluxn_corr**2
+/home/comparat/software/linux/pySU/galaxy/python/GalaxySpectrumDEEP2.py:181: RuntimeWarning: invalid value encountered in true_divide
+  self.ivar_fluxn=self.ivarTMP/fluxn_corr**2
+calibrate_DEEP2_spectra:31: FutureWarning: elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison
+  if fc=="bad":
+/home/comparat/software/linux/pySU/galaxy/python/GalaxySpectrumDEEP2.py:96: RuntimeWarning: invalid value encountered in power
+  self.specErr=self.ivar**(-0.5)
+Traceback (most recent call last):
+  File "calibrate_DEEP2_spectra", line 34, in <module>
+    spec1d.writeFCspec()
+  File "/home/comparat/software/linux/pySU/galaxy/python/GalaxySpectrumDEEP2.py", line 223, in writeFCspec
+    complete_hdus.writeto(self.path_to_out_spectrum)
+  File "/home/comparat/.local/lib/python3.6/site-packages/astropy/utils/decorators.py", line 487, in wrapper
+    return function(*args, **kwargs)
+  File "/home/comparat/.local/lib/python3.6/site-packages/astropy/io/fits/hdu/hdulist.py", line 852, in writeto
+    self.verify(option=output_verify)
+  File "/home/comparat/.local/lib/python3.6/site-packages/astropy/io/fits/verify.py", line 73, in verify
+    errs = self._verify(opt)
+  File "/home/comparat/.local/lib/python3.6/site-packages/astropy/io/fits/hdu/hdulist.py", line 1179, in _verify
+    result = hdu._verify(option)
+  File "/home/comparat/.local/lib/python3.6/site-packages/astropy/io/fits/hdu/table.py", line 543, in _verify
+    errs = super()._verify(option=option)
+  File "/home/comparat/.local/lib/python3.6/site-packages/astropy/io/fits/hdu/base.py", line 1547, in _verify
+    errs = super()._verify(option=option)
+  File "/home/comparat/.local/lib/python3.6/site-packages/astropy/io/fits/hdu/base.py", line 1034, in _verify
+    errs.append(card._verify(option))
+  File "/home/comparat/.local/lib/python3.6/site-packages/astropy/io/fits/card.py", line 1105, in _verify
+    keyword, valuecomment = self._split()
+  File "/home/comparat/.local/lib/python3.6/site-packages/astropy/io/fits/card.py", line 816, in _split
+    image = self.image
+  File "/home/comparat/.local/lib/python3.6/site-packages/astropy/io/fits/card.py", line 507, in image
+    self._image = self._format_image()
+  File "/home/comparat/.local/lib/python3.6/site-packages/astropy/io/fits/card.py", line 937, in _format_image
+    value = self._format_value()
+  File "/home/comparat/.local/lib/python3.6/site-packages/astropy/io/fits/card.py", line 903, in _format_value
+    value = self.value
+  File "/home/comparat/.local/lib/python3.6/site-packages/astropy/io/fits/card.py", line 289, in value
+    if conf.strip_header_whitespace and isinstance(value, str):
+  File "/home/comparat/.local/lib/python3.6/site-packages/astropy/config/configuration.py", line 273, in __get__
+    return self()
+  File "/home/comparat/.local/lib/python3.6/site-packages/astropy/config/configuration.py", line 397, in __call__
+    if self.name in sec:
+KeyboardInterrupt
