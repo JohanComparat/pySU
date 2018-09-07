@@ -15,6 +15,13 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as p
 
+
+agn_file = join(os.environ['HOME'],"SDSS", "stacks", "xagn_0.38.stack")
+
+agn=fits.open(agn_file)[1].data
+s1 = (agn['wavelength'         ]>2200)&(agn['wavelength'         ]<2900)&(agn['NspectraPerPixel'   ]>0.5*n.max(agn['NspectraPerPixel'   ]))
+xA, yA = agn['wavelength'         ][s1], agn['medianStack'        ][s1]
+
 line_list_abs = n.array([2249.88, 2260.78, 2344.21, 2374.46, 2382.76, 2576.88, 2586.65, 2594.50, 2600.17, 2606.46, 2796.35, 2803.53, 2852.96])
 line_list_abs_names = n.array(['FeII', 'FeII', 'FeII', 'FeII', 'FeII', 'MnII', 'FeII', 'MnII','FeII', 'MnII', 'MgII','MgII','MgI'])
 line_list_em = n.array([2327, 2365.55, 2396.36, 2612.65,2626.45])
@@ -28,6 +35,7 @@ def plot_me(qty):
 	fig=p.figure(0,(7.2, 13.7), frameon=False)
 	
 	fig.add_subplot(311, xlim=((2240, 2410)), ylim=((0,2)))
+	p.plot(xA,yA,'k',lw=0.5, label='NLAGN')
 	for specList in dataList_UV:
 		bn = os.path.basename(specList)[10:-8].split('_')
 		print(bn)
@@ -53,6 +61,7 @@ def plot_me(qty):
 	p.grid()
 
 	fig.add_subplot(312, ylabel=r'F/Fcont', xlim=((2570, 2640)), ylim=((0,2)))
+	p.plot(xA,yA,'k',lw=0.5, label='NLAGN')
 	for specList in dataList_UV:
 		dd=fits.open(specList)[1].data
 		wl=dd['wavelength'         ]
@@ -72,6 +81,7 @@ def plot_me(qty):
 
 
 	fig.add_subplot(313, xlabel='wavelength [Angstrom, rest frame]', xlim=((2780, 2870)), ylim=((0,2)))
+	p.plot(xA,yA,'k',lw=0.5, label='NLAGN')
 	for specList in dataList_UV:
 		dd=fits.open(specList)[1].data
 		wl=dd['wavelength'         ]
@@ -95,8 +105,9 @@ def plot_me(qty):
 	p.clf()
 
 
-	p.figure(0,(9,5))
+	p.figure(1,(5,9))
 	p.title(qty)
+	p.plot(xA,yA,'k',lw=0.5, label='NLAGN')
 	for specList in dataList:
 		bn = os.path.basename(specList)[10:-8]
 		dd=fits.open(specList)[1].data
@@ -109,6 +120,7 @@ def plot_me(qty):
 		#dd['jackknifStackErrors'][s1]
 		#dd['NspectraPerPixel'   ][s1]
 
+	p.yscale('log')
 	p.legend(frameon=False)
 	p.tight_layout()
 	p.savefig(join(os.environ['HOME'], "SDSS/stacks", "eboss-elg_"+qty+".stack")+".png")
