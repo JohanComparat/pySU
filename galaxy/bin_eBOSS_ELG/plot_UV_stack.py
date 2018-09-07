@@ -17,10 +17,15 @@ import matplotlib.pyplot as p
 
 
 agn_file = join(os.environ['HOME'],"SDSS", "stacks", "xagn_0.38.stack")
-
 agn=fits.open(agn_file)[1].data
-s1 = (agn['wavelength'         ]>2200)&(agn['wavelength'         ]<2900)&(agn['NspectraPerPixel'   ]>0.5*n.max(agn['NspectraPerPixel'   ]))
+s1 = (agn['wavelength'         ]>2200)&(agn['wavelength'         ]<2900)
 xA, yA = agn['wavelength'         ][s1], agn['medianStack'        ][s1]
+
+agn=fits.open("/home/comparat/data-4most/opsim_data/survey_team_inputs/Xgal/templates/4most_AGN_type2_zmin_00_zmax_03_EBV_0_01.fits")[1].data
+
+s1 = (agn['LAMBDA']/(1.15)>2200)&(agn['LAMBDA']/(1.15)<3800)
+xA, yA = agn['LAMBDA'][s1]/(1.15), agn['FLUX'][s1]/(3.5950675388804168e-16)
+
 
 line_list_abs = n.array([2249.88, 2260.78, 2344.21, 2374.46, 2382.76, 2576.88, 2586.65, 2594.50, 2600.17, 2606.46, 2796.35, 2803.53, 2852.96])
 line_list_abs_names = n.array(['FeII', 'FeII', 'FeII', 'FeII', 'FeII', 'MnII', 'FeII', 'MnII','FeII', 'MnII', 'MgII','MgII','MgI'])
@@ -104,22 +109,28 @@ def plot_me(qty):
 	p.savefig(join(os.environ['HOME'], "SDSS/stacks", "eboss-elg_"+qty+".UVstack")+".png")
 	p.clf()
 
-
-	p.figure(1,(5,9))
+	p.figure(1,(9,5))
 	p.title(qty)
-	p.plot(xA,yA,'k',lw=0.5, label='NLAGN')
 	for specList in dataList:
-		bn = os.path.basename(specList)[10:-8]
+		bn = os.path.basename(specList)[10:-8].split('_')
+		print(bn)
+		if qty == 'fast_lmass':
+			bnl = str(n.round(float(bn[0]),3))+'<z<'+str(n.round(float(bn[2]),3))+', '+str(n.round(float(bn[3]),3))+'<'+qty+'<'+str(n.round(float(bn[6]),3))
+		else:
+			bnl = str(n.round(float(bn[0]),3))+'<z<'+str(n.round(float(bn[2]),3))+', '+str(n.round(float(bn[3]),3))+'<'+qty+'<'+str(n.round(float(bn[5]),3))
 		dd=fits.open(specList)[1].data
 		wl=dd['wavelength'         ]
 		s1 = (dd['NspectraPerPixel'   ]>0.5*n.max(dd['NspectraPerPixel'   ]))
-		p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], label= bn )
+		p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], label= bnl, lw=0.5 )
 		#dd['meanStack'          ][s1]
 		#dd['meanWeightedStack'  ][s1]
 		#dd['jackknifeSpectra'   ][s1]
 		#dd['jackknifStackErrors'][s1]
 		#dd['NspectraPerPixel'   ][s1]
-
+	
+	p.grid()
+	p.xlim((2300,3800))
+	p.plot(xA,yA,'k',lw=0.5, label='NLAGN')
 	p.yscale('log')
 	p.legend(frameon=False)
 	p.tight_layout()
