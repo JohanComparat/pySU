@@ -114,9 +114,10 @@ def plot_me(qty):
 	p.savefig(join(os.environ['HOME'], "SDSS/stacks", "eboss-elg_"+qty+".stack")+".png")
 	p.clf()
 
-plot_me(qty = 'fast_lmass' )
+plot_me(qty = 'mass' )
 plot_me(qty = 'g'          )
 plot_me(qty = 'gr'         )
 plot_me(qty = 'rz'         )
+plot_me(qty = 'rw1'         )
 
 os.system("cp -r ~/SDSS/stacks/*.png ~/wwwDir/sdss/elg/stacks/")
