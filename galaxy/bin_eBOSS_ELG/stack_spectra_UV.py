@@ -16,12 +16,14 @@ dataList.sort()
 
 for specList in dataList:
  print( specList )
- outfile = join(os.environ['HOME'],"SDSS", "stacks", os.path.basename(specList)[:-4]+".stack")
+ outfile = join(os.environ['HOME'], "stacks", os.path.basename(specList)[:-4]+".stack")
+ #outfile = join(os.environ['HOME'], "SDSS", "stacks", os.path.basename(specList)[:-4]+".stack")
  if os.path.isfile(outfile)==False:
   stack=sse.SpectraStackingEBOSS(specList, outfile)
   print(outfile)
   stack.stackSpectra()
- outfile = join(os.environ['HOME'],"SDSS", "stacks", os.path.basename(specList)[:-4]+".UVstack")
+ outfile = join(os.environ['HOME'], "stacks", os.path.basename(specList)[:-4]+".UVstack")
+ #outfile = join(os.environ['HOME'],"SDSS", "stacks", os.path.basename(specList)[:-4]+".UVstack")
  if os.path.isfile(outfile)==False:
   stack=sse.SpectraStackingEBOSS(specList, outfile)
   print(outfile)
