@@ -203,8 +203,8 @@ class SpectraStackingEBOSS:
 						specMatrixErr.append(ptsErr)
 						weight=1.
 						specMatrixWeight.append(n.ones_like(pts)*weight)
-			except(ValueError):
-				print('value error !')
+			except(ValueError,FileNotFoundError):
+				print('value / file not found error !')
 
 		specMatrixWeight=n.array(specMatrixWeight)
 		specMatrix=n.array(specMatrix)
