@@ -242,17 +242,31 @@ class SpectraStackingEBOSS:
 					path_to_spectrum = get_path_to_spectrum_v5_10_10(plate, mjd, fiber)
 				else:
 					path_to_spectrum = get_path_to_spectrum_26(plate, mjd, fiber)
-					
-				self.getSpectra(path_to_spectrum)
-				pts,ptsErr = self.convertSpectrum(redshift)
-				pfit = self.fit_UV_continuum(self.wave, pts ,ptsErr)
-				Fcont = n.polyval(pfit, self.wave)
-				specMatrix.append(pts/Fcont)
-				specMatrixErr.append(ptsErr/Fcont)
-				specMatrix.append(pts)
-				specMatrixErr.append(ptsErr)
-				weight=1.
-				specMatrixWeight.append(n.ones_like(pts)*weight)
+				if os.path.isfile(path_to_spectrum):
+					self.getSpectra(path_to_spectrum)
+					pts,ptsErr = self.convertSpectrum(redshift)
+					pfit = self.fit_UV_continuum(self.wave, pts ,ptsErr)
+					Fcont = n.polyval(pfit, self.wave)
+					specMatrix.append(pts/Fcont)
+					specMatrixErr.append(ptsErr/Fcont)
+					specMatrix.append(pts)
+					specMatrixErr.append(ptsErr)
+					weight=1.
+					specMatrixWeight.append(n.ones_like(pts)*weight)
+				else: # get ELG spectra in v5_10_7
+					path_to_spectrum = get_path_to_spectrum_v5_10_7(plate, mjd, fiber)
+					if os.path.isfile(path_to_spectrum):
+						self.getSpectra(path_to_spectrum)
+						pts,ptsErr = self.convertSpectrum(redshift)
+						pfit = self.fit_UV_continuum(self.wave, pts ,ptsErr)
+						Fcont = n.polyval(pfit, self.wave)
+						specMatrix.append(pts/Fcont)
+						specMatrixErr.append(ptsErr/Fcont)
+						specMatrix.append(pts)
+						specMatrixErr.append(ptsErr)
+						weight=1.
+						specMatrixWeight.append(n.ones_like(pts)*weight)
+
 			except(ValueError,TypeError,FileNotFoundError):
 				print('value or type error !',plate, mjd, fiber)
 
