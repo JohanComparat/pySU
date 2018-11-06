@@ -183,7 +183,7 @@ class SpectraStackingEBOSS:
 			try:
 				#print(plate, mjd, fiber, redshift)
 				if plate > 3006 :
-					path_to_spectrum = get_path_to_spectrum_v5_10_0(plate, mjd, fiber)
+					path_to_spectrum = get_path_to_spectrum_v5_10_10(plate, mjd, fiber)
 				else:
 					path_to_spectrum = get_path_to_spectrum_26(plate, mjd, fiber)
 					
