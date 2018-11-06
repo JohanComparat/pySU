@@ -11,7 +11,7 @@ import numpy as n
 import SpectraStackingEBOSS as sse
 
 # create all stacks
-dataList = n.array(glob.glob(join(os.environ['HOME'],"SDSS/lss/catalogs/3", "eboss-elg_*.asc")))
+dataList = n.array(glob.glob(join(os.environ['HOME'],"SDSS/lss/catalogs/3/stacks_v1", "eboss-elg_*.asc")))
 dataList.sort()
 
 for specList in dataList:

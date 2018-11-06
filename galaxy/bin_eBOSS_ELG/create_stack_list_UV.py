@@ -12,6 +12,10 @@ import astropy.io.fits as fits
 import SpectraStackingEBOSS as sse
 from scipy.interpolate import interp1d
 
+
+from astropy.cosmology import FlatLambdaCDM
+import astropy.units as u
+cosmoMD = FlatLambdaCDM(H0=67.77*u.km/u.s/u.Mpc, Om0=0.307115)#, Ob0=0.048206)
 # create all input files :
 path_2_cat = join(os.environ['HOME'],"SDSS/lss/catalogs/3", "inputs/ELG.v5_10_10.all.fits")
 
@@ -19,7 +23,7 @@ cat = fits.open(path_2_cat)[1].data
 
 Ngal = len(cat)
 N_in_stack = 10000
-N_factor = 3
+N_factor = 4
 
 #bins_2nd = n.arange(N_in_stack, N_in_stack*N_factor, N_in_stack)
 print(Ngal)
@@ -34,6 +38,52 @@ itp = interp1d(N_CM, BBB[:-1])
 
 z_mins = itp(N_bins)[:-1]
 z_maxs = itp(N_bins)[1:]
+
+
+# CREATES A few stacks as a function of [OII] EW
+
+z0,z1 = 0.6, 1.2
+z_sel = (cat['rr_Z']>z0) & (cat['rr_Z']<z1)
+
+qty = 'rr_Z_O2_3728_EW'
+qtyN = 'O2EW'
+if qtyN == 'O2EW':
+  sel = (z_sel)&(cat[qty]>0.1)&(cat[qty]<10000)
+
+NNN,BBB=n.histogram(n.log10(cat[qty][sel]), bins=100000)
+N_CM = n.cumsum(NNN)
+N_bins = n.arange(N_in_stack*N_factor, N_CM.max(), N_in_stack*N_factor)
+itp = interp1d(N_CM, 10**BBB[:-1]) 
+qty_mins = itp(N_bins)[:-1]
+qty_maxs = itp(N_bins)[1:]
+for q0,q1 in zip(qty_mins, qty_maxs):
+	print(q0,q1)
+	selection = ( sel ) & (cat[qty]>=q0)&(cat[qty]<q1)
+	DATA = n.transpose([ cat['plate'], cat['MJD'], cat['FIBERID'], cat['rr_Z'] ]) [selection]
+	path_2_input = join(os.environ['HOME'],"SDSS/lss/catalogs/3/stacks_v1", "eboss-elg_"+str(z0)+"_z_"+str(z1)+"_"+str(q0)+"_"+qtyN+"_"+str(q1)+".asc")
+	print(path_2_input)
+	print(len(DATA))
+	n.savetxt(path_2_input, DATA)
+
+# CREATES A few stacks as a function of [OII] L
+sel = (z_sel) & (cat['rr_Z_O2_3728_flux']>0) & (cat['rr_Z_O2_3728_flux']<1)
+dL = cosmoMD.luminosity_distance(cat['rr_Z'][sel]).to(u.cm).value
+Loii = n.log10(cat['rr_Z_O2_3728_flux'][sel]*4*n.pi*dL**2)
+qtyN = 'O2lum' 
+NNN,BBB=n.histogram(Loii, bins=100000)
+N_CM = n.cumsum(NNN)
+N_bins = n.arange(N_in_stack*N_factor, N_CM.max(), N_in_stack*N_factor)
+itp = interp1d(N_CM, BBB[:-1]) 
+qty_mins = itp(N_bins)[:-1]
+qty_maxs = itp(N_bins)[1:]
+for q0,q1 in zip(qty_mins, qty_maxs):
+	print(q0,q1)
+	selection =  (Loii>=q0)&(Loii<q1)
+	DATA = n.transpose([ cat['plate'][sel], cat['MJD'][sel], cat['FIBERID'][sel], cat['rr_Z'][sel] ]) [selection]
+	path_2_input = join(os.environ['HOME'],"SDSS/lss/catalogs/3/stacks_v1", "eboss-elg_"+str(z0)+"_z_"+str(z1)+"_"+str(q0)+"_"+qtyN+"_"+str(q1)+".asc")
+	print(path_2_input)
+	print(len(DATA))
+	n.savetxt(path_2_input, DATA)
 
 
 def create_lists(qty, qtyN):
@@ -63,6 +113,9 @@ def create_lists(qty, qtyN):
 			print(path_2_input)
 			print(len(DATA))
 			n.savetxt(path_2_input, DATA)
+
+qty = 'rr_Z_O2_3728_EW'
+qtyN = 'O2EW'
 
 #create_lists(qty = 'rr_Z_O2_3728_flux' , qtyN = 'O2flux'  )
 create_lists(qty = 'rw1'               , qtyN = 'rw1'     )

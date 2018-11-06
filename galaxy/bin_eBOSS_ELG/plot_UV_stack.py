@@ -34,8 +34,8 @@ line_list_em_names = n.array(['CII]', 'FeII*', 'FeII*', 'FeII*', 'FeII*'])
 
 def plot_me(qty):
 	# create all stacks
-	dataList_UV = n.array(glob.glob(join(os.environ['HOME'], "SDSS/stacks", "eboss-elg_*_"+qty+"_*.UVstack")))
-	dataList = n.array(glob.glob(join(os.environ['HOME'], "SDSS/stacks", "eboss-elg_*_"+qty+"_*.stack")))
+	dataList_UV = n.array(glob.glob(join(os.environ['HOME'], "SDSS/stacks", "eboss-elg_0.8883838383838384_z_0.9493067632850242_*_"+qty+"_*.UVstack")))
+	dataList = n.array(glob.glob(join(os.environ['HOME'], "SDSS/stacks", "eboss-elg_0.8883838383838384_z_0.9493067632850242_*_"+qty+"_*.stack")))
 	
 	fig=p.figure(0,(7.2, 13.7), frameon=False)
 	
