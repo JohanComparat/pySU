@@ -61,7 +61,7 @@ class SpectraStackingEBOSS:
 		"""
 		stackMed = n.ones_like(n.empty(len(self.wave)))*self.dV
 		stackMean = n.ones_like(n.empty(len(self.wave)))*self.dV
-		stackMeanWeighted = n.ones_like(n.empty(len(self.wave)))*self.dV
+		#stackMeanWeighted = n.ones_like(n.empty(len(self.wave)))*self.dV
 		stackVar = n.ones_like(n.empty(len(self.wave)))*self.dV
 		stackN = n.ones_like(n.empty(len(self.wave)))*self.dV
 		jackknifes = n.ones_like(n.empty((len(self.wave),10)))*self.dV
@@ -76,7 +76,7 @@ class SpectraStackingEBOSS:
 				if len(pt[sel])>1:
 						stackMed[i] = n.median(pt[sel])
 						stackMean[i] = n.mean(pt[sel])
-						stackMeanWeighted[i] = n.average(pt[sel],weights=wt[sel])
+						#stackMeanWeighted[i] = n.average(pt[sel],weights=wt[sel])
 						stackN[i] = len(pt[sel])
 						inter = n.array([ n.median( pt[sel & (seK==False)] ) for seK in jks ])
 						jackknifes[i] = inter
@@ -85,11 +85,12 @@ class SpectraStackingEBOSS:
 		wavelength = fits.Column(name="wavelength",format="D", unit="Angstrom", array= self.wave)
 		medianStack=fits.Column(name="medianStack",format="D", unit="erg/s/cm2/Angstrom", array= n.array(stackMed))
 		meanStack=fits.Column(name="meanStack",format="D", unit="erg/s/cm2/Angstrom", array= n.array(stackMean))
-		meanWeightedStack=fits.Column(name="meanWeightedStack",format="D", unit= "erg/s/cm2/Angstrom", array= n.array(stackMeanWeighted))
+		#meanWeightedStack=fits.Column(name="meanWeightedStack",format="D", unit= "erg/s/cm2/Angstrom", array= n.array(stackMeanWeighted))
 		jackknifeSpectra=fits.Column(name="jackknifeSpectra",format="10D", unit="erg/s/cm2/Angstrom", array= n.array(jackknifes))
 		jackknifStackErrors=fits.Column(name="jackknifStackErrors",format="D", unit="erg/s/cm2/Angstrom", array= n.array(stackVar))
 		NspectraPerPixel=fits.Column(name="NspectraPerPixel",format="D", unit="", array= n.array(stackN))
-		return  wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel
+		return  wavelength, medianStack, meanStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel
+		#return  wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel
 
 	def convertSpectrum(self,redshift):
 		"""
@@ -268,8 +269,10 @@ class SpectraStackingEBOSS:
 		specMatrixErr = n.loadtxt(self.out_file+'.specMatrixErr.dat')
 		specMatrixWeight = n.loadtxt(self.out_file+'.specMatrixWeight.dat')
 		print( "now stacks" )
-		wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel = self.stack_function( specMatrix ,specMatrixWeight)
-		cols = fits.ColDefs([wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel])
+		#wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel = self.stack_function( specMatrix ,specMatrixWeight)
+		#cols = fits.ColDefs([wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel])
+		wavelength, medianStack, meanStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel = self.stack_function( specMatrix ,specMatrixWeight)
+		cols = fits.ColDefs([wavelength, medianStack, meanStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel])
 		tbhdu = fits.BinTableHDU.from_columns(cols)
 		prihdr = fits.Header()
 		prihdr['author'] = "JC"
