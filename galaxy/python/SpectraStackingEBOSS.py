@@ -169,12 +169,9 @@ class SpectraStackingEBOSS:
 		out=n.polyfit(x, y, 3, w=1/yerr)
 		return out
 
-	def stackSpectra(self):
+	def createStackMatrix(self):
 		"""
-		Function that constructs the stacks for a luminosity function. 
-		It loops over the list of spectra given in the catalog of the LF. 
-		First it sorts the catalog by the line luminosity. 
-		And then stacks the first Nspec, then the next Nspec together.
+		Function that constructs the stack matrix UV normed
 		"""
 		# loop over the file with N sorted with luminosity
 		specMatrix, specMatrixErr, specMatrixWeight=[],[],[]
@@ -209,28 +206,13 @@ class SpectraStackingEBOSS:
 		specMatrixWeight=n.array(specMatrixWeight)
 		specMatrix=n.array(specMatrix)
 		specMatrixErr=n.array(specMatrixErr)
-		print( "now stacks" )
-		wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel = self.stack_function( specMatrix ,specMatrixWeight)
-		cols = fits.ColDefs([wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel])
-		tbhdu = fits.BinTableHDU.from_columns(cols)
-		prihdr = fits.Header()
-		prihdr['author'] = "JC"
-		prihdr['survey'] = self.survey
-		prihdr['in_file'] = os.path.basename(self.in_file)[:-4]
-		prihdr['Nspec'] = len(self.plates)
-		prihdu = fits.PrimaryHDU(header=prihdr)
-		thdulist = fits.HDUList([prihdu, tbhdu])
-		if os.path.isfile(self.out_file):
-			os.remove(self.out_file)
-		print( "stack written to", self.out_file )
-		thdulist.writeto(self.out_file)
-
-	def stackSpectra_UVnormed(self):
+		n.savetxt(self.out_file+'.specMatrix.dat', specMatrix)
+		n.savetxt(self.out_file+'.specMatrixErr.dat', specMatrixErr)
+		n.savetxt(self.out_file+'.specMatrixWeight.dat', specMatrixWeight)
+	
+	def createStackMatrix_UVnormed(self):
 		"""
-		Function that constructs the stacks for a luminosity function. 
-		It loops over the list of spectra given in the catalog of the LF. 
-		First it sorts the catalog by the line luminosity. 
-		And then stacks the first Nspec, then the next Nspec together.
+		Function that constructs the stack matrix UV normed
 		"""
 		# loop over the file with N sorted with luminosity
 		specMatrix, specMatrixErr, specMatrixWeight=[],[],[]
@@ -273,6 +255,18 @@ class SpectraStackingEBOSS:
 		specMatrixWeight=n.array(specMatrixWeight)
 		specMatrix=n.array(specMatrix)
 		specMatrixErr=n.array(specMatrixErr)
+		n.savetxt(self.out_file+'.specMatrix.dat', specMatrix)
+		n.savetxt(self.out_file+'.specMatrixErr.dat', specMatrixErr)
+		n.savetxt(self.out_file+'.specMatrixWeight.dat', specMatrixWeight)
+	
+	def stackSpectra(self):
+		"""
+		Stacks
+		"""
+		# loop over the file with N sorted with luminosity
+		specMatrix = n.loadtxt(self.out_file+'.specMatrix.dat')
+		specMatrixErr = n.loadtxt(self.out_file+'.specMatrixErr.dat')
+		specMatrixWeight = n.loadtxt(self.out_file+'.specMatrixWeight.dat')
 		print( "now stacks" )
 		wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel = self.stack_function( specMatrix ,specMatrixWeight)
 		cols = fits.ColDefs([wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel])
@@ -288,4 +282,4 @@ class SpectraStackingEBOSS:
 			os.remove(self.out_file)
 		print( "stack written to", self.out_file )
 		thdulist.writeto(self.out_file)
-
+	
