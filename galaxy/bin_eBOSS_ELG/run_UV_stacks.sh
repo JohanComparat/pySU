@@ -25,3 +25,4 @@ testN = n.array([ len(os.listdir(li)) for li in ll])
 # 
 # rsync -avze u0936736@eboss.sdss.org:/uufs/chpc.utah.edu/common/home/sdss/ebosswork/eboss/spectro/redux/v5_10_10/spectra/full/* .
 # 
+# (py36he1srv) (0)comparat@he1srv:~$ rsync -avze u0936736@eboss.sdss.org:/uufs/chpc.utah.edu/common/home/sdss/ebosswork/eboss/spectro/redux/v5_10_10/spectra/full/10* .

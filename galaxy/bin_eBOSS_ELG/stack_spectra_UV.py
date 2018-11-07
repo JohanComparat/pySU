@@ -39,3 +39,6 @@ for specList in dataList:
 	print('stacks', time.time()-t0)
 	stack.stackSpectra()
 		
+#specMatrix = n.loadtxt(outfile+'.specMatrix.dat')
+#specMatrixErr = n.loadtxt(outfile+'.specMatrixErr.dat')
+#specMatrixWeight = n.loadtxt(outfile+'.specMatrixWeight.dat')
