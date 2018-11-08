@@ -18,8 +18,8 @@ import matplotlib.pyplot as p
 
 agn_file = join(os.environ['HOME'],"SDSS/stacks/v1", "xagn_0.38.stack")
 agn=fits.open(agn_file)[1].data
-s1 = (agn['wavelength'         ]>2200)&(agn['wavelength'         ]<2900)
-xA, yA = agn['wavelength'         ][s1], agn['medianStack'        ][s1]
+s1 = (agn['wavelength']>2200)&(agn['wavelength']<2900)
+xA, yA = agn['wavelength'][s1], agn['medianStack'        ][s1]
 
 agn=fits.open("/home/comparat/data-4most/opsim_data/survey_team_inputs/Xgal/templates/4most_AGN_type2_zmin_00_zmax_03_EBV_0_01.fits")[1].data
 
@@ -36,31 +36,22 @@ line_list_abs_names = n.array(['FeII', 'FeII', 'FeII', 'FeII', 'FeII', 'MnII', '
 line_list_em = n.array([2327, 2365.55, 2396.36, 2612.65,2626.45])
 line_list_em_names = n.array(['CII]', 'FeII*', 'FeII*', 'FeII*', 'FeII*'])
 
+#stack_dir = join( os.environ['HOME'], "SDSS/stacks/v2" )
+stack_dir = join( os.environ['HOME'], "SDSS/stacks" )
+
 def plot_me(qty='O2EW'):
-	# create all stacks
-	# O2EW
-	# O2lum
-	#dataList_UV = n.array(glob.glob(join(os.environ['HOME'], "SDSS", "stacks", "eboss-elg_0.6_z_1.2_*_"+qty+"_*.UVstack")))
-	#dataList = n.array([el[:-7]+"stack" for el in dataList_UV])
-	dataList_UV = n.array(glob.glob(join(os.environ['HOME'], "SDSS", "stacks", "eboss-elg_A100_*.UVstack")))
-	dataList = n.array([el[:-7]+"stack" for el in dataList_UV])
-	print(dataList_UV,dataList)
+	dataList_UV = n.array(glob.glob(join(stack_dir, "*.UVstack")))
+	print(dataList_UV)
 	fig=p.figure(0,(7.2, 13.7), frameon=False)
-	
 	fig.add_subplot(311, xlim=((2240, 2410)), ylim=((0,2)))
 	#p.plot(xA,yA,'k',lw=0.5, label='NLAGN')
 	for specList in dataList_UV:
-		#bn = os.path.basename(specList)[10:-8].split('_')
-		#print(bn)
-		#if qty == 'fast_lmass':
-			#bnl = str(n.round(float(bn[0]),3))+'<z<'+str(n.round(float(bn[2]),3))+', '+str(n.round(float(bn[3]),3))+'<'+qty+'<'+str(n.round(float(bn[6]),3))
-		#else:
-		#bnl = str(n.round(float(bn[0]),3))+'<z<'+str(n.round(float(bn[2]),3))+', '+str(n.round(float(bn[3]),3))+'<'+qty+'<'+str(n.round(float(bn[5]),3))
+		bn = os.path.basename(specList)[10:-8].split('_')
+		bnl = str(n.round(float(bn[0]),3))+'<z<'+str(n.round(float(bn[2]),3))+', '+str(n.round(float(bn[3]),3))+'<'+qty+'<'+str(n.round(float(bn[5]),3))
 		dd=fits.open(specList)[1].data
 		wl=dd['wavelength']
 		s1 = (wl>2200)&(wl<2900)&(dd['NspectraPerPixel'   ]>0.5*n.max(dd['NspectraPerPixel'   ]))
-		#if float(bn[0])>0.5:
-		p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1]/n.median(dd['medianStack'        ][s1]), lw=0.7 ) # , label= bnl
+		p.plot(dd['wavelength'][s1], dd['medianStack_UVnormed'][s1], lw=0.7 , label= bnl)
 
 	for xx, nn in zip(line_list_abs, line_list_abs_names ):
 		p.plot(n.array([xx,xx]),n.array([0,1]), ls='dashed', color='k')
@@ -80,11 +71,9 @@ def plot_me(qty='O2EW'):
 	#p.plot(xA,yA,'k',lw=0.5, label='NLAGN')
 	for specList in dataList_UV:
 		dd=fits.open(specList)[1].data
-		wl=dd['wavelength'         ]
+		wl=dd['wavelength']
 		s1 = (wl>2200)&(wl<2900)&(dd['NspectraPerPixel'   ]>0.5*n.max(dd['NspectraPerPixel'   ]))
-		bn = os.path.basename(specList)[10:-8].split('_')
-		#if float(bn[0])>0.5:
-		p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1]/n.median(dd['medianStack'        ][s1]), lw=0.7 )
+		p.plot(dd['wavelength'][s1], dd['medianStack_UVnormed'][s1], lw=0.7 )
 
 	for xx, nn in zip(line_list_abs, line_list_abs_names ):
 		p.plot(n.array([xx,xx]),n.array([0,1]), ls='dashed', color='k')
@@ -102,11 +91,10 @@ def plot_me(qty='O2EW'):
 	#p.plot(xA,yA,'k',lw=0.5, label='NLAGN')
 	for specList in dataList_UV:
 		dd=fits.open(specList)[1].data
-		wl=dd['wavelength'         ]
+		wl=dd['wavelength']
 		s1 = (wl>2200)&(wl<2900)&(dd['NspectraPerPixel'   ]>0.5*n.max(dd['NspectraPerPixel'   ]))
 		bn = os.path.basename(specList)[10:-8].split('_')
-		#if float(bn[0])>0.5:
-		p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1]/n.median(dd['medianStack'        ][s1]), lw=0.7 )
+		p.plot(dd['wavelength'][s1], dd['medianStack_UVnormed'][s1], lw=0.7 )
 
 	for xx, nn in zip(line_list_abs, line_list_abs_names ):
 		p.plot(n.array([xx,xx]),n.array([0,1]), ls='dashed', color='k')
@@ -121,23 +109,19 @@ def plot_me(qty='O2EW'):
 	p.plot(ELG['WAVE'][ok], ELG['FLUXMEDIAN'][ok] , label='Zhu15')
 
 	p.tight_layout()
-	p.savefig(join(os.environ['HOME'], "SDSS", "stacks", "eboss-elg_"+qty+".UVstack")+".png")
+	p.savefig(join(stack_dir, "eboss-elg_"+qty+".UVstack")+".png")
 	p.clf()
 
 	p.figure(1,(9,5))
 	p.title(qty)
-	p.plot(xA,yA/n.median(yA),'k',lw=0.5, label='Narrow Line AGN')
-	for specList in dataList:
+	#p.plot(xA,yA/n.median(yA),'k',lw=0.5, label='Narrow Line AGN')
+	for specList in dataList_UV:
 		bn = os.path.basename(specList)[10:-8].split('_')
-		print(bn)
-		#if qty == 'fast_lmass':
-			#bnl = str(n.round(float(bn[0]),3))+'<z<'+str(n.round(float(bn[2]),3))+', '+str(n.round(float(bn[3]),3))+'<'+qty+'<'+str(n.round(float(bn[6]),3))
-		#else:
-		#bnl = str(n.round(float(bn[0]),3))+'<z<'+str(n.round(float(bn[2]),3))+', '+str(n.round(float(bn[3]),3))+'<'+qty+'<'+str(n.round(float(bn[5]),3))
+		bnl = str(n.round(float(bn[0]),3))+'<z<'+str(n.round(float(bn[2]),3))+', '+str(n.round(float(bn[3]),3))+'<'+qty+'<'+str(n.round(float(bn[5]),3))
 		dd=fits.open(specList)[1].data
-		wl=dd['wavelength'         ]
+		wl=dd['wavelength']
 		s1 = (dd['NspectraPerPixel'   ]>0.5*n.max(dd['NspectraPerPixel'   ]))
-		p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1]/n.median(dd['medianStack'        ][s1]))#, label= bnl )
+		p.plot(dd['wavelength'][s1], dd['medianStack'        ][s1]/n.median(dd['medianStack'        ][s1]), label= bnl )
 		#dd['meanStack'          ][s1]
 		#dd['meanWeightedStack'  ][s1]
 		#dd['jackknifeSpectra'   ][s1]
@@ -151,24 +135,20 @@ def plot_me(qty='O2EW'):
 	p.yscale('log')
 	p.legend(frameon=False)
 	p.tight_layout()
-	p.savefig(join(os.environ['HOME'], "SDSS", "stacks", "eboss-elg_"+qty+".stack")+".png")
+	p.savefig(join(stack_dir, "eboss-elg_"+qty+".stack")+".png")
 	p.clf()
 
 
 	p.figure(1,(9,5))
 	p.title(qty)
-	p.plot(xA,yA/n.median(yA),'k',lw=0.5, label='Narrow Line AGN')
-	for specList in dataList:
-		#bn = os.path.basename(specList)[10:-8].split('_')
-		#print(bn)
-		#if qty == 'fast_lmass':
-			#bnl = str(n.round(float(bn[0]),3))+'<z<'+str(n.round(float(bn[2]),3))+', '+str(n.round(float(bn[3]),3))+'<'+qty+'<'+str(n.round(float(bn[6]),3))
-		#else:
-		#bnl = str(n.round(float(bn[0]),3))+'<z<'+str(n.round(float(bn[2]),3))+', '+str(n.round(float(bn[3]),3))+'<'+qty+'<'+str(n.round(float(bn[5]),3))
+	#p.plot(xA,yA/n.median(yA),'k',lw=0.5, label='Narrow Line AGN')
+	for specList in dataList_UV:
+		bn = os.path.basename(specList)[10:-8].split('_')
+		bnl = str(n.round(float(bn[0]),3))+'<z<'+str(n.round(float(bn[2]),3))+', '+str(n.round(float(bn[3]),3))+'<'+qty+'<'+str(n.round(float(bn[5]),3))
 		dd=fits.open(specList)[1].data
-		wl=dd['wavelength'         ]
+		wl=dd['wavelength']
 		s1 = (dd['NspectraPerPixel'   ]>0.5*n.max(dd['NspectraPerPixel'   ]))
-		p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1]/n.median(dd['medianStack'        ][s1]))#, label= bnl )
+		p.plot(dd['wavelength'][s1], dd['medianStack_UVnormed'        ][s1], label= bnl )
 		#dd['meanStack'          ][s1]
 		#dd['meanWeightedStack'  ][s1]
 		#dd['jackknifeSpectra'   ][s1]
@@ -179,27 +159,23 @@ def plot_me(qty='O2EW'):
 	p.plot(ELG_a['WAVE'][ok], ELG_a['FLUXMEDIAN'][ok]/n.median(ELG_a['FLUXMEDIAN'][ok]), label='Zhu15')
 	p.grid()
 	p.xlim((2240,2400))
-	p.yscale('log')
+	p.ylim=((0,2))
 	p.legend(frameon=False)
 	p.tight_layout()
-	p.savefig(join(os.environ['HOME'], "SDSS", "stacks", "eboss-elg-2240-2400_"+qty+".stack")+".png")
+	p.savefig(join(stack_dir, "eboss-elg-2240-2400_"+qty+".stack")+".png")
 	p.clf()
 
 
 	p.figure(1,(9,5))
 	p.title(qty)
-	p.plot(xA,yA/n.median(yA),'k',lw=0.5, label='Narrow Line AGN')
-	for specList in dataList:
-		#bn = os.path.basename(specList)[10:-8].split('_')
-		#print(bn)
-		#if qty == 'fast_lmass':
-			#bnl = str(n.round(float(bn[0]),3))+'<z<'+str(n.round(float(bn[2]),3))+', '+str(n.round(float(bn[3]),3))+'<'+qty+'<'+str(n.round(float(bn[6]),3))
-		#else:
-		#bnl = str(n.round(float(bn[0]),3))+'<z<'+str(n.round(float(bn[2]),3))+', '+str(n.round(float(bn[3]),3))+'<'+qty+'<'+str(n.round(float(bn[5]),3))
+	#p.plot(xA,yA/n.median(yA),'k',lw=0.5, label='Narrow Line AGN')
+	for specList in dataList_UV:
+		bn = os.path.basename(specList)[10:-8].split('_')
+		bnl = str(n.round(float(bn[0]),3))+'<z<'+str(n.round(float(bn[2]),3))+', '+str(n.round(float(bn[3]),3))+'<'+qty+'<'+str(n.round(float(bn[5]),3))
 		dd=fits.open(specList)[1].data
-		wl=dd['wavelength'         ]
+		wl=dd['wavelength']
 		s1 = (dd['NspectraPerPixel'   ]>0.5*n.max(dd['NspectraPerPixel'   ]))
-		p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1]/n.median(dd['medianStack'        ][s1]))#, label= bnl )
+		p.plot(dd['wavelength'][s1], dd['medianStack_UVnormed'        ][s1], label= bnl )
 		#dd['meanStack'          ][s1]
 		#dd['meanWeightedStack'  ][s1]
 		#dd['jackknifeSpectra'   ][s1]
@@ -210,27 +186,23 @@ def plot_me(qty='O2EW'):
 	p.plot(ELG_a['WAVE'][ok], ELG_a['FLUXMEDIAN'][ok]/n.median(ELG_a['FLUXMEDIAN'][ok]), label='Zhu15')
 	p.grid()
 	p.xlim((2570,2640))
-	p.yscale('log')
+	p.ylim=((0,2))
 	p.legend(frameon=False)
 	p.tight_layout()
-	p.savefig(join(os.environ['HOME'], "SDSS", "stacks", "eboss-elg-2570-2640_"+qty+".stack")+".png")
+	p.savefig(join(stack_dir, "eboss-elg-2570-2640_"+qty+".stack")+".png")
 	p.clf()
 
 
 	p.figure(1,(9,5))
 	p.title(qty)
-	p.plot(xA,yA/n.median(yA),'k',lw=0.5, label='Narrow Line AGN')
-	for specList in dataList:
-		#bn = os.path.basename(specList)[10:-8].split('_')
-		#print(bn)
-		#if qty == 'fast_lmass':
-			#bnl = str(n.round(float(bn[0]),3))+'<z<'+str(n.round(float(bn[2]),3))+', '+str(n.round(float(bn[3]),3))+'<'+qty+'<'+str(n.round(float(bn[6]),3))
-		#else:
-		#bnl = str(n.round(float(bn[0]),3))+'<z<'+str(n.round(float(bn[2]),3))+', '+str(n.round(float(bn[3]),3))+'<'+qty+'<'+str(n.round(float(bn[5]),3))
+	#p.plot(xA,yA/n.median(yA),'k',lw=0.5, label='Narrow Line AGN')
+	for specList in dataList_UV:
+		bn = os.path.basename(specList)[10:-8].split('_')
+		bnl = str(n.round(float(bn[0]),3))+'<z<'+str(n.round(float(bn[2]),3))+', '+str(n.round(float(bn[3]),3))+'<'+qty+'<'+str(n.round(float(bn[5]),3))
 		dd=fits.open(specList)[1].data
-		wl=dd['wavelength'         ]
+		wl=dd['wavelength']
 		s1 = (dd['NspectraPerPixel'   ]>0.5*n.max(dd['NspectraPerPixel'   ]))
-		p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1]/n.median(dd['medianStack'        ][s1]))#, label= bnl )
+		p.plot(dd['wavelength'][s1], dd['medianStack_UVnormed'        ][s1], label= bnl )
 		#dd['meanStack'          ][s1]
 		#dd['meanWeightedStack'  ][s1]
 		#dd['jackknifeSpectra'   ][s1]
@@ -241,10 +213,10 @@ def plot_me(qty='O2EW'):
 	p.plot(ELG_a['WAVE'][ok], ELG_a['FLUXMEDIAN'][ok]/n.median(ELG_a['FLUXMEDIAN'][ok]), label='Zhu15')
 	p.grid()
 	p.xlim((2780,2870))
-	p.yscale('log')
+	p.ylim=((0,2))
 	p.legend(frameon=False)
 	p.tight_layout()
-	p.savefig(join(os.environ['HOME'], "SDSS", "stacks", "eboss-elg-2780-2870_"+qty+".stack")+".png")
+	p.savefig(join(stack_dir, "eboss-elg-2780-2870_"+qty+".stack")+".png")
 	p.clf()
 	
 plot_me(qty = 'O2EW' )
@@ -256,4 +228,4 @@ plot_me(qty = 'O2EW' )
 #plot_me(qty = 'rz'         )
 #plot_me(qty = 'rw1'         )
 os.system("rm ~/wwwDir/sdss/elg/stacks/*.png")
-os.system("cp -r ~/stacks/*.png ~/wwwDir/sdss/elg/stacks/")
+os.system("cp -r "+stack_dir+"/*.png ~/wwwDir/sdss/elg/stacks/")
