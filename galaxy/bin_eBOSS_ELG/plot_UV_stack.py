@@ -39,7 +39,7 @@ line_list_em = n.array([2327, 2365.55, 2396.36, 2612.65,2626.45])
 line_list_em_names = n.array(['CII]', 'FeII*', 'FeII*', 'FeII*', 'FeII*'])
 
 def plot_me(qty='O2EW'):
-	dataList_UV = n.array(glob.glob(join(stack_dir, "*.UVstack")))
+	dataList_UV = n.array(glob.glob(join(stack_dir, "*"+qty+"*.UVstack")))
 	print(dataList_UV)
 	fig=p.figure(0,(7.2, 13.7), frameon=False)
 	fig.add_subplot(311, xlim=((2240, 2410)), ylim=((0.7,1.2)))
