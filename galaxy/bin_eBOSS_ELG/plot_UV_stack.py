@@ -15,6 +15,8 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as p
 
+#stack_dir = join( os.environ['HOME'], "SDSS/stacks/v2" )
+stack_dir = join( os.environ['HOME'], "SDSS/stacks" )
 
 agn_file = join(os.environ['HOME'],"SDSS/stacks/v1", "xagn_0.38.stack")
 agn=fits.open(agn_file)[1].data
@@ -35,9 +37,6 @@ line_list_abs = n.array([2249.88, 2260.78, 2344.21, 2374.46, 2382.76, 2576.88, 2
 line_list_abs_names = n.array(['FeII', 'FeII', 'FeII', 'FeII', 'FeII', 'MnII', 'FeII', 'MnII','FeII', 'MnII', 'MgII','MgII','MgI'])
 line_list_em = n.array([2327, 2365.55, 2396.36, 2612.65,2626.45])
 line_list_em_names = n.array(['CII]', 'FeII*', 'FeII*', 'FeII*', 'FeII*'])
-
-stack_dir = join( os.environ['HOME'], "SDSS/stacks/v2" )
-#stack_dir = join( os.environ['HOME'], "SDSS/stacks" )
 
 def plot_me(qty='O2EW'):
 	dataList_UV = n.array(glob.glob(join(stack_dir, "*.UVstack")))
