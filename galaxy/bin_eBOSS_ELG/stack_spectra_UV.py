@@ -29,6 +29,28 @@ for specList in dataList:
 	print('stacks', time.time()-t0)
 	stack.stackSpectra()
 
+hdu = fits.open(outfile)
+dd=hdu[1].data
+wl=dd['wavelength'         ]
+s1 = (dd['NspectraPerPixel'   ]>0.5*n.max(dd['NspectraPerPixel'   ]))
+x, y= dd['wavelength'         ][s1], dd['medianStack'        ][s1]
+yerr = dd['jackknifStackErrors'][s1]
+pfit = stack.fit_UV_continuum(x,y,yerr,degree=3)
+Fcont = n.polyval(pfit, dd['wavelength'         ])
+spec_UV.append(dd['medianStack'        ]/Fcont)
+spec_UV_Err.append(dd['jackknifStackErrors'        ]/Fcont)
+
+
+
+outfile = join(os.environ['HOME'], "SDSS/stacks", os.path.basename(specList)[:-4]+".UVstack")
+
+
+if os.path.isfile(self.out_file):
+	os.remove(self.out_file)
+print( "stack written to", self.out_file )
+thdulist.writeto(self.out_file)
+
+
 	outfile = join(os.environ['HOME'], "SDSS/stacks", os.path.basename(specList)[:-4]+".UVstack")
 	#outfile = join(os.environ['HOME'],"SDSS", "stacks", os.path.basename(specList)[:-4]+".UVstack")
 	#if os.path.isfile(outfile)==False:
