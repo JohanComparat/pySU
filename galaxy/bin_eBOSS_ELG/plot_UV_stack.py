@@ -36,8 +36,8 @@ line_list_abs_names = n.array(['FeII', 'FeII', 'FeII', 'FeII', 'FeII', 'MnII', '
 line_list_em = n.array([2327, 2365.55, 2396.36, 2612.65,2626.45])
 line_list_em_names = n.array(['CII]', 'FeII*', 'FeII*', 'FeII*', 'FeII*'])
 
-#stack_dir = join( os.environ['HOME'], "SDSS/stacks/v2" )
-stack_dir = join( os.environ['HOME'], "SDSS/stacks" )
+stack_dir = join( os.environ['HOME'], "SDSS/stacks/v2" )
+#stack_dir = join( os.environ['HOME'], "SDSS/stacks" )
 
 def plot_me(qty='O2EW'):
 	dataList_UV = n.array(glob.glob(join(stack_dir, "*.UVstack")))
@@ -159,7 +159,7 @@ def plot_me(qty='O2EW'):
 	p.plot(ELG_a['WAVE'][ok], ELG_a['FLUXMEDIAN'][ok]/n.median(ELG_a['FLUXMEDIAN'][ok]), label='Zhu15')
 	p.grid()
 	p.xlim((2240,2400))
-	p.ylim=((0,2))
+	p.ylim((0,2))
 	p.legend(frameon=False)
 	p.tight_layout()
 	p.savefig(join(stack_dir, "eboss-elg-2240-2400_"+qty+".stack")+".png")
@@ -186,7 +186,7 @@ def plot_me(qty='O2EW'):
 	p.plot(ELG_a['WAVE'][ok], ELG_a['FLUXMEDIAN'][ok]/n.median(ELG_a['FLUXMEDIAN'][ok]), label='Zhu15')
 	p.grid()
 	p.xlim((2570,2640))
-	p.ylim=((0,2))
+	p.ylim((0,2))
 	p.legend(frameon=False)
 	p.tight_layout()
 	p.savefig(join(stack_dir, "eboss-elg-2570-2640_"+qty+".stack")+".png")
@@ -213,7 +213,7 @@ def plot_me(qty='O2EW'):
 	p.plot(ELG_a['WAVE'][ok], ELG_a['FLUXMEDIAN'][ok]/n.median(ELG_a['FLUXMEDIAN'][ok]), label='Zhu15')
 	p.grid()
 	p.xlim((2780,2870))
-	p.ylim=((0,2))
+	p.ylim((0,2))
 	p.legend(frameon=False)
 	p.tight_layout()
 	p.savefig(join(stack_dir, "eboss-elg-2780-2870_"+qty+".stack")+".png")

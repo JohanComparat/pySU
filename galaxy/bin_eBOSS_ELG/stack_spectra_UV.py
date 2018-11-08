@@ -23,7 +23,7 @@ for specList in dataList:
 	out_file = join(stack_dir, os.path.basename(specList)[:-4]+".stack")
 	out_file_UV = join(stack_dir, os.path.basename(specList)[:-4]+".UVstack")
 	print('starts working on', out_file, time.time()-t0)
-	stack=sse.SpectraStackingEBOSS(specList, out_file)#, dLambda = 0.0002, dV=-9999.99, l_start=3.35, l_end=3.579)
+	stack=sse.SpectraStackingEBOSS(specList, out_file, dLambda = 0.0001, dV=-9999.99, l_start=3.35, l_end=3.579)
 	if os.path.isfile(out_file+'.specMatrix.dat')==False:
 		print('creates matrix', time.time()-t0)
 		stack.createStackMatrix()
