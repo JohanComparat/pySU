@@ -16,7 +16,7 @@ dataList = n.array(glob.glob(join(os.environ['HOME'],"SDSS/stacks", "eboss-elg_*
 dataList.sort()
 
 for specList in dataList:
-	specList = dataList[-1]
+	#specList = dataList[-1]
 	print('considers', specList, time.time()-t0)
 	outfile = join(os.environ['HOME'], "SDSS/stacks", os.path.basename(specList)[:-4]+".stack")
 	#outfile = join(os.environ['HOME'], "SDSS", "stacks", os.path.basename(specList)[:-4]+".stack")
