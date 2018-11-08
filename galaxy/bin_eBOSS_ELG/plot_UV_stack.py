@@ -40,9 +40,9 @@ def plot_me(qty='O2EW'):
 	# create all stacks
 	# O2EW
 	# O2lum
-	dataList_UV = n.array(glob.glob(join(os.environ['HOME'], "stacks", "eboss-elg_0.6_1.2_*_"+qty+"_*.UVstack")))
+	dataList_UV = n.array(glob.glob(join(os.environ['HOME'], "stacks", "eboss-elg_0.6_z_1.2_*_"+qty+"_*.UVstack")))
 	dataList = n.array([el[:-7]+"stack" for el in dataList_UV])
-	
+	print(dataList_UV,dataList)
 	fig=p.figure(0,(7.2, 13.7), frameon=False)
 	
 	fig.add_subplot(311, xlim=((2240, 2410)), ylim=((0,2)))
@@ -57,8 +57,8 @@ def plot_me(qty='O2EW'):
 		dd=fits.open(specList)[1].data
 		wl=dd['wavelength']
 		s1 = (wl>2200)&(wl<2900)&(dd['NspectraPerPixel'   ]>0.5*n.max(dd['NspectraPerPixel'   ]))
-		if float(bn[0])>0.5:
-			p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], label= bnl, lw=0.7 )
+		#if float(bn[0])>0.5:
+		p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], label= bnl, lw=0.7 )
 
 	for xx, nn in zip(line_list_abs, line_list_abs_names ):
 		p.plot(n.array([xx,xx]),n.array([0,1]), ls='dashed', color='k', lw=0.5)
@@ -81,8 +81,8 @@ def plot_me(qty='O2EW'):
 		wl=dd['wavelength'         ]
 		s1 = (wl>2200)&(wl<2900)&(dd['NspectraPerPixel'   ]>0.5*n.max(dd['NspectraPerPixel'   ]))
 		bn = os.path.basename(specList)[10:-8].split('_')
-		if float(bn[0])>0.5:
-			p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], lw=0.7 )
+		#if float(bn[0])>0.5:
+		p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], lw=0.7 )
 
 	for xx, nn in zip(line_list_abs, line_list_abs_names ):
 		p.plot(n.array([xx,xx]),n.array([0,1]), ls='dashed', color='k', lw=0.5)
@@ -103,8 +103,8 @@ def plot_me(qty='O2EW'):
 		wl=dd['wavelength'         ]
 		s1 = (wl>2200)&(wl<2900)&(dd['NspectraPerPixel'   ]>0.5*n.max(dd['NspectraPerPixel'   ]))
 		bn = os.path.basename(specList)[10:-8].split('_')
-		if float(bn[0])>0.5:
-			p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], lw=0.7 )
+		#if float(bn[0])>0.5:
+		p.plot(dd['wavelength'         ][s1], dd['medianStack'        ][s1], lw=0.7 )
 
 	for xx, nn in zip(line_list_abs, line_list_abs_names ):
 		p.plot(n.array([xx,xx]),n.array([0,1]), ls='dashed', color='k', lw=0.5)
@@ -127,10 +127,10 @@ def plot_me(qty='O2EW'):
 	for specList in dataList:
 		bn = os.path.basename(specList)[10:-8].split('_')
 		print(bn)
-		if qty == 'fast_lmass':
-			bnl = str(n.round(float(bn[0]),3))+'<z<'+str(n.round(float(bn[2]),3))+', '+str(n.round(float(bn[3]),3))+'<'+qty+'<'+str(n.round(float(bn[6]),3))
-		else:
-			bnl = str(n.round(float(bn[0]),3))+'<z<'+str(n.round(float(bn[2]),3))+', '+str(n.round(float(bn[3]),3))+'<'+qty+'<'+str(n.round(float(bn[5]),3))
+		#if qty == 'fast_lmass':
+			#bnl = str(n.round(float(bn[0]),3))+'<z<'+str(n.round(float(bn[2]),3))+', '+str(n.round(float(bn[3]),3))+'<'+qty+'<'+str(n.round(float(bn[6]),3))
+		#else:
+		bnl = str(n.round(float(bn[0]),3))+'<z<'+str(n.round(float(bn[2]),3))+', '+str(n.round(float(bn[3]),3))+'<'+qty+'<'+str(n.round(float(bn[5]),3))
 		dd=fits.open(specList)[1].data
 		wl=dd['wavelength'         ]
 		s1 = (dd['NspectraPerPixel'   ]>0.5*n.max(dd['NspectraPerPixel'   ]))
@@ -140,6 +140,7 @@ def plot_me(qty='O2EW'):
 		#dd['jackknifeSpectra'   ][s1]
 		#dd['jackknifStackErrors'][s1]
 		#dd['NspectraPerPixel'   ][s1]
+
 	p.plot(ELG['WAVE'], ELG['FLUXMEDIAN'], label='Zhu15')
 	p.grid()
 	p.xlim((2300,3800))
