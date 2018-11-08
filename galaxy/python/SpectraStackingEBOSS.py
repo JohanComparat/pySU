@@ -167,7 +167,7 @@ class SpectraStackingEBOSS:
 		y = y[(UV_mask)&(veto_sky==False)&(bad_data==False)&(veto_line_abs==False)&(veto_line_em==False)] 
 		yerr = yerr[(UV_mask)&(veto_sky==False)&(bad_data==False)&(veto_line_abs==False)&(veto_line_em==False)] 
 		
-		out=n.polyfit(x, y, degree=3, w=1/yerr)
+		out=n.polyfit(x, y, degree, w=1/yerr)
 		return out
 
 	def createStackMatrix(self):
