@@ -43,7 +43,7 @@ z_maxs = itp(N_bins)[1:]
 # CREATES A few stacks as a function of [OII] EW
 
 z0,z1 = 0.6, 1.2
-z_sel = (cat['rr_Z']>z0) & (cat['rr_Z']<z1)
+z_sel = (cat['rr_Z']>z0) & (cat['rr_Z']<z1) & (cat['rr_ZWARN']<=4)
 
 qty = 'rr_Z_O2_3728_EW'
 qtyN = 'O2EW'
@@ -60,7 +60,7 @@ for q0,q1 in zip(qty_mins, qty_maxs):
 	print(q0,q1)
 	selection = ( sel ) & (cat[qty]>=q0)&(cat[qty]<q1)
 	DATA = n.transpose([ cat['plate'], cat['MJD'], cat['FIBERID'], cat['rr_Z'] ]) [selection]
-	path_2_input = join(os.environ['HOME'],"SDSS/lss/catalogs/3/stacks_v1", "eboss-elg_"+str(z0)+"_z_"+str(z1)+"_"+str(q0)+"_"+qtyN+"_"+str(q1)+".asc")
+	path_2_input = join(os.environ['HOME'],"SDSS/stacks", "eboss-elg_"+str(z0)+"_z_"+str(z1)+"_"+str(q0)+"_"+qtyN+"_"+str(q1)+".asc")
 	print(path_2_input)
 	print(len(DATA))
 	n.savetxt(path_2_input, DATA)
@@ -80,7 +80,7 @@ for q0,q1 in zip(qty_mins, qty_maxs):
 	print(q0,q1)
 	selection =  (Loii>=q0)&(Loii<q1)
 	DATA = n.transpose([ cat['plate'][sel], cat['MJD'][sel], cat['FIBERID'][sel], cat['rr_Z'][sel] ]) [selection]
-	path_2_input = join(os.environ['HOME'],"SDSS/lss/catalogs/3/stacks_v1", "eboss-elg_"+str(z0)+"_z_"+str(z1)+"_"+str(q0)+"_"+qtyN+"_"+str(q1)+".asc")
+	path_2_input = join(os.environ['HOME'],"SDSS/stacks", "eboss-elg_"+str(z0)+"_z_"+str(z1)+"_"+str(q0)+"_"+qtyN+"_"+str(q1)+".asc")
 	print(path_2_input)
 	print(len(DATA))
 	n.savetxt(path_2_input, DATA)
@@ -109,7 +109,7 @@ def create_lists(qty, qtyN):
 			print(q0,q1)
 			selection = ( z_sel ) & (cat[qty]>q0)&(cat[qty]<q1)
 			DATA = n.transpose([ cat['plate'], cat['MJD'], cat['FIBERID'], cat['rr_Z'] ]) [selection]
-			path_2_input = join(os.environ['HOME'],"SDSS/lss/catalogs/3", "eboss-elg_"+str(z0)+"_z_"+str(z1)+"_"+str(q0)+"_"+qtyN+"_"+str(q1)+".asc")
+			path_2_input = join(os.environ['HOME'],"SDSS/stacks", "eboss-elg_"+str(z0)+"_z_"+str(z1)+"_"+str(q0)+"_"+qtyN+"_"+str(q1)+".asc")
 			print(path_2_input)
 			print(len(DATA))
 			n.savetxt(path_2_input, DATA)
