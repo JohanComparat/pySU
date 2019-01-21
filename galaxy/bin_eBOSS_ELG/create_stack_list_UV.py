@@ -19,6 +19,8 @@ cosmoMD = FlatLambdaCDM(H0=67.77*u.km/u.s/u.Mpc, Om0=0.307115)#, Ob0=0.048206)
 # create all input files :
 path_2_cat = join(os.environ['HOME'],"SDSS/lss/catalogs/3", "inputs/ELG.v5_10_10.all.fits")
 
+#path_2_cat = join(os.environ['HOME'],"SDSS/lss/catalogs/4", "inputs/ELG.v5_11_0.rrv2.all.fits")
+
 cat = fits.open(path_2_cat)[1].data
 
 Ngal = len(cat)
