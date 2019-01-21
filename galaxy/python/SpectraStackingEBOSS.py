@@ -15,6 +15,10 @@ from scipy.interpolate import interp1d
 
 maskLambda = n.loadtxt(os.path.join(os.environ['GIT_ARCHETYPES'],'data',"dr12-sky-mask.txt"), unpack=True)
 
+get_path_to_spectrum_v5_11_1 = lambda plate, mjd, fiberid : os.path.join(os.environ['HOME'], 'SDSS', 'v5_11_1', 'spectra', str(int(plate)).zfill(4), "spec-"+str(int(plate)).zfill(4)+"-"+str(int(mjd)).zfill(5)+"-"+str(int(fiberid)).zfill(4)+".fits" )
+
+get_path_to_spectrum_v5_11_0 = lambda plate, mjd, fiberid : os.path.join(os.environ['HOME'], 'SDSS', 'v5_11_0', 'spectra', str(int(plate)).zfill(4), "spec-"+str(int(plate)).zfill(4)+"-"+str(int(mjd)).zfill(5)+"-"+str(int(fiberid)).zfill(4)+".fits" )
+
 get_path_to_spectrum_v5_10_10 = lambda plate, mjd, fiberid : os.path.join(os.environ['HOME'], 'SDSS', 'v5_10_10', 'spectra', str(int(plate)).zfill(4), "spec-"+str(int(plate)).zfill(4)+"-"+str(int(mjd)).zfill(5)+"-"+str(int(fiberid)).zfill(4)+".fits" )
 
 get_path_to_spectrum_v5_10_0 = lambda plate, mjd, fiberid : os.path.join(os.environ['HOME'], 'SDSS', 'v5_10_0', 'spectra', str(int(plate)).zfill(4), "spec-"+str(int(plate)).zfill(4)+"-"+str(int(mjd)).zfill(5)+"-"+str(int(fiberid)).zfill(4)+".fits" )
@@ -181,7 +185,7 @@ class SpectraStackingEBOSS:
 			try:
 				#print(plate, mjd, fiber, redshift)
 				if plate > 3006 :
-					path_to_spectrum = get_path_to_spectrum_v5_10_10(plate, mjd, fiber)
+					path_to_spectrum = get_path_to_spectrum_v5_11_0(plate, mjd, fiber)
 				else:
 					path_to_spectrum = get_path_to_spectrum_26(plate, mjd, fiber)
 					
@@ -222,7 +226,7 @@ class SpectraStackingEBOSS:
 			try:
 				#print(plate, mjd, fiber, redshift)
 				if plate > 3006 :
-					path_to_spectrum = get_path_to_spectrum_v5_10_10(plate, mjd, fiber)
+					path_to_spectrum = get_path_to_spectrum_v5_11_0(plate, mjd, fiber)
 				else:
 					path_to_spectrum = get_path_to_spectrum_26(plate, mjd, fiber)
 				if os.path.isfile(path_to_spectrum):
