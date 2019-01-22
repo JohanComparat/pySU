@@ -10,17 +10,20 @@ import glob
 import numpy as n
 import SpectraStackingEBOSS as sse
 
-specList = join(os.environ['HOME'],"SDSS/lss/catalogs/3", "xagn_0.38.asc")
 
-print( specList )
+spec_dir = join(os.environ['HOME'],"wwwDir/sdss/agn/stacks")
 
-outfile = join(os.environ['HOME'],"SDSS", "stacks", os.path.basename(specList)[:-4]+".stack")
-stack=sse.SpectraStackingEBOSS(specList, outfile)
-print(outfile)
-stack.stackSpectra()
+def stack_it(specList = join(spec_dir, "catalog.ascii") ):
+	outfile = join(spec_dir, os.path.basename(specList)[:-6]+".stack")
+	stack=sse.SpectraStackingEBOSS(specList, outfile)
+	stack.createStackMatrix()
+	print(outfile)
+	stack.stackSpectra()
 
-outfile = join(os.environ['HOME'],"SDSS", "stacks", os.path.basename(specList)[:-4]+".UVstack")
-stack=sse.SpectraStackingEBOSS(specList, outfile)
-print(outfile)
-stack.stackSpectra_UVnormed()
-	
+stack_it(join(spec_dir, "s82xagn-gal_ell.asc") )
+stack_it(join(spec_dir, "s82xagn-gal_SB.asc") )
+stack_it(join(spec_dir, "s82xagn-gal_spi.asc") )
+stack_it(join(spec_dir, "s82xagn-stars.asc") )
+stack_it(join(spec_dir, "s82xagn-t1.asc") )
+stack_it(join(spec_dir, "s82xagn-t2.asc") )
+

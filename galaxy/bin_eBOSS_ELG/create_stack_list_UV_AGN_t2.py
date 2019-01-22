@@ -45,15 +45,46 @@ qso     = ( (cat['MORPHOLOGY'] == 6 ) | (cat['MORPHOLOGY'] == 7 )) & ( zspec) #&
 
 
 selection = type2
-
 DATA = n.transpose([ cat['plate_v51010'], cat['MJD_v51010'], cat['FIBERID_v51010'], cat['Z_v51010'] ]) [selection]
-
-for el in DATA:
-  isin = (DATA0.T[0]==el[0])&(DATA0.T[2]==el[2])&(DATA0.T[1]==el[1])
-  print(el, DATA0[isin])
-  if len(isin.nonzero()[0])==0:
-    print('new')
-    DATA0 = n.vstack((DATA0,el))
-
-path_2_input = join(os.environ['HOME'],"SDSS/lss/catalogs/3", "s82xagn.asc")
+path_2_input = join(os.environ['HOME'],"wwwDir/sdss/agn/stacks", "s82xagn-t2.asc")
 n.savetxt(path_2_input, DATA)
+
+
+selection = qso
+DATA = n.transpose([ cat['plate_v51010'], cat['MJD_v51010'], cat['FIBERID_v51010'], cat['Z_v51010'] ]) [selection]
+path_2_input = join(os.environ['HOME'],"wwwDir/sdss/agn/stacks", "s82xagn-t1.asc")
+n.savetxt(path_2_input, DATA)
+
+
+selection = gal_ell
+DATA = n.transpose([ cat['plate_v51010'], cat['MJD_v51010'], cat['FIBERID_v51010'], cat['Z_v51010'] ]) [selection]
+path_2_input = join(os.environ['HOME'],"wwwDir/sdss/agn/stacks", "s82xagn-gal_ell.asc")
+n.savetxt(path_2_input, DATA)
+
+
+selection = gal_spi
+DATA = n.transpose([ cat['plate_v51010'], cat['MJD_v51010'], cat['FIBERID_v51010'], cat['Z_v51010'] ]) [selection]
+path_2_input = join(os.environ['HOME'],"wwwDir/sdss/agn/stacks", "s82xagn-gal_spi.asc")
+n.savetxt(path_2_input, DATA)
+
+
+selection = gal_SB
+DATA = n.transpose([ cat['plate_v51010'], cat['MJD_v51010'], cat['FIBERID_v51010'], cat['Z_v51010'] ]) [selection]
+path_2_input = join(os.environ['HOME'],"wwwDir/sdss/agn/stacks", "s82xagn-gal_SB.asc")
+n.savetxt(path_2_input, DATA)
+
+
+selection = stars
+DATA = n.transpose([ cat['plate_v51010'], cat['MJD_v51010'], cat['FIBERID_v51010'], cat['Z_v51010'] ]) [selection]
+path_2_input = join(os.environ['HOME'],"wwwDir/sdss/agn/stacks", "s82xagn-stars.asc")
+n.savetxt(path_2_input, DATA)
+
+
+
+#for el in DATA:
+  #isin = (DATA0.T[0]==el[0])&(DATA0.T[2]==el[2])&(DATA0.T[1]==el[1])
+  #print(el, DATA0[isin])
+  #if len(isin.nonzero()[0])==0:
+    #print('new')
+    #DATA0 = n.vstack((DATA0,el))
+
