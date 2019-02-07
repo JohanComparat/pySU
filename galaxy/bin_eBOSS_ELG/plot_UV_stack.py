@@ -40,6 +40,7 @@ line_list_em_names = n.array(['CII]', 'FeII*', 'FeII*', 'FeII*', 'FeII*'])
 
 def plot_me(qty='O2EW'):
 	dataList_UV = n.array(glob.glob(join(stack_dir, "*"+qty+"*.UVstack")))
+	dataList_UV.sort()
 	print(dataList_UV)
 	fig=p.figure(0,(7.2, 13.7), frameon=False)
 	fig.add_subplot(311, xlim=((2240, 2410)), ylim=((0.7,1.2)))
@@ -81,6 +82,8 @@ def plot_me(qty='O2EW'):
 	for xx, nn in zip(line_list_em, line_list_em_names ):
 		p.plot(n.array([xx,xx]),n.array([1,2]), ls='dashed', color='g')
 		p.text(xx,1.2,nn,rotation=90, color='g')
+	
+	#p.legend(frameon=False)
 	p.grid()
 	#ok = (ELG['WAVE']>2200)&(ELG['WAVE']<2900)
 	#p.plot(ELG['WAVE'][ok], ELG['FLUXMEDIAN'][ok] , label='Zhu15')
@@ -103,6 +106,7 @@ def plot_me(qty='O2EW'):
 		p.plot(n.array([xx,xx]),n.array([1,2]), ls='dashed', color='g')
 		p.text(xx,1.2,nn,rotation=90, color='g')
 	
+	#p.legend(frameon=False)
 	p.grid()
 	#ok = (ELG['WAVE']>2200)&(ELG['WAVE']<2900)
 	#p.plot(ELG['WAVE'][ok], ELG['FLUXMEDIAN'][ok] , label='Zhu15')

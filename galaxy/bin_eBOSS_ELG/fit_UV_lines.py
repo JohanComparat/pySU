@@ -69,7 +69,7 @@ line_lambda_ICM_CGM_abs = {
 	'Fes_2_2613': 2612.65,
 	'Fes_2_2396': 2396.35,
 	'Fes_2_2381': 2381.49,
-	'Fes_2_2366': 2365,55,
+	'Fes_2_2366': 2365.55,
 	'Fes_2_2281': 2280.62,
 	'Fes_2_2270': 2269.52,
 }
@@ -152,13 +152,13 @@ def open_spec(path_2_file):
 # list of spectra
 dataList_UV = n.array(glob.glob(join(os.environ['HOME'], "SDSS/stacks", "eboss-elg_*_"+qty+"_*.UVstack")))
 
-def create_xy_data(path_2_file)
+def create_xy_data(path_2_file):
 	# opens spectrum
 	dd=open_spec(path_2_file)
 	# normalizes with a fourth order polynomial
 	wl=dd['wavelength'         ]
 	s1 = (wl>2200)&(wl<2900)&(dd['NspectraPerPixel'   ]>0.5*n.max(dd['NspectraPerPixel'   ]))
-	, label= bnl, lw=0.7 )
+	#, label= bnl, lw=0.7 )
 	pfit = normalize_C0(dd['wavelength'         ][s1], dd['medianStack'        ][s1] , dd['jackknifStackErrors'][s1])
 	Fcont = n.polyval(pfit, dd['wavelength'         ][s1])
 	wave = dd['wavelength'         ][s1]
