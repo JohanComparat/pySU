@@ -1,7 +1,7 @@
-#! /usr/bin/env python
-
 """
-This script produces the stacks for emission line luminosity limited samples.
+In the process of being written 
+
+
 """
 import sys
 import os 
