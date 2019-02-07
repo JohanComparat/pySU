@@ -149,8 +149,6 @@ def W0_emi(x, y, l_min, l_max):
 def open_spec(path_2_file):
 	return fits.open(path_2_file)[1].data
 
-# list of spectra
-dataList_UV = n.array(glob.glob(join(os.environ['HOME'], "SDSS/stacks", "eboss-elg_*_"+qty+"_*.UVstack")))
 
 def create_xy_data(path_2_file)
 	# opens spectrum
@@ -165,6 +163,17 @@ def create_xy_data(path_2_file)
 	spec = dd['medianStack'        ][s1] / Fcont
 	specErr = dd['jackknifStackErrors'        ][s1] / Fcont
 	return wave, spec, specErr
+
+
+# list of spectra
+
+qty = 'mass'
+qty = 'g'   
+qty = 'gr'  
+qty = 'rz'  
+qty = 'rw1' 
+
+dataList_UV = n.array(glob.glob(join(os.environ['HOME'], "SDSS/stacks", "eboss-elg_*_"+qty+"_*.stack")))
 
 idx=0
 x, y, ye = create_xy_data(dataList_UV[idx])
@@ -215,9 +224,10 @@ def plot_v_profile(x,y,ye):
 	p.savefig(join(os.environ['HOME'], "SDSS/stacks", "eboss-elg_"+qty+".stack")+".png")
 	p.clf()
 
-plot_me(qty = 'fast_lmass' )
-plot_me(qty = 'g'          )
-plot_me(qty = 'gr'         )
-plot_me(qty = 'rz'         )
+#plot_me(qty = 'mass')
+#plot_me(qty = 'g'   )
+#plot_me(qty = 'gr'  )
+#plot_me(qty = 'rz'  )
+#plot_me(qty = 'rw1' )
 
-os.system("cp -r ~/SDSS/stacks/*.png ~/wwwDir/sdss/elg/stacks/")
+#os.system("cp -r ~/SDSS/stacks/*.png ~/wwwDir/sdss/elg/stacks/")
