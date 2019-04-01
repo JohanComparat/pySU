@@ -14,7 +14,7 @@ import time
 t0=time.time()
 # create all stacks
 #stack_dir = join( os.environ['HOME'], "SDSS/stacks/v2" )
-stack_dir = join( os.environ['HOME'], "SDSS/stacks" )
+stack_dir = join( os.environ['HOME'], "SDSS/stacks/v4" )
 dataList = n.array(glob.glob(join(stack_dir, "eboss-elg_*.asc")))
 dataList.sort()
 
