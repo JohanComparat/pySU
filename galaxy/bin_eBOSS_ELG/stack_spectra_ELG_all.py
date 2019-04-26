@@ -9,6 +9,7 @@ from os.path import join
 import glob
 import numpy as n
 import SpectraStackingEBOSS as sse
+import astropy.io.fits as fits
 
 spec_dir = join(os.environ['HOME'],"SDSS/stacks")
 specList = join(spec_dir, "eboss-elg_0.2_z_1.5.asc") 

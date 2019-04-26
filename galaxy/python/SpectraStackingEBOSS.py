@@ -41,10 +41,16 @@ class SpectraStackingEBOSS:
 	:param Resolution: Resolution
 	:param out_file: where to output stacks
 	"""
-	def __init__(self, in_file, out_file, dLambda = 0.0001, dV=-9999.99, l_start=3.25, l_end=3.6):
+	def __init__(self, in_file, out_file, dLambda = 0.0001, dV=-9999.99, l_start=3.25, l_end=3.6, KZ_input=False, PBKT_input=False):
 		print( "input list:", in_file )
 		self.in_file = in_file
-		self.plates, self.mjds, self.fiberids, self.redshifts = n.loadtxt(self.in_file, unpack=True)
+		if KZ_input :
+			self.mjds, self.plates, self.fiberids, self.redshifts = n.loadtxt(self.in_file, unpack=True)
+		elif PBKT_input :
+			self.plates, self.mjds, self.fiberids, self.redshifts, self.weights = n.loadtxt(self.in_file, unpack=True)
+		else:
+			self.plates, self.mjds, self.fiberids, self.redshifts = n.loadtxt(self.in_file, unpack=True)
+		
 		self.out_file = out_file
 		self.dLambda = dLambda
 		#self.wave= 10**n.arange(2.6, 4.0211892990699383, dLambda) # 1500,10500
@@ -174,13 +180,52 @@ class SpectraStackingEBOSS:
 		out=n.polyfit(x, y, degree, w=1/yerr)
 		return out
 
+	def createStackMatrix_Weighted(self):
+		"""
+		Function that constructs the stack matrix UV normed
+		"""
+		# loop over the file with N sorted with luminosity
+		specMatrix, specMatrixErr, specMatrixWeight=[],[],[]
+		print('plate, mjd, fiber, z, weights',self.plates[:10], self.mjds[:10], self.fiberids[:10], self.redshifts[:10], self.weights[:10])
+		for plate, mjd, fiber, redshift, weight in zip(self.plates, self.mjds, self.fiberids, self.redshifts, self.weights):
+			try:
+				#print(plate, mjd, fiber, redshift)
+				if plate > 3006 :
+					path_to_spectrum = get_path_to_spectrum_v5_11_0(plate, mjd, fiber)
+				else:
+					path_to_spectrum = get_path_to_spectrum_26(plate, mjd, fiber)
+					
+				if os.path.isfile(path_to_spectrum):
+					self.getSpectra(path_to_spectrum)
+					pts,ptsErr = self.convertSpectrum(redshift)
+					specMatrix.append(pts)
+					specMatrixErr.append(ptsErr)
+					specMatrixWeight.append(n.ones_like(pts)*weight)
+				else: # for ELG spectra in v5_10_7
+					path_to_spectrum = get_path_to_spectrum_v5_10_7(plate, mjd, fiber)
+					if os.path.isfile(path_to_spectrum):
+						self.getSpectra(path_to_spectrum)
+						pts,ptsErr = self.convertSpectrum(redshift)
+						specMatrix.append(pts)
+						specMatrixErr.append(ptsErr)
+						specMatrixWeight.append(n.ones_like(pts)*weight)
+			except(ValueError,FileNotFoundError):
+				print('value / file not found error !',plate, mjd, fiber)
+
+		specMatrixWeight=n.array(specMatrixWeight)
+		specMatrix=n.array(specMatrix)
+		specMatrixErr=n.array(specMatrixErr)
+		n.savetxt(self.out_file+'.specMatrix.dat', specMatrix)
+		n.savetxt(self.out_file+'.specMatrixErr.dat', specMatrixErr)
+		n.savetxt(self.out_file+'.specMatrixWeight.dat', specMatrixWeight)
+	
 	def createStackMatrix(self):
 		"""
 		Function that constructs the stack matrix UV normed
 		"""
 		# loop over the file with N sorted with luminosity
 		specMatrix, specMatrixErr, specMatrixWeight=[],[],[]
-		
+		print(self.plates, self.mjds, self.fiberids, self.redshifts)
 		for plate, mjd, fiber, redshift in zip(self.plates, self.mjds, self.fiberids, self.redshifts):
 			try:
 				#print(plate, mjd, fiber, redshift)
