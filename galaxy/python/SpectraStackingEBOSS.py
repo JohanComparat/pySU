@@ -54,7 +54,7 @@ class SpectraStackingEBOSS:
 			print('regular input list')
 			self.plates, self.mjds, self.fiberids, self.redshifts = n.loadtxt(self.in_file, unpack=True)
 		
-		print('N spectra = ', len(plates))
+		print('N spectra = ', len(self.plates))
 		self.out_file = out_file
 		self.dLambda = dLambda
 		#self.wave= 10**n.arange(2.6, 4.0211892990699383, dLambda) # 1500,10500
