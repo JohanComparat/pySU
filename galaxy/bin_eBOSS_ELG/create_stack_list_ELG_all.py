@@ -47,7 +47,9 @@ z_maxs = itp(N_bins)[1:]
 z0,z1 = 0.2, 1.5
 selection = (cat['rr_Z']>z0) & (cat['rr_Z']<z1) & (cat['rr_ZWARN']<=4)
 
-DATA = n.transpose([ cat['plate'], cat['MJD'], cat['FIBERID'], cat['rr_Z'] ]) [selection]
+ids_sort = n.argsort(cat['rr_Z'][selection])
+
+DATA = n.transpose([ cat['plate'], cat['MJD'], cat['FIBERID'], cat['rr_Z'] ]) [selection][ids_sort]
 path_2_input = join(os.environ['HOME'],"SDSS/stacks", "eboss-elg_"+str(z0)+"_z_"+str(z1)+".asc")
 print(path_2_input)
 print(len(DATA))

@@ -14,13 +14,13 @@ spec_dir = join(os.environ['HOME'],"wwwDir/sdss/elg/stacks/KZ/v2/")
 
 def stack_it(specList = join(spec_dir, "catalog_AGN.dat") ):
 	outfile = join(spec_dir, os.path.basename(specList)[:-4]+".stack")
-	stack=sse.SpectraStackingEBOSS(specList, outfile, KZ_input=True   )
+	print(specList, outfile)
+	stack=sse.SpectraStackingEBOSS(specList, outfile, KZ_input=True, l_start=3.3, l_end=3.9 )
 	stack.createStackMatrix()
-	print(outfile)
 	stack.stackSpectra()
 
+stack_it(join(spec_dir, "catalog_lowz_liner.dat") )
 stack_it(join(spec_dir, "catalog_lowz_AGN.dat") )
 stack_it(join(spec_dir, "catalog_lowz_comp.dat") )
-stack_it(join(spec_dir, "catalog_lowz_liner.dat") )
 stack_it(join(spec_dir, "catalog_lowz_sf.dat") )
 
