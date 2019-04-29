@@ -3,7 +3,7 @@
 """
 This script produces the stacks for samples defined by a list of spectra identifiers.
 
-nohup python3 stack_spectra_ELG.py > stack_spectra_ELG.log &
+nohup python3 stack_spectra_KZ_highZ.py > stack_spectra_KZ_highZ.log &
 
 """
 import sys
@@ -16,7 +16,7 @@ import SpectraStackingEBOSS as sse
 spec_dir = join(os.environ['HOME'],"wwwDir/sdss/elg/stacks/KZ/high_z/")
 
 def stack_it(specList = join(spec_dir, "catalog_AGN.ascii") ):
-	outfile = join(spec_dir, os.path.basename(specList)[:-4]+".stack")
+	outfile = join(spec_dir, os.path.basename(specList)[:-6]+".stack")
 	print(specList, outfile)
 	stack=sse.SpectraStackingEBOSS(specList, outfile, KZ_input=True, l_start=3.3, l_end=3.9 )
 	stack.createStackMatrix()
