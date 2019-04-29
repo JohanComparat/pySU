@@ -22,9 +22,8 @@ def stack_it(specList = join(spec_dir, "catalog_AGN.dat") ):
 	stack.createStackMatrix()
 	stack.stackSpectra()
 
-stack_it(join(spec_dir, "catalog_lowz_liner_test.dat") )
-#stack_it(join(spec_dir, "catalog_lowz_liner.dat") )
-#stack_it(join(spec_dir, "catalog_lowz_AGN.dat") )
-#stack_it(join(spec_dir, "catalog_lowz_comp.dat") )
-#stack_it(join(spec_dir, "catalog_lowz_sf.dat") )
+stack_it(join(spec_dir, "catalog_lowz_liner.dat") )
+stack_it(join(spec_dir, "catalog_lowz_AGN.dat") )
+stack_it(join(spec_dir, "catalog_lowz_comp.dat") )
+stack_it(join(spec_dir, "catalog_lowz_sf.dat") )
 
