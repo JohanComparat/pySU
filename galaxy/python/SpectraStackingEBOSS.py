@@ -237,7 +237,7 @@ class SpectraStackingEBOSS:
 		print(self.plates, self.mjds, self.fiberids, self.redshifts)
 		for plate, mjd, fiber, redshift in zip(self.plates, self.mjds, self.fiberids, self.redshifts):
 			try:
-				#print(plate, mjd, fiber, redshift)
+				print(plate, mjd, fiber, redshift)
 				if plate > 3006 :
 					path_to_spectrum = get_path_to_spectrum_v5_13_0(plate, mjd, fiber)
 				else:
