@@ -2,6 +2,9 @@
 
 """
 This script produces the stacks for emission line luminosity limited samples.
+
+nohup python2 stack_spectra_ELG_LineLF.py > stack_spectra_ELG_LineLF.log &
+
 """
 import sys
 import os 
