@@ -15,17 +15,22 @@ from scipy.interpolate import interp1d
 
 maskLambda = n.loadtxt(os.path.join(os.environ['GIT_ARCHETYPES'],'data',"dr12-sky-mask.txt"), unpack=True)
 
-get_path_to_spectrum_v5_11_1 = lambda plate, mjd, fiberid : os.path.join(os.environ['HOME'], 'SDSS', 'v5_11_1', 'spectra', str(int(plate)).zfill(4), "spec-"+str(int(plate)).zfill(4)+"-"+str(int(mjd)).zfill(5)+"-"+str(int(fiberid)).zfill(4)+".fits" )
+get_path_to_spectrum_v5_13_0 = lambda plate, mjd, fiberid : os.path.join(
+	os.environ['HOME'], 
+	'SDSS', 
+	'v5_13_0', 
+	'spectra', 
+	str(int(plate)).zfill(4), 
+	"spec-"+str(int(plate)).zfill(4)+"-"+str(int(mjd)).zfill(5)+"-"+str(int(fiberid)).zfill(4)+".fits" 
+	)
 
-get_path_to_spectrum_v5_11_0 = lambda plate, mjd, fiberid : os.path.join(os.environ['HOME'], 'SDSS', 'v5_11_0', 'spectra', str(int(plate)).zfill(4), "spec-"+str(int(plate)).zfill(4)+"-"+str(int(mjd)).zfill(5)+"-"+str(int(fiberid)).zfill(4)+".fits" )
-
-get_path_to_spectrum_v5_10_10 = lambda plate, mjd, fiberid : os.path.join(os.environ['HOME'], 'SDSS', 'v5_10_10', 'spectra', str(int(plate)).zfill(4), "spec-"+str(int(plate)).zfill(4)+"-"+str(int(mjd)).zfill(5)+"-"+str(int(fiberid)).zfill(4)+".fits" )
-
-get_path_to_spectrum_v5_10_0 = lambda plate, mjd, fiberid : os.path.join(os.environ['HOME'], 'SDSS', 'v5_10_0', 'spectra', str(int(plate)).zfill(4), "spec-"+str(int(plate)).zfill(4)+"-"+str(int(mjd)).zfill(5)+"-"+str(int(fiberid)).zfill(4)+".fits" )
-
-get_path_to_spectrum_v5_10_7 = lambda plate, mjd, fiberid : os.path.join(os.environ['HOME'], 'SDSS', 'v5_10_7', 'spectra', str(int(plate)).zfill(4), "spec-"+str(int(plate)).zfill(4)+"-"+str(int(mjd)).zfill(5)+"-"+str(int(fiberid)).zfill(4)+".fits" )
-
-get_path_to_spectrum_26 = lambda plate, mjd, fiberid : os.path.join(os.environ['HOME'], 'SDSS', '26', 'spectra', str(int(plate)).zfill(4), "spec-"+str(int(plate)).zfill(4)+"-"+str(int(mjd)).zfill(5)+"-"+str(int(fiberid)).zfill(4)+".fits" )
+get_path_to_spectrum_26 = lambda plate, mjd, fiberid : os.path.join(
+	os.environ['HOME'], 
+	'SDSS', 
+	'26', 
+	'spectra', 
+	str(int(plate)).zfill(4), 
+	"spec-"+str(int(plate)).zfill(4)+"-"+str(int(mjd)).zfill(5)+"-"+str(int(fiberid)).zfill(4)+".fits" )
 
 
 line_list_abs = n.array([2249.88, 2260.78, 2344.21, 2374.46, 2382.76, 2576.88, 2586.65, 2594.50, 2600.17, 2606.46, 2796.35, 2803.53, 2852.96])
@@ -195,7 +200,7 @@ class SpectraStackingEBOSS:
 			try:
 				#print(plate, mjd, fiber, redshift)
 				if plate > 3006 :
-					path_to_spectrum = get_path_to_spectrum_v5_11_0(plate, mjd, fiber)
+					path_to_spectrum = get_path_to_spectrum_v5_13_0(plate, mjd, fiber)
 				else:
 					path_to_spectrum = get_path_to_spectrum_26(plate, mjd, fiber)
 					
@@ -206,7 +211,7 @@ class SpectraStackingEBOSS:
 					specMatrixErr.append(ptsErr)
 					specMatrixWeight.append(n.ones_like(pts)*weight)
 				else: # for ELG spectra in v5_10_7
-					path_to_spectrum = get_path_to_spectrum_v5_10_7(plate, mjd, fiber)
+					path_to_spectrum = get_path_to_spectrum_v5_13_0(plate, mjd, fiber)
 					if os.path.isfile(path_to_spectrum):
 						self.getSpectra(path_to_spectrum)
 						pts,ptsErr = self.convertSpectrum(redshift)
@@ -234,7 +239,7 @@ class SpectraStackingEBOSS:
 			try:
 				#print(plate, mjd, fiber, redshift)
 				if plate > 3006 :
-					path_to_spectrum = get_path_to_spectrum_v5_11_0(plate, mjd, fiber)
+					path_to_spectrum = get_path_to_spectrum_v5_13_0(plate, mjd, fiber)
 				else:
 					path_to_spectrum = get_path_to_spectrum_26(plate, mjd, fiber)
 					
@@ -246,7 +251,7 @@ class SpectraStackingEBOSS:
 					weight=1.
 					specMatrixWeight.append(n.ones_like(pts)*weight)
 				else: # for ELG spectra in v5_10_7
-					path_to_spectrum = get_path_to_spectrum_v5_10_7(plate, mjd, fiber)
+					path_to_spectrum = get_path_to_spectrum_v5_13_0(plate, mjd, fiber)
 					if os.path.isfile(path_to_spectrum):
 						self.getSpectra(path_to_spectrum)
 						pts,ptsErr = self.convertSpectrum(redshift)
@@ -275,7 +280,7 @@ class SpectraStackingEBOSS:
 			try:
 				#print(plate, mjd, fiber, redshift)
 				if plate > 3006 :
-					path_to_spectrum = get_path_to_spectrum_v5_11_0(plate, mjd, fiber)
+					path_to_spectrum = get_path_to_spectrum_v5_13_0(plate, mjd, fiber)
 				else:
 					path_to_spectrum = get_path_to_spectrum_26(plate, mjd, fiber)
 				if os.path.isfile(path_to_spectrum):
@@ -290,7 +295,7 @@ class SpectraStackingEBOSS:
 					weight=1.
 					specMatrixWeight.append(n.ones_like(pts)*weight)
 				else: # get ELG spectra in v5_10_7
-					path_to_spectrum = get_path_to_spectrum_v5_10_7(plate, mjd, fiber)
+					path_to_spectrum = get_path_to_spectrum_v5_13_0(plate, mjd, fiber)
 					if os.path.isfile(path_to_spectrum):
 						self.getSpectra(path_to_spectrum)
 						pts,ptsErr = self.convertSpectrum(redshift)
