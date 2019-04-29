@@ -2,6 +2,9 @@
 
 """
 This script produces the stacks for emission line luminosity limited samples.
+
+nohup python2 stack_spectra_UV.py > stack_spectra_UV.log &
+
 """
 import astropy.io.fits as fits
 import sys
