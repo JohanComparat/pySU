@@ -323,13 +323,13 @@ class SpectraStackingEBOSS:
 		Stacks
 		"""
 		# loop over the file with N sorted with luminosity
-		specMatrix = n.loadtxt(self.out_file+'.specMatrix.dat')
-		specMatrixErr = n.loadtxt(self.out_file+'.specMatrixErr.dat')
-		specMatrixWeight = n.loadtxt(self.out_file+'.specMatrixWeight.dat')
+		self.specMatrix = n.loadtxt(self.out_file+'.specMatrix.dat')
+		#specMatrixErr = n.loadtxt(self.out_file+'.specMatrixErr.dat')
+		self.specMatrixWeight = n.loadtxt(self.out_file+'.specMatrixWeight.dat')
 		print( "now stacks" )
 		#wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel = self.stack_function( specMatrix ,specMatrixWeight)
 		#cols = fits.ColDefs([wavelength, medianStack, meanStack, meanWeightedStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel])
-		wavelength, medianStack, meanStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel = self.stack_function( specMatrix ,specMatrixWeight)
+		wavelength, medianStack, meanStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel = self.stack_function( self.specMatrix ,self.specMatrixWeight)
 		cols = fits.ColDefs([wavelength, medianStack, meanStack, jackknifStackErrors, jackknifeSpectra, NspectraPerPixel])
 		tbhdu = fits.BinTableHDU.from_columns(cols)
 		prihdr = fits.Header()
