@@ -14,7 +14,7 @@ import numpy as n
 import SpectraStackingEBOSS as sse
 
 #spec_dir = join(os.environ['HOME'],"wwwDir/sdss/elg/stacks/KZ/high_z/")
-spec_dir = join(os.environ['HOME'],"afs_comparat/sdss/elg/stacks/KZ/low_z/")
+spec_dir = join(os.environ['HOME'],"wwwDir/sdss/elg/stacks/KZ/low_z/")
 
 def stack_it(specList = join(spec_dir, "catalog_AGN.ascii") ):
 	outfile = join(spec_dir, os.path.basename(specList)[:-6]+".stack")
