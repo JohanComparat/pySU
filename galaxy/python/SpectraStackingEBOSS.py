@@ -12,6 +12,7 @@ import os
 import astropy.io.fits as fits
 import numpy as n
 from scipy.interpolate import interp1d
+import spectres
 
 maskLambda = n.loadtxt(os.path.join(os.environ['GIT_ARCHETYPES'],'data',"dr12-sky-mask.txt"), unpack=True)
 
@@ -46,7 +47,7 @@ class SpectraStackingEBOSS:
 	:param Resolution: Resolution
 	:param out_file: where to output stacks
 	"""
-	def __init__(self, in_file, out_file, dLambda = 0.0001, dV=-9999.99, l_start=3.25, l_end=3.6, KZ_input=False, PBKT_input=False):
+	def __init__(self, in_file, out_file, dLambda = 0.0001, dV=-9999.99, l_start=2.9, l_end=4.04, KZ_input=False, PBKT_input=False):
 		print( "input list:", in_file )
 		self.in_file = in_file
 		if KZ_input :
@@ -114,24 +115,57 @@ class SpectraStackingEBOSS:
 	def convertSpectrum(self,redshift):
 		"""
 		Shifts the spectrum in the rest-frame and creates a spectrum with the sampling desired.
+		Uses the spectres package from A.C. Carnall
 		:param redshift: redshift of the spectrum
+		return the new flux and erro flux array
 		"""	
 		nwave=self.wavelength/(1+redshift)
+		
+		#inL=(self.wave>nwave.min())&(self.wave<nwave.max())
+		#outL=(inL==False)
 
-		inL=(self.wave>nwave.min())&(self.wave<nwave.max())
-		outL=(inL==False)
+		#points=interp1d(nwave,nwave * self.fluxl)
+		#pts=points(self.wave[inL]) / self.wave[inL]
+		#res=n.ones_like(self.wave)*self.dV
+		#res[inL]=pts
 
-		points=interp1d(nwave,nwave * self.fluxl)
-		pts=points(self.wave[inL]) / self.wave[inL]
-		res=n.ones_like(self.wave)*self.dV
-		res[inL]=pts
+		#pointsErr=interp1d(nwave,nwave * self.fluxlErr)
+		#ptsErr=pointsErr(self.wave[inL]) / self.wave[inL]
+		#resErr=n.ones_like(self.wave)*self.dV
+		#resErr[inL]=ptsErr
 
-		pointsErr=interp1d(nwave,nwave * self.fluxlErr)
-		ptsErr=pointsErr(self.wave[inL]) / self.wave[inL]
-		resErr=n.ones_like(self.wave)*self.dV
-		resErr[inL]=ptsErr
+		#return res, resErr
+		wavelength_spectrum = np.hstack(( 
+			self.wave[0]-10, 
+			self.wave[0]-5,
+			np.min(nwave)-10,
+			np.min(nwave)-5,
+			nwave,
+			np.max(nwave)+5,
+			np.max(nwave)+10,
+			self.wave[-1]+5, 
+			self.wave[-1]+10
+			))
+		#
+		flux_spectrum = np.hstack(( 
+			self.fluxl[0],self.fluxl[0],self.fluxl[0],self.fluxl[0],
+			self.fluxl,
+			self.fluxl[-1],self.fluxl[-1],self.fluxl[-1],self.fluxl[-1]
+			))
+		#
+		flux_error_spectrum = np.hstack(( 
+			0.01,0.01,0.01,0.01,
+			self.fluxlErr,
+			0.01,0.01,0.01,0.01
+			))	
+		#
+		final_spectrum, final_spectrum_err = sp.spectres(
+			self.wave, 
+			wavelength_spectrum, 
+			flux_spectrum, 
+			flux_error_spectrum )
+		return final_spectrum, final_spectrum_err
 
-		return res, resErr
 
 	def getSpectra(self, path_to_spectrum):
 		hdulist = fits.open(path_to_spectrum)
@@ -317,7 +351,7 @@ class SpectraStackingEBOSS:
 		n.savetxt(self.out_file+'.specMatrix.dat', specMatrix)
 		n.savetxt(self.out_file+'.specMatrixErr.dat', specMatrixErr)
 		n.savetxt(self.out_file+'.specMatrixWeight.dat', specMatrixWeight)
-	
+
 	def stackSpectra(self):
 		"""
 		Stacks

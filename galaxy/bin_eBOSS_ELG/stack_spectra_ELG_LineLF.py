@@ -14,16 +14,16 @@ import numpy as n
 import SpectraStackingEBOSS as sse
 
 spec_dir = join(os.environ['HOME'],"SDSS/stacks/LineLF/")
-"""
+
 PLATE, MJD, FIBREID, z, z_err, log_l_O2, log_l_O3, log_l_Hb, WEIGHT_SYSTOT, WEIGHT_CP, WEIGHT_NOZ = n.loadtxt(os.path.join(spec_dir, "ELGv5_11_0rrv2_all_lum_weight.txt"), unpack=True)
 
 weight=WEIGHT_SYSTOT*WEIGHT_CP* WEIGHT_NOZ
 
-N_per_stack=1000
+N_per_stack=25000
 
-zmins = n.arange(0.6,1.2,0.2)
-zmaxs = zmins+0.2
-
+zmins = n.array([0.5]) # n.arange(0.6,1.2,0.2)
+zmaxs = n.array([1.3]) #zmins+0.2
+"""
 for zmin, zmax in zip(zmins, zmaxs):
   z_sel = (z>=zmin)&(z<zmax)&(log_l_O2>0)&(weight>0)
   idx_L = n.argsort(log_l_O2[z_sel])
@@ -37,8 +37,8 @@ for zmin, zmax in zip(zmins, zmaxs):
     n.savetxt( os.path.join(spec_dir, name),data_to_stack[::-1][ids_bd:ids_bd+N_per_stack])
 
 
-zmins = n.arange(0.6,0.8,0.2)
-zmaxs = zmins+0.2
+#zmins = n.arange(0.6,0.8,0.2)
+#zmaxs = zmins+0.2
 
 for zmin, zmax in zip(zmins, zmaxs):
   z_sel = (z>=zmin)&(z<zmax)&(log_l_O3>0)&(weight>0)
@@ -53,8 +53,8 @@ for zmin, zmax in zip(zmins, zmaxs):
     n.savetxt( os.path.join(spec_dir, name),data_to_stack[::-1][ids_bd:ids_bd+N_per_stack])
 
 
-zmins = n.arange(0.6,0.8,0.2)
-zmaxs = zmins+0.2
+#zmins = n.arange(0.6,0.8,0.2)
+#zmaxs = zmins+0.2
 
 for zmin, zmax in zip(zmins, zmaxs):
   z_sel = (z>=zmin)&(z<zmax)&(log_l_Hb>0)&(weight>0)
