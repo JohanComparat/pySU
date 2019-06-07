@@ -156,7 +156,7 @@ class SpectraStackingEBOSS:
 		flux_error_spectrum = n.hstack(( 
 			9999, 9999, 9999, 9999,
 			self.fluxlErr,
-			9999, 9999 9999, 9999
+			9999, 9999, 9999, 9999
 			))	
 		#
 		final_spectrum, final_spectrum_err = sp.spectres(
