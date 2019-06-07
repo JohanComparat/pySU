@@ -12,7 +12,7 @@ import os
 import astropy.io.fits as fits
 import numpy as n
 from scipy.interpolate import interp1d
-import spectres
+import spectres as sp
 
 maskLambda = n.loadtxt(os.path.join(os.environ['GIT_ARCHETYPES'],'data',"dr12-sky-mask.txt"), unpack=True)
 
