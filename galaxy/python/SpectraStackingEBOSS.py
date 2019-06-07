@@ -135,25 +135,25 @@ class SpectraStackingEBOSS:
 		#resErr[inL]=ptsErr
 
 		#return res, resErr
-		wavelength_spectrum = np.hstack(( 
+		wavelength_spectrum = n.hstack(( 
 			self.wave[0]-10, 
 			self.wave[0]-5,
-			np.min(nwave)-10,
-			np.min(nwave)-5,
+			n.min(nwave)-10,
+			n.min(nwave)-5,
 			nwave,
-			np.max(nwave)+5,
-			np.max(nwave)+10,
+			n.max(nwave)+5,
+			n.max(nwave)+10,
 			self.wave[-1]+5, 
 			self.wave[-1]+10
 			))
 		#
-		flux_spectrum = np.hstack(( 
+		flux_spectrum = n.hstack(( 
 			self.fluxl[0],self.fluxl[0],self.fluxl[0],self.fluxl[0],
 			self.fluxl,
 			self.fluxl[-1],self.fluxl[-1],self.fluxl[-1],self.fluxl[-1]
 			))
 		#
-		flux_error_spectrum = np.hstack(( 
+		flux_error_spectrum = n.hstack(( 
 			0.01,0.01,0.01,0.01,
 			self.fluxlErr,
 			0.01,0.01,0.01,0.01
