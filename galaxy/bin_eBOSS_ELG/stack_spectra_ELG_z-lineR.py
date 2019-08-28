@@ -32,14 +32,30 @@ print(name)
 z_sel = (z>=0.5)&(z<1.05)&(both)&(weight>0)
 n.savetxt( os.path.join(spec_dir, name),data_to_stack[z_sel])
 
-# per redshift bins
+# per redshift bins 
+outN, outBins = n.histogram(z[(z>0.5) & (z<1.4)], n.arange(z.min(),z.max(), 0.001))
+
+outNC = n.cumsum(outN)
+
+itp = interp1d(outNC, outBins[1:])
+
+zmins = itp(n.arange(200,len(z[(z>0.5) & (z<1.4)]),18100))
+
+for zmin, zmax in zip(zmins[:-1], zmins[1:]):
+	z_sel = (z>=zmin)&(z<zmax)&(weight>0)
+	print(zmin, zmax, len(z[z_sel]), n.min(z[z_sel]), n.max(z[z_sel]))
+	name = 'elg_any_zmin_'+str(n.round(zmin,4))+'_zmax_'+str(n.round(zmax,4))+'.ascii'
+	print(name)
+	n.savetxt( os.path.join(spec_dir, name),data_to_stack[z_sel])
+
+# per redshift bins with O2O3
 outN, outBins = n.histogram(z[(z>0.5) & (z<1.4) & (both)], n.arange(z.min(),z.max(), 0.001))
 
 outNC = n.cumsum(outN)
 
 itp = interp1d(outNC, outBins[1:])
 
-zmins = itp(n.arange(200,len(z[both]),10000))
+zmins = itp(n.arange(200,len(z[both]),18100))
 
 for zmin, zmax in zip(zmins[:-1], zmins[1:]):
 	z_sel = (z>=zmin)&(z<zmax)&(both)&(weight>0)
