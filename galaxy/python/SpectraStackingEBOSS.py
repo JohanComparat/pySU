@@ -65,6 +65,7 @@ class SpectraStackingEBOSS:
 		self.dLambda = dLambda
 		#self.wave= 10**n.arange(2.6, 4.0211892990699383, dLambda) # 1500,10500
 		self.wave= 10**n.arange(l_start, l_end, dLambda) # 1500,10500
+		print('wavelength array', self.wave)
 		self.R = int(1/n.mean((self.wave[1:] -self.wave[:-1])/ self.wave[1:]))
 		print( "R=", n.median(self.R) )
 		self.dV = dV
