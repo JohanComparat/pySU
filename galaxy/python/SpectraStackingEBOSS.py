@@ -47,7 +47,7 @@ class SpectraStackingEBOSS:
 	:param Resolution: Resolution
 	:param out_file: where to output stacks
 	"""
-	def __init__(self, in_file, out_file, dLambda = 0.0001, dV=-9999.99, l_start=2.9, l_end=4.04, KZ_input=False, PBKT_input=False):
+	def __init__(self, in_file, out_file, dLambda = 0.0001, dV=-9999.99, l_start=2.9, l_end=4.04, KZ_input=False, PBKT_input=False, csv_input=False):
 		print( "input list:", in_file )
 		self.in_file = in_file
 		if KZ_input :
@@ -56,6 +56,9 @@ class SpectraStackingEBOSS:
 		elif PBKT_input :
 			print('PBKT input')
 			self.plates, self.mjds, self.fiberids, self.redshifts, self.weights = n.loadtxt(self.in_file, unpack=True)
+		elif csv_input :
+			print('csv input list')
+			self.plates, self.mjds, self.fiberids, self.redshifts = n.loadtxt(self.in_file, unpack=True, delimiter=',')
 		else:
 			print('regular input list')
 			self.plates, self.mjds, self.fiberids, self.redshifts = n.loadtxt(self.in_file, unpack=True)
