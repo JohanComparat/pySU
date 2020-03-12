@@ -127,8 +127,8 @@ t.add_column( Column(name="angular_separation", unit='deg'      , data = d0.T[7]
 t.add_column( Column(name="plate"         , data = d0.T[8].astype('int') ) )
 t.add_column( Column(name="mjd"           , data = d0.T[9].astype('int') ) )
 t.add_column( Column(name="fiberid"       , data = d0.T[10].astype('int') ) )
-t.add_column( Column(name="PLUG_RA"       , data = d0.T[10].astype('float') ) )
-t.add_column( Column(name="PLUG_DEC"       , data = d0.T[10].astype('float') ) )
+t.add_column( Column(name="RA"       , data = d0.T[10].astype('float') ) )
+t.add_column( Column(name="DEC"       , data = d0.T[10].astype('float') ) )
 
 t.write(p_2_out, overwrite=True)
 
