@@ -55,7 +55,7 @@ codex = fits.open(p2_codex_bcg)[1].data
 ok = (spall[1].data['Z']>0.3) & (spall[1].data['Z_ERR'] > 0 ) & (spall[1].data['Z_ERR']<spall[1].data['Z']) & (spall[1].data['ZWARNING']==0) & (spall[1].data['CLASS']=="QSO")
 dr16_rough = ( spall[1].data['PLUG_DEC'] < 15 ) & (spall[1].data['PLUG_RA']>100 ) & (spall[1].data['PLUG_RA']<280 )
 select = (dr16_rough==False) & (ok)
-plug_ra = spall[1].data['PLUG_RA'][select]
+plug_ra  = spall[1].data['PLUG_RA'][select]
 plug_dec = spall[1].data['PLUG_DEC'][select]
 Z_dr16 = spall[1].data['Z'][select]
 print(len(Z_dr16))
@@ -63,6 +63,7 @@ print(len(Z_dr16))
 plate   = spall[1].data['PLATE'][select]
 mjd     = spall[1].data['MJD'][select]
 fiberid = spall[1].data['FIBERID'][select]
+
 
 #clu_coord = deg_to_rad * np.array([codex['DEC_OPT'], codex['RA_OPT']]).T
 #Tree_Cluster_Cat = BallTree(clu_coord, metric='haversine')
@@ -131,8 +132,8 @@ t.add_column( Column(name="angular_separation", unit='deg'      , data = d0.T[7]
 t.add_column( Column(name="plate"         , data = d0.T[8].astype('int') ) )
 t.add_column( Column(name="mjd"           , data = d0.T[9].astype('int') ) )
 t.add_column( Column(name="fiberid"       , data = d0.T[10].astype('int') ) )
-t.add_column( Column(name="RA"       , data = d0.T[10].astype('float') ) )
-t.add_column( Column(name="DEC"       , data = d0.T[10].astype('float') ) )
+t.add_column( Column(name="RA"       , data = d0.T[11].astype('float') ) )
+t.add_column( Column(name="DEC"       , data = d0.T[12].astype('float') ) )
 
 t.write(p_2_out, overwrite=True)
 
