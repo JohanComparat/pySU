@@ -40,8 +40,12 @@ nl = lambda selection : len(selection.nonzero()[0])
 # define pathes
 env = 'HOME'
 p2_spall = os.path.join(os.environ[env], 'data2/firefly/v1_1_0/v5_13_0/catalogs/spAll-v5_13_0.fits')
+p_2_out = os.path.join(os.environ[env], 'wwwDir/stuff/catalogue_qso_v5_13_0.fits')
+
+p2_spall = os.path.join(os.environ[env], 'data2/firefly/v1_1_0/26/catalogs/specObj-SDSS-dr12.fits')
+p_2_out = os.path.join(os.environ[env], 'wwwDir/stuff/catalogue_qso_26.fits')
+
 p2_codex_bcg = os.path.join(os.environ[env], 'hegcl/SPIDERS/mastercatalogue_FINAL_CODEXID.fits')
-p_2_out = os.path.join(os.environ[env], 'wwwDir/stuff/catalogue_qso.fits')
 
 
 spall = fits.open(p2_spall)#[1].data
