@@ -79,6 +79,8 @@ def get_data(id_c = 0, N_RADIUS = 3):
 	plate_out    = plate   [indexes[0][relevant]]
 	mjd_out      = mjd     [indexes[0][relevant]]
 	fiberid_out  = fiberid [indexes[0][relevant]]
+	plug_ra_out  = plug_ra [indexes[0][relevant]]
+	plug_dec_out = plug_dec[indexes[0][relevant]]
 
 	cluster_ID          = np.ones_like(Z_out).astype('str')
 	cluster_ID[:] = codex['CLUS_ID'][id_c]
@@ -99,7 +101,11 @@ def get_data(id_c = 0, N_RADIUS = 3):
 		distance_out     ,
 		plate_out        ,
 		mjd_out          ,
-		fiberid_out ])
+		fiberid_out      ,
+		plug_ra_out      ,
+		plug_dec_out     
+		])
+
 	print(id_c, DATA_i.shape)
 	return DATA_i
 
@@ -118,9 +124,11 @@ t.add_column( Column(name="cluster_r200c_deg" , data = d0.T[4].astype('float') )
 t.add_column( Column(name="cluster_KT"        , data = d0.T[5].astype('float') ) )
 t.add_column( Column(name="galaxy_z"          , data = d0.T[6].astype('float') ) )
 t.add_column( Column(name="angular_separation", unit='deg'      , data = d0.T[7].astype('float') ) )
-t.add_column( Column(name="plate_out"         , data = d0.T[8].astype('float') ) )
-t.add_column( Column(name="mjd_out"           , data = d0.T[9].astype('float') ) )
-t.add_column( Column(name="fiberid_out"       , data = d0.T[10].astype('float') ) )
+t.add_column( Column(name="plate"         , data = d0.T[8].astype('int') ) )
+t.add_column( Column(name="mjd"           , data = d0.T[9].astype('int') ) )
+t.add_column( Column(name="fiberid"       , data = d0.T[10].astype('int') ) )
+t.add_column( Column(name="PLUG_RA"       , data = d0.T[10].astype('float') ) )
+t.add_column( Column(name="PLUG_DEC"       , data = d0.T[10].astype('float') ) )
 
 t.write(p_2_out, overwrite=True)
 
