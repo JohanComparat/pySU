@@ -25,7 +25,7 @@ for specList in dataList:
 	out_file = join(stack_dir, os.path.basename(specList)[:-4]+".stack")
 	out_file_UV = join(stack_dir, os.path.basename(specList)[:-4]+".UVstack")
 	print('starts working on', out_file, time.time()-t0)
-	stack=sse.SpectraStackingEBOSS(specList, out_file, dLambda = 0.0001, dV=-9999.99, l_start=3.43, l_end=3.6)
+	stack=sse.SpectraStackingEBOSS(specList, out_file, dLambda = 0.0001, dV=-9999.99, l_start=3.35, l_end=3.6)
 	#stack.fiberids=stack.fiberids.astype('int')
 	#stack.plates=stack.plates.astype('int')
 	#stack.mjds=stack.mjds.astype('int')
