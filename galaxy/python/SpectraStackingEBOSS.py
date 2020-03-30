@@ -185,9 +185,9 @@ class SpectraStackingEBOSS:
 		out_sel = (flux>0)&(ivar>0)
 		self.fluxl =flux[out_sel]
 		self.fluxlErr=ivar[out_sel]**(-0.5)
-		self.wavelength = wave[out_sel] #/(1+z)
+		self.wavelength = wave[out_sel] 
 
-	def fit_UV_continuum(self,x,y,yerr,degree=3):
+	def fit_UV_continuum(self,x,y,yerr,degree=5):
 		"""
 		We then mask out
 		absorption and emission features and fit a cubic polyno-
@@ -224,7 +224,7 @@ class SpectraStackingEBOSS:
 		y = y[(UV_mask)&(veto_sky==False)&(bad_data==False)&(veto_line_abs==False)&(veto_line_em==False)] 
 		yerr = yerr[(UV_mask)&(veto_sky==False)&(bad_data==False)&(veto_line_abs==False)&(veto_line_em==False)] 
 		
-		out=n.polyfit(x, y, degree, w=1/yerr)
+		out=n.polyfit(x, y, degree, w=2./yerr)
 		return out
 
 	def createStackMatrix_Weighted(self):
