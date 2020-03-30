@@ -31,7 +31,7 @@ N_in_stack = 10000
 N_factor = 4
 
 f_radius = cat['angular_separation']/cat['cluster_r200c_deg']
-z_corr = (1+cat['galaxy_z'])/(1+cat['cluster_z'])-1
+z_corr = cat['cluster_z'] # (1+cat['galaxy_z'])/(1+cat['cluster_z'])-1
 
 b1 = (f_radius<=0.5)
 b2 = (f_radius>0.5)&(f_radius<=1.)
