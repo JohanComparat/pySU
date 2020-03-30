@@ -20,7 +20,7 @@ stack_dir = join( os.environ['HOME'], "SDSS/stack_cluster_qso_pairs" )
 dataList = n.array(glob.glob(join(stack_dir, "clusterXqso_b?.asc")))
 dataList.sort()
 
-for specList in dataList[1:]:
+for specList in dataList:
 	print('considers', specList, time.time()-t0)
 	out_file = join(stack_dir, os.path.basename(specList)[:-4]+".stack")
 	out_file_UV = join(stack_dir, os.path.basename(specList)[:-4]+".UVstack")
