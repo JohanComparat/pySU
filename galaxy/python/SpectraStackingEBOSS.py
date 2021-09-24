@@ -19,8 +19,8 @@ maskLambda = n.loadtxt(os.path.join(os.environ['GIT_ARCHETYPES'],'data',"dr12-sk
 get_path_to_spectrum_v5_13_0 = lambda plate, mjd, fiberid : os.path.join(
 	os.environ['HOME'], 
 	'SDSS', 
-	'v5_13_0', 
-	'spectra', 
+	'v5_13_2',
+	'lite',
 	str(int(plate)).zfill(4), 
 	"spec-"+str(int(plate)).zfill(4)+"-"+str(int(mjd)).zfill(5)+"-"+str(int(fiberid)).zfill(4)+".fits" 
 	)
@@ -237,7 +237,7 @@ class SpectraStackingEBOSS:
 		for plate, mjd, fiber, redshift, weight in zip(self.plates, self.mjds, self.fiberids, self.redshifts, self.weights):
 			try:
 				#print(plate, mjd, fiber, redshift)
-				if plate > 3006 :
+				if plate > 3006 and plate < 12547 :
 					path_to_spectrum = get_path_to_spectrum_v5_13_0(plate, mjd, fiber)
 				else:
 					path_to_spectrum = get_path_to_spectrum_26(plate, mjd, fiber)
