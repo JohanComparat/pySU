@@ -26,3 +26,5 @@ list_2_stack = n.array(glob.glob(join(stack_dir, "*.ascii")))
 for el in list_2_stack:
 	stack_it(el)
 
+for el in list_2_stack[::-1]:
+	stack_it(el)
