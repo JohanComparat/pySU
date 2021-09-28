@@ -18,13 +18,14 @@ stack_dir = join(os.environ['HOME'],"SDSS/stacks")
 def stack_it( specList ):
 	outfile = join(stack_dir, os.path.basename(specList)+".stack")
 	print(stack_dir, outfile)
-	stack=sse.SpectraStackingEBOSS(specList, outfile )
-	stack.createStackMatrix()
-	stack.stackSpectra()
+	if os.path.join(outfile)==False:
+		stack=sse.SpectraStackingEBOSS(specList, outfile )
+		stack.createStackMatrix()
+		stack.stackSpectra()
 
 list_2_stack = n.array(glob.glob(join(stack_dir, "*.ascii")))
 for el in list_2_stack:
 	stack_it(el)
 
-for el in list_2_stack[::-1]:
-	stack_it(el)
+# for el in list_2_stack[::-1]:
+# 	stack_it(el)
