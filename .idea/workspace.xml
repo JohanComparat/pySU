@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="6055742c-4d95-4f76-8b1b-42b862ef02fa" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/galaxy/bin_eBOSS_ELG/stack_spectra_KZ_highZ.py" beforeDir="false" afterPath="$PROJECT_DIR$/galaxy/bin_eBOSS_ELG/stack_spectra_KZ_highZ.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/galaxy/python/SpectraStackingEBOSS.py" beforeDir="false" afterPath="$PROJECT_DIR$/galaxy/python/SpectraStackingEBOSS.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/galaxy/bin_eBOSS_ELG/stack_spectra_4MOST.py" beforeDir="false" afterPath="$PROJECT_DIR$/galaxy/bin_eBOSS_ELG/stack_spectra_4MOST.py" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -20,6 +22,7 @@
     <option name="width" value="1400" />
     <option name="height" value="1000" />
   </component>
+  <component name="ProjectId" id="1yZktUKIsM99q7hGPGeY9mTBnkG" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
@@ -29,21 +32,26 @@
       <pane id="Scope" />
     </panes>
   </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../pyVirtualSkies" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/galaxy/bin_eBOSS_ELG" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
   </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/galaxy/bin_eBOSS_ELG" />
+    </key>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="6055742c-4d95-4f76-8b1b-42b862ef02fa" name="Default Changelist" comment="" />
@@ -51,7 +59,60 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1557313899029</updated>
+      <workItem from="1632466714734" duration="12902000" />
+      <workItem from="1632723823067" duration="605000" />
+      <workItem from="1632835422988" duration="867000" />
     </task>
+    <task id="LOCAL-00001" summary="update pathes to the spectra on the ds machines">
+      <created>1632490633184</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1632490633184</updated>
+    </task>
+    <task id="LOCAL-00002" summary="creates lists to stack spectra for 4MOST templates">
+      <created>1632490651009</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1632490651009</updated>
+    </task>
+    <task id="LOCAL-00003" summary="stacks 4MOST templates">
+      <created>1632490660298</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1632490660298</updated>
+    </task>
+    <task id="LOCAL-00004" summary="stacks 4MOST templates">
+      <created>1632495099357</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1632495099357</updated>
+    </task>
+    <task id="LOCAL-00005" summary="template stitching rountine">
+      <created>1632495114442</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1632495114442</updated>
+    </task>
+    <task id="LOCAL-00006" summary="does not recompute if output already present">
+      <created>1632835556340</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1632835556340</updated>
+    </task>
+    <task id="LOCAL-00007" summary="removes the matrices at the end">
+      <created>1632836187272</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1632836187272</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -75,5 +136,17 @@
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
     </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="update pathes to the spectra on the ds machines" />
+    <MESSAGE value="creates lists to stack spectra for 4MOST templates" />
+    <MESSAGE value="stacks 4MOST templates" />
+    <MESSAGE value="template stitching rountine" />
+    <MESSAGE value="does not recompute if output already present" />
+    <MESSAGE value="removes the matrices at the end" />
+    <option name="LAST_COMMIT_MESSAGE" value="removes the matrices at the end" />
   </component>
 </project>
