@@ -17,8 +17,8 @@ stack_dir = join(os.environ['HOME'],"SDSS/stacks")
 
 def stack_it( specList ):
 	outfile = join(stack_dir, os.path.basename(specList)+".stack")
-	print(stack_dir, outfile, os.path.join(outfile))
-	if os.path.join(outfile)==False:
+	print(stack_dir, outfile, os.path.isfile(outfile))
+	if os.path.isfile(outfile)==False:
 		stack=sse.SpectraStackingEBOSS(specList, outfile )
 		stack.createStackMatrix()
 		stack.stackSpectra()
