@@ -64,13 +64,13 @@ abs_line_list = [
 	[2600.17, 'FeII', 'darkgreen'],
 	[2798.75, 'MgII', 'darkgreen'],
 	#
-	[3835.397, r'H$\eta$', 'black']
-	[3889.064, r'H$\zeta$', 'black']
+	[3835.397, r'H$\eta$', 'black'],
+	[3889.064, r'H$\zeta$', 'black'],
 	[3934.777, 'Ca(K)', 'magenta'],
 	[3969.588, 'Ca(H)', 'magenta'],
 	[ll.H1_3970 , r'H$_\epsilon$', 'black'],
 	#
-    [ll.H1_4102 , r'H$_\delta$'], 'black',
+    [ll.H1_4102 , r'H$_\delta$', 'black'],
 	[4305.61, 'G', 'magenta'],
     [ll.H1_4341 , r'H$_\gamma$', 'black'],
     [ll.He2_4686 , r'He II', 'darkgreen'],
@@ -99,8 +99,8 @@ file_out =  join(stack_dir,"X_AGN", "ROSAT_AGNT2-stitched-stack.fits")
 
 def plot_spec( p_2_stack = file_out ):
 	print('plots', p_2_stack)
-	fig=p.figure(6, (14.0, 14.0), frameon=False)
-	fig.add_subplot(211, ylabel=r'F$_\lambda$')
+	fig=p.figure(7, (14.0, 14.0), frameon=False)
+	fig.add_subplot(311, ylabel=r'F$_\lambda$')
 	stack = fits.open(p_2_stack)[1].data
 	s1 = (stack['wavelength']>0)
 	stack = stack[s1]
@@ -131,7 +131,7 @@ def plot_spec( p_2_stack = file_out ):
 	p.tight_layout()
 	#
 	#
-	fig.add_subplot(212, ylabel=r'per cent')
+	fig.add_subplot(312, ylabel=r'per cent')
 	stack = fits.open(p_2_stack)[1].data
 	s1 = (stack['wavelength']>0)
 	stack = stack[s1]
@@ -145,26 +145,72 @@ def plot_spec( p_2_stack = file_out ):
 	p.legend()
 	p.yscale('log')
 	p.tight_layout()
+
+	fig.add_subplot(313, ylabel=r'per cent')
+	stack = fits.open(p_2_stack)[1].data
+	s1 = (stack['wavelength']>0)
+	stack = stack[s1]
+	print('plots', p_2_stack)
+	fig=p.figure(6, (14.0, 14.0), frameon=False)
+	fig.add_subplot(311, ylabel=r'F$_\lambda$')
+	stack = fits.open(p_2_stack)[1].data
+	s1 = (stack['wavelength']>0)
+	stack = stack[s1]
+	y_min = n.min(stack['medianStack'])
+	y_max = n.max(stack['medianStack'])
+	delta_y = y_max - y_min
+	p.xlim((n.min(stack['wavelength']), n.max(stack['wavelength'])))
+	p.ylim((y_min - delta_y * 0.2 , y_max + delta_y * 0.2 ))
+	# p.yscale('log')
+	# lines above
+	for elem in em_line_list:
+		print(elem)
+		if elem[0]>n.min(stack['wavelength'][5]) and elem[0]<n.max(stack['wavelength'][-5]) :
+			xpos = n.searchsorted(stack['wavelength'], elem[0])
+			ypos = n.max(stack['medianStack'][xpos-10:xpos+10]) + delta_y * 0.1
+			# p.plot(n.array([elem[0], elem[0]]), em_dash_Y, ls='dashed', color='k', lw=0.5)
+			p.text(elem[0], ypos, r'$^{----}$' + elem[1], rotation=90, c='darkgreen')
+	# lines below
+	for elem in abs_line_list:
+		print(elem)
+		if elem[0]>n.min(stack['wavelength'][5]) and elem[0]<n.max(stack['wavelength'][-5]) :
+			xpos = n.searchsorted(stack['wavelength'], elem[0])
+			ypos = n.min(stack['medianStack'][xpos-30:xpos+30]) - delta_y * 0.2
+			# p.plot(n.array([elem[0], elem[0]]), em_dash_Y, ls='dashed', color='k', lw=0.5)
+			p.text(elem[0], ypos, elem[1] + r'$^{---}$', rotation=90, c='magenta')
+	p.plot(stack['wavelength'], stack['medianStack'], lw=0.7)
+	p.grid()
+	p.tight_layout()
+	#
+	#
+	fig.add_subplot(312, ylabel=r'per cent', xlabel='Wavelength rest-frame [Angstrom]')
+	stack = fits.open(p_2_stack)[1].data
+	s1 = (stack['wavelength']>0)
+	stack = stack[s1]
+	y_min = n.min( [ stack['jackknifStackErrors'], stack['NspectraPerPixel']**-0.5 ] )
+	y_max = n.max( [ stack['jackknifStackErrors'], stack['NspectraPerPixel']**-0.5 ] )
+	p.xlim((n.min(stack['wavelength']), n.max(stack['wavelength'])))
+	p.ylim(( y_min/1.1 , y_max*1.1 ))
+	p.plot(stack['wavelength'], stack['jackknifStackErrors']/stack['medianStack'], lw=0.7, label=r'$\sigma^{var}_{JK}$')
+	p.plot(stack['wavelength'], stack['NspectraPerPixel']**-0.5, lw=2, label=r'$1/\sqrt{N}$')
+	p.grid()
+	p.legend()
+	p.yscale('log')
+	p.tight_layout()
+
+	fig.add_subplot(313, ylabel='Wavelength rest-frame [Angstrom]',  xlabel='Wavelength rest-frame [Angstrom]')
+	CR = n.corrcoef(stack['jackknifeSpectra'])
+	WLa = n.array([ stack['wavelength'] for el in stack['wavelength'] ])
+	WLb = WLa.T
+	highCorr_sel = ( abs(CR) > 0.3 )
+	xx = WLa[highCorr_sel]
+	yy = WLb[highCorr_sel]
+	cr_val = CR[highCorr_sel]
+	p.scatter(xx, yy, c=cr_val, s=5)
+	p.colorbar()
+	p.tight_layout()
 	p.savefig(p_2_stack+".png")
 	p.clf()
-	#
-	# fig=p.figure(2, (14.0, 7.0), frameon=False)
-	# fig.add_subplot(111, ylabel=r'F$_\lambda$')
-	# stack = fits.open(p_2_stack)[1].data
-	# s1 = (stack['wavelength']>0)
-	# stack = stack[s1]
-	# y_min = n.min( [ stack['jackknifStackErrors'], stack['NspectraPerPixel']**-0.5 ] )
-	# y_max = n.max( [ stack['jackknifStackErrors'], stack['NspectraPerPixel']**-0.5 ] )
-	# p.xlim((n.min(stack['wavelength']), n.max(stack['wavelength'])))
-	# p.ylim(( y_min/1.1 , y_max*1.1 ))
-	# p.plot(stack['wavelength'], stack['jackknifStackErrors'], lw=0.7, label=r'$\sigma^{var}_{JK}$')
-	# p.plot(stack['wavelength'], stack['NspectraPerPixel']**-0.5, lw=0.7, label=r'$1/\sqrt{N}$')
-	# p.grid()
-	# p.legend()
-	# p.yscale('log')
-	# p.tight_layout()
-	# p.savefig(p_2_stack+"-err-jk.png")
-	# p.clf()
 
 plot_spec(  join(stack_dir,"X_AGN", "DR16_ELG-stitched-stack.fits") )
 plot_spec(  join(stack_dir,"X_AGN", "ROSAT_AGNT1-stitched-stack.fits") )
