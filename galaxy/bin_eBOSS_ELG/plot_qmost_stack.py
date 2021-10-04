@@ -17,63 +17,79 @@ import matplotlib.pyplot as p
 import lineListVac as ll
 
 em_line_list = [
-	[1240.14, 'N V'],
-	[ll.C4_1548, r'C IV'],
-	[1640.42, 'He II'],
-	[1750.26, 'N III]'],
-	[ll.C3_1908  , r'C III'   ],
-	[2327.00, 'CII]'],
-	[2396.36, 'FeII*'],
-	[2626.45, 'FeII*'],
-	[3346.82, '[Ne V]'],
-	[3426.84, '[Ne V]'],
-	[ll.O2_mean  , r'[O II]'  ],
-	[3759.99, '[Fe VII]'],
-	[ll.Ne3_3869 , r'[Ne III]'],
-    # [ll.Ne3_3968 , r'[Ne III]'],
-    [ll.O3_4363  , r'[O III]'  ],
-    [ll.O3_4960  , r'[O III]'  ],
-    [ll.O3_5007  , r'[O III]'  ],
-	[5160.33, '[Fe VII]'],
-	[ll.O1_5578  , r'O I' ],
-	[5722.30, '[Fe VII]'],
-	[5877.29, 'He I'],
-	[6087.98, '[Fe VII]'],
-	[ll.O1_6302  , r'O I' ],
-    [ll.O1_6365  , r'O I' ],
-    [ll.N2_5756  , r'[N II]' ],
-    [ll.N2_6549  , r'[N II]' ],
-    [ll.N2_6585  , r'[N II]' ],
-    [ll.S2_6718  , r'[S II]'],
-    [ll.S2_6732  , r'[S II]'],
-    [ll.Ar3_7137 , r'[Ar III]' ],
+	[1240.14, 'N V' ,  'darkgreen'],
+	[1305.53, 'O I' ,  'darkgreen'],
+	[1335.31, 'C II', 'darkgreen' ],
+	[1397.61, 'Si IV', 'darkgreen' ],
+	[1399.8, 'Si IV + O IV', 'darkgreen' ],
+	[ll.C4_1548, r'C IV', 'darkgreen'],
+	[1640.42, 'He II', 'darkgreen'],
+	[1750.26, 'N III]', 'darkgreen'],
+	[ll.C3_1908  , r'C III', 'darkgreen' ],
+	[2327.00, 'CII]', 'darkgreen'],
+	[2396.36, 'FeII*', 'darkgreen'],
+	[2626.45, 'FeII*', 'darkgreen'],
+	[3346.82, '[Ne V]', 'darkgreen'],
+	[3426.84, '[Ne V]', 'darkgreen'],
+	[ll.O2_mean  , r'[O II]', 'darkgreen'],
+	[3759.99, '[Fe VII]', 'darkgreen'],
+	[ll.Ne3_3869 , r'[Ne III]', 'darkgreen'],
+    # [ll.Ne3_3968 , r'[Ne III]', 'darkgreen'],
+    [ll.O3_4363  , r'[O III]'  , 'darkgreen'],
+    [ll.O3_4960  , r'[O III]'  , 'darkgreen'],
+    [ll.O3_5007  , r'[O III]'  , 'darkgreen'],
+	[5160.33, '[Fe VII]', 'darkgreen'],
+	[ll.O1_5578  , r'O I', 'darkgreen' ],
+	[5722.30, '[Fe VII]', 'darkgreen'],
+	[5877.29, 'He I', 'darkgreen'],
+	[6087.98, '[Fe VII]', 'darkgreen'],
+	[ll.O1_6302  , r'O I' , 'darkgreen'],
+    [ll.O1_6365  , r'O I' , 'darkgreen'],
+    [ll.N2_5756  , r'[N II]' , 'darkgreen'],
+    [ll.N2_6549  , r'[N II]' , 'darkgreen'],
+    [ll.N2_6585  , r'[N II]' , 'darkgreen'],
+    [ll.S2_6718  , r'[S II]', 'darkgreen'],
+    [ll.S2_6732  , r'[S II]', 'darkgreen'],
+    [ll.Ar3_7137 , r'[Ar III]' , 'darkgreen'],
     ]
 
 abs_line_list = [
-	[1857.40, 'Al III'],
-	[2344.21, 'FeII'],
-	[2382.76, 'Fe II'],
-	[2600.17, 'FeII'],
-	[2798.75, 'MgII'],
-	[3933.70, 'Ca(H)'],
-	[3968.50, 'Ca(K)'],
-	[ll.H1_3970 , r'H$_\epsilon$'],
-    [ll.H1_4102 , r'H$_\delta$'],
-	[4304.4, 'G band'],
-    [ll.H1_4341 , r'H$_\gamma$'],
-    [ll.H1_4862 , r'H$_\beta$'],
-	[5175.30, 'Mg'],
-	[5894.00, 'Na'],
-	[ll.H1_6564 , r'H$_\alpha$'],
-    [ll.H1_1216 , r'Ly$_\alpha$'],
-    [ll.He2_4686 , r'He II'],
-    [ll.He2_5411 , r'He II'],
-    ]
+	[911.753, r'Ly$_{limit}$', 'black'],
+	[1025.7220, r'Ly$_\beta$', 'black'],
+	[ll.H1_1216, r'Ly$_\alpha$', 'black'],
+	[1857.40, 'Al III', 'darkgreen'],
+	#
+	[2344.21, 'FeII', 'darkgreen'],
+	[2382.76, 'Fe II', 'darkgreen'],
+	[2600.17, 'FeII', 'darkgreen'],
+	[2798.75, 'MgII', 'darkgreen'],
+	#
+	[3835.397, r'H$\eta$', 'black']
+	[3889.064, r'H$\zeta$', 'black']
+	[3934.777, 'Ca(K)', 'magenta'],
+	[3969.588, 'Ca(H)', 'magenta'],
+	[ll.H1_3970 , r'H$_\epsilon$', 'black'],
+	#
+    [ll.H1_4102 , r'H$_\delta$'], 'black',
+	[4305.61, 'G', 'magenta'],
+    [ll.H1_4341 , r'H$_\gamma$', 'black'],
+    [ll.He2_4686 , r'He II', 'darkgreen'],
+    [ll.H1_4862 , r'H$_\beta$', 'black'],
+	#
+	[5176.7, 'MgI b', 'magenta'],
+	[ll.He2_5411, r'He II', 'darkgreen'],
+	[5895.6, r'NaI D$_{1,2}$', 'magenta'],
+	[ll.H1_6564 , r'H$_\alpha$', 'black'],
+	#
+	[8500.36, 'Ca II', 'magenta'],
+	[8544.44, 'Ca II', 'magenta'],
+	[8664.52, 'Ca II', 'magenta'],
+]
 
-line_list_abs = n.array([      2249.88, 2260.78, 2344.21, 2374.46, 2382.76, 2576.88, 2586.65, 2594.50, 2600.17, 2606.46, 2796.35, 2803.53, 2852.96])
-line_list_abs_names = n.array(['FeII' ,  'FeII',  'FeII',  'FeII',  'FeII',  'MnII',  'FeII',  'MnII',  'FeII',  'MnII',  'MgII',  'MgII',   'MgI'])
-line_list_em = n.array([2327, 2365.55, 2396.36, 2612.65,2626.45])
-line_list_em_names = n.array(['CII]', 'FeII*', 'FeII*', 'FeII*', 'FeII*'])
+# line_list_abs = n.array([      2249.88, 2260.78, 2344.21, 2374.46, 2382.76, 2576.88, 2586.65, 2594.50, 2600.17, 2606.46, 2796.35, 2803.53, 2852.96])
+# line_list_abs_names = n.array(['FeII' ,  'FeII',  'FeII',  'FeII',  'FeII',  'MnII',  'FeII',  'MnII',  'FeII',  'MnII',  'MgII',  'MgII',   'MgI'])
+# line_list_em = n.array([2327, 2365.55, 2396.36, 2612.65,2626.45])
+# line_list_em_names = n.array(['CII]', 'FeII*', 'FeII*', 'FeII*', 'FeII*'])
 
 #stack_dir = join( os.environ['HOME'], "SDSS/stacks/v2" )
 stack_dir = join( os.environ['HOME'], "SDSS/stacks" )
@@ -81,30 +97,20 @@ file_out =  join(stack_dir,"X_AGN", "DR16_ELG-stitched-stack.fits")
 file_out =  join(stack_dir,"X_AGN", "ROSAT_AGNT1-stitched-stack.fits")
 file_out =  join(stack_dir,"X_AGN", "ROSAT_AGNT2-stitched-stack.fits")
 
-def plot_me( p_2_stack = file_out ):
+def plot_spec( p_2_stack = file_out ):
 	print('plots', p_2_stack)
-	fig=p.figure(2, (14.0, 7.0), frameon=False)
-	fig.add_subplot(111, ylabel=r'F$_\lambda$')#, xlim=((2240, 2410)), ylim=((0.7,1.2)))
-
+	fig=p.figure(6, (14.0, 14.0), frameon=False)
+	fig.add_subplot(211, ylabel=r'F$_\lambda$')
 	stack = fits.open(p_2_stack)[1].data
 	s1 = (stack['wavelength']>0)
 	stack = stack[s1]
-
 	y_min = n.min(stack['medianStack'])
 	y_max = n.max(stack['medianStack'])
 	delta_y = y_max - y_min
-
-	# t_height_em = y_max + delta_y * 0.1 # * 1.2
-	# em_dash_Y = n.array([y_max+ delta_y * 0.05, t_height_em])
-	#
-	# t_height_abs = y_min * 0.75
-	# ab_dash_Y = n.array([t_height_abs, y_min,])
-
 	p.xlim((n.min(stack['wavelength']), n.max(stack['wavelength'])))
 	p.ylim((y_min - delta_y * 0.2 , y_max + delta_y * 0.2 ))
 	# p.yscale('log')
-
-	# usual line list
+	# lines above
 	for elem in em_line_list:
 		print(elem)
 		if elem[0]>n.min(stack['wavelength'][5]) and elem[0]<n.max(stack['wavelength'][-5]) :
@@ -112,8 +118,7 @@ def plot_me( p_2_stack = file_out ):
 			ypos = n.max(stack['medianStack'][xpos-10:xpos+10]) + delta_y * 0.1
 			# p.plot(n.array([elem[0], elem[0]]), em_dash_Y, ls='dashed', color='k', lw=0.5)
 			p.text(elem[0], ypos, r'$^{----}$' + elem[1], rotation=90, c='darkgreen')
-
-	# usual line list
+	# lines below
 	for elem in abs_line_list:
 		print(elem)
 		if elem[0]>n.min(stack['wavelength'][5]) and elem[0]<n.max(stack['wavelength'][-5]) :
@@ -121,95 +126,49 @@ def plot_me( p_2_stack = file_out ):
 			ypos = n.min(stack['medianStack'][xpos-30:xpos+30]) - delta_y * 0.2
 			# p.plot(n.array([elem[0], elem[0]]), em_dash_Y, ls='dashed', color='k', lw=0.5)
 			p.text(elem[0], ypos, elem[1] + r'$^{---}$', rotation=90, c='magenta')
-
-	# # emission list in the UV
-	# for xx, nn in zip(line_list_em, line_list_em_names ):
-	# 	p.plot(n.array([xx,xx]), em_dash_Y, ls='dashed', color='g')
-	# 	p.text(xx,t_height_em,nn,rotation=90, color='g')
-	# # absorption list in the UV
-	# for xx, nn in zip(line_list_abs, line_list_abs_names ):
-	# 	p.plot(n.array([xx,xx]), ab_dash_Y, ls='dashed', color='k')
-	# 	p.text(xx, t_height_abs, nn,rotation=90)
 	p.plot(stack['wavelength'], stack['medianStack'], lw=0.7)
-
-	# p.legend(frameon=False)
 	p.grid()
-	#
-	# xmin, xmax = 2100, 3000
-	# fig.add_subplot(312, ylabel=r'F$_\lambda$', xlim=((xmin, xmax )) )
-	#
-	# stack = fits.open(p_2_stack)[1].data
-	# s1 = ( stack['wavelength'] > xmin ) &  ( stack['wavelength'] < xmax )
-	# stack = stack[s1]
-	#
-	# y_min = n.min(stack['medianStack'])
-	# y_max = n.max(stack['medianStack'])
-	#
-	# t_height_em = y_max * 1.2
-	# em_dash_Y = n.array([y_max*0.8, t_height_em])
-	#
-	# t_height_abs = y_min * 0.75
-	# ab_dash_Y = n.array([t_height_abs, y_min,])
-	#
-	# p.xlim((n.min(stack['wavelength']), n.max(stack['wavelength'])))
-	# p.ylim((y_min * 0.7, y_max * 1.5))
-	# # p.yscale('log')
-	#
-	# # usual line list
-	# for elem in line_list:
-	# 	p.plot(n.array([elem[0], elem[0]]), em_dash_Y, ls='dashed', color='k')
-	# 	p.text(elem[0], t_height_em, elem[1], rotation=90)
-	#
-	# # emission list in the UV
-	# for xx, nn in zip(line_list_em, line_list_em_names ):
-	# 	p.plot(n.array([xx,xx]), em_dash_Y, ls='dashed', color='g')
-	# 	p.text(xx,t_height_em,nn,rotation=90, color='g')
-	# # absorption list in the UV
-	# for xx, nn in zip(line_list_abs, line_list_abs_names ):
-	# 	p.plot(n.array([xx,xx]), ab_dash_Y, ls='dashed', color='k')
-	# 	p.text(xx, t_height_abs, nn,rotation=90)
-	# p.plot(stack['wavelength'], stack['medianStack'], lw=0.7)
-	#
-	# # p.legend(frameon=False)
-	# p.grid()
+	p.tight_layout()
 	#
 	#
-	# xmin, xmax = 3700, 5100
-	# fig.add_subplot(313, ylabel=r'F$_\lambda$', xlabel='wavelength [Angstrom, rest frame]', xlim=((xmin, xmax )) )
-	#
-	# stack = fits.open(p_2_stack)[1].data
-	# s1 = ( stack['wavelength'] > xmin ) &  ( stack['wavelength'] < xmax )
-	# stack = stack[s1]
-	#
-	# y_min = n.min(stack['medianStack'])
-	# y_max = n.max(stack['medianStack'])
-	#
-	# t_height_em = y_max * 1.2
-	# em_dash_Y = n.array([y_max*0.8, t_height_em])
-	#
-	# t_height_abs = y_min * 0.75
-	# ab_dash_Y = n.array([t_height_abs, y_min,])
-	#
-	# p.xlim((n.min(stack['wavelength']), n.max(stack['wavelength'])))
-	# p.ylim((y_min * 0.7, y_max * 1.5))
-	# # p.yscale('log')
-	#
-	# # usual line list
-	# for elem in line_list:
-	# 	p.plot(n.array([elem[0], elem[0]]), em_dash_Y, ls='dashed', color='k')
-	# 	p.text(elem[0], t_height_em, elem[1], rotation=90)
-	#
-	# p.plot(stack['wavelength'], stack['medianStack'], lw=0.7)
-	#
-	# # p.legend(frameon=False)
-	# p.grid()
+	fig.add_subplot(212, ylabel=r'per cent')
+	stack = fits.open(p_2_stack)[1].data
+	s1 = (stack['wavelength']>0)
+	stack = stack[s1]
+	y_min = n.min( [ stack['jackknifStackErrors'], stack['NspectraPerPixel']**-0.5 ] )
+	y_max = n.max( [ stack['jackknifStackErrors'], stack['NspectraPerPixel']**-0.5 ] )
+	p.xlim((n.min(stack['wavelength']), n.max(stack['wavelength'])))
+	p.ylim(( y_min/1.1 , y_max*1.1 ))
+	p.plot(stack['wavelength'], stack['jackknifStackErrors']/stack['medianStack'], lw=0.7, label=r'$\sigma^{var}_{JK}$')
+	p.plot(stack['wavelength'], stack['NspectraPerPixel']**-0.5, lw=2, label=r'$1/\sqrt{N}$')
+	p.grid()
+	p.legend()
+	p.yscale('log')
 	p.tight_layout()
 	p.savefig(p_2_stack+".png")
 	p.clf()
+	#
+	# fig=p.figure(2, (14.0, 7.0), frameon=False)
+	# fig.add_subplot(111, ylabel=r'F$_\lambda$')
+	# stack = fits.open(p_2_stack)[1].data
+	# s1 = (stack['wavelength']>0)
+	# stack = stack[s1]
+	# y_min = n.min( [ stack['jackknifStackErrors'], stack['NspectraPerPixel']**-0.5 ] )
+	# y_max = n.max( [ stack['jackknifStackErrors'], stack['NspectraPerPixel']**-0.5 ] )
+	# p.xlim((n.min(stack['wavelength']), n.max(stack['wavelength'])))
+	# p.ylim(( y_min/1.1 , y_max*1.1 ))
+	# p.plot(stack['wavelength'], stack['jackknifStackErrors'], lw=0.7, label=r'$\sigma^{var}_{JK}$')
+	# p.plot(stack['wavelength'], stack['NspectraPerPixel']**-0.5, lw=0.7, label=r'$1/\sqrt{N}$')
+	# p.grid()
+	# p.legend()
+	# p.yscale('log')
+	# p.tight_layout()
+	# p.savefig(p_2_stack+"-err-jk.png")
+	# p.clf()
 
-plot_me(  join(stack_dir,"X_AGN", "DR16_ELG-stitched-stack.fits") )
-plot_me(  join(stack_dir,"X_AGN", "ROSAT_AGNT1-stitched-stack.fits") )
-plot_me(  join(stack_dir,"X_AGN", "ROSAT_AGNT2-stitched-stack.fits") )
+plot_spec(  join(stack_dir,"X_AGN", "DR16_ELG-stitched-stack.fits") )
+plot_spec(  join(stack_dir,"X_AGN", "ROSAT_AGNT1-stitched-stack.fits") )
+plot_spec(  join(stack_dir,"X_AGN", "ROSAT_AGNT2-stitched-stack.fits") )
 
 
 sys.exit()
