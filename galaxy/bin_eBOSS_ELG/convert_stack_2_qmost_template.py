@@ -147,9 +147,12 @@ def write_qmost_template(input1):
             plt.xlim(None, 9500)
             # add HRS overlay
             ys = plt.gca().get_ylim()
-            plt.fill_betweenx(ys, x1=[3926,3926],x2=[4355, 4355], alpha=0.1, color='b')
-            plt.fill_betweenx(ys, x1=[5160,5160],x2=[5730, 5730], alpha=0.1, color='g')
-            plt.fill_betweenx(ys, x1=[6100,6100],x2=[6790, 6790], alpha=0.1, color='r')
+            plt.fill_betweenx(ys, x1=[3700, 3700], x2=[5000, 5000], alpha=0.1, color='b')
+            plt.fill_betweenx(ys, x1=[5000, 5000], x2=[7000, 7000], alpha=0.1, color='g')
+            plt.fill_betweenx(ys, x1=[7000, 7000], x2=[9500, 9500], alpha=0.1, color='r')
+            # plt.fill_betweenx(ys, x1=[3926,3926],x2=[4355, 4355], alpha=0.1, color='b')
+            # plt.fill_betweenx(ys, x1=[5160,5160],x2=[5730, 5730], alpha=0.1, color='g')
+            # plt.fill_betweenx(ys, x1=[6100,6100],x2=[6790, 6790], alpha=0.1, color='r')
         else:
             plt.xlabel(f"{found_axes1['name'][0]} ({found_axes1['unit'][0]})")
             #plt.ylabel(f"{found_axes1['name'][1]} ({found_axes1['unit'][1]})")
