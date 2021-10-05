@@ -3,7 +3,7 @@
 """
 This script produces the stacks for emission line luminosity limited samples.
 
-python convert_...
+python convert_stack_2_qmost_template.py
 
 cp /data43s/SDSS/stacks/X_AGN/*stitched*
 

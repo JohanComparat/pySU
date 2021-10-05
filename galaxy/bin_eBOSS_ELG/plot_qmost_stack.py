@@ -147,9 +147,9 @@ def plot_spec( p_2_stack = file_out ):
 	p.tight_layout()
 	print('correlation coefficient')
 	fig.add_subplot(212, ylabel='Wavelength rest-frame [Angstrom]',  xlabel='Wavelength rest-frame [Angstrom]')
-	# CR = n.corrcoef(stack['jackknifeSpectra'])
-	# WLa = n.array([ stack['wavelength'] for el in stack['wavelength'] ])
-	# WLb = WLa.T
+	CR = n.corrcoef(stack['jackknifeSpectra'])
+	WLa = n.array([ stack['wavelength'] for el in stack['wavelength'] ])
+	WLb = WLa.T
 	highCorr_sel = ( abs(CR) > 0.8 ) & (CR>0)
 	xx = WLa[highCorr_sel]
 	yy = WLb[highCorr_sel]
