@@ -17,11 +17,11 @@ import astropy
 from astropy.table import Table
 from astropy.io import fits
 import astropy.units as u
-
+from os.path import join
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-
+import numpy as n
 # speclite
 import speclite.filters
 from speclite.filters import FilterConvolution
