@@ -38,6 +38,8 @@ output1_directory = join( os.environ['HOME'], "SDSS/stacks" )
 input1  =  join(output1_directory,"X_AGN", "DR16_ELG-stitched-stack.fits")
 input1 =  join(output1_directory,"X_AGN", "ROSAT_AGNT2-stitched-stack.fits")
 input1 =  join(output1_directory,"X_AGN", "ROSAT_AGNT1-stitched-stack.fits")
+input1 =  join(output1_directory,"X_AGN", "ROSAT_AGNT1-DR16QSO-stitched-stack.fits")
+input1 =  join(output1_directory,"X_AGN", "DR16LRG-stitched-stack.fits")
 
 def write_qmost_template(input1):
     output1_png =  input1[:-5] + "-qmost-template.png"
@@ -87,7 +89,9 @@ def write_qmost_template(input1):
         nrows = nrows1 + nrows2
         wavelength = n.hstack((data1['wavelength'], wave_red))
         flux_density = n.hstack((data1['medianStack'], n.ones_like(wave_red)*data1['medianStack'][-1]))
-
+    else:
+        wavelength = data1['wavelength']
+        flux_density = data1['medianStack']
 
     # where the filters are
     path = os.path.join(
@@ -138,11 +142,11 @@ def write_qmost_template(input1):
     outf.writeto(output1_tpl, overwrite=True)
     print(output1_tpl, 'written')#
 
-    fig1 = plt.figure()
+    fig1 = plt.figure(10)
     for subplot in [211, 212]:
         plt.subplot(subplot)
         label1 = os.path.basename(input1)[:-5]
-        plt.loglog(hdu.data['LAMBDA'], hdu.data['FLUX_DENSITY'], label=label1)
+        plt.plot(hdu.data['LAMBDA'], hdu.data['FLUX_DENSITY'], label=label1)
         if subplot == 211:
             plt.xlim(None, 9500)
             # add HRS overlay
@@ -150,6 +154,8 @@ def write_qmost_template(input1):
             plt.fill_betweenx(ys, x1=[3700, 3700], x2=[5000, 5000], alpha=0.1, color='b')
             plt.fill_betweenx(ys, x1=[5000, 5000], x2=[7000, 7000], alpha=0.1, color='g')
             plt.fill_betweenx(ys, x1=[7000, 7000], x2=[9500, 9500], alpha=0.1, color='r')
+            plt.xscale('log')
+            plt.yscale('log')
             # plt.fill_betweenx(ys, x1=[3926,3926],x2=[4355, 4355], alpha=0.1, color='b')
             # plt.fill_betweenx(ys, x1=[5160,5160],x2=[5730, 5730], alpha=0.1, color='g')
             # plt.fill_betweenx(ys, x1=[6100,6100],x2=[6790, 6790], alpha=0.1, color='r')
@@ -157,7 +163,8 @@ def write_qmost_template(input1):
             plt.xlabel(f"{found_axes1['name'][0]} ({found_axes1['unit'][0]})")
             #plt.ylabel(f"{found_axes1['name'][1]} ({found_axes1['unit'][1]})")
             plt.ylabel(f"{found_axes1['name'][1]} (erg/s/cm**2/Angstrom)")  # manually modified, for shorter length
-            plt.xlim(4150, 4200)
+            plt.yscale('log')
+            plt.xlim(3700, 9500)
     # create legend and show plot
     #plt.legend()
     plt.show()
@@ -172,3 +179,8 @@ input1 =  join(output1_directory,"X_AGN", "ROSAT_AGNT2-stitched-stack.fits")
 write_qmost_template(input1)
 input1 =  join(output1_directory,"X_AGN", "ROSAT_AGNT1-stitched-stack.fits")
 write_qmost_template(input1)
+input1 =  join(output1_directory,"X_AGN", "ROSAT_AGNT1-DR16QSO-stitched-stack.fits")
+write_qmost_template(input1)
+input1 =  join(output1_directory,"X_AGN", "DR16LRG-stitched-stack.fits")
+write_qmost_template(input1)
+

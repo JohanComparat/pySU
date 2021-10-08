@@ -6,7 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="6055742c-4d95-4f76-8b1b-42b862ef02fa" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/galaxy/bin_eBOSS_ELG/stack_spectra_4MOST.py" beforeDir="false" afterPath="$PROJECT_DIR$/galaxy/bin_eBOSS_ELG/stack_spectra_4MOST.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/galaxy/bin_eBOSS_ELG/convert_stack_2_qmost_template.py" beforeDir="false" afterPath="$PROJECT_DIR$/galaxy/bin_eBOSS_ELG/convert_stack_2_qmost_template.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/galaxy/bin_eBOSS_ELG/plot_qmost_stack.py" beforeDir="false" afterPath="$PROJECT_DIR$/galaxy/bin_eBOSS_ELG/plot_qmost_stack.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/galaxy/bin_eBOSS_ELG/stack_spectra_4MOST_stitch_full_wavelength.py" beforeDir="false" afterPath="$PROJECT_DIR$/galaxy/bin_eBOSS_ELG/stack_spectra_4MOST_stitch_full_wavelength.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,7 +63,10 @@
       <updated>1557313899029</updated>
       <workItem from="1632466714734" duration="12902000" />
       <workItem from="1632723823067" duration="605000" />
-      <workItem from="1632835422988" duration="867000" />
+      <workItem from="1632835422988" duration="1094000" />
+      <workItem from="1633331594338" duration="31147000" />
+      <workItem from="1633434633754" duration="831000" />
+      <workItem from="1633677472106" duration="5860000" />
     </task>
     <task id="LOCAL-00001" summary="update pathes to the spectra on the ds machines">
       <created>1632490633184</created>
@@ -112,7 +117,77 @@
       <option name="project" value="LOCAL" />
       <updated>1632836187272</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="removes the matrices at the end">
+      <created>1632836293642</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1632836293642</updated>
+    </task>
+    <task id="LOCAL-00009" summary="removes the matrices at the end">
+      <created>1632836297016</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1632836297016</updated>
+    </task>
+    <task id="LOCAL-00010" summary="stitching the T1, T2 and ELG templates">
+      <created>1633337580468</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1633337580468</updated>
+    </task>
+    <task id="LOCAL-00011" summary="plotting stacks">
+      <created>1633349867433</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1633349867433</updated>
+    </task>
+    <task id="LOCAL-00012" summary="plotting stacks">
+      <created>1633359001435</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1633359001435</updated>
+    </task>
+    <task id="LOCAL-00013" summary="trying to plot covariance matrix">
+      <created>1633360263889</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1633360263889</updated>
+    </task>
+    <task id="LOCAL-00014" summary="plotting stacks and converting to qmost format">
+      <created>1633425808639</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1633425808639</updated>
+    </task>
+    <task id="LOCAL-00015" summary="bug correction">
+      <created>1633425919890</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1633425919890</updated>
+    </task>
+    <task id="LOCAL-00016" summary="final version for the qmost conversion">
+      <created>1633426107912</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1633426107912</updated>
+    </task>
+    <task id="LOCAL-00017" summary="LRS band passes">
+      <created>1633426474156</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1633426474156</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -147,6 +222,24 @@
     <MESSAGE value="template stitching rountine" />
     <MESSAGE value="does not recompute if output already present" />
     <MESSAGE value="removes the matrices at the end" />
-    <option name="LAST_COMMIT_MESSAGE" value="removes the matrices at the end" />
+    <MESSAGE value="stitching the T1, T2 and ELG templates" />
+    <MESSAGE value="plotting stacks" />
+    <MESSAGE value="trying to plot covariance matrix" />
+    <MESSAGE value="plotting stacks and converting to qmost format" />
+    <MESSAGE value="bug correction" />
+    <MESSAGE value="final version for the qmost conversion" />
+    <MESSAGE value="LRS band passes" />
+    <option name="LAST_COMMIT_MESSAGE" value="LRS band passes" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" log-message="true" suspend="NONE" type="python-line">
+          <url>file://$PROJECT_DIR$/galaxy/bin_eBOSS_ELG/plot_qmost_stack.py</url>
+          <line>97</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
