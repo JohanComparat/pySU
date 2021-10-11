@@ -172,7 +172,8 @@ def write_qmost_template(input1):
     # fig1.savefig(output1_pdf, bbox_inches='tight')
     plt.clf()
 
-
+input1 =  join(output1_directory,"X_AGN", "ROSAT_AGNT2-highZ-stitched-stack.fits")
+write_qmost_template(input1)
 input1  =  join(output1_directory,"X_AGN", "DR16_ELG-stitched-stack.fits")
 write_qmost_template(input1)
 input1 =  join(output1_directory,"X_AGN", "ROSAT_AGNT2-stitched-stack.fits")

@@ -161,9 +161,9 @@ def plot_spec( p_2_stack = file_out ):
 	p.clf()
 
 plot_spec(  join(stack_dir,"X_AGN", "ROSAT_AGNT1-stitched-stack.fits") )
-
 plot_spec(  join(stack_dir,"X_AGN", "ROSAT_AGNT2-stitched-stack.fits") )
+plot_spec(  join(stack_dir,"X_AGN", "ROSAT_AGNT2-highZ-stitched-stack.fits") )
 plot_spec(  join(stack_dir,"X_AGN", "DR16_ELG-stitched-stack.fits") )
-plot_spec(  join(output1_directory,"X_AGN", "ROSAT_AGNT1-DR16QSO-stitched-stack.fits") )
-plot_spec(  join(output1_directory,"X_AGN", "DR16LRG-stitched-stack.fits") )
+plot_spec(  join(stack_dir,"X_AGN", "ROSAT_AGNT1-DR16QSO-stitched-stack.fits") )
+plot_spec(  join(stack_dir,"X_AGN", "DR16LRG-stitched-stack.fits") )
 

@@ -310,11 +310,55 @@ t_out.remove_column('meanStack')
 t_out.write(file_out, overwrite = True)
 
 
+###########
+###########
+# T2 AGN ROSAT
+###########
+###########
 
 
-list_2_stack = n.array(glob.glob(join(stack_dir, "*.ascii")))
-for el in list_2_stack:
-	stack_it(el)
+T2_stacks = n.array( glob.glob( join(stack_dir,"X_AGN", "ROSAT_AGNT2*stack") ) )
+T2_stacks.sort()
+t2_highz = '/home/comparat/data1/templates/4most_AGN_type2_zmin_45_zmax_60_EBV_0_01.fits'
+T2_stacks = n.hstack((T2_stacks, t2_highz))
+file_out =  join(stack_dir,"X_AGN", "ROSAT_AGNT2-highZ-stitched-stack.fits")
 
-for el in list_2_stack[::-1]:
-	stack_it(el)
+frac_Nspec = 0.5
+
+idx_list = [0, 1, 7, 11, -1]
+wl_mins = [6100, 3650, 3000, 2300, 900 ]
+wl_maxs = [8100, 6100, 3650, 3000, 2300]
+
+ii=-1
+jj = idx_list[ii]
+wl0, wl1  = wl_mins[ii], wl_maxs[ii]
+hdu = fits.open(T2_stacks[jj])[1].data
+s_wl = (hdu['LAMBDA']/6.25 > wl0) & (hdu['LAMBDA']/6.25 < wl1) & (hdu['FLUX_DENSITY'] > 1e-20)
+med_norm = n.median(hdu['FLUX_DENSITY'][s_wl][-10:])
+t0 = Table()
+t0['wavelength'] = hdu['LAMBDA'][s_wl]/6.25
+t0['medianStack'] = hdu['FLUX_DENSITY'][s_wl]/med_norm
+t0['meanStack'] = hdu['FLUX_DENSITY'][s_wl]/med_norm
+t0['jackknifStackErrors'] = - 99. * n.ones( len(hdu['FLUX_DENSITY'][s_wl] ) )
+t0['jackknifeSpectra'] = - 99. * n.ones( ( 10, len(hdu['FLUX_DENSITY'][s_wl] ) ) ).T
+t0['NspectraPerPixel'] = - 99. * n.ones( len(hdu['FLUX_DENSITY'][s_wl] ) )
+t0['NspectraPerPixelMax'] = - 99. * n.ones( len(hdu['FLUX_DENSITY'][s_wl] ) )
+
+ts = [ t0 ]
+for jj, wl0, wl1 in zip(idx_list[::-1][1:], wl_mins[::-1][1:], wl_maxs[::-1][1:]):
+	hdu = fits.open(T2_stacks[jj])[1].data
+	s_wl = (hdu['wavelength']>wl0 ) & ( hdu['wavelength'] < wl1) & (hdu['NspectraPerPixel']>n.max(hdu['NspectraPerPixel']) * frac_Nspec )
+	med_norm = n.median( hdu['medianStack'][s_wl][:10] )
+	previous_norm = n.median( ts[-1]['medianStack'][-10:] )
+	m_factor = previous_norm/med_norm
+	t1 = Table(hdu[s_wl])
+	t1['medianStack'] = t1['medianStack'] * m_factor
+	t1['meanStack'] = t1['meanStack'] * m_factor
+	t1['jackknifStackErrors'] = t1['jackknifStackErrors'] * m_factor
+	t1['jackknifeSpectra'] = t1['jackknifeSpectra'] * m_factor
+	t1['NspectraPerPixelMax'] = n.max(t1['NspectraPerPixel']) * n.ones_like(t1['NspectraPerPixel'])
+	ts.append(t1)
+
+t_out = Table( n.hstack(ts) )
+t_out.remove_column('meanStack')
+t_out.write(file_out, overwrite = True)

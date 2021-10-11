@@ -42,7 +42,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/galaxy/bin_eBOSS_ELG" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../qmost_templates" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -66,7 +66,8 @@
       <workItem from="1632835422988" duration="1094000" />
       <workItem from="1633331594338" duration="31147000" />
       <workItem from="1633434633754" duration="831000" />
-      <workItem from="1633677472106" duration="5860000" />
+      <workItem from="1633677472106" duration="8178000" />
+      <workItem from="1633952570332" duration="1221000" />
     </task>
     <task id="LOCAL-00001" summary="update pathes to the spectra on the ds machines">
       <created>1632490633184</created>
@@ -187,7 +188,14 @@
       <option name="project" value="LOCAL" />
       <updated>1633426474156</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="QMOST stacks finalzing the T1 templates">
+      <created>1633694256301</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1633694256301</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -229,7 +237,8 @@
     <MESSAGE value="bug correction" />
     <MESSAGE value="final version for the qmost conversion" />
     <MESSAGE value="LRS band passes" />
-    <option name="LAST_COMMIT_MESSAGE" value="LRS band passes" />
+    <MESSAGE value="QMOST stacks finalzing the T1 templates" />
+    <option name="LAST_COMMIT_MESSAGE" value="QMOST stacks finalzing the T1 templates" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
